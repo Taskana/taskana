@@ -11,10 +11,14 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
@@ -24,6 +28,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.util.EnumUtil;
+import pro.taskana.common.internal.util.Triplet;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidOwnerException;
@@ -58,6 +63,9 @@ class CompleteTaskAccTest implements TaskanaConfigurationModifier {
   ClassificationSummary defaultClassificationSummary;
   WorkbasketSummary defaultWorkbasketSummary;
   ObjectReference defaultObjectReference;
+  WorkbasketSummary wbWithoutEditTasks;
+  WorkbasketSummary wbWithoutReadTasks;
+  WorkbasketSummary wbWithoutRead;
 
   @Override
   public TaskanaConfiguration.Builder modify(TaskanaConfiguration.Builder builder) {
@@ -71,12 +79,43 @@ class CompleteTaskAccTest implements TaskanaConfigurationModifier {
     defaultClassificationSummary =
         defaultTestClassification().buildAndStoreAsSummary(classificationService);
     defaultWorkbasketSummary = defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
+    wbWithoutEditTasks = defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
+    wbWithoutReadTasks = defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
+    wbWithoutRead = defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
 
     WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
         .workbasketId(defaultWorkbasketSummary.getId())
         .accessId("user-1-1")
         .permission(WorkbasketPermission.READ)
         .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.EDITTASKS)
+        .permission(WorkbasketPermission.APPEND)
+        .buildAndStore(workbasketService);
+
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(wbWithoutEditTasks.getId())
+        .accessId("user-1-1")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.APPEND)
+        .buildAndStore(workbasketService);
+
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(wbWithoutReadTasks.getId())
+        .accessId("user-1-1")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.EDITTASKS)
+        .permission(WorkbasketPermission.APPEND)
+        .buildAndStore(workbasketService);
+
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(wbWithoutRead.getId())
+        .accessId("user-1-1")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.EDITTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
 
@@ -191,6 +230,52 @@ class CompleteTaskAccTest implements TaskanaConfigurationModifier {
     Task completedTask = taskService.forceCompleteTask(readyForReviewTask.getId());
 
     assertTaskIsComplete(before, completedTask);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @TestFactory
+  Stream<DynamicTest> should_ThrowException_When_ForceCompleteTaskWithMissingPermission()
+      throws Exception {
+    List<Triplet<String, WorkbasketSummary, WorkbasketPermission>> list =
+        List.of(
+            Triplet.of("With Missing Read Permission", wbWithoutRead, WorkbasketPermission.READ),
+            Triplet.of(
+                "With Missing ReadTasks Permission",
+                wbWithoutReadTasks,
+                WorkbasketPermission.READTASKS),
+            Triplet.of(
+                "With Missing EditTasks Permission",
+                wbWithoutEditTasks,
+                WorkbasketPermission.EDITTASKS));
+    ThrowingConsumer<Triplet<String, WorkbasketSummary, WorkbasketPermission>> testCompleteTask =
+        t -> {
+          String anyUserName = "TestUser28";
+          Task task =
+              TaskBuilder.newTask()
+                  .classificationSummary(defaultClassificationSummary)
+                  .workbasketSummary(t.getMiddle())
+                  .primaryObjRef(DefaultTestEntities.defaultTestObjectReference().build())
+                  .state(TaskState.READY_FOR_REVIEW)
+                  .owner(anyUserName)
+                  .buildAndStore(taskService, "admin");
+
+          ThrowingCallable call = () -> taskService.forceCompleteTask(task.getId());
+
+          NotAuthorizedOnWorkbasketException e =
+              catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+
+          if (t.getRight() != WorkbasketPermission.EDITTASKS) {
+            assertThat(e.getRequiredPermissions())
+                .containsExactlyInAnyOrder(
+                    WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
+          } else {
+            assertThat(e.getRequiredPermissions())
+                .containsExactlyInAnyOrder(WorkbasketPermission.EDITTASKS);
+          }
+          assertThat(e.getCurrentUserId()).isEqualTo("user-1-1");
+          assertThat(e.getWorkbasketId()).isEqualTo(t.getMiddle().getId());
+        };
+    return DynamicTest.stream(list.iterator(), Triplet::getLeft, testCompleteTask);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -686,6 +771,50 @@ class CompleteTaskAccTest implements TaskanaConfigurationModifier {
 
     Task completedTask2 = taskService.getTask(task2.getId());
     assertTaskIsComplete(beforeBulkComplete, completedTask2);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @TestFactory
+  Stream<DynamicTest> should_ThrowException_When_CompleteTaskWithMissingPermission()
+      throws Exception {
+    List<Triplet<String, WorkbasketSummary, WorkbasketPermission>> list =
+        List.of(
+            Triplet.of("With Missing Read Permission", wbWithoutRead, WorkbasketPermission.READ),
+            Triplet.of(
+                "With Missing ReadTasks Permission",
+                wbWithoutReadTasks,
+                WorkbasketPermission.READTASKS),
+            Triplet.of(
+                "With Missing EditTasks Permission",
+                wbWithoutEditTasks,
+                WorkbasketPermission.EDITTASKS));
+    ThrowingConsumer<Triplet<String, WorkbasketSummary, WorkbasketPermission>> testCompleteTask =
+        t -> {
+          Task task =
+              TaskBuilder.newTask()
+                  .classificationSummary(defaultClassificationSummary)
+                  .workbasketSummary(t.getMiddle())
+                  .primaryObjRef(DefaultTestEntities.defaultTestObjectReference().build())
+                  .state(TaskState.CLAIMED)
+                  .claimed(Instant.now())
+                  .owner("user-1-1")
+                  .buildAndStore(taskService, "admin");
+
+          ThrowingCallable call = () -> taskService.completeTask(task.getId());
+
+          NotAuthorizedOnWorkbasketException e =
+              catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+
+          if (t.getRight() != WorkbasketPermission.EDITTASKS) {
+            assertThat(e.getRequiredPermissions())
+                .containsExactly(WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
+          } else {
+            assertThat(e.getRequiredPermissions()).containsExactly(WorkbasketPermission.EDITTASKS);
+          }
+          assertThat(e.getCurrentUserId()).isEqualTo("user-1-1");
+          assertThat(e.getWorkbasketId()).isEqualTo(t.getMiddle().getId());
+        };
+    return DynamicTest.stream(list.iterator(), Triplet::getLeft, testCompleteTask);
   }
 
   private void assertTaskIsComplete(Instant before, Task completedTask) {

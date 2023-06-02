@@ -196,7 +196,33 @@ class UpdateWorkbasketAuthorizationsAccTest extends AbstractAccTest {
             .findFirst()
             .orElse(null);
     assertThat(item).isNotNull();
-    assertThat(theAccessItem.getPermission(WorkbasketPermission.READTASKS)).isEqualTo(false);
+    assertThat(theAccessItem.getPermission(WorkbasketPermission.READTASKS)).isFalse();
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_setEditTasksPerm() throws Exception {
+    final WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+    String wbId = "WBI:100000000000000000000000000000000006";
+
+    List<WorkbasketAccessItem> accessItems = workbasketService.getWorkbasketAccessItems(wbId);
+    WorkbasketAccessItem theAccessItem =
+        accessItems.stream()
+            .filter(x -> "user-1-1".equalsIgnoreCase(x.getAccessId()))
+            .findFirst()
+            .orElse(null);
+    assertThat(theAccessItem).isNotNull();
+    theAccessItem.setPermission(WorkbasketPermission.EDITTASKS, false);
+    workbasketService.updateWorkbasketAccessItem(theAccessItem);
+
+    List<WorkbasketAccessItem> accessItems2 = workbasketService.getWorkbasketAccessItems(wbId);
+    WorkbasketAccessItem item =
+        accessItems2.stream()
+            .filter(t -> theAccessItem.getId().equals(t.getId()))
+            .findFirst()
+            .orElse(null);
+    assertThat(item).isNotNull();
+    assertThat(theAccessItem.getPermission(WorkbasketPermission.EDITTASKS)).isFalse();
   }
 
   @WithAccessId(user = "businessadmin")

@@ -54,6 +54,7 @@ class UpdateManualPriorityAccTest {
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
         .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.EDITTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
     defaultObjectReference = defaultTestObjectReference().build();
