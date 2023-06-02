@@ -55,6 +55,7 @@ class TaskCommentBuilderTest {
     newWorkbasketAccessItem()
         .workbasketId(workbasket.getId())
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
         .accessId("user-1-1")
         .buildAndStore(workbasketService);
     task =

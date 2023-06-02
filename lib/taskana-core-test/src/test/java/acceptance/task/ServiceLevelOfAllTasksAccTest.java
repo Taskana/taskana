@@ -79,6 +79,7 @@ class ServiceLevelOfAllTasksAccTest {
         .accessId("user-1-1")
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
   }

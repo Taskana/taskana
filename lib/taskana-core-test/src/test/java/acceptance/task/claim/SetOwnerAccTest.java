@@ -56,6 +56,7 @@ class SetOwnerAccTest {
         .accessId("user-1-2")
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
 
@@ -117,7 +118,8 @@ class SetOwnerAccTest {
         catchThrowableOfType(call2, NotAuthorizedOnWorkbasketException.class);
     assertThat(e2.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());
     assertThat(e2.getCurrentUserId()).isEqualTo("user-1-1");
-    assertThat(e2.getRequiredPermissions()).containsExactly(WorkbasketPermission.READ);
+    assertThat(e2.getRequiredPermissions())
+        .containsExactly(WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
   }
 
   @WithAccessId(user = "user-1-2")
