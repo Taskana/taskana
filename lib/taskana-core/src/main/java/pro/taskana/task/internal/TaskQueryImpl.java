@@ -1943,7 +1943,7 @@ public class TaskQueryImpl implements TaskQuery {
     return taskanaEngine.executeInDatabaseConnection(
         () -> {
           checkForIllegalParamCombinations();
-          checkOpenAndReadPermissionForSpecifiedWorkbaskets();
+          checkOpenReadAndReadTasksPermissionForSpecifiedWorkbaskets();
           setupJoinAndOrderParameters();
           setupAccessIds();
           List<TaskSummaryImpl> tasks =
@@ -1959,7 +1959,7 @@ public class TaskQueryImpl implements TaskQuery {
     try {
       taskanaEngine.openConnection();
       checkForIllegalParamCombinations();
-      checkOpenAndReadPermissionForSpecifiedWorkbaskets();
+      checkOpenReadAndReadTasksPermissionForSpecifiedWorkbaskets();
       setupAccessIds();
       setupJoinAndOrderParameters();
       RowBounds rowBounds = new RowBounds(offset, limit);
@@ -1990,7 +1990,7 @@ public class TaskQueryImpl implements TaskQuery {
       this.orderBy.clear();
       this.addOrderCriteria(columnName.toString(), sortDirection);
       checkForIllegalParamCombinations();
-      checkOpenAndReadPermissionForSpecifiedWorkbaskets();
+      checkOpenReadAndReadTasksPermissionForSpecifiedWorkbaskets();
       setupAccessIds();
 
       if (columnName.equals(TaskQueryColumnName.CLASSIFICATION_NAME)) {
@@ -2026,7 +2026,7 @@ public class TaskQueryImpl implements TaskQuery {
     TaskSummary result;
     try {
       taskanaEngine.openConnection();
-      checkOpenAndReadPermissionForSpecifiedWorkbaskets();
+      checkOpenReadAndReadTasksPermissionForSpecifiedWorkbaskets();
       setupAccessIds();
       setupJoinAndOrderParameters();
       TaskSummaryImpl taskSummaryImpl =
@@ -2051,7 +2051,7 @@ public class TaskQueryImpl implements TaskQuery {
     Long rowCount;
     try {
       taskanaEngine.openConnection();
-      checkOpenAndReadPermissionForSpecifiedWorkbaskets();
+      checkOpenReadAndReadTasksPermissionForSpecifiedWorkbaskets();
       setupAccessIds();
       setupJoinAndOrderParameters();
       rowCount = taskanaEngine.getSqlSession().selectOne(getLinkToCounterTaskScript(), this);
@@ -2177,7 +2177,7 @@ public class TaskQueryImpl implements TaskQuery {
     }
   }
 
-  private void checkOpenAndReadPermissionForSpecifiedWorkbaskets() {
+  private void checkOpenReadAndReadTasksPermissionForSpecifiedWorkbaskets() {
     if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN)) {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Skipping permissions check since user is in role ADMIN or TASK_ADMIN.");
@@ -2188,13 +2188,13 @@ public class TaskQueryImpl implements TaskQuery {
       if (this.workbasketIdIn != null && this.workbasketIdIn.length > 0) {
         filterByAccessIdIn = false;
         for (String workbasketId : workbasketIdIn) {
-          checkOpenAndReadPermissionById(workbasketId);
+          checkOpenReadAndReadTasksPermissionById(workbasketId);
         }
       }
       if (workbasketKeyDomainIn != null && workbasketKeyDomainIn.length > 0) {
         filterByAccessIdIn = false;
         for (KeyDomain keyDomain : workbasketKeyDomainIn) {
-          checkOpenAndReadPermissionByKeyDomain(keyDomain);
+          checkOpenReadAndReadTasksPermissionByKeyDomain(keyDomain);
         }
       }
     } catch (NotAuthorizedOnWorkbasketException e) {
@@ -2202,20 +2202,24 @@ public class TaskQueryImpl implements TaskQuery {
     }
   }
 
-  private void checkOpenAndReadPermissionById(String workbasketId)
+  private void checkOpenReadAndReadTasksPermissionById(String workbasketId)
       throws NotAuthorizedOnWorkbasketException {
     try {
       taskanaEngine
           .getEngine()
           .getWorkbasketService()
-          .checkAuthorization(workbasketId, WorkbasketPermission.OPEN, WorkbasketPermission.READ);
+          .checkAuthorization(
+              workbasketId,
+              WorkbasketPermission.OPEN,
+              WorkbasketPermission.READ,
+              WorkbasketPermission.READTASKS);
     } catch (WorkbasketNotFoundException e) {
       LOGGER.warn(
           String.format("The workbasket with the ID ' %s ' does not exist.", workbasketId), e);
     }
   }
 
-  private void checkOpenAndReadPermissionByKeyDomain(KeyDomain keyDomain)
+  private void checkOpenReadAndReadTasksPermissionByKeyDomain(KeyDomain keyDomain)
       throws NotAuthorizedOnWorkbasketException {
     try {
       taskanaEngine
@@ -2225,7 +2229,8 @@ public class TaskQueryImpl implements TaskQuery {
               keyDomain.getKey(),
               keyDomain.getDomain(),
               WorkbasketPermission.OPEN,
-              WorkbasketPermission.READ);
+              WorkbasketPermission.READ,
+              WorkbasketPermission.READTASKS);
     } catch (WorkbasketNotFoundException e) {
       LOGGER.warn(
           String.format(

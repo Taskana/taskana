@@ -76,6 +76,7 @@ class CompleteTaskAccTest implements TaskanaConfigurationModifier {
         .workbasketId(defaultWorkbasketSummary.getId())
         .accessId("user-1-1")
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
 
@@ -217,7 +218,8 @@ class CompleteTaskAccTest implements TaskanaConfigurationModifier {
     assertThat(e.getCurrentUserId()).isEqualTo(currentUserContext.getUserid());
     WorkbasketSummary workbasket = claimedTask.getWorkbasketSummary();
     assertThat(e.getWorkbasketId()).isEqualTo(workbasket.getId());
-    assertThat(e.getRequiredPermissions()).containsExactly(WorkbasketPermission.READ);
+    assertThat(e.getRequiredPermissions())
+        .containsExactly(WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
   }
 
   @WithAccessId(user = "user-1-1")

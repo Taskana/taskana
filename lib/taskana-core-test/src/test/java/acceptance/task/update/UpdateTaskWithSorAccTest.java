@@ -46,6 +46,7 @@ class UpdateTaskWithSorAccTest {
         .accessId("user-1-1")
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
     defaultObjectReference = defaultTestObjectReference().build();

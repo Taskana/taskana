@@ -58,6 +58,7 @@ class CancelTaskAccTest {
         .accessId("user-1-2")
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
 
@@ -130,7 +131,8 @@ class CancelTaskAccTest {
 
     NotAuthorizedOnWorkbasketException e =
         catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
-    assertThat(e.getRequiredPermissions()).containsExactly(WorkbasketPermission.READ);
+    assertThat(e.getRequiredPermissions())
+        .containsExactly(WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
     assertThat(e.getCurrentUserId()).isEqualTo("user-taskrouter");
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());
   }

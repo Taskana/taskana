@@ -59,6 +59,7 @@ class ClaimTaskAccTest {
         .accessId("user-1-2")
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
 
@@ -257,7 +258,8 @@ class ClaimTaskAccTest {
         catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
     assertThat(e.getCurrentUserId()).isEqualTo("user-taskrouter");
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());
-    assertThat(e.getRequiredPermissions()).containsExactlyInAnyOrder(WorkbasketPermission.READ);
+    assertThat(e.getRequiredPermissions())
+        .containsExactlyInAnyOrder(WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
 
     ;
   }
@@ -280,7 +282,8 @@ class ClaimTaskAccTest {
         catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
     assertThat(e.getCurrentUserId()).isEqualTo("user-taskrouter");
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());
-    assertThat(e.getRequiredPermissions()).containsExactlyInAnyOrder(WorkbasketPermission.READ);
+    assertThat(e.getRequiredPermissions())
+        .containsExactlyInAnyOrder(WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
   }
 
   @WithAccessId(user = "user-1-2")

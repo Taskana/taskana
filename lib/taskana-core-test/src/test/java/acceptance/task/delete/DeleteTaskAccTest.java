@@ -64,6 +64,7 @@ class DeleteTaskAccTest {
         .accessId("user-1-2")
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
     task1 =
