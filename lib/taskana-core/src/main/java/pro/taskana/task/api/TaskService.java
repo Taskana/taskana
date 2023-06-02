@@ -233,9 +233,7 @@ public interface TaskService {
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task forceCancelClaim(String taskId)
-      throws TaskNotFoundException,
-          NotAuthorizedOnWorkbasketException,
-          InvalidTaskStateException;
+      throws TaskNotFoundException, NotAuthorizedOnWorkbasketException, InvalidTaskStateException;
 
   /**
    * Request review for an existing {@linkplain Task} that is in {@linkplain TaskState#CLAIMED}.
@@ -643,7 +641,8 @@ public interface TaskService {
 
   /**
    * Updates specified {@linkplain TaskCustomField TaskCustomFields} of {@linkplain Task Tasks}
-   * associated with the given {@linkplain Task#getPrimaryObjRef() primaryObjRef}.
+   * associated with the given {@linkplain Task#getPrimaryObjRef() primaryObjRef}. Tasks in
+   * Workbaskets without EDITTASKS permission will be ignored and not updated.
    *
    * @param selectionCriteria the {@linkplain Task#getPrimaryObjRef() primaryObjRef} of the
    *     searched-for {@linkplain Task Tasks}.

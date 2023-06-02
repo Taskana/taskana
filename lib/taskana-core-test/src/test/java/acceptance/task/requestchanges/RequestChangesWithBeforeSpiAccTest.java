@@ -58,6 +58,7 @@ public class RequestChangesWithBeforeSpiAccTest {
         .accessId("user-1-1")
         .permission(WorkbasketPermission.READ)
         .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.EDITTASKS)
         .permission(WorkbasketPermission.APPEND)
         .permission(WorkbasketPermission.TRANSFER)
         .buildAndStore(workbasketService);

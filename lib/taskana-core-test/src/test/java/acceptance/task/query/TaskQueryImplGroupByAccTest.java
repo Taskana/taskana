@@ -125,30 +125,6 @@ class TaskQueryImplGroupByAccTest implements TaskanaConfigurationModifier {
     taskInWorkbasket(createWorkbasketWithPermission()).buildAndStore(taskService);
   }
 
-  private TaskBuilder taskInWorkbasket(WorkbasketSummary wb) {
-    return TaskBuilder.newTask()
-        .classificationSummary(defaultClassificationSummary)
-        .primaryObjRef(defaultTestObjectReference().build())
-        .workbasketSummary(wb);
-  }
-
-  private WorkbasketSummary createWorkbasketWithPermission() throws Exception {
-    WorkbasketSummary workbasketSummary =
-        defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService, "businessadmin");
-    persistPermission(workbasketSummary);
-    return workbasketSummary;
-  }
-
-  private void persistPermission(WorkbasketSummary workbasketSummary) throws Exception {
-    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
-        .workbasketId(workbasketSummary.getId())
-        .accessId(currentUserContext.getUserid())
-        .permission(WorkbasketPermission.OPEN)
-        .permission(WorkbasketPermission.READ)
-        .permission(WorkbasketPermission.APPEND)
-        .buildAndStore(workbasketService, "businessadmin");
-  }
-
   @WithAccessId(user = "user-1-1")
   @Test
   void should_GroupByPor_When_OrderingByName() {
@@ -330,5 +306,30 @@ class TaskQueryImplGroupByAccTest implements TaskanaConfigurationModifier {
             .groupBySor("SecondType")
             .count();
     assertThat(numberOfTasks).isEqualTo(1);
+  }
+
+  private TaskBuilder taskInWorkbasket(WorkbasketSummary wb) {
+    return TaskBuilder.newTask()
+        .classificationSummary(defaultClassificationSummary)
+        .primaryObjRef(defaultTestObjectReference().build())
+        .workbasketSummary(wb);
+  }
+
+  private WorkbasketSummary createWorkbasketWithPermission() throws Exception {
+    WorkbasketSummary workbasketSummary =
+        defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService, "businessadmin");
+    persistPermission(workbasketSummary);
+    return workbasketSummary;
+  }
+
+  private void persistPermission(WorkbasketSummary workbasketSummary) throws Exception {
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(workbasketSummary.getId())
+        .accessId(currentUserContext.getUserid())
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.APPEND)
+        .buildAndStore(workbasketService, "businessadmin");
   }
 }
