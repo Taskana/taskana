@@ -381,12 +381,14 @@ public class TaskServiceImpl implements TaskService {
         WorkbasketQueryImpl query = (WorkbasketQueryImpl) workbasketService.createWorkbasketQuery();
         query.setUsedToAugmentTasks(true);
         String workbasketId = resultTask.getWorkbasketSummary().getId();
-        List<WorkbasketSummary> workbaskets = query.idIn(workbasketId).list();
+        List<WorkbasketSummary> workbaskets =
+            query.idIn(workbasketId).callerHasPermissions(WorkbasketPermission.READTASKS).list();
         if (workbaskets.isEmpty()) {
           throw new NotAuthorizedOnWorkbasketException(
               taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
               workbasketId,
-              WorkbasketPermission.READ);
+              WorkbasketPermission.READ,
+              WorkbasketPermission.READTASKS);
         } else {
           resultTask.setWorkbasketSummary(workbaskets.get(0));
         }

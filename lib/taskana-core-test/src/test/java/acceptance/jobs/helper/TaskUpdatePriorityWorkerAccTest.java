@@ -65,6 +65,7 @@ class TaskUpdatePriorityWorkerAccTest {
         .workbasketId(workbasketSummary.getId())
         .accessId("whatever")
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
         .buildAndStore(workbasketService);
 
     TaskBuilder taskBuilder =
