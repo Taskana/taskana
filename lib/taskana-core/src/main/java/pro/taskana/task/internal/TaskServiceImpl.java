@@ -544,6 +544,12 @@ public class TaskServiceImpl implements TaskService {
       TaskImpl oldTaskImpl = (TaskImpl) getTask(newTaskImpl.getId());
 
       checkConcurrencyAndSetModified(newTaskImpl, oldTaskImpl);
+      if (!checkEditTasksPerm(oldTaskImpl)) {
+        throw new NotAuthorizedOnWorkbasketException(
+            taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+            oldTaskImpl.getWorkbasketSummary().getId(),
+            WorkbasketPermission.EDITTASKS);
+      }
 
       attachmentHandler.insertAndDeleteAttachmentsOnTaskUpdate(newTaskImpl, oldTaskImpl);
       objectReferenceHandler.insertAndDeleteObjectReferencesOnTaskUpdate(newTaskImpl, oldTaskImpl);
@@ -624,11 +630,18 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public Optional<Task> selectAndClaim(TaskQuery taskQuery) {
+  public Optional<Task> selectAndClaim(TaskQuery taskQuery)
+      throws NotAuthorizedOnWorkbasketException {
     ((TaskQueryImpl) taskQuery).selectAndClaimEquals(true);
-    return taskanaEngine.executeInDatabaseConnection(
-        () ->
-            Optional.ofNullable(taskQuery.single()).map(TaskSummary::getId).map(wrap(this::claim)));
+    try {
+      return taskanaEngine.executeInDatabaseConnection(
+          () ->
+              Optional.ofNullable(taskQuery.single())
+                  .map(TaskSummary::getId)
+                  .map(wrap(this::claim)));
+    } catch (Exception e) {
+      return Optional.empty();
+    }
   }
 
   @Override
@@ -704,9 +717,17 @@ public class TaskServiceImpl implements TaskService {
       // use query in order to find only those tasks that are visible to the current user
       List<TaskSummary> taskSummaries = getTasksToChange(selectionCriteria);
 
+      List<TaskSummary> tasksWithPermissions = new ArrayList<>();
+      for (TaskSummary taskSummary : taskSummaries) {
+        if (checkEditTasksPerm(taskSummary)) {
+          tasksWithPermissions.add(taskSummary);
+        }
+      }
+
       List<String> changedTasks = new ArrayList<>();
-      if (!taskSummaries.isEmpty()) {
-        changedTasks = taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
+      if (!tasksWithPermissions.isEmpty()) {
+        changedTasks =
+            tasksWithPermissions.stream().map(TaskSummary::getId).collect(Collectors.toList());
         taskMapper.updateTasks(changedTasks, updated, fieldSelector);
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug("updateTasks() updated the following tasks: {} ", changedTasks);
@@ -738,9 +759,17 @@ public class TaskServiceImpl implements TaskService {
       // use query in order to find only those tasks that are visible to the current user
       List<TaskSummary> taskSummaries = getTasksToChange(taskIds);
 
+      List<TaskSummary> tasksWithPermissions = new ArrayList<>();
+      for (TaskSummary taskSummary : taskSummaries) {
+        if (checkEditTasksPerm(taskSummary)) {
+          tasksWithPermissions.add(taskSummary);
+        }
+      }
+
       List<String> changedTasks = new ArrayList<>();
-      if (!taskSummaries.isEmpty()) {
-        changedTasks = taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
+      if (!tasksWithPermissions.isEmpty()) {
+        changedTasks =
+            tasksWithPermissions.stream().map(TaskSummary::getId).collect(Collectors.toList());
         taskMapper.updateTasks(changedTasks, updatedTask, fieldSelector);
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug("updateTasks() updated the following tasks: {} ", changedTasks);
@@ -1442,7 +1471,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void checkPreconditionsForClaimTask(TaskSummary task, boolean forced)
-      throws InvalidOwnerException, InvalidTaskStateException {
+      throws InvalidOwnerException, InvalidTaskStateException, NotAuthorizedOnWorkbasketException {
     TaskState state = task.getState();
     if (state.isEndState()) {
       throw new InvalidTaskStateException(
@@ -1454,6 +1483,12 @@ public class TaskServiceImpl implements TaskService {
         && (state == TaskState.CLAIMED || state == TaskState.IN_REVIEW)
         && !task.getOwner().equals(userId)) {
       throw new InvalidOwnerException(userId, task.getId());
+    }
+    if (!checkEditTasksPerm(task)) {
+      throw new NotAuthorizedOnWorkbasketException(
+          taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+          task.getWorkbasketSummary().getId(),
+          WorkbasketPermission.EDITTASKS);
     }
   }
 
@@ -1473,7 +1508,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void checkPreconditionsForCompleteTask(TaskSummary task)
-      throws InvalidOwnerException, InvalidTaskStateException {
+      throws InvalidOwnerException, InvalidTaskStateException, NotAuthorizedOnWorkbasketException {
     if (taskIsNotClaimed(task)) {
       throw new InvalidTaskStateException(
           task.getId(), task.getState(), TaskState.CLAIMED, TaskState.IN_REVIEW);
@@ -1485,6 +1520,12 @@ public class TaskServiceImpl implements TaskService {
         && !taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)) {
       throw new InvalidOwnerException(
           taskanaEngine.getEngine().getCurrentUserContext().getUserid(), task.getId());
+    }
+    if (!checkEditTasksPerm(task)) {
+      throw new NotAuthorizedOnWorkbasketException(
+          taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+          task.getWorkbasketSummary().getId(),
+          WorkbasketPermission.EDITTASKS);
     }
   }
 
@@ -1502,6 +1543,12 @@ public class TaskServiceImpl implements TaskService {
       TaskImpl oldTask = duplicateTaskExactly(task);
 
       TaskState state = task.getState();
+      if (!checkEditTasksPerm(task)) {
+        throw new NotAuthorizedOnWorkbasketException(
+            taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+            task.getWorkbasketSummary().getId(),
+            WorkbasketPermission.EDITTASKS);
+      }
       if (state.isEndState()) {
         throw new InvalidTaskStateException(
             taskId, state, EnumUtil.allValuesExceptFor(TaskState.END_STATES));
@@ -2147,5 +2194,17 @@ public class TaskServiceImpl implements TaskService {
     oldTask.setAttachments(task.getAttachments());
     oldTask.setSecondaryObjectReferences(task.getSecondaryObjectReferences());
     return oldTask;
+  }
+
+  private boolean checkEditTasksPerm(TaskSummary task) {
+    WorkbasketQueryImpl query = (WorkbasketQueryImpl) workbasketService.createWorkbasketQuery();
+    String workbasketId = task.getWorkbasketSummary().getId();
+    WorkbasketSummary workbasket =
+        query.idIn(workbasketId).callerHasPermissions(WorkbasketPermission.EDITTASKS).single();
+    if (workbasket == null) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }

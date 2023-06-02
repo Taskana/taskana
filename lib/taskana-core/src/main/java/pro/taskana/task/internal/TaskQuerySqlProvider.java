@@ -433,9 +433,7 @@ public class TaskQuerySqlProvider {
   }
 
   private static String openOuterClauseForGroupByPorOrSor() {
-    return "<if test=\"groupByPor or groupBySor != null\"> "
-        + "SELECT * FROM ("
-        + "</if> ";
+    return "<if test=\"groupByPor or groupBySor != null\"> SELECT * FROM (</if> ";
   }
 
   private static String closeOuterClauseForGroupByPor() {
