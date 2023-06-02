@@ -134,6 +134,7 @@ class UpdateClassificationAccTest {
         .accessId(currentUserContext.getUserid())
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService, "businessadmin");
 
@@ -156,6 +157,7 @@ class UpdateClassificationAccTest {
         .accessId(currentUserContext.getUserid())
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService, "businessadmin");
     ClassificationSummary classificationSummaryWithSpecifiedServiceLevel =

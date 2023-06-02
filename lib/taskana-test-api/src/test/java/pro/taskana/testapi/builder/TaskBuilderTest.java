@@ -68,6 +68,7 @@ class TaskBuilderTest {
         .accessId("user-1-1")
         .permission(WorkbasketPermission.APPEND)
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
         .buildAndStore(workbasketService);
   }
 
