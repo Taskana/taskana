@@ -215,19 +215,15 @@ class TaskQueryImplAccTest {
     void should_ReturnEmptyList_When_WorkbasketOfTaskHasNoReadTasksPerm() {
       List<TaskSummary> list = taskService.createTaskQuery().idIn(taskSummary3.getId()).list();
 
-      assertThat(list.isEmpty());
+      assertThat(list).isEmpty();
     }
 
     @WithAccessId(user = "user-1-1")
     @Test
     void should_ThrowException_When_QueryByWorkbasketThatHasOpenReadButNoReadTasksPermission() {
-      assertThatThrownBy(
-              () ->
-                  taskService
-                      .createTaskQuery()
-                      .workbasketIdIn(wbWithoutReadTasksPerm.getId())
-                      .list())
-          .isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
+      ThrowingCallable call =
+          () -> taskService.createTaskQuery().workbasketIdIn(wbWithoutReadTasksPerm.getId()).list();
+      assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
     }
 
     @WithAccessId(user = "user-1-1")
@@ -261,17 +257,17 @@ class TaskQueryImplAccTest {
     @WithAccessId(user = "user-1-1")
     @Test
     void should_ThrowException_When_QueryByWbIdAndWorkbasketHasReadTasksButNoReadPerm() {
-      assertThatThrownBy(
-              () -> taskService.createTaskQuery().workbasketIdIn(wbWithoutReadPerm.getId()).list())
-          .isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
+      ThrowingCallable call =
+          () -> taskService.createTaskQuery().workbasketIdIn(wbWithoutReadPerm.getId()).list();
+      assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
     }
 
     @WithAccessId(user = "user-1-1")
     @Test
     void should_ThrowException_When_QueryByWbIdAndWorkbasketHasReadAndReadTasksButNoOpenPerm() {
-      assertThatThrownBy(
-              () -> taskService.createTaskQuery().workbasketIdIn(wbWithoutOpenPerm.getId()).list())
-          .isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
+      ThrowingCallable call =
+          () -> taskService.createTaskQuery().workbasketIdIn(wbWithoutOpenPerm.getId()).list();
+      assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
     }
   }
 
@@ -803,9 +799,7 @@ class TaskQueryImplAccTest {
             taskInWorkbasket(wb)
                 .completed(Instant.parse("2020-02-01T00:00:00Z"))
                 .buildAndStoreAsSummary(taskService);
-        taskInWorkbasket(wb)
-                .completed(null)
-                .buildAndStoreAsSummary(taskService);
+        taskInWorkbasket(wb).completed(null).buildAndStoreAsSummary(taskService);
       }
 
       @WithAccessId(user = "user-1-1")
