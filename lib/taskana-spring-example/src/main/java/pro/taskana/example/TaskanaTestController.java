@@ -56,7 +56,7 @@ public class TaskanaTestController {
           NotAuthorizedException {
     taskanaEngine.getWorkbasketService().createWorkbasket(createWorkBasket("key", "workbasket"));
 
-    int workbaskets = getWorkbaskets();
+    Integer workbaskets = getWorkbaskets();
     if (Boolean.parseBoolean(rollback)) {
       throw new RuntimeException();
     } else {
@@ -113,12 +113,12 @@ public class TaskanaTestController {
     return "cleaned workbasket and test tables";
   }
 
-  private int getWorkbaskets() {
+  private Integer getWorkbaskets() {
     // return taskanaEngine.getWorkbasketService().getWorkbaskets().size();
     return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM WORKBASKET", Integer.class);
   }
 
-  private int getCustomdbTests() {
+  private Integer getCustomdbTests() {
     return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM CUSTOMDB.TEST", Integer.class);
   }
 

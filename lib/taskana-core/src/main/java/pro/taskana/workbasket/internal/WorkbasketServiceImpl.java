@@ -24,6 +24,7 @@ import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.util.IdGenerator;
+import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.common.internal.util.ObjectAttributeChangeDetector;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketAccessItemCreatedEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketAccessItemDeletedEvent;
@@ -644,8 +645,8 @@ public class WorkbasketServiceImpl implements WorkbasketService {
             LOGGER.debug(
                 "Method setDistributionTargets() created distribution target "
                     + "for source '{}' and target {}",
-                sourceWorkbasketId,
-                targetId);
+                LogSanitizer.stripLineBreakingChars(sourceWorkbasketId),
+                LogSanitizer.stripLineBreakingChars(targetId));
           }
         }
 

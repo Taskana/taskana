@@ -31,6 +31,7 @@ import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 import pro.taskana.user.api.models.User;
 import pro.taskana.user.internal.models.UserImpl;
@@ -92,7 +93,7 @@ public class LdapClient {
 
     LOGGER.debug(
         "entry to searchUsersByNameOrAccessIdInUserRoleGroups(nameOrAccessId = {}).",
-        nameOrAccessId);
+        LogSanitizer.stripLineBreakingChars(nameOrAccessId));
 
     isInitOrFail();
     testMinSearchForLength(nameOrAccessId);
@@ -261,11 +262,12 @@ public class LdapClient {
     andFilter.and(orFilter);
 
     String[] userAttributesToReturn = {getUserIdAttribute(), getGroupNameAttribute()};
-
-    LOGGER.debug(
-        "Using filter '{}' for LDAP query with group search base {}.",
-        andFilter,
-        getGroupSearchBase());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "Using filter '{}' for LDAP query with group search base {}.",
+          andFilter,
+          getGroupSearchBase());
+    }
 
     return ldapTemplate.search(
         getGroupSearchBase(),
