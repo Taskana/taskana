@@ -19,12 +19,16 @@ public class WorkbasketAccessItemRepresentationModel
   private String accessName;
   /** The permission to read the information about the workbasket. */
   private boolean permRead;
+  /** The permission to access a task from the workbasket. */
+  private boolean permReadTasks;
   /** The permission to view the content (the tasks) of a workbasket. */
   private boolean permOpen;
   /**
    * The permission to add tasks to the workbasket. Required for creation and transferring of tasks.
    */
   private boolean permAppend;
+  /** The permission to edit a task from the workbasket. */
+  private boolean permEditTasks;
   /** The permission to transfer tasks (out of the current workbasket). */
   private boolean permTransfer;
   /** The permission to distribute tasks from the workbasket. */
@@ -102,6 +106,14 @@ public class WorkbasketAccessItemRepresentationModel
     this.permRead = permRead;
   }
 
+  public boolean isPermReadTasks() {
+    return permReadTasks;
+  }
+
+  public void setPermReadTasks(boolean permReadTasks) {
+    this.permReadTasks = permReadTasks;
+  }
+
   public boolean isPermOpen() {
     return permOpen;
   }
@@ -116,6 +128,14 @@ public class WorkbasketAccessItemRepresentationModel
 
   public void setPermAppend(boolean permAppend) {
     this.permAppend = permAppend;
+  }
+
+  public boolean isPermEditTasks() {
+    return permEditTasks;
+  }
+
+  public void setPermEditTasks(boolean permEditTasks) {
+    this.permEditTasks = permEditTasks;
   }
 
   public boolean isPermTransfer() {
