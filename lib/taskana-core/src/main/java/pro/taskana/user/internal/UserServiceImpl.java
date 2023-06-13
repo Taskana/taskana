@@ -16,6 +16,7 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
+import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.user.api.UserService;
 import pro.taskana.user.api.exceptions.UserAlreadyExistException;
 import pro.taskana.user.api.exceptions.UserNotFoundException;
@@ -103,7 +104,9 @@ public class UserServiceImpl implements UserService {
     ((UserImpl) userToCreate).setDomains(determineDomains(userToCreate));
 
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Method createUser() created User '{}'.", userToCreate);
+      LOGGER.debug(
+          "Method createUser() created User '{}'.",
+          LogSanitizer.stripLineBreakingChars(userToCreate));
     }
     return userToCreate;
   }
@@ -127,7 +130,9 @@ public class UserServiceImpl implements UserService {
     ((UserImpl) userToUpdate).setDomains(determineDomains(userToUpdate));
 
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Method updateUser() updated User '{}'.", userToUpdate);
+      LOGGER.debug(
+          "Method updateUser() updated User '{}'.",
+          LogSanitizer.stripLineBreakingChars(userToUpdate));
     }
 
     return userToUpdate;

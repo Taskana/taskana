@@ -138,11 +138,11 @@ public class ReportRepresentationModelAssembler {
 
   @NonNull
   public ReportRepresentationModel toModel(
-      @NonNull TaskStatusReport report,
-      @NonNull List<String> domain,
-      @NonNull List<TaskState> state,
-      @NonNull List<String> workbasketIds,
-      @NonNull Integer priorityMinimum)
+      TaskStatusReport report,
+      List<String> domain,
+      List<TaskState> state,
+      List<String> workbasketIds,
+      Integer priorityMinimum)
       throws NotAuthorizedException {
     ReportRepresentationModel resource = toReportResource(report);
     resource.add(
