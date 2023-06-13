@@ -332,12 +332,11 @@ class CreateTaskAccTest {
     Instant earlierInstant = Instant.parse("2018-01-12T00:00:00Z");
     Instant laterInstant = Instant.parse("2018-01-15T00:00:00Z");
     Task task = createDefaultTask();
+
     Attachment attachment =
         TaskAttachmentBuilder.newAttachment()
             .objectReference(defaultObjectReference)
             .classificationSummary(defaultClassificationSummary)
-            .created(Instant.now())
-            .modified(Instant.now())
             .received(laterInstant)
             .channel("E-MAIL")
             .build();
@@ -345,8 +344,6 @@ class CreateTaskAccTest {
         TaskAttachmentBuilder.newAttachment()
             .objectReference(defaultObjectReference)
             .classificationSummary(defaultClassificationSummary)
-            .created(Instant.now())
-            .modified(Instant.now())
             .received(earlierInstant)
             .channel("E-MAIL")
             .build();
