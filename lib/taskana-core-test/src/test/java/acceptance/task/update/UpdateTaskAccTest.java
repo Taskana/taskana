@@ -51,8 +51,10 @@ import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.testapi.builder.ObjectReferenceBuilder;
 import pro.taskana.testapi.builder.TaskBuilder;
+import pro.taskana.testapi.builder.UserBuilder;
 import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
+import pro.taskana.user.api.UserService;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
@@ -61,6 +63,8 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 @TaskanaIntegrationTest
 public class UpdateTaskAccTest {
   @TaskanaInject TaskService taskService;
+  @TaskanaInject UserService userService;
+
   @TaskanaInject ClassificationService classificationService;
   @TaskanaInject WorkbasketService workbasketService;
 
@@ -569,12 +573,30 @@ public class UpdateTaskAccTest {
 
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
-  class WithEnforceServiceLevelDisabled implements TaskanaConfigurationModifier {
+  class WithEnforceServiceLevelDisabledAndAdditionalUserInfoEnabled
+      implements TaskanaConfigurationModifier {
     @TaskanaInject TaskService taskService;
 
     @Override
     public TaskanaConfiguration.Builder modify(TaskanaConfiguration.Builder builder) {
-      return builder.enforceServiceLevel(false);
+      return builder.addAdditionalUserInfo(true).enforceServiceLevel(false);
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @BeforeAll
+    void setup() throws Exception {
+      UserBuilder.newUser()
+          .id("user-1-2")
+          .firstName("Max")
+          .lastName("Mustermann")
+          .longName("Max Mustermann")
+          .buildAndStore(userService, "businessadmin");
+      UserBuilder.newUser()
+          .id("user-1-1")
+          .firstName("Ella")
+          .lastName("Mustermann")
+          .longName("Ella Mustermann")
+          .buildAndStore(userService, "businessadmin");
     }
 
     @WithAccessId(user = "user-1-2")
@@ -595,6 +617,43 @@ public class UpdateTaskAccTest {
 
       assertThat(updatedTask.getPlanned()).isEqualTo(planned);
       assertThat(updatedTask.getDue()).isEqualTo(due);
+    }
+
+    @WithAccessId(user = "user-1-2")
+    @Test
+    void should_SetOwnerLongName_When_NotChangingOwner() throws Exception {
+      Task task =
+          TaskBuilder.newTask()
+              .owner("user-1-2")
+              .classificationSummary(defaultClassificationSummary)
+              .workbasketSummary(defaultWorkbasketSummary)
+              .primaryObjRef(defaultObjectReference)
+              .buildAndStore(taskService);
+
+      task.setNote("New Note");
+      Task updatedTask = taskService.updateTask(task);
+
+      assertThat(updatedTask.getNote()).isEqualTo("New Note");
+      assertThat(updatedTask.getOwner()).isEqualTo("user-1-2");
+      assertThat(updatedTask.getOwnerLongName()).isEqualTo("Max Mustermann");
+    }
+
+    @WithAccessId(user = "user-1-2")
+    @Test
+    void should_SetOwnerLongName_When_ChangingOwner() throws Exception {
+      Task task =
+          TaskBuilder.newTask()
+              .owner("user-1-2")
+              .classificationSummary(defaultClassificationSummary)
+              .workbasketSummary(defaultWorkbasketSummary)
+              .primaryObjRef(defaultObjectReference)
+              .buildAndStore(taskService);
+
+      task.setOwner("user-1-1");
+      Task updatedTask = taskService.updateTask(task);
+
+      assertThat(updatedTask.getOwner()).isEqualTo("user-1-1");
+      assertThat(updatedTask.getOwnerLongName()).isEqualTo("Ella Mustermann");
     }
   }
 }
