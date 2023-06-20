@@ -70,9 +70,11 @@ public class TaskQuerySqlProvider {
         + "ORDER BY <foreach item='item' collection='orderByOuter' separator=',' >${item}</foreach>"
         + "</if> "
         + "<if test='selectAndClaim == true'> "
-        + "FETCH FIRST ROW ONLY FOR UPDATE"
+        + "FETCH FIRST ROW ONLY FOR UPDATE "
         + "</if>"
-        + "<if test=\"_databaseId == 'db2'\">WITH RS USE AND KEEP UPDATE LOCKS </if>"
+        + "<if test=\"_databaseId == 'db2' and selectAndClaim \">WITH RS USE "
+        + "AND KEEP UPDATE LOCKS </if>"
+        + "<if test=\"_databaseId == 'db2' and !selectAndClaim \">WITH UR </if>"
         + CLOSING_SCRIPT_TAG;
   }
 
@@ -429,9 +431,7 @@ public class TaskQuerySqlProvider {
   }
 
   private static String openOuterClauseForGroupByPorOrSor() {
-    return "<if test=\"groupByPor or groupBySor != null\"> "
-        + "SELECT * FROM ("
-        + "</if> ";
+    return "<if test=\"groupByPor or groupBySor != null\"> " + "SELECT * FROM (" + "</if> ";
   }
 
   private static String closeOuterClauseForGroupByPor() {
