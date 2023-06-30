@@ -169,6 +169,47 @@ public interface TaskMapper {
 
   @Update(
       "<script>"
+          + " UPDATE TASK SET MODIFIED = CASE ID"
+          + "<foreach item='task' index='index' separator='' collection='referenceTasks'>WHEN #{task.id, jdbcType=VARCHAR} THEN CAST(#{task.modified, jdbcType=TIMESTAMP} AS TIMESTAMP)"
+          + "</foreach> END, "
+          + " STATE = CASE ID "
+          + "<foreach item='task' collection='referenceTasks' separator=' '>WHEN #{task.id, jdbcType=VARCHAR} THEN CAST(#{task.state} AS VARCHAR(20))"
+          + "</foreach> END, "
+          + " WORKBASKET_KEY = CASE ID "
+          + "<foreach item='task' collection='referenceTasks' separator=' '>WHEN #{task.id, jdbcType=VARCHAR} THEN CAST(#{task.workbasketSummary.key, jdbcType=VARCHAR} AS VARCHAR(64))"
+          + "</foreach> END, "
+          + " WORKBASKET_ID = CASE ID "
+          + "<foreach item='task' collection='referenceTasks' separator=' '>WHEN #{task.id, jdbcType=VARCHAR} THEN CAST(#{task.workbasketSummary.id, jdbcType=VARCHAR} AS VARCHAR(40))"
+          + "</foreach> END, "
+          + " DOMAIN = CASE ID "
+          + "<foreach item='task' collection='referenceTasks' separator=' '>WHEN #{task.id, jdbcType=VARCHAR} THEN CAST(#{task.workbasketSummary.domain, jdbcType=VARCHAR} AS VARCHAR(32))"
+          + "</foreach> END, "
+          + " OWNER = NULL,"
+          + " IS_READ = "
+          + "<choose>"
+          + "<when test =\"_databaseId == 'postgres'\">FALSE, </when><otherwise>0, </otherwise>"
+          + "</choose>"
+          + "IS_TRANSFERRED = CASE ID "
+          + "<foreach item='task' collection='referenceTasks' separator=' '>WHEN #{task.id, jdbcType=VARCHAR} THEN "
+          + "<choose>"
+          + "<when test =\"_databaseId == 'postgres'\">#{task.isTransferred}</when>"
+          + "<otherwise>"
+          + "<choose>"
+          + "<when test='task.isTransferred'>1</when>"
+          + "<otherwise>0</otherwise>"
+          + "</choose>"
+          + "</otherwise>"
+          + "</choose>"
+          + "</foreach> END"
+          + " WHERE ID IN "
+          + "<foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'> #{taskId, jdbcType=VARCHAR} </foreach>"
+          + "</script>")
+  void updateTransferMultipleWorkbaskets(
+      @Param("taskIds") Set<String> taskIds,
+      @Param("referenceTasks") List<TaskSummary> referenceTasks);
+
+  @Update(
+      "<script>"
           + " UPDATE TASK SET COMPLETED = #{referenceTask.completed}, MODIFIED = #{referenceTask.modified}, STATE = #{referenceTask.state}, OWNER = #{referenceTask.owner}"
           + " WHERE ID IN <foreach item='taskId' index='index' separator=',' open='(' close=')' collection='taskIds'>#{taskId}</foreach>"
           + "</script>")

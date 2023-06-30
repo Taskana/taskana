@@ -308,4 +308,6 @@ public interface TaskSummary {
    * @return a copy of this TaskSummary
    */
   TaskSummary copy();
+
+  Task asTask();
 }

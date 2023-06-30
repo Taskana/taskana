@@ -12,8 +12,10 @@ import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.AttachmentSummary;
 import pro.taskana.task.api.models.ObjectReference;
+import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 import pro.taskana.workbasket.internal.models.WorkbasketSummaryImpl;
@@ -774,6 +776,78 @@ public class TaskSummaryImpl implements TaskSummary {
 
   public void setCustomInt8(Integer customInt8) {
     this.customInt8 = customInt8;
+  }
+
+  @Override
+  public Task asTask() {
+    TaskImpl task = new TaskImpl();
+    List<Attachment> attachments = new ArrayList<>();
+    for (AttachmentSummary attachmentSummary : attachmentSummaries) {
+      AttachmentImpl attachment = new AttachmentImpl();
+      attachment.setId(attachmentSummary.getId());
+      attachment.setTaskId(attachmentSummary.getTaskId());
+      attachment.setCreated(attachmentSummary.getCreated());
+      attachment.setModified(attachmentSummary.getModified());
+      attachment.setClassificationSummary(attachmentSummary.getClassificationSummary());
+      attachment.setObjectReference(attachmentSummary.getObjectReference());
+      attachment.setChannel(attachmentSummary.getChannel());
+      attachment.setReceived(attachmentSummary.getReceived());
+      attachments.add(attachment);
+    }
+    task.setAttachments(attachments);
+    task.setSecondaryObjectReferences(secondaryObjectReferences);
+    task.setBusinessProcessId(this.businessProcessId);
+    task.setClaimed(claimed);
+    if (classificationSummary != null) {
+      task.setClassificationSummary(classificationSummary);
+    }
+    task.setExternalId(externalId);
+    task.setCompleted(completed);
+    task.setCreated(created);
+    task.setCustom1(custom1);
+    task.setCustom2(custom2);
+    task.setCustom3(custom3);
+    task.setCustom4(custom4);
+    task.setCustom5(custom5);
+    task.setCustom6(custom6);
+    task.setCustom7(custom7);
+    task.setCustom8(custom8);
+    task.setCustom9(custom9);
+    task.setCustom10(custom10);
+    task.setCustom11(custom11);
+    task.setCustom12(custom12);
+    task.setCustom13(custom13);
+    task.setCustom14(custom14);
+    task.setCustom15(custom15);
+    task.setCustom16(custom16);
+    task.setCustomInt1(customInt1);
+    task.setCustomInt2(customInt2);
+    task.setCustomInt3(customInt3);
+    task.setCustomInt4(customInt4);
+    task.setCustomInt5(customInt5);
+    task.setCustomInt6(customInt6);
+    task.setCustomInt7(customInt7);
+    task.setCustomInt8(customInt8);
+    task.setDue(due);
+    task.setId(id);
+    task.setModified(modified);
+    task.setName(name);
+    task.setCreator(creator);
+    task.setNote(note);
+    task.setDescription(description);
+    task.setOwner(owner);
+    task.setOwnerLongName(ownerLongName);
+    task.setParentBusinessProcessId(parentBusinessProcessId);
+    task.setPlanned(planned);
+    task.setReceived(received);
+    task.setPrimaryObjRef(primaryObjRef);
+    task.setPriority(priority);
+    task.setManualPriority(manualPriority);
+    task.setRead(isRead);
+    task.setState(state);
+    task.setTransferred(isTransferred);
+    task.setWorkbasketSummary(workbasketSummary);
+    return task;
   }
 
   protected boolean canEqual(Object other) {

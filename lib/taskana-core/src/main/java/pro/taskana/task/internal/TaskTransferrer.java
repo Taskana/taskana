@@ -16,9 +16,12 @@ import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
+import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.util.EnumUtil;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.common.internal.util.ObjectAttributeChangeDetector;
+import pro.taskana.common.internal.util.Pair;
+import pro.taskana.spi.history.api.events.task.TaskReroutedEvent;
 import pro.taskana.spi.history.api.events.task.TaskTransferredEvent;
 import pro.taskana.spi.history.internal.HistoryEventManager;
 import pro.taskana.task.api.TaskState;
@@ -102,6 +105,69 @@ final class TaskTransferrer {
     checkDestinationWorkbasket(destinationWorkbasket);
 
     return transferMultipleTasks(taskIds, destinationWorkbasket, setTransferFlag);
+  }
+
+  Task rerouteTask(String taskId)
+      throws NotAuthorizedOnWorkbasketException,
+          TaskNotFoundException,
+          WorkbasketNotFoundException,
+          InvalidTaskStateException {
+    TaskImpl task = (TaskImpl) taskService.getTask(taskId);
+    WorkbasketSummary originWorkbasket = task.getWorkbasketSummary();
+    String newWorkbasketId = taskanaEngine.getTaskRoutingManager().determineWorkbasketId(task);
+
+    if (!originWorkbasket.getId().equals(newWorkbasketId)) {
+      try {
+        taskanaEngine.openConnection();
+        TaskImpl oldTask = task.copy();
+        oldTask.setId(task.getId());
+        oldTask.setExternalId(task.getExternalId());
+        WorkbasketSummary destinationWorkbasket =
+            workbasketService.getWorkbasket(newWorkbasketId).asSummary();
+
+        checkPreconditionsForTransferTask(task, destinationWorkbasket, originWorkbasket);
+        applyTransferValuesForTask(task, destinationWorkbasket, true);
+        taskMapper.update(task);
+        if (historyEventManager.isEnabled()) {
+          createReroutedEvent(
+              oldTask, task, originWorkbasket.getId(), destinationWorkbasket.getId());
+        }
+        return task;
+      } finally {
+        taskanaEngine.returnConnection();
+      }
+    }
+    return task;
+  }
+
+  BulkOperationResults<String, TaskanaException> rerouteTasks(List<String> taskIds) {
+
+    BulkOperationResults<String, TaskanaException> bulkLog = new BulkOperationResults<>();
+    List<TaskSummary> taskSummaries = filterNotExistingTaskIds(taskIds, bulkLog);
+
+    List<String> workbasketIds =
+        taskSummaries.stream()
+            .map(TaskSummary::asTask)
+            .map(task -> taskanaEngine.getTaskRoutingManager().determineWorkbasketId(task))
+            .collect(Collectors.toList());
+
+    filterOutTasksWhichNotNeededToBeTransferred(taskSummaries, workbasketIds);
+
+    List<String> taskIdsToBeTransferred =
+        taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
+    filterOutTasksWhichDoNotMatchRerouteCriteria(
+        taskIdsToBeTransferred, taskSummaries, workbasketIds, bulkLog);
+    List<WorkbasketSummary> destinationWorkbaskets =
+        filterOutDestinationWbsWhichDoNotMatchTransferCriteria(
+            taskSummaries, workbasketIds, bulkLog);
+    try {
+      taskanaEngine.openConnection();
+      updateReroutableTasksWithDifferentWorkbaskets(taskSummaries, destinationWorkbaskets, true);
+
+      return bulkLog;
+    } finally {
+      taskanaEngine.returnConnection();
+    }
   }
 
   private Task transferSingleTask(
@@ -210,6 +276,33 @@ final class TaskTransferrer {
     return filteredOutTasks;
   }
 
+  private void filterOutTasksWhichDoNotMatchRerouteCriteria(
+      List<String> taskIds,
+      List<TaskSummary> taskSummaries,
+      List<String> workbasketIds,
+      BulkOperationResults<String, TaskanaException> bulkLog) {
+    Map<String, TaskSummary> taskIdToTaskSummary =
+        taskSummaries.stream().collect(Collectors.toMap(TaskSummary::getId, Function.identity()));
+
+    Set<String> sourceWorkbasketIds = getSourceWorkbasketIdsWithTransferPermission(taskSummaries);
+
+    for (String taskId : new HashSet<>(taskIds)) {
+      TaskSummary taskSummary = taskIdToTaskSummary.get(taskId);
+      Optional<TaskanaException> error =
+          checkTaskForTransferCriteria(sourceWorkbasketIds, taskId, taskSummary);
+      if (error.isPresent()) {
+        bulkLog.addError(taskId, error.get());
+        for (int i = 0; i < taskSummaries.size(); i++) {
+          if (taskSummaries.get(i).getId().equals(taskId)) {
+            taskSummaries.remove(i);
+            workbasketIds.remove(i);
+            break;
+          }
+        }
+      }
+    }
+  }
+
   private Optional<TaskanaException> checkTaskForTransferCriteria(
       Set<String> sourceWorkbasketIds, String taskId, TaskSummary taskSummary) {
     TaskanaException error = null;
@@ -315,6 +408,22 @@ final class TaskTransferrer {
             details));
   }
 
+  private void createReroutedEvent(
+      TaskSummary oldTask,
+      TaskSummary newTask,
+      String originWorkbasketId,
+      String destinationWorkbasketId) {
+    String details = ObjectAttributeChangeDetector.determineChangesInAttributes(oldTask, newTask);
+    historyEventManager.createEvent(
+        new TaskReroutedEvent(
+            IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
+            newTask,
+            originWorkbasketId,
+            destinationWorkbasketId,
+            taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+            details));
+  }
+
   private TaskState getStateAfterTransfer(TaskSummary taskSummary) {
     TaskState stateBeforeTransfer = taskSummary.getState();
     if (stateBeforeTransfer.equals(TaskState.CLAIMED)) {
@@ -337,5 +446,128 @@ final class TaskTransferrer {
       relevantSummaries.add(taskSummary);
     }
     return result;
+  }
+
+  private void filterOutTasksWhichNotNeededToBeTransferred(
+      List<TaskSummary> taskSummaries, List<String> workbasketIds) {
+    for (int i = taskSummaries.size() - 1; i >= 0; i--) {
+      TaskSummary taskSummary = taskSummaries.get(i);
+      String workbasketId = workbasketIds.get(i);
+      if (taskSummary.getWorkbasketSummary().getId().equals(workbasketId)) {
+        taskSummaries.remove(i);
+        workbasketIds.remove(i);
+      }
+    }
+  }
+
+  private List<WorkbasketSummary> filterOutDestinationWbsWhichDoNotMatchTransferCriteria(
+      List<TaskSummary> taskSummaries,
+      List<String> workbasketIds,
+      BulkOperationResults<String, TaskanaException> bulkLog) {
+    List<WorkbasketSummary> wbsWithAppendPerm =
+        workbasketService
+            .createWorkbasketQuery()
+            .callerHasPermissions(WorkbasketPermission.APPEND)
+            .idIn(workbasketIds.toArray(new String[0]))
+            .list();
+    List<WorkbasketSummary> destinationWbSummaries = new ArrayList<>();
+    for (int i = taskSummaries.size() - 1; i >= 0; i--) {
+      String workbasketId = workbasketIds.get(i);
+      WorkbasketSummary matchingSummary =
+          wbsWithAppendPerm.stream()
+              .filter(summary -> workbasketId.equals(summary.getId()))
+              .findFirst()
+              .orElse(null);
+      if (matchingSummary == null) {
+        bulkLog.addError(
+            taskSummaries.get(i).getId(),
+            new NotAuthorizedOnWorkbasketException(
+                taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+                workbasketId,
+                WorkbasketPermission.APPEND));
+        workbasketIds.remove(i);
+        taskSummaries.remove(i);
+      } else if (matchingSummary.isMarkedForDeletion()) {
+        bulkLog.addError(
+            taskSummaries.get(i).getId(), new WorkbasketNotFoundException(matchingSummary.getId()));
+        workbasketIds.remove(i);
+        taskSummaries.remove(i);
+      } else {
+        destinationWbSummaries.add(matchingSummary);
+      }
+    }
+    Collections.reverse(destinationWbSummaries);
+    return destinationWbSummaries;
+  }
+
+  private void updateReroutableTasksWithDifferentWorkbaskets(
+      List<TaskSummary> taskSummaries,
+      List<WorkbasketSummary> workbasketSummaries,
+      boolean setTransferFlag) {
+    List<TaskSummary> oldTaskSummaries = new ArrayList<>();
+    for (TaskSummary taskSummary : taskSummaries) {
+      TaskSummaryImpl copy = new TaskSummaryImpl();
+      copy.setRead(taskSummary.isRead());
+      copy.setTransferred(taskSummary.isTransferred());
+      copy.setState(taskSummary.getState());
+      copy.setOwner(taskSummary.getOwner());
+      copy.setWorkbasketSummary(taskSummary.getWorkbasketSummary());
+      copy.setDomain(taskSummary.getDomain());
+      copy.setModified(taskSummary.getModified());
+      copy.setId(taskSummary.getId());
+      oldTaskSummaries.add(copy);
+    }
+    for (int i = 0; i < taskSummaries.size(); i++) {
+      applyTransferValuesForTask(
+          (TaskSummaryImpl) taskSummaries.get(i), workbasketSummaries.get(i), setTransferFlag);
+    }
+    Set<String> taskIds =
+        taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toSet());
+    taskMapper.updateTransferMultipleWorkbaskets(taskIds, taskSummaries);
+
+    if (historyEventManager.isEnabled()) {
+      for (int i = 0; i < taskSummaries.size(); i++) {
+        TaskSummary oldSummary = oldTaskSummaries.get(i);
+        TaskSummary newSummary = taskSummaries.get(i);
+
+        createReroutedEvent(
+            oldSummary,
+            newSummary,
+            oldSummary.getWorkbasketSummary().getId(),
+            newSummary.getWorkbasketSummary().getId());
+      }
+    }
+  }
+
+  private DB getDB() {
+    return DB.getDB(this.taskanaEngine.getSqlSession().getConfiguration().getDatabaseId());
+  }
+
+  private List<TaskSummary> filterNotExistingTaskIds(
+      List<String> taskIds, BulkOperationResults<String, TaskanaException> bulkLog) {
+
+    Map<String, TaskSummaryImpl> taskSummaryMap =
+        getTasksToChange(taskIds).stream()
+            .collect(Collectors.toMap(TaskSummary::getId, TaskSummaryImpl.class::cast));
+    return taskIds.stream()
+        .map(id -> Pair.of(id, taskSummaryMap.get(id)))
+        .filter(
+            pair -> {
+              if (pair.getRight() != null) {
+                return true;
+              }
+              String taskId = pair.getLeft();
+              bulkLog.addError(taskId, new TaskNotFoundException(taskId));
+              return false;
+            })
+        .map(Pair::getRight)
+        .collect(Collectors.toList());
+  }
+
+  private List<TaskSummary> getTasksToChange(List<String> taskIds) {
+    return taskanaEngine
+        .getEngine()
+        .runAsAdmin(
+            () -> taskService.createTaskQuery().idIn(taskIds.toArray(new String[0])).list());
   }
 }
