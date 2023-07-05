@@ -284,10 +284,10 @@ public class TimeIntervalReportFilterParameter extends ReportFilterParameter
   private List<TimeIntervalColumnHeader> defaultColumnHeaders() {
     return Stream.concat(
             Stream.of(
-                new TimeIntervalColumnHeader.Range(Integer.MIN_VALUE, -10),
+                new TimeIntervalColumnHeader.Range(Integer.MIN_VALUE, -11),
                 new TimeIntervalColumnHeader.Range(-10, -5),
                 new TimeIntervalColumnHeader.Range(5, 10),
-                new TimeIntervalColumnHeader.Range(10, Integer.MAX_VALUE)),
+                new TimeIntervalColumnHeader.Range(11, Integer.MAX_VALUE)),
             Stream.of(-4, -3, -2, -1, 0, 1, 2, 3, 4).map(TimeIntervalColumnHeader.Range::new))
         .sorted(Comparator.comparing(TimeIntervalColumnHeader::getLowerAgeLimit))
         .collect(Collectors.toList());
