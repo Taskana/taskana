@@ -49,7 +49,9 @@
               <th class="align-left">Workbasket Key</th>
               <th class="align-left">Access Id</th>
               <th>Read</th>
+              <th>Read tasks</th>
               <th>Open</th>
+              <th>Edit tasks</th>
               <th>Append</th>
               <th>Transfer</th>
               <th>Distribute</th>
@@ -97,20 +99,26 @@
                 <mat-checkbox id="checkbox-{{index}}-0" formControlName="permRead"></mat-checkbox>
               </td>
               <td>
-                <mat-checkbox id="checkbox-{{index}}-1" formControlName="permOpen"></mat-checkbox>
+                <mat-checkbox id="checkbox-{{index}}-1" formControlName="permReadTasks"></mat-checkbox>
               </td>
               <td>
-                <mat-checkbox id="checkbox-{{index}}-2" formControlName="permAppend"></mat-checkbox>
+                <mat-checkbox id="checkbox-{{index}}-2" formControlName="permOpen"></mat-checkbox>
               </td>
               <td>
-                <mat-checkbox id="checkbox-{{index}}-3" formControlName="permTransfer"></mat-checkbox>
+                <mat-checkbox id="checkbox-{{index}}-3" formControlName="permEditTasks"></mat-checkbox>
               </td>
               <td>
-                <mat-checkbox id="checkbox-{{index}}-4" formControlName="permDistribute"></mat-checkbox>
+                <mat-checkbox id="checkbox-{{index}}-4" formControlName="permAppend"></mat-checkbox>
+              </td>
+              <td>
+                <mat-checkbox id="checkbox-{{index}}-5" formControlName="permTransfer"></mat-checkbox>
+              </td>
+              <td>
+                <mat-checkbox id="checkbox-{{index}}-6" formControlName="permDistribute"></mat-checkbox>
               </td>
               <ng-container *ngFor="let customField of customFields$ | async; let customIndex = index">
                 <td *ngIf="customField.visible">
-                  <mat-checkbox id="checkbox-{{index}}-{{customIndex + 5}}"
+                  <mat-checkbox id="checkbox-{{index}}-{{customIndex + 7}}"
                     formControlName="permCustom{{customIndex + 1}}"></mat-checkbox>
                 </td>
               </ng-container>
