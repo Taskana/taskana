@@ -291,6 +291,7 @@ class ClaimTaskAccTest {
             .state(TaskState.CLAIMED)
             .claimed(Instant.now())
             .owner("user-1-2")
+            .ownerLongName("Long Name")
             .classificationSummary(defaultClassificationSummary)
             .workbasketSummary(defaultWorkbasketSummary)
             .primaryObjRef(defaultObjectReference)
@@ -303,6 +304,7 @@ class ClaimTaskAccTest {
     assertThat(unclaimedTask.getClaimed()).isNull();
     assertThat(unclaimedTask.isRead()).isTrue();
     assertThat(unclaimedTask.getOwner()).isNull();
+    assertThat(unclaimedTask.getOwnerLongName()).isNull();
   }
 
   @WithAccessId(user = "user-1-2")

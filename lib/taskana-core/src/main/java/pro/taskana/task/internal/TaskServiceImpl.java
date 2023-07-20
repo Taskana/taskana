@@ -1368,6 +1368,7 @@ public class TaskServiceImpl implements TaskService {
 
   private static void cancelClaimActionsOnTask(TaskSummaryImpl task, Instant now) {
     task.setOwner(null);
+    task.setOwnerLongName(null);
     task.setModified(now);
     task.setClaimed(null);
     task.setRead(true);
