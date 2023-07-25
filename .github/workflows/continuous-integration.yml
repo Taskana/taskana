@@ -459,10 +459,10 @@ jobs:
         with:
           app-name: taskana
           package: rest/taskana-rest-spring-example-boot/target/taskana-rest-spring-example-boot.jar
-      - name: Wait for Azure for 15 seconds
+      - name: Wait for Azure for 60 seconds
         uses: jakejarvis/wait-action@master
         with:
-          time: '15s'
+          time: '60s'
       - name: Smoke test documentation
         run: ci/verify_docs_alive.sh
       - name: Cancel workflow
