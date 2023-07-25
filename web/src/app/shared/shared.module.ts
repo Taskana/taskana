@@ -60,6 +60,7 @@ import { ObtainMessageService } from './services/obtain-message/obtain-message.s
 import { AccessIdsService } from './services/access-ids/access-ids.service';
 import { DragAndDropDirective } from './directives/drag-and-drop.directive';
 import { GermanTimeFormatPipe } from './pipes/german-time-format.pipe';
+import { ResizableWidthDirective } from './directives/resizable-width.directive';
 
 const MODULES = [
   CommonModule,
@@ -103,6 +104,7 @@ const DECLARATIONS = [
   WorkbasketFilterComponent,
   TaskFilterComponent,
   DragAndDropDirective,
+  ResizableWidthDirective,
   GermanTimeFormatPipe
 ];
 
