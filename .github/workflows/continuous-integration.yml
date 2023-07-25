@@ -462,7 +462,7 @@ jobs:
       - name: Wait for Azure for 15 seconds
         uses: jakejarvis/wait-action@master
         with:
-          time: '15s'
+          time: '60s'
       - name: Smoke test documentation
         run: ci/verify_docs_alive.sh
       - name: Cancel workflow
