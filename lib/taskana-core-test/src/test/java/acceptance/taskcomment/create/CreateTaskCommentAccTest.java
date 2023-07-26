@@ -50,6 +50,7 @@ class CreateTaskCommentAccTest {
         .accessId("user-1-1")
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
 
@@ -104,7 +105,8 @@ class CreateTaskCommentAccTest {
         catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-2");
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasket.getId());
-    assertThat(e.getRequiredPermissions()).containsExactly(WorkbasketPermission.READ);
+    assertThat(e.getRequiredPermissions())
+        .containsExactly(WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
   }
 
   @WithAccessId(user = "user-1-1")

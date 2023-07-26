@@ -47,6 +47,7 @@ import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.exceptions.NotAuthorizedToQueryWorkbasketException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 @TaskanaIntegrationTest
@@ -93,6 +94,7 @@ class TaskQueryImplAccTest {
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
         .permission(WorkbasketPermission.APPEND)
+        .permission(WorkbasketPermission.READTASKS)
         .buildAndStore(workbasketService, "businessadmin");
   }
 
@@ -102,11 +104,17 @@ class TaskQueryImplAccTest {
     WorkbasketSummary wb1;
     WorkbasketSummary wb2;
     WorkbasketSummary wbWithoutPermissions;
+    WorkbasketSummary wbWithoutReadTasksPerm;
+    WorkbasketSummary wbWithoutReadPerm;
+    WorkbasketSummary wbWithoutOpenPerm;
     TaskSummary taskSummary1;
     TaskSummary taskSummary2;
     TaskSummary taskSummary3;
     TaskSummary taskSummary4;
     TaskSummary taskSummary5;
+    TaskSummary taskSummary6;
+    TaskSummary taskSummary7;
+    TaskSummary taskSummary8;
 
     @WithAccessId(user = "user-1-1")
     @BeforeAll
@@ -115,6 +123,34 @@ class TaskQueryImplAccTest {
       wb2 = createWorkbasketWithPermission();
       wbWithoutPermissions =
           defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService, "businessadmin");
+      wbWithoutReadTasksPerm =
+          defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService, "businessadmin");
+      wbWithoutReadPerm =
+          defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService, "businessadmin");
+      wbWithoutOpenPerm =
+          defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService, "businessadmin");
+
+      WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+          .workbasketId(wbWithoutReadTasksPerm.getId())
+          .accessId(currentUserContext.getUserid())
+          .permission(WorkbasketPermission.OPEN)
+          .permission(WorkbasketPermission.READ)
+          .permission(WorkbasketPermission.APPEND)
+          .buildAndStore(workbasketService, "businessadmin");
+      WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+          .workbasketId(wbWithoutReadPerm.getId())
+          .accessId(currentUserContext.getUserid())
+          .permission(WorkbasketPermission.OPEN)
+          .permission(WorkbasketPermission.READTASKS)
+          .permission(WorkbasketPermission.APPEND)
+          .buildAndStore(workbasketService, "businessadmin");
+      WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+          .workbasketId(wbWithoutOpenPerm.getId())
+          .accessId(currentUserContext.getUserid())
+          .permission(WorkbasketPermission.READ)
+          .permission(WorkbasketPermission.READTASKS)
+          .permission(WorkbasketPermission.APPEND)
+          .buildAndStore(workbasketService, "businessadmin");
 
       taskSummary1 = taskInWorkbasket(wb1).buildAndStoreAsSummary(taskService);
       taskSummary2 = taskInWorkbasket(wb2).buildAndStoreAsSummary(taskService);
@@ -124,6 +160,12 @@ class TaskQueryImplAccTest {
           taskInWorkbasket(wbWithoutPermissions).buildAndStoreAsSummary(taskService, "admin");
       taskSummary5 =
           taskInWorkbasket(wbWithoutPermissions).buildAndStoreAsSummary(taskService, "admin");
+      taskSummary6 =
+          taskInWorkbasket(wbWithoutReadTasksPerm).buildAndStoreAsSummary(taskService, "admin");
+      taskSummary7 =
+          taskInWorkbasket(wbWithoutReadPerm).buildAndStoreAsSummary(taskService, "admin");
+      taskSummary8 =
+          taskInWorkbasket(wbWithoutOpenPerm).buildAndStoreAsSummary(taskService, "admin");
     }
 
     @WithAccessId(user = "admin")
@@ -166,6 +208,66 @@ class TaskQueryImplAccTest {
       assertThat(list)
           .contains(taskSummary1, taskSummary2)
           .doesNotContain(taskSummary3, taskSummary4, taskSummary5);
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ReturnEmptyList_When_WorkbasketOfTaskHasNoReadTasksPerm() {
+      List<TaskSummary> list = taskService.createTaskQuery().idIn(taskSummary3.getId()).list();
+
+      assertThat(list).isEmpty();
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ThrowException_When_QueryByWorkbasketThatHasOpenReadButNoReadTasksPermission() {
+      ThrowingCallable call =
+          () -> taskService.createTaskQuery().workbasketIdIn(wbWithoutReadTasksPerm.getId()).list();
+      assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ReturnEmptyList_When_WorkbasketOfTaskHasReadTasksButNoReadPerm() {
+      List<TaskSummary> list = taskService.createTaskQuery().idIn(taskSummary7.getId()).list();
+
+      assertThat(list).isEmpty();
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_QueryByTaskId_When_WorkbasketHasReadAndReadTasksButNoOpenPerm() {
+      List<TaskSummary> list = taskService.createTaskQuery().idIn(taskSummary8.getId()).list();
+
+      assertThat(list).containsOnly(taskSummary8);
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_OnlyReturnTaskFromWorkbasketWithoutOpenPerm_When_OthersHasNoReadOrReadTasksPerm() {
+      List<TaskSummary> list =
+          taskService
+              .createTaskQuery()
+              .idIn(taskSummary6.getId(), taskSummary7.getId(), taskSummary8.getId())
+              .list();
+
+      assertThat(list).containsOnly(taskSummary8);
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ThrowException_When_QueryByWbIdAndWorkbasketHasReadTasksButNoReadPerm() {
+      ThrowingCallable call =
+          () -> taskService.createTaskQuery().workbasketIdIn(wbWithoutReadPerm.getId()).list();
+      assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ThrowException_When_QueryByWbIdAndWorkbasketHasReadAndReadTasksButNoOpenPerm() {
+      ThrowingCallable call =
+          () -> taskService.createTaskQuery().workbasketIdIn(wbWithoutOpenPerm.getId()).list();
+      assertThatThrownBy(call).isInstanceOf(NotAuthorizedToQueryWorkbasketException.class);
     }
   }
 
@@ -249,7 +351,7 @@ class TaskQueryImplAccTest {
       List<TaskSummary> list = taskService.createTaskQuery().workbasketIdIn(wb.getId()).list();
 
       assertThat(list).containsExactlyInAnyOrder(taskSummary1, taskSummary2);
-      assertThat(taskSummary1).hasNoNullFieldsOrPropertiesExcept("ownerLongName");
+      assertThat(taskSummary1).hasNoNullFieldsOrPropertiesExcept("ownerLongName", "groupByCount");
     }
 
     @WithAccessId(user = "user-1-1")
@@ -697,6 +799,7 @@ class TaskQueryImplAccTest {
             taskInWorkbasket(wb)
                 .completed(Instant.parse("2020-02-01T00:00:00Z"))
                 .buildAndStoreAsSummary(taskService);
+        taskInWorkbasket(wb).completed(null).buildAndStoreAsSummary(taskService);
       }
 
       @WithAccessId(user = "user-1-1")
@@ -871,6 +974,7 @@ class TaskQueryImplAccTest {
         taskSummary1 = taskInWorkbasket(wb).note("Note1").buildAndStoreAsSummary(taskService);
         taskSummary2 = taskInWorkbasket(wb).note("Note2").buildAndStoreAsSummary(taskService);
         taskSummary3 = taskInWorkbasket(wb).note("Lorem ipsum").buildAndStoreAsSummary(taskService);
+        taskInWorkbasket(wb).note(null).buildAndStoreAsSummary(taskService);
       }
 
       @WithAccessId(user = "user-1-1")
@@ -1772,8 +1876,16 @@ class TaskQueryImplAccTest {
         wb = createWorkbasketWithPermission();
         por1 = defaultTestObjectReference().company("15").build();
         ObjectReference por2 = defaultTestObjectReference().build();
-        taskSummary1 = taskInWorkbasket(wb).primaryObjRef(por1).buildAndStoreAsSummary(taskService);
-        taskSummary2 = taskInWorkbasket(wb).primaryObjRef(por2).buildAndStoreAsSummary(taskService);
+        taskSummary1 =
+            taskInWorkbasket(wb)
+                .primaryObjRef(por1)
+                .due(Instant.parse("2022-11-15T09:42:00.000Z"))
+                .buildAndStoreAsSummary(taskService);
+        taskSummary2 =
+            taskInWorkbasket(wb)
+                .primaryObjRef(por2)
+                .due(Instant.parse("2022-11-15T09:45:00.000Z"))
+                .buildAndStoreAsSummary(taskService);
       }
 
       @WithAccessId(user = "user-1-1")
@@ -3066,13 +3178,17 @@ class TaskQueryImplAccTest {
                 .type("SecondType")
                 .build();
         taskSummary2 =
-            taskInWorkbasket(wb).objectReferences(sor2).buildAndStoreAsSummary(taskService);
+            taskInWorkbasket(wb)
+                .objectReferences(sor2)
+                .due(Instant.parse("2022-11-15T09:42:00.000Z"))
+                .buildAndStoreAsSummary(taskService);
 
         ObjectReference sor2copy = sor2.copy();
         ObjectReference sor1copy = sor1.copy();
         taskSummary3 =
             taskInWorkbasket(wb)
                 .objectReferences(sor2copy, sor1copy)
+                .due(Instant.parse("2022-11-15T09:45:00.000Z"))
                 .buildAndStoreAsSummary(taskService);
 
         ObjectReference sor3 =

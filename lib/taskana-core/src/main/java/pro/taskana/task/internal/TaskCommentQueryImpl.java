@@ -1,5 +1,7 @@
 package pro.taskana.task.internal;
 
+import static pro.taskana.common.api.BaseQuery.toLowerCopy;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

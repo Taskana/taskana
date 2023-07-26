@@ -55,8 +55,10 @@ public class WorkbasketAccessItemRepresentationModelAssembler
     repModel.setAccessItemId(wbAccItem.getId());
     repModel.setAccessName(wbAccItem.getAccessName());
     repModel.setPermRead(wbAccItem.getPermission(WorkbasketPermission.READ));
+    repModel.setPermReadTasks(wbAccItem.getPermission(WorkbasketPermission.READTASKS));
     repModel.setPermOpen(wbAccItem.getPermission(WorkbasketPermission.OPEN));
     repModel.setPermAppend(wbAccItem.getPermission(WorkbasketPermission.APPEND));
+    repModel.setPermEditTasks(wbAccItem.getPermission(WorkbasketPermission.EDITTASKS));
     repModel.setPermTransfer(wbAccItem.getPermission(WorkbasketPermission.TRANSFER));
     repModel.setPermDistribute(wbAccItem.getPermission(WorkbasketPermission.DISTRIBUTE));
     repModel.setPermCustom1(wbAccItem.getPermission(WorkbasketPermission.CUSTOM_1));
@@ -82,8 +84,10 @@ public class WorkbasketAccessItemRepresentationModelAssembler
     wbAccItemModel.setWorkbasketKey(repModel.getWorkbasketKey());
     wbAccItemModel.setAccessName(repModel.getAccessName());
     wbAccItemModel.setPermission(WorkbasketPermission.READ, repModel.isPermRead());
+    wbAccItemModel.setPermission(WorkbasketPermission.READTASKS, repModel.isPermReadTasks());
     wbAccItemModel.setPermission(WorkbasketPermission.OPEN, repModel.isPermOpen());
     wbAccItemModel.setPermission(WorkbasketPermission.APPEND, repModel.isPermAppend());
+    wbAccItemModel.setPermission(WorkbasketPermission.EDITTASKS, repModel.isPermEditTasks());
     wbAccItemModel.setPermission(WorkbasketPermission.TRANSFER, repModel.isPermTransfer());
     wbAccItemModel.setPermission(WorkbasketPermission.DISTRIBUTE, repModel.isPermDistribute());
     wbAccItemModel.setPermission(WorkbasketPermission.CUSTOM_1, repModel.isPermCustom1());

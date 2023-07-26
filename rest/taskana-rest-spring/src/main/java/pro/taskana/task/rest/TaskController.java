@@ -123,7 +123,8 @@ public class TaskController {
    * @param request the HTTP request
    * @param filterParameter the filter parameters
    * @param filterCustomFields the filter parameters regarding TaskCustomFields
-   * @param filterCustomIntFields the filter parameters regarding TaskCustomIntFields
+   * @param filterCustomIntFields the filter parameters regarding TaskCustomIntFields * @param
+   * @param groupByParameter the group by parameters
    * @param sortParameter the sort parameters
    * @param pagingParameter the paging parameters
    * @return the Tasks with the given filter, sort and paging options.
@@ -135,6 +136,7 @@ public class TaskController {
       TaskQueryFilterParameter filterParameter,
       TaskQueryFilterCustomFields filterCustomFields,
       TaskQueryFilterCustomIntFields filterCustomIntFields,
+      TaskQueryGroupByParameter groupByParameter,
       TaskQuerySortParameter sortParameter,
       QueryPagingParameter<TaskSummary, TaskQuery> pagingParameter) {
     QueryParamsValidator.validateParams(
@@ -142,6 +144,7 @@ public class TaskController {
         TaskQueryFilterParameter.class,
         TaskQueryFilterCustomFields.class,
         TaskQueryFilterCustomIntFields.class,
+        TaskQueryGroupByParameter.class,
         QuerySortParameter.class,
         QueryPagingParameter.class);
     TaskQuery query = taskService.createTaskQuery();
@@ -149,6 +152,7 @@ public class TaskController {
     filterParameter.apply(query);
     filterCustomFields.apply(query);
     filterCustomIntFields.apply(query);
+    groupByParameter.apply(query);
     sortParameter.apply(query);
 
     List<TaskSummary> taskSummaries = pagingParameter.apply(query);

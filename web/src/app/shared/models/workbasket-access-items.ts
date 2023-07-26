@@ -11,6 +11,8 @@ export interface WorkbasketAccessItems {
   permAppend: boolean;
   permTransfer: boolean;
   permDistribute: boolean;
+  permReadTasks: boolean;
+  permEditTasks: boolean;
   permCustom1: boolean;
   permCustom2: boolean;
   permCustom3: boolean;

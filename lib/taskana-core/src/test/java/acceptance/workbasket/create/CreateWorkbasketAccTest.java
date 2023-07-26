@@ -221,6 +221,44 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
+  void should_SetReadTask_When_CreatingWorkbasketAccessItem() throws Exception {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    WorkbasketAccessItem wbai =
+        workbasketService.newWorkbasketAccessItem(
+            "WBI:100000000000000000000000000000000001", "test-id");
+    wbai.setPermission(WorkbasketPermission.READTASKS, true);
+    workbasketService.createWorkbasketAccessItem(wbai);
+
+    List<WorkbasketAccessItem> accessItems =
+        workbasketService.getWorkbasketAccessItems("WBI:100000000000000000000000000000000001");
+    WorkbasketAccessItem item =
+        accessItems.stream().filter(t -> wbai.getId().equals(t.getId())).findFirst().orElse(null);
+    assertThat(item).isNotNull();
+    assertThat(item.getPermission(WorkbasketPermission.READTASKS)).isTrue();
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_SetEditTasks_When_CreatingWorkbasketAccessItem() throws Exception {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    WorkbasketAccessItem wbai =
+        workbasketService.newWorkbasketAccessItem(
+            "WBI:100000000000000000000000000000000001", "test-id2");
+    wbai.setPermission(WorkbasketPermission.EDITTASKS, true);
+    workbasketService.createWorkbasketAccessItem(wbai);
+
+    List<WorkbasketAccessItem> accessItems =
+        workbasketService.getWorkbasketAccessItems("WBI:100000000000000000000000000000000001");
+    WorkbasketAccessItem item =
+        accessItems.stream().filter(t -> wbai.getId().equals(t.getId())).findFirst().orElse(null);
+    assertThat(item).isNotNull();
+    assertThat(item.getPermission(WorkbasketPermission.EDITTASKS)).isTrue();
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
   void testCreateDuplicateWorkbasketAccessListFails() throws Exception {
     WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
 

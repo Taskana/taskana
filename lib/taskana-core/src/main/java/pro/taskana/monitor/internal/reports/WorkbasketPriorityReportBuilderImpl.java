@@ -1,5 +1,7 @@
 package pro.taskana.monitor.internal.reports;
 
+import static pro.taskana.common.api.BaseQuery.toLowerCopy;
+
 import java.util.Collections;
 import java.util.List;
 import pro.taskana.common.api.IntInterval;
@@ -542,20 +544,5 @@ public class WorkbasketPriorityReportBuilderImpl implements WorkbasketPriorityRe
     }
 
     return this;
-  }
-
-  private String[] toLowerCopy(String... source) {
-    if (source == null || source.length == 0) {
-      // we are currently aware that this is a code smell. Unfortunately the resolution of this
-      // would cause havoc in our queries, since we do not have a concept
-      // for a user input validation yet. As soon as that is done we can resolve this code smell.
-      return null;
-    } else {
-      String[] target = new String[source.length];
-      for (int i = 0; i < source.length; i++) {
-        target[i] = source[i].toLowerCase();
-      }
-      return target;
-    }
   }
 }

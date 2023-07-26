@@ -84,13 +84,13 @@ public class TaskCommentController {
   /**
    * This endpoint retrieves all Task Comments for a specific Task. Further filters can be applied.
    *
+   * @title Get a list of all Task Comments for a specific Task
    * @param taskId the Id of the Task whose comments are requested
    * @param request the HTTP request
    * @param filterParameter the filter parameters
    * @param sortParameter the sort parameters
    * @param pagingParameter the paging parameters
    * @return a list of Task Comments
-   * @title Get a list of all Task Comments for a specific Task
    */
   @GetMapping(path = RestEndpoints.URL_TASK_COMMENTS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -136,7 +136,7 @@ public class TaskCommentController {
    * @throws NotAuthorizedOnTaskCommentException if the current user has not correct permissions
    */
   @DeleteMapping(path = RestEndpoints.URL_TASK_COMMENT)
-  @Transactional(readOnly = true, rollbackFor = Exception.class)
+  @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> deleteTaskComment(
       @PathVariable String taskCommentId)
       throws TaskNotFoundException,
@@ -167,7 +167,7 @@ public class TaskCommentController {
    * @throws NotAuthorizedOnWorkbasketException if the current user has not correct permissions
    */
   @PutMapping(path = RestEndpoints.URL_TASK_COMMENT)
-  @Transactional(readOnly = true, rollbackFor = Exception.class)
+  @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> updateTaskComment(
       @PathVariable String taskCommentId,
       @RequestBody TaskCommentRepresentationModel taskCommentRepresentationModel)

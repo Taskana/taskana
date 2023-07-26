@@ -11,7 +11,7 @@ TASKANA - The open source task management library
 TASKANA is a task management component open source library. It can be embedded into your application or be operated standalone if appropriate. Beside the basic task management functionalities, TASKANA adds workbaskets and classifications to control and monitor a large amount of tasks within a larger organization. 
 
 * Web Site: http://taskana.pro/
-* Demo Environment: https://taskana.mybluemix.net/taskana
+* Demo Environment: https://taskana.azurewebsites.net/taskana
 * Getting Started: https://taskana.atlassian.net/wiki/spaces/TAS/pages/228655109/Getting+started
 * Issue Tracker: https://taskana.atlassian.net
 * Contribution Guildelines: https://taskana.atlassian.net/wiki/spaces/TAS/pages/274202625/Contribution+Guide

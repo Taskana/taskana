@@ -123,6 +123,10 @@ public class TaskanaConfiguration {
   private final Set<WorkbasketPermission> minimalPermissionsToAssignDomains;
   // endregion
 
+  // region database configuration
+  private final boolean useSpecificDb2Taskquery;
+  // endregion
+
   // region custom configuration
   private final Map<String, String> properties;
   // endregion
@@ -194,6 +198,8 @@ public class TaskanaConfiguration {
     this.addAdditionalUserInfo = builder.addAdditionalUserInfo;
     this.minimalPermissionsToAssignDomains =
         Collections.unmodifiableSet(builder.minimalPermissionsToAssignDomains);
+    // database configuration
+    this.useSpecificDb2Taskquery = builder.useSpecificDb2Taskquery;
     // custom configuration
     this.properties = Map.copyOf(builder.properties);
   }
@@ -388,6 +394,10 @@ public class TaskanaConfiguration {
     return minimalPermissionsToAssignDomains;
   }
 
+  public boolean isUseSpecificDb2Taskquery() {
+    return useSpecificDb2Taskquery;
+  }
+
   /**
    * return all properties loaded from taskana properties file. Per Design the normal Properties are
    * not immutable, so we return here an ImmutableMap, because we don't want direct changes in the
@@ -447,6 +457,7 @@ public class TaskanaConfiguration {
         customJobs,
         addAdditionalUserInfo,
         minimalPermissionsToAssignDomains,
+        useSpecificDb2Taskquery,
         properties);
   }
 
@@ -481,6 +492,7 @@ public class TaskanaConfiguration {
         && simpleHistoryCleanupJobAllCompletedSameParentBusiness
             == other.simpleHistoryCleanupJobAllCompletedSameParentBusiness
         && taskUpdatePriorityJobEnabled == other.taskUpdatePriorityJobEnabled
+        && useSpecificDb2Taskquery == other.useSpecificDb2Taskquery
         && taskUpdatePriorityJobBatchSize == other.taskUpdatePriorityJobBatchSize
         && userInfoRefreshJobEnabled == other.userInfoRefreshJobEnabled
         && addAdditionalUserInfo == other.addAdditionalUserInfo
@@ -596,6 +608,8 @@ public class TaskanaConfiguration {
         + addAdditionalUserInfo
         + ", minimalPermissionsToAssignDomains="
         + minimalPermissionsToAssignDomains
+        + ", useSpecificDb2Taskquery="
+        + useSpecificDb2Taskquery
         + ", properties="
         + properties
         + "]";
@@ -743,6 +757,11 @@ public class TaskanaConfiguration {
     private Set<WorkbasketPermission> minimalPermissionsToAssignDomains = new HashSet<>();
     // endregion
 
+    // region database configuration
+    @TaskanaProperty("taskana.feature.useSpecificDb2Taskquery")
+    private boolean useSpecificDb2Taskquery = true;
+    // endregion
+
     // region custom configuration
     private Map<String, String> properties = Collections.emptyMap();
     // endregion
@@ -845,6 +864,8 @@ public class TaskanaConfiguration {
       // user configuration
       this.addAdditionalUserInfo = conf.addAdditionalUserInfo;
       this.minimalPermissionsToAssignDomains = conf.minimalPermissionsToAssignDomains;
+      // database configuration
+      this.useSpecificDb2Taskquery = conf.useSpecificDb2Taskquery;
       // custom configuration
       this.properties = conf.properties;
     }
@@ -1128,6 +1149,11 @@ public class TaskanaConfiguration {
     }
 
     // endregion
+    // region database configuration
+    public Builder useSpecificDb2Taskquery(boolean useSpecificDb2Taskquery) {
+      this.useSpecificDb2Taskquery = useSpecificDb2Taskquery;
+      return this;
+    }
 
     public TaskanaConfiguration build() {
       adjustConfiguration();

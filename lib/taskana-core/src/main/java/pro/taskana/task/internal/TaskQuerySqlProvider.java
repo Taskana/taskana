@@ -24,15 +24,22 @@ public class TaskQuerySqlProvider {
   @SuppressWarnings("unused")
   public static String queryTaskSummaries() {
     return OPENING_SCRIPT_TAG
+        + openOuterClauseForGroupByPorOrSor()
         + "SELECT <if test=\"useDistinctKeyword\">DISTINCT</if> "
         + commonSelectFields()
+        + "<if test='groupBySor != null'>, o.VALUE as SOR_VALUE </if>"
         + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
-        + ", a.CLASSIFICATION_ID, a.CLASSIFICATION_KEY, a.CHANNEL, a.REF_VALUE, a.RECEIVED"
+        + ", a.CLASSIFICATION_ID as ACLASSIFICATION_ID, "
+        + "a.CLASSIFICATION_KEY as ACLASSIFICATION_KEY, a.CHANNEL as ACHANNEL, "
+        + "a.REF_VALUE as AREF_VALUE, a.RECEIVED as ARECEIVED"
         + "</if>"
-        + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, c.NAME </if>"
-        + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, ac.NAME </if>"
-        + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, w.NAME </if>"
-        + "<if test=\"joinWithUserInfo\">, u.LONG_NAME </if>"
+        + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, c.NAME as CNAME </if>"
+        + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, "
+        + "ac.NAME as ACNAME </if>"
+        + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, w.NAME as WNAME </if>"
+        + "<if test=\"joinWithUserInfo\">, u.LONG_NAME</if>"
+        + groupByPorIfActive()
+        + groupBySorIfActive()
         + "FROM TASK t "
         + "<if test=\"joinWithAttachments\">"
         + "LEFT JOIN ATTACHMENT a ON t.ID = a.TASK_ID "
@@ -57,13 +64,17 @@ public class TaskQuerySqlProvider {
         + commonTaskWhereStatement()
         + "<if test='selectAndClaim == true'> AND t.STATE = 'READY' </if>"
         + CLOSING_WHERE_TAG
-        + "<if test='!orderBy.isEmpty()'>"
-        + "ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach>"
+        + closeOuterClauseForGroupByPor()
+        + closeOuterClauseForGroupBySor()
+        + "<if test='!orderByOuter.isEmpty()'>"
+        + "ORDER BY <foreach item='item' collection='orderByOuter' separator=',' >${item}</foreach>"
         + "</if> "
         + "<if test='selectAndClaim == true'> "
-        + "FETCH FIRST ROW ONLY FOR UPDATE"
+        + "FETCH FIRST ROW ONLY FOR UPDATE "
         + "</if>"
-        + "<if test=\"_databaseId == 'db2'\">WITH RS USE AND KEEP UPDATE LOCKS </if>"
+        + "<if test=\"_databaseId == 'db2' and selectAndClaim \">WITH RS USE "
+        + "AND KEEP UPDATE LOCKS </if>"
+        + "<if test=\"_databaseId == 'db2' and !selectAndClaim \">WITH UR </if>"
         + CLOSING_SCRIPT_TAG;
   }
 
@@ -117,7 +128,8 @@ public class TaskQuerySqlProvider {
         + "s.ACCESS_ID IN "
         + "(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
         + "and "
-        + "s.WORKBASKET_ID = X.WORKBASKET_ID AND s.perm_read = 1 fetch first 1 rows only"
+        + "s.WORKBASKET_ID = X.WORKBASKET_ID AND s.perm_read = 1 AND s.perm_readtasks = 1"
+        + " fetch first 1 rows only"
         + "</if>"
         + "<if test='accessIdIn == null'> "
         + "VALUES(1)"
@@ -128,8 +140,8 @@ public class TaskQuerySqlProvider {
         + db2selectFields()
         + "FROM Y "
         + "WHERE FLAG = 1 "
-        + "<if test='!orderBy.isEmpty()'>"
-        + "ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach>"
+        + "<if test='!orderByOuter.isEmpty()'>"
+        + "ORDER BY <foreach item='item' collection='orderByOuter' separator=',' >${item}</foreach>"
         + "</if> "
         + "<if test='selectAndClaim == true'>"
         + "FETCH FIRST ROW ONLY FOR UPDATE WITH RS USE AND KEEP UPDATE LOCKS"
@@ -184,8 +196,8 @@ public class TaskQuerySqlProvider {
         + commonTaskWhereStatement()
         + "<if test='selectAndClaim == true'> AND t.STATE = 'READY' </if>"
         + CLOSING_WHERE_TAG
-        + "<if test='!orderBy.isEmpty()'>"
-        + "ORDER BY <foreach item='item' collection='orderBy' separator=',' >${item}</foreach>"
+        + "<if test='!orderByOuter.isEmpty()'>"
+        + "ORDER BY <foreach item='item' collection='orderByOuter' separator=',' >${item}</foreach>"
         + "</if> "
         + "fetch first 1 rows only "
         + ") FOR UPDATE"
@@ -196,6 +208,14 @@ public class TaskQuerySqlProvider {
   public static String countQueryTasks() {
     return OPENING_SCRIPT_TAG
         + "SELECT COUNT( <if test=\"useDistinctKeyword\">DISTINCT</if> t.ID) "
+        + "<if test=\"groupByPor or groupBySor != null\"> "
+        + "FROM (SELECT t.ID, t.POR_VALUE "
+        + "</if> "
+        + "<if test=\"groupBySor != null\"> "
+        + ", o.VALUE as SOR_VALUE "
+        + "</if> "
+        + groupByPorIfActive()
+        + groupBySorIfActive()
         + "FROM TASK t "
         + "<if test=\"joinWithAttachments\">"
         + "LEFT JOIN ATTACHMENT a ON t.ID = a.TASK_ID "
@@ -216,6 +236,8 @@ public class TaskQuerySqlProvider {
         + checkForAuthorization()
         + commonTaskWhereStatement()
         + CLOSING_WHERE_TAG
+        + closeOuterClauseForGroupByPor()
+        + closeOuterClauseForGroupBySor()
         + CLOSING_SCRIPT_TAG;
   }
 
@@ -250,7 +272,8 @@ public class TaskQuerySqlProvider {
         + "WHERE s.ACCESS_ID IN "
         + "(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
         + "and "
-        + "s.WORKBASKET_ID = X.WORKBASKET_ID AND s.perm_read = 1 fetch first 1 rows only "
+        + "s.WORKBASKET_ID = X.WORKBASKET_ID AND s.perm_read = 1 AND s.perm_readtasks = 1"
+        + " fetch first 1 rows only "
         + "</if> "
         + "<if test='accessIdIn == null'>"
         + "VALUES(1)"
@@ -286,8 +309,8 @@ public class TaskQuerySqlProvider {
         + checkForAuthorization()
         + commonTaskWhereStatement()
         + CLOSING_WHERE_TAG
-        + "<if test='!orderBy.isEmpty()'>"
-        + "ORDER BY <foreach item='item' collection='orderBy' separator=',' >"
+        + "<if test='!orderByInner.isEmpty()'>"
+        + "ORDER BY <foreach item='item' collection='orderByInner' separator=',' >"
         + "<choose>"
         + "<when test=\"item.contains('TCLASSIFICATION_KEY ASC')\">"
         + "t.CLASSIFICATION_KEY ASC"
@@ -366,17 +389,119 @@ public class TaskQuerySqlProvider {
         + "FROM ("
         + "<choose>"
         + "<when test=\"_databaseId == 'db2' || _databaseId == 'oracle'\">"
-        + "SELECT WORKBASKET_ID as WID, MAX(PERM_READ) as MAX_READ "
+        + "SELECT WORKBASKET_ID as WID, MAX(PERM_READ) as MAX_READ, "
+        + "MAX(PERM_READTASKS) as MAX_READTASKS "
         + "</when>"
         + "<otherwise>"
-        + "SELECT WORKBASKET_ID as WID, MAX(PERM_READ::int) as MAX_READ "
+        + "SELECT WORKBASKET_ID as WID, MAX(PERM_READ::int) as MAX_READ, "
+        + "MAX(PERM_READTASKS::int) as MAX_READTASKS "
         + "</otherwise>"
         + "</choose>"
         + "FROM WORKBASKET_ACCESS_LIST s where ACCESS_ID IN "
         + "(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
         + "GROUP by WORKBASKET_ID) f "
-        + "WHERE MAX_READ = 1) "
+        + "WHERE MAX_READ = 1 AND MAX_READTASKS = 1) "
         + "</if>";
+  }
+
+  private static String groupByPorIfActive() {
+    return "<if test=\"groupByPor\"> "
+        + ", ROW_NUMBER() OVER (PARTITION BY POR_VALUE "
+        + "<if test='!orderByInner.isEmpty() and !orderByInner.get(0).equals(\"POR_VALUE ASC\") "
+        + "and !orderByInner.get(0).equals(\"POR_VALUE DESC\")'>"
+        + "ORDER BY <foreach item='item' collection='orderByInner' separator=',' >${item}</foreach>"
+        + "</if> "
+        + "<if test='orderByInner.isEmpty() or orderByInner.get(0).equals(\"POR_VALUE ASC\") "
+        + "or orderByInner.get(0).equals(\"POR_VALUE DESC\")'>"
+        + "ORDER BY DUE ASC"
+        + "</if> "
+        + ")"
+        + "AS rn"
+        + "</if> ";
+  }
+
+  private static String groupBySorIfActive() {
+    return "<if test='groupBySor != null'> "
+        + ", ROW_NUMBER() OVER (PARTITION BY o.VALUE "
+        + "<if test='!orderByInner.isEmpty()'>"
+        + "ORDER BY <foreach item='item' collection='orderByInner' separator=',' >${item}</foreach>"
+        + "</if> "
+        + "<if test='orderByInner.isEmpty()'>"
+        + "ORDER BY DUE ASC"
+        + "</if> "
+        + ")"
+        + "AS rn"
+        + "</if> ";
+  }
+
+  private static String openOuterClauseForGroupByPorOrSor() {
+    return "<if test=\"groupByPor or groupBySor != null\"> " + "SELECT * FROM (" + "</if> ";
+  }
+
+  private static String closeOuterClauseForGroupByPor() {
+    return "<if test=\"groupByPor\"> "
+        + ") t LEFT JOIN"
+        + " (SELECT POR_VALUE as PVALUE, COUNT(POR_VALUE) AS R_COUNT "
+        + "FROM (SELECT DISTINCT t.id , POR_VALUE "
+        + "FROM TASK t"
+        + "<if test=\"joinWithAttachments\">"
+        + "LEFT JOIN ATTACHMENT a ON t.ID = a.TASK_ID "
+        + "</if>"
+        + "<if test=\"joinWithSecondaryObjectReferences\">"
+        + "LEFT JOIN OBJECT_REFERENCE o ON t.ID = o.TASK_ID "
+        + "</if>"
+        + "<if test=\"joinWithClassifications\">"
+        + "LEFT JOIN CLASSIFICATION c ON t.CLASSIFICATION_ID = c.ID "
+        + "</if>"
+        + "<if test=\"joinWithAttachmentClassifications\">"
+        + "LEFT JOIN CLASSIFICATION ac ON a.CLASSIFICATION_ID = ac.ID "
+        + "</if>"
+        + "<if test=\"joinWithWorkbaskets\">"
+        + "LEFT JOIN WORKBASKET w ON t.WORKBASKET_ID = w.ID "
+        + "</if>"
+        + "<if test=\"joinWithUserInfo\">"
+        + "LEFT JOIN USER_INFO u ON t.owner = u.USER_ID "
+        + "</if>"
+        + OPENING_WHERE_TAG
+        + checkForAuthorization()
+        + commonTaskWhereStatement()
+        + "<if test='selectAndClaim == true'> AND t.STATE = 'READY' </if>"
+        + CLOSING_WHERE_TAG
+        + ") as y "
+        + "GROUP BY POR_VALUE) AS tt ON t.POR_VALUE=tt.PVALUE "
+        + "WHERE rn = 1"
+        + "</if> ";
+  }
+
+  private static String closeOuterClauseForGroupBySor() {
+    return "<if test='groupBySor != null'> "
+        + ") t LEFT JOIN"
+        + " (SELECT o.VALUE, COUNT(o.VALUE) AS R_COUNT "
+        + "FROM TASK t "
+        + "LEFT JOIN OBJECT_REFERENCE o on t.ID=o.TASK_ID "
+        + "<if test=\"joinWithAttachments\">"
+        + "LEFT JOIN ATTACHMENT a ON t.ID = a.TASK_ID "
+        + "</if>"
+        + "<if test=\"joinWithClassifications\">"
+        + "LEFT JOIN CLASSIFICATION c ON t.CLASSIFICATION_ID = c.ID "
+        + "</if>"
+        + "<if test=\"joinWithAttachmentClassifications\">"
+        + "LEFT JOIN CLASSIFICATION ac ON a.CLASSIFICATION_ID = ac.ID "
+        + "</if>"
+        + "<if test=\"joinWithWorkbaskets\">"
+        + "LEFT JOIN WORKBASKET w ON t.WORKBASKET_ID = w.ID "
+        + "</if>"
+        + "<if test=\"joinWithUserInfo\">"
+        + "LEFT JOIN USER_INFO u ON t.owner = u.USER_ID "
+        + "</if>"
+        + OPENING_WHERE_TAG
+        + checkForAuthorization()
+        + commonTaskWhereStatement()
+        + "AND o.TYPE=#{groupBySor} "
+        + CLOSING_WHERE_TAG
+        + "GROUP BY o.VALUE) AS tt ON t.SOR_VALUE=tt.VALUE "
+        + "WHERE rn = 1"
+        + "</if> ";
   }
 
   private static String commonTaskObjectReferenceWhereStatement() {

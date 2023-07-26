@@ -38,6 +38,7 @@ public class TaskSummaryImpl implements TaskSummary {
   protected int manualPriority = DEFAULT_MANUAL_PRIORITY;
   protected TaskState state;
   protected ClassificationSummary classificationSummary;
+  protected Integer groupByCount;
   protected WorkbasketSummary workbasketSummary;
   protected String businessProcessId;
   protected String parentBusinessProcessId;
@@ -105,6 +106,7 @@ public class TaskSummaryImpl implements TaskSummary {
         copyFrom.secondaryObjectReferences.stream()
             .map(ObjectReference::copy)
             .collect(Collectors.toList());
+    groupByCount = copyFrom.groupByCount;
     custom1 = copyFrom.custom1;
     custom2 = copyFrom.custom2;
     custom3 = copyFrom.custom3;
@@ -210,6 +212,11 @@ public class TaskSummaryImpl implements TaskSummary {
 
   public void setReceived(Instant received) {
     this.received = received != null ? received.truncatedTo(ChronoUnit.MILLIS) : null;
+  }
+
+  @Override
+  public Integer getGroupByCount() {
+    return this.groupByCount;
   }
 
   @Override
@@ -484,6 +491,10 @@ public class TaskSummaryImpl implements TaskSummary {
   // auxiliary method to allow mybatis access to workbasketSummary
   public void setWorkbasketSummaryImpl(WorkbasketSummaryImpl workbasketSummary) {
     setWorkbasketSummary(workbasketSummary);
+  }
+
+  public void setGroupByCount(Integer n) {
+    groupByCount = n;
   }
 
   public void addAttachmentSummary(AttachmentSummary attachmentSummary) {
@@ -797,6 +808,7 @@ public class TaskSummaryImpl implements TaskSummary {
         primaryObjRef,
         isRead,
         isTransferred,
+        groupByCount,
         attachmentSummaries,
         secondaryObjectReferences,
         custom1,
@@ -864,6 +876,7 @@ public class TaskSummaryImpl implements TaskSummary {
         && Objects.equals(primaryObjRef, other.primaryObjRef)
         && Objects.equals(attachmentSummaries, other.attachmentSummaries)
         && Objects.equals(secondaryObjectReferences, other.secondaryObjectReferences)
+        && Objects.equals(groupByCount, other.groupByCount)
         && Objects.equals(custom1, other.custom1)
         && Objects.equals(custom2, other.custom2)
         && Objects.equals(custom3, other.custom3)
@@ -942,6 +955,8 @@ public class TaskSummaryImpl implements TaskSummary {
         + isRead
         + ", isTransferred="
         + isTransferred
+        + ", groupByCount="
+        + groupByCount
         + ", attachmentSummaries="
         + attachmentSummaries
         + ", objectReferences="

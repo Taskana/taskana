@@ -2,24 +2,37 @@ package pro.taskana.example.wildfly.security;
 
 import java.io.IOException;
 import java.security.AccessController;
+import java.util.List;
 import javax.security.auth.Subject;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 import org.wildfly.security.auth.server.SecurityDomain;
 import org.wildfly.security.auth.server.SecurityIdentity;
 import org.wildfly.security.authz.Roles;
 import pro.taskana.common.api.security.GroupPrincipal;
+import pro.taskana.example.wildfly.AdditionalUserProperties;
 
 /** Simple Filter to map all Elytron Roles to JAAS-Principals. */
+@Component
 public class ElytronToJaasFilter extends GenericFilterBean {
+
+  private static AdditionalUserProperties additionalUserProperties;
+
+  @Autowired
+  public void setAdditionalUserProperties(AdditionalUserProperties prop) {
+    additionalUserProperties = prop;
+  }
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
-    SecurityIdentity securityIdentity = getSecurityIdentity();
+    SecurityIdentity securityIdentity = getSecurityIdentity(request);
     if (securityIdentity != null) {
       applySecurityIdentityToSubject(securityIdentity);
     }
@@ -50,11 +63,24 @@ public class ElytronToJaasFilter extends GenericFilterBean {
     return subject;
   }
 
-  private SecurityIdentity getSecurityIdentity() {
+  private SecurityIdentity getSecurityIdentity(ServletRequest request) {
     SecurityDomain current = SecurityDomain.getCurrent();
     SecurityIdentity identity = null;
     if (current != null) {
-      identity = current.getCurrentSecurityIdentity();
+      if (request instanceof HttpServletRequest) {
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        String userId = httpRequest.getHeader("userid");
+        Boolean enableUserIdHeader = additionalUserProperties.getEnableUserIdHeader();
+        List<String> authorizedUsers = additionalUserProperties.getAuthorizedUsers();
+        if (userId != null
+            && enableUserIdHeader
+            && authorizedUsers.contains(
+                current.getCurrentSecurityIdentity().getPrincipal().getName())) {
+          identity = current.getCurrentSecurityIdentity().createRunAsIdentity(userId, false);
+        } else {
+          identity = current.getCurrentSecurityIdentity();
+        }
+      }
     }
     if (logger.isDebugEnabled()) {
       logger.debug("Current Elytron SecurityIdentity: " + identity);

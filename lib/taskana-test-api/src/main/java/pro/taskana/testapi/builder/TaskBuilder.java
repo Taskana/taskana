@@ -132,6 +132,11 @@ public class TaskBuilder implements SummaryEntityBuilder<TaskSummary, Task, Task
     return this;
   }
 
+  public TaskBuilder ownerLongName(String ownerLongName) {
+    testTask.setOwnerLongName(ownerLongName);
+    return this;
+  }
+
   public TaskBuilder primaryObjRef(ObjectReference primaryObjRef) {
     testTask.setPrimaryObjRef(primaryObjRef);
     return this;
@@ -158,6 +163,11 @@ public class TaskBuilder implements SummaryEntityBuilder<TaskSummary, Task, Task
     } else {
       testTask.unfreezeTransferred();
     }
+    return this;
+  }
+
+  public TaskBuilder groupByCount(Integer count) {
+    testTask.setGroupByCount(count);
     return this;
   }
 

@@ -8,24 +8,61 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.security.auth.Subject;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.security.UserPrincipal;
 import pro.taskana.common.internal.util.CheckedConsumer;
+import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.common.test.util.ParallelThreadHelper;
 import pro.taskana.task.api.TaskQuery;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.internal.models.ObjectReferenceImpl;
+import pro.taskana.workbasket.api.WorkbasketPermission;
+import pro.taskana.workbasket.api.WorkbasketService;
+import pro.taskana.workbasket.api.WorkbasketType;
+import pro.taskana.workbasket.api.models.Workbasket;
+import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
+@TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith(JaasExtension.class)
 class SelectAndClaimTaskAccTest extends AbstractAccTest {
+  Workbasket wbWithoutRead;
+  Workbasket wbWithoutReadTasks;
+  Workbasket wbWithoutEditTasks;
+  Task task1;
+  Task task2;
+  Task task3;
+
+  @WithAccessId(user = "admin")
+  @BeforeAll
+  void setup() throws Exception {
+    wbWithoutRead = createWorkBasket();
+    wbWithoutReadTasks = createWorkBasket();
+    wbWithoutEditTasks = createWorkBasket();
+
+    createWorkbasketAccessItem(wbWithoutRead, WorkbasketPermission.READ);
+    createWorkbasketAccessItem(wbWithoutReadTasks, WorkbasketPermission.READTASKS);
+    createWorkbasketAccessItem(wbWithoutEditTasks, WorkbasketPermission.EDITTASKS);
+
+    task3 = createTask(wbWithoutEditTasks);
+    task1 = createTask(wbWithoutRead);
+    task2 = createTask(wbWithoutReadTasks);
+  }
 
   @Test
   void should_ClaimDifferentTasks_For_ConcurrentSelectAndClaimCalls() throws Exception {
@@ -51,6 +88,23 @@ class SelectAndClaimTaskAccTest extends AbstractAccTest {
     assertThat(selectedAndClaimedTasks)
         .extracting(Task::getOwner)
         .containsExactlyInAnyOrder("admin", "taskadmin", "teamlead-1", "teamlead-2");
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @TestFactory
+  Stream<DynamicTest> should_ReturnEmptyOptional_When_MissingOnePermission() {
+    List<Pair<String, Task>> list =
+        List.of(
+            Pair.of("With Missing Read Permission", task1),
+            Pair.of("With Missing ReadTasks Permission", task2),
+            Pair.of("With Missing EditTasks Permission", task3));
+    ThrowingConsumer<Pair<String, Task>> testSelectClaimTask =
+        t -> {
+          TaskQuery query = taskService.createTaskQuery().idIn(t.getRight().getId());
+          Optional<Task> task = taskService.selectAndClaim(query);
+          assertThat(task).isEmpty();
+        };
+    return DynamicTest.stream(list.iterator(), Pair::getLeft, testSelectClaimTask);
   }
 
   @Test
@@ -84,5 +138,51 @@ class SelectAndClaimTaskAccTest extends AbstractAccTest {
 
   private TaskQuery getTaskQuery() {
     return taskanaEngine.getTaskService().createTaskQuery().orderByTaskId(SortDirection.ASCENDING);
+  }
+
+  private Workbasket createWorkBasket() throws Exception {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+    Workbasket workbasket =
+        workbasketService.newWorkbasket(UUID.randomUUID().toString(), "DOMAIN_A");
+    workbasket.setName("Megabasket");
+    workbasket.setType(WorkbasketType.GROUP);
+    workbasket.setOrgLevel1("company");
+    workbasket = workbasketService.createWorkbasket(workbasket);
+    return workbasket;
+  }
+
+  private void createWorkbasketAccessItem(Workbasket workbasket, WorkbasketPermission missingPerm)
+      throws Exception {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+    WorkbasketAccessItem wbai =
+        workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user-1-2");
+    if (missingPerm == WorkbasketPermission.READ) {
+      wbai.setPermission(WorkbasketPermission.READTASKS, true);
+      wbai.setPermission(WorkbasketPermission.EDITTASKS, true);
+    } else if (missingPerm == WorkbasketPermission.READTASKS) {
+      wbai.setPermission(WorkbasketPermission.READ, true);
+      wbai.setPermission(WorkbasketPermission.EDITTASKS, true);
+    } else {
+      wbai.setPermission(WorkbasketPermission.READ, true);
+      wbai.setPermission(WorkbasketPermission.READTASKS, true);
+    }
+    workbasketService.createWorkbasketAccessItem(wbai);
+  }
+
+  private Task createTask(Workbasket workbasket) throws Exception {
+    ObjectReferenceImpl objectReference = new ObjectReferenceImpl();
+    objectReference.setCompany("Company1");
+    objectReference.setSystem("System1");
+    objectReference.setSystemInstance("Instance1");
+    objectReference.setType("Type1");
+    objectReference.setValue("Value1");
+
+    Task task = taskService.newTask(workbasket.getId());
+    task.setClassificationKey("L10000");
+    task.setPrimaryObjRef(objectReference);
+    task.setOwner("user-1-2");
+
+    Task createdTask = taskService.createTask(task);
+    return createdTask;
   }
 }

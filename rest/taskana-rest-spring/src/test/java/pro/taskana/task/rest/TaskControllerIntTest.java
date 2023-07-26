@@ -7,6 +7,7 @@ import static pro.taskana.rest.test.RestHelper.TEMPLATE;
 
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -34,6 +35,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.rest.test.RestHelper;
@@ -54,6 +56,7 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 @TaskanaSpringBootTest
 class TaskControllerIntTest {
 
+  @Autowired TaskanaConfiguration taskanaConfiguration;
   private static final ParameterizedTypeReference<TaskSummaryPagedRepresentationModel>
       TASK_SUMMARY_PAGE_MODEL_TYPE = new ParameterizedTypeReference<>() {};
 
@@ -1202,6 +1205,57 @@ class TaskControllerIntTest {
 
       assertThat(response.getBody()).isNotNull();
       assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+    }
+
+    @Test
+    void should_GroupByPor() throws Exception {
+      Field useSpecificDb2Taskquery =
+          taskanaConfiguration.getClass().getDeclaredField("useSpecificDb2Taskquery");
+      useSpecificDb2Taskquery.setAccessible(true);
+      useSpecificDb2Taskquery.setBoolean(taskanaConfiguration, true);
+
+      String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + "?group-by=POR_VALUE";
+      HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+      ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+      assertThat(response.getBody()).isNotNull();
+      assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+      assertThat(response.getBody().getContent()).hasSize(14);
+      assertThat(
+              response.getBody().getContent().stream()
+                  .filter(task -> task.getPrimaryObjRef().getValue().equals("MyValue1"))
+                  .map(TaskSummaryRepresentationModel::getGroupByCount)
+                  .toArray())
+          .containsExactly(6);
+
+      useSpecificDb2Taskquery.setBoolean(taskanaConfiguration, false);
+    }
+
+    @Test
+    void should_GroupBySor() throws Exception {
+      Field useSpecificDb2Taskquery =
+          taskanaConfiguration.getClass().getDeclaredField("useSpecificDb2Taskquery");
+      useSpecificDb2Taskquery.setAccessible(true);
+      useSpecificDb2Taskquery.setBoolean(taskanaConfiguration, true);
+
+      String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + "?group-by-sor=Type2";
+      HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+      ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+      assertThat(response.getBody()).isNotNull();
+      assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+      assertThat(response.getBody().getContent()).hasSize(1);
+      assertThat(
+              response.getBody().getContent().stream()
+                  .map(TaskSummaryRepresentationModel::getGroupByCount)
+                  .toArray())
+          .containsExactly(2);
+
+      useSpecificDb2Taskquery.setBoolean(taskanaConfiguration, false);
     }
 
     @Test

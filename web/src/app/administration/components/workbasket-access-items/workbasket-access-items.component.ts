@@ -113,10 +113,18 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       getCustomFields(customFieldCount),
       tap((customFields) => {
         const accessItem = this.createWorkbasketAccessItems();
-        this.keysOfVisibleFields = ['permRead', 'permOpen', 'permAppend', 'permTransfer', 'permDistribute'];
+        this.keysOfVisibleFields = [
+          'permRead',
+          'permOpen',
+          'permAppend',
+          'permTransfer',
+          'permDistribute',
+          'permReadTasks',
+          'permEditTasks'
+        ];
         for (let i = 0; i < customFieldCount; i++) {
           if (customFields[i].visible) {
-            this.keysOfVisibleFields.push(Object.keys(accessItem)[i + 10]);
+            this.keysOfVisibleFields.push(Object.keys(accessItem)[i + 12]);
           }
         }
       })
@@ -242,6 +250,8 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       permAppend: false,
       permTransfer: false,
       permDistribute: false,
+      permReadTasks: false,
+      permEditTasks: false,
       permCustom1: false,
       permCustom2: false,
       permCustom3: false,

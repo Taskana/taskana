@@ -79,6 +79,8 @@ public class TaskSummaryRepresentationModel
   protected boolean isRead;
   /** Indicator if the task has been transferred. */
   protected boolean isTransferred;
+  /** Number of Tasks that are grouped together with this Task during a groupBy. */
+  protected Integer groupByCount;
   /** A custom property with name "1". */
   protected String custom1;
   /** A custom property with name "2". */
@@ -349,6 +351,14 @@ public class TaskSummaryRepresentationModel
   public void setAttachmentSummaries(
       List<AttachmentSummaryRepresentationModel> attachmentSummaries) {
     this.attachmentSummaries = attachmentSummaries;
+  }
+
+  public Integer getGroupByCount() {
+    return groupByCount;
+  }
+
+  public void setGroupByCount(Integer groupByCount) {
+    this.groupByCount = groupByCount;
   }
 
   public String getCustom1() {

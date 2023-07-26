@@ -52,8 +52,12 @@ class GetTaskAccTest {
 
   ClassificationSummary defaultClassificationSummary;
   WorkbasketSummary defaultWorkbasketSummary;
+  WorkbasketSummary wbWithoutReadTasksPerm;
+  WorkbasketSummary wbWithoutReadPerm;
   ObjectReference defaultObjectReference;
   Task task;
+  Task task2;
+  Task task3;
   Map<String, String> callbackInfo;
 
   @WithAccessId(user = "admin")
@@ -62,6 +66,8 @@ class GetTaskAccTest {
     defaultClassificationSummary =
         defaultTestClassification().buildAndStoreAsSummary(classificationService);
     defaultWorkbasketSummary = defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
+    wbWithoutReadTasksPerm = defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
+    wbWithoutReadPerm = defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
     defaultObjectReference = defaultTestObjectReference().build();
     callbackInfo = createSimpleCustomPropertyMap(3);
 
@@ -70,6 +76,21 @@ class GetTaskAccTest {
         .accessId("user-1-1")
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.APPEND)
+        .buildAndStore(workbasketService);
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(wbWithoutReadTasksPerm.getId())
+        .accessId("user-1-1")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.APPEND)
+        .buildAndStore(workbasketService);
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(wbWithoutReadPerm.getId())
+        .accessId("user-1-1")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
 
@@ -121,6 +142,20 @@ class GetTaskAccTest {
             .claimed(Instant.now())
             .classificationSummary(defaultClassificationSummary)
             .workbasketSummary(defaultWorkbasketSummary)
+            .primaryObjRef(defaultObjectReference)
+            .buildAndStore(taskService);
+
+    task2 =
+        TaskBuilder.newTask()
+            .workbasketSummary(wbWithoutReadTasksPerm)
+            .classificationSummary(defaultClassificationSummary)
+            .primaryObjRef(defaultObjectReference)
+            .buildAndStore(taskService);
+
+    task3 =
+        TaskBuilder.newTask()
+            .workbasketSummary(wbWithoutReadPerm)
+            .classificationSummary(defaultClassificationSummary)
             .primaryObjRef(defaultObjectReference)
             .buildAndStore(taskService);
   }
@@ -179,7 +214,36 @@ class GetTaskAccTest {
     assertThat(readTask.getCustomField(TaskCustomField.CUSTOM_16)).isEqualTo("custom16");
     assertThatCode(() -> readTask.getCustomAttributeMap().put("X", "Y")).doesNotThrowAnyException();
     assertThatCode(() -> readTask.getCallbackInfo().put("X", "Y")).doesNotThrowAnyException();
-    assertThat(readTask).hasNoNullFieldsOrPropertiesExcept("ownerLongName", "completed");
+    assertThat(readTask)
+        .hasNoNullFieldsOrPropertiesExcept("ownerLongName", "completed", "groupByCount");
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_ThrowException_When_NoReadTasksPerm() {
+    ThrowingCallable call = () -> taskService.getTask(task2.getId());
+
+    NotAuthorizedOnWorkbasketException e =
+        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+
+    assertThat(e.getRequiredPermissions())
+        .containsExactlyInAnyOrder(WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
+    assertThat(e.getCurrentUserId()).isEqualTo("user-1-1");
+    assertThat(e.getWorkbasketId()).isEqualTo(wbWithoutReadTasksPerm.getId());
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_ThrowException_When_UserHasReadTasksButNoReadPerm() {
+    ThrowingCallable call = () -> taskService.getTask(task3.getId());
+
+    NotAuthorizedOnWorkbasketException e =
+        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+
+    assertThat(e.getRequiredPermissions())
+        .containsExactlyInAnyOrder(WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
+    assertThat(e.getCurrentUserId()).isEqualTo("user-1-1");
+    assertThat(e.getWorkbasketId()).isEqualTo(wbWithoutReadPerm.getId());
   }
 
   @WithAccessId(user = "user-1-1")
