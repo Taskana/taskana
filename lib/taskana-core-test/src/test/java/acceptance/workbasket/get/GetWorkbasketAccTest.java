@@ -36,7 +36,7 @@ import pro.taskana.workbasket.api.models.Workbasket;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 @TaskanaIntegrationTest
-public class GetWorkbasketAccTest {
+class GetWorkbasketAccTest {
   @TaskanaInject ClassificationService classificationService;
   @TaskanaInject WorkbasketService workbasketService;
   ClassificationSummary defaultClassificationSummary;
@@ -103,11 +103,12 @@ public class GetWorkbasketAccTest {
     List<WorkbasketPermission> permissions =
         workbasketService.getPermissionsForWorkbasket(defaultWorkbasketSummary.getId());
 
-    assertThat(permissions).hasSize(4);
-    assertThat(permissions.contains(WorkbasketPermission.READ)).isTrue();
-    assertThat(permissions.contains(WorkbasketPermission.OPEN)).isTrue();
-    assertThat(permissions.contains(WorkbasketPermission.TRANSFER)).isTrue();
-    assertThat(permissions.contains(WorkbasketPermission.APPEND)).isTrue();
+    assertThat(permissions)
+        .containsExactlyInAnyOrder(
+            WorkbasketPermission.READ,
+            WorkbasketPermission.APPEND,
+            WorkbasketPermission.TRANSFER,
+            WorkbasketPermission.OPEN);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -166,7 +167,7 @@ public class GetWorkbasketAccTest {
         catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
 
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());
-    assertThat(e.getCurrentUserId()).isEqualTo(null);
+    assertThat(e.getCurrentUserId()).isNull();
     assertThat(e.getRequiredPermissions()).containsExactly(WorkbasketPermission.READ);
   }
 
@@ -179,7 +180,7 @@ public class GetWorkbasketAccTest {
 
     assertThat(e.getWorkbasketKey()).isEqualTo("USER-1-2");
     assertThat(e.getDomain()).isEqualTo("DOMAIN_A");
-    assertThat(e.getCurrentUserId()).isEqualTo(null);
+    assertThat(e.getCurrentUserId()).isNull();
     assertThat(e.getRequiredPermissions()).containsExactly(WorkbasketPermission.READ);
   }
 

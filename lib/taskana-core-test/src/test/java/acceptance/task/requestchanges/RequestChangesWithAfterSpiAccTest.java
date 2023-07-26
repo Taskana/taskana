@@ -60,6 +60,8 @@ public class RequestChangesWithAfterSpiAccTest {
         .workbasketId(defaultWorkbasketSummary.getId())
         .accessId("user-1-1")
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.EDITTASKS)
         .permission(WorkbasketPermission.APPEND)
         .permission(WorkbasketPermission.TRANSFER)
         .buildAndStore(workbasketService);
@@ -68,6 +70,8 @@ public class RequestChangesWithAfterSpiAccTest {
         .workbasketId(newWorkbasket.getId())
         .accessId("user-1-1")
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.EDITTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
 

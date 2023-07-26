@@ -88,6 +88,19 @@ export class FormsValidatorService {
         owner: responseOwner ? responseOwner.field : 'owner'
       });
     }
+
+    form.controls.forEach((control) => {
+      const { permEditTasks, permReadTasks, permRead } = control.value;
+
+      if (permEditTasks && (!permReadTasks || !permRead)) {
+        this.notificationsService.showWarning('PERM_EDIT_TASKS_MISSING_DEPENDING_PERMISSION');
+      }
+
+      if (permReadTasks && !permRead) {
+        this.notificationsService.showWarning('PERM_READ_TASKS_MISSING_DEPENDING_PERMISSIONS');
+      }
+    });
+
     return result;
   }
 

@@ -15,8 +15,10 @@ import static pro.taskana.workbasket.api.WorkbasketPermission.CUSTOM_7;
 import static pro.taskana.workbasket.api.WorkbasketPermission.CUSTOM_8;
 import static pro.taskana.workbasket.api.WorkbasketPermission.CUSTOM_9;
 import static pro.taskana.workbasket.api.WorkbasketPermission.DISTRIBUTE;
+import static pro.taskana.workbasket.api.WorkbasketPermission.EDITTASKS;
 import static pro.taskana.workbasket.api.WorkbasketPermission.OPEN;
 import static pro.taskana.workbasket.api.WorkbasketPermission.READ;
+import static pro.taskana.workbasket.api.WorkbasketPermission.READTASKS;
 import static pro.taskana.workbasket.api.WorkbasketPermission.TRANSFER;
 
 import org.junit.jupiter.api.Test;
@@ -51,8 +53,10 @@ class WorkbasketAccessItemRepresentationModelAssemblerTest {
     accessItem.setAccessName("accessName");
     accessItem.setWorkbasketKey("workbasketKey");
     accessItem.setPermission(READ, false);
+    accessItem.setPermission(READTASKS, false);
     accessItem.setPermission(OPEN, true);
     accessItem.setPermission(APPEND, false);
+    accessItem.setPermission(EDITTASKS, false);
     accessItem.setPermission(DISTRIBUTE, false);
     accessItem.setPermission(TRANSFER, true);
     accessItem.setPermission(CUSTOM_1, false);
@@ -84,7 +88,9 @@ class WorkbasketAccessItemRepresentationModelAssemblerTest {
     accessItem.setAccessName("accessName");
     accessItem.setPermission(OPEN, true);
     accessItem.setPermission(READ, false);
+    accessItem.setPermission(READTASKS, false);
     accessItem.setPermission(APPEND, false);
+    accessItem.setPermission(EDITTASKS, false);
     accessItem.setPermission(TRANSFER, true);
     accessItem.setPermission(DISTRIBUTE, false);
     accessItem.setPermission(CUSTOM_1, false);
@@ -120,7 +126,9 @@ class WorkbasketAccessItemRepresentationModelAssemblerTest {
     repModel.setWorkbasketId("1");
     repModel.setAccessName("accessName");
     repModel.setPermRead(true);
+    repModel.setPermReadTasks(true);
     repModel.setPermAppend(false);
+    repModel.setPermEditTasks(true);
     repModel.setPermDistribute(false);
     repModel.setPermOpen(false);
     repModel.setPermTransfer(true);
@@ -152,8 +160,10 @@ class WorkbasketAccessItemRepresentationModelAssemblerTest {
     assertThat(repModel.getAccessId()).isEqualTo(accessItem.getAccessId());
     assertThat(repModel.getAccessName()).isEqualTo(accessItem.getAccessName());
     assertThat(repModel.isPermRead()).isEqualTo(accessItem.getPermission(READ));
+    assertThat(repModel.isPermReadTasks()).isEqualTo(accessItem.getPermission(READTASKS));
     assertThat(repModel.isPermOpen()).isEqualTo(accessItem.getPermission(OPEN));
     assertThat(repModel.isPermAppend()).isEqualTo(accessItem.getPermission(APPEND));
+    assertThat(repModel.isPermEditTasks()).isEqualTo(accessItem.getPermission(EDITTASKS));
     assertThat(repModel.isPermTransfer()).isEqualTo(accessItem.getPermission(TRANSFER));
     assertThat(repModel.isPermDistribute()).isEqualTo(accessItem.getPermission(DISTRIBUTE));
     assertThat(repModel.isPermCustom1()).isEqualTo(accessItem.getPermission(CUSTOM_1));

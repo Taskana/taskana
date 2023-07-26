@@ -99,6 +99,34 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
+  void should_GetAllWorkbasketsForUserAndGroup_When_QueryingForReadTasksPermissions()
+      throws Exception {
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .accessIdsHavePermissions(
+                List.of(WorkbasketPermission.READTASKS), "user-1-1", GROUP_1_DN)
+            .list();
+
+    assertThat(results).hasSize(7);
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_GetAllWorkbasketsForUserAndGroup_When_QueryingForEditTasksPermissions()
+      throws Exception {
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .accessIdsHavePermissions(
+                List.of(WorkbasketPermission.READTASKS), "user-1-1", GROUP_1_DN)
+            .list();
+
+    assertThat(results).hasSize(7);
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
   void should_GetAllTransferTargetsForUserAndGroup_When_QueryingForSortedByNameAscending()
       throws Exception {
     List<WorkbasketSummary> results =
@@ -155,6 +183,30 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
             .callerHasPermissions(WorkbasketPermission.READ)
+            .list();
+
+    assertThat(results).hasSize(1);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_GetAllWorkbasketsForSubjectUser_When_QueryingForReadTasksPermission() {
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .callerHasPermissions(WorkbasketPermission.READTASKS)
+            .list();
+
+    assertThat(results).hasSize(1);
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
+  void should_GetAllWorkbasketsForSubjectUser_When_QueryingForEditTasksPermission() {
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .callerHasPermissions(WorkbasketPermission.EDITTASKS)
             .list();
 
     assertThat(results).hasSize(1);
