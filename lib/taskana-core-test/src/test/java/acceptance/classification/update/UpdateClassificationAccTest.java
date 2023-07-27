@@ -618,9 +618,7 @@ class UpdateClassificationAccTest {
         Task task = taskService.getTask(taskId);
 
         Instant expDue =
-            workingTimeCalculator
-                .addWorkingTime(task.getPlanned(), Duration.ofDays(serviceLevel))
-                .minusMillis(1);
+            workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(serviceLevel));
         assertThat(task.getModified())
             .describedAs("Task " + task.getId() + " has not been refreshed.")
             .isAfter(before);

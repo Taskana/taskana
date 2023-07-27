@@ -55,8 +55,8 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
 
     Instant due =
-        moveBackToWorkingDay(Instant.now().truncatedTo(ChronoUnit.MILLIS).plus(40, ChronoUnit.DAYS))
-            .minusMillis(1);
+        moveBackToWorkingDay(
+            Instant.now().truncatedTo(ChronoUnit.MILLIS).plus(40, ChronoUnit.DAYS));
     newTask.setDue(due);
     Task createdTask = taskService.createTask(newTask);
     assertThat(createdTask.getId()).isNotNull();
@@ -66,8 +66,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(readTask.getDue()).isEqualTo(due);
 
     Instant expectedPlanned =
-        workingTimeCalculator.subtractWorkingTime(
-            due.plusMillis(1), Duration.ofDays(serviceLevelDays));
+        workingTimeCalculator.subtractWorkingTime(due, Duration.ofDays(serviceLevelDays));
     assertThat(readTask.getPlanned()).isEqualTo(expectedPlanned);
   }
 
@@ -85,7 +84,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
 
-    Instant planned = Instant.parse("2023-03-03T10:37:16.456Z");
+    Instant planned = moveForwardToWorkingDay(Instant.now().truncatedTo(ChronoUnit.MILLIS));
     newTask.setPlanned(planned);
     Task createdTask = taskService.createTask(newTask);
     assertThat(createdTask.getId()).isNotNull();
@@ -93,22 +92,33 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     Task readTask = taskService.getTask(createdTask.getId());
     assertThat(readTask).isNotNull();
     assertThat(readTask.getPlanned()).isEqualTo(planned);
-    assertThat(readTask.getDue()).isEqualTo(Instant.parse("2023-03-27T10:37:16.455Z"));
+
+    Instant expectedDue =
+        workingTimeCalculator.addWorkingTime(
+            readTask.getPlanned(), Duration.ofDays(serviceLevelDays));
+
+    assertThat(readTask.getDue()).isEqualTo(expectedDue);
   }
 
   @WithAccessId(user = "user-1-1")
   @Test
   void should_NotThrowException_When_DueAndPlannedAreConsistent() throws Exception {
+
     Classification classification = classificationService.getClassification("T2100", "DOMAIN_A");
+    long duration = Duration.parse(classification.getServiceLevel()).toDays();
 
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
-    newTask.setPlanned(Instant.parse("2023-03-01T14:52:13.879Z"));
+    newTask.setPlanned(moveForwardToWorkingDay(Instant.now()));
     newTask.setClassificationKey(classification.getKey());
     newTask.setPrimaryObjRef(
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     newTask.setOwner("user-1-1");
 
-    newTask.setDue(Instant.parse("2023-03-03T14:52:13.878Z"));
+    // due date according to service level
+    Instant expectedDue =
+        workingTimeCalculator.addWorkingTime(newTask.getPlanned(), Duration.ofDays(duration));
+
+    newTask.setDue(expectedDue);
     ThrowingCallable call = () -> taskService.createTask(newTask);
     assertThatCode(call).doesNotThrowAnyException();
   }
@@ -201,7 +211,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     BulkOperationResults<String, TaskanaException> results =
         taskService.setPlannedPropertyOfTasks(planned, taskIds);
     assertThat(results.containsErrors()).isFalse();
-    Instant dueExpected = getInstant("2020-02-12T06:59:59.999");
+    Instant dueExpected = getInstant("2020-02-12T07:00:00");
 
     Instant due1 = taskService.getTask(tkId1).getDue();
     assertThat(due1).isEqualTo(dueExpected);
@@ -230,7 +240,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(results.getErrorMap()).hasSize(1);
     assertThat(results.getErrorForId("TKI:000000000000000000000000000047110059"))
         .isInstanceOf(TaskNotFoundException.class);
-    Instant dueExpected = getInstant("2020-04-21T06:59:59.999");
+    Instant dueExpected = getInstant("2020-04-21T07:00:00");
     Instant due1 = taskService.getTask(tkId1).getDue();
     assertThat(due1).isEqualTo(dueExpected);
     Instant due3 = taskService.getTask(tkId3).getDue();
@@ -292,9 +302,9 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     Instant dueBulk1 = taskService.getTask(tkId1).getDue();
     Instant dueBulk2 = taskService.getTask(tkId2).getDue();
 
-    assertThat(dueBulk0).isEqualTo(getInstant("2020-04-22T12:59:59.999"));
-    assertThat(dueBulk1).isEqualTo(getInstant("2020-04-23T12:59:59.999"));
-    assertThat(dueBulk2).isEqualTo(getInstant("2020-04-22T12:59:59.999"));
+    assertThat(dueBulk0).isEqualTo(planned.plus(1, ChronoUnit.DAYS));
+    assertThat(dueBulk1).isEqualTo(planned.plus(2, ChronoUnit.DAYS));
+    assertThat(dueBulk2).isEqualTo(planned.plus(1, ChronoUnit.DAYS));
 
     assertThat(results.containsErrors()).isFalse();
     assertThat(dueBulk0).isEqualTo(due0);
@@ -352,10 +362,10 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     Instant dueBulk2 = taskService.getTask(tkId2).getDue();
     Instant dueBulk3 = taskService.getTask(tkId3).getDue();
     Instant dueBulk4 = taskService.getTask(tkId4).getDue();
-    assertThat(dueBulk1).isEqualTo(getInstant("2020-05-13T23:59:59.999"));
-    assertThat(dueBulk2).isEqualTo(getInstant("2020-05-20T23:59:59.999"));
-    assertThat(dueBulk3).isEqualTo(getInstant("2020-05-13T23:59:59.999"));
-    assertThat(dueBulk4).isEqualTo(getInstant("2020-05-20T23:59:59.999"));
+    assertThat(dueBulk1).isEqualTo(getInstant("2020-05-14T00:00:00"));
+    assertThat(dueBulk2).isEqualTo(getInstant("2020-05-21T00:00:00"));
+    assertThat(dueBulk3).isEqualTo(getInstant("2020-05-14T00:00:00"));
+    assertThat(dueBulk4).isEqualTo(getInstant("2020-05-21T00:00:00"));
   }
 
   @WithAccessId(user = "admin")
@@ -386,7 +396,9 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
         taskService.setPlannedPropertyOfTasks(planned, List.of(taskId));
     Task task = taskService.getTask(taskId);
     assertThat(results.containsErrors()).isFalse();
-    assertThat(task.getDue()).isEqualTo(getInstant("2020-05-04T23:59:59.999"));
+    Instant expectedDue =
+        workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(1));
+    assertThat(task.getDue()).isEqualTo(expectedDue);
   }
 
   @WithAccessId(user = "admin")
@@ -397,15 +409,16 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     // test update of planned date via updateTask()
     task.setPlanned(task.getPlanned().plus(Duration.ofDays(3)));
     task = taskService.updateTask(task);
-
-    assertThat(task.getDue()).isEqualTo(Instant.parse("2018-02-02T15:54:59.999Z"));
+    Instant expectedDue =
+        workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(1));
+    assertThat(task.getDue()).isEqualTo(expectedDue);
   }
 
   @WithAccessId(user = "admin")
   @Test
   void should_SetPlanned_When_OnlyDueWasChanged() throws Exception {
     String taskId = "TKI:000000000000000000000000000000000002"; // P1D
-    Instant planned = getInstant("2020-05-03T06:59:59.999");
+    Instant planned = getInstant("2020-05-03T07:00:00");
     Task task = taskService.getTask(taskId);
 
     // test update of due with unchanged planned
@@ -418,25 +431,32 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
   @Test
   void should_SetDue_When_OnlyPlannedWasChanged() throws Exception {
     String taskId = "TKI:000000000000000000000000000000000002";
-    Instant planned = getInstant("2020-05-06T07:00:00");
+    Instant planned = getInstant("2020-05-03T07:00:00"); // Sunday
+    Instant expectedPlanned = getInstant("2020-05-04T00:00:00");
     Task task = taskService.getTask(taskId);
     task.setPlanned(planned);
     task = taskService.updateTask(task);
-    assertThat(task.getPlanned()).isEqualTo(planned);
-    assertThat(task.getDue()).isEqualTo(getInstant("2020-05-07T06:59:59.999"));
+    String serviceLevel = task.getClassificationSummary().getServiceLevel();
+    Instant expDue =
+        workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.parse(serviceLevel));
+    assertThat(task.getPlanned()).isEqualTo(expectedPlanned);
+    assertThat(task.getDue()).isEqualTo(expDue);
   }
 
   @WithAccessId(user = "admin")
   @Test
   void should_SetPlanned_When_DueIsChangedAndPlannedIsNulled() throws Exception {
     String taskId = "TKI:000000000000000000000000000000000002";
-    Instant due = getInstant("2020-05-06T06:59:59.999");
+    Instant due = getInstant("2020-05-06T07:00:00");
     Task task = taskService.getTask(taskId);
     task.setDue(due);
     task.setPlanned(null);
     task = taskService.updateTask(task);
 
-    assertThat(task.getPlanned()).isEqualTo("2020-05-05T07:00:00.000Z");
+    String serviceLevel = task.getClassificationSummary().getServiceLevel();
+    Instant expPlanned =
+        workingTimeCalculator.subtractWorkingTime(task.getDue(), Duration.parse(serviceLevel));
+    assertThat(task.getPlanned()).isEqualTo(expPlanned);
     assertThat(task.getDue()).isEqualTo(due);
   }
 
@@ -449,23 +469,27 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
 
     task.setPlanned(null);
     task = taskService.updateTask(task);
-    assertThat(task.getDue()).isEqualTo(getInstant("2020-05-07T06:59:59.999"));
+    Instant expectedDue =
+        workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(1));
+    assertThat(task.getDue()).isEqualTo(expectedDue);
 
     task.setDue(null);
     task = taskService.updateTask(task);
-    assertThat(task.getDue()).isEqualTo(getInstant("2020-05-07T06:59:59.999"));
+    expectedDue = workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(1));
+    assertThat(task.getDue()).isEqualTo(expectedDue);
 
     task.setPlanned(planned.plus(Duration.ofDays(13))); // Saturday
     task.setDue(null);
     task = taskService.updateTask(task);
-    assertThat(task.getDue()).isEqualTo(getInstant("2020-05-18T23:59:59.999"));
+    expectedDue = workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(1));
+    assertThat(task.getDue()).isEqualTo(expectedDue);
 
     task.setDue(planned.plus(Duration.ofDays(13))); // Saturday
     task.setPlanned(null);
     task = taskService.updateTask(task);
 
     assertThat(task.getPlanned()).isEqualTo(getInstant("2020-05-15T00:00:00"));
-    assertThat(task.getDue()).isEqualTo(getInstant("2020-05-15T23:59:59.999"));
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-05-16T00:00:00"));
   }
 
   @WithAccessId(user = "user-1-2")
@@ -475,7 +499,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     Task task = taskService.getTask("TKI:000000000000000000000000000000000030"); // SL=P13D
     task.setPlanned(getInstant("2020-03-23T07:00:00")); // planned = saturday
     task = taskService.updateTask(task);
-    assertThat(task.getDue()).isEqualTo(getInstant("2020-04-09T06:59:59.999"));
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-04-09T07:00:00"));
 
     task.setDue(getInstant("2020-04-11T07:00:00")); // due = saturday
     task.setPlanned(null);
@@ -487,14 +511,14 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(task.getPlanned()).isEqualTo(getInstant("2020-03-24T00:00:00"));
 
     task.setPlanned(getInstant("2020-03-21T07:00:00")); // planned = saturday
-    task.setDue(getInstant("2020-04-09T23:59:59.999")); // thursday
+    task.setDue(getInstant("2020-04-09T00:00:00")); // thursday
     task = taskService.updateTask(task);
     assertThat(task.getPlanned()).isEqualTo(getInstant("2020-03-23T00:00:00"));
 
     task.setPlanned(getInstant("2020-03-04T00:00:00")); // planned on tuesday
     task.setDue(getInstant("2020-03-22T07:00:00")); // due = sunday
     task = taskService.updateTask(task);
-    assertThat(task.getDue()).isEqualTo(getInstant("2020-03-20T23:59:59.999")); // friday, EOB
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-03-21T00:00:00")); // friday, EOB
   }
 
   @WithAccessId(user = "user-1-1")
@@ -517,7 +541,7 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     // due changed, planned did not change
     task.setDue(getInstant("2020-04-12T07:00:00")); // Sunday
     task = taskService.updateTask(task);
-    Instant endOfHolyThursday = getInstant("2020-04-09T23:59:59.999");
+    Instant endOfHolyThursday = getInstant("2020-04-10T00:00:00");
     assertThat(task.getPlanned()).isEqualTo(endOfHolyThursday); // Thursday (skip Good Friday)
     assertThat(task.getDue()).isEqualTo(endOfHolyThursday);
 
@@ -536,12 +560,11 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     assertThat(task.getPlanned()).isEqualTo(getInstant("2020-03-23T00:00:00")); // Monday
 
     // both changed, not null (due at weekend)
-    Instant fridayEndOfBusinessDay = getInstant("2020-03-20T23:59:59.999");
-    task.setPlanned(fridayEndOfBusinessDay);
+    task.setPlanned(getInstant("2020-03-21T00:00:00")); // Friday
     task.setDue(getInstant("2020-03-22T07:00:00")); // Sunday
     task = taskService.updateTask(task);
-    assertThat(task.getPlanned()).isEqualTo(fridayEndOfBusinessDay);
-    assertThat(task.getDue()).isEqualTo(fridayEndOfBusinessDay);
+    assertThat(task.getPlanned()).isEqualTo(getInstant("2020-03-21T00:00:00")); // Friday
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-03-21T00:00:00")); // Friday
 
     // both changed, not null (planned at weekend)
     task.setPlanned(getInstant("2020-03-22T07:00:00")); // Sunday
@@ -554,8 +577,8 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     task.setPlanned(getInstant("2020-03-22T07:00:00")); // Sunday
     task.setDue(getInstant("2020-03-22T07:00:00")); // Sunday
     task = taskService.updateTask(task);
-    assertThat(task.getDue()).isEqualTo(fridayEndOfBusinessDay);
-    assertThat(task.getPlanned()).isEqualTo(fridayEndOfBusinessDay);
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-03-21T00:00:00")); // Friday
+    assertThat(task.getPlanned()).isEqualTo(getInstant("2020-03-21T00:00:00")); // Friday
 
     // both changed, not null (planned > due)
     task.setPlanned(getInstant("2020-03-24T07:00:00")); // Tuesday
@@ -574,10 +597,10 @@ class ServiceLevelPriorityAccTest extends AbstractAccTest {
     Task task = taskService.getTask("TKI:000000000000000000000000000000000002"); // P1D
 
     // SLA is broken but only with holidays in between
-    task.setDue(getInstant("2020-04-14T06:59:59.999")); // Tuesday after Easter
+    task.setDue(getInstant("2020-04-14T07:00:00")); // Tuesday after Easter
     task.setPlanned(getInstant("2020-04-09T07:00:00")); // Thursday before Easter
     task = taskService.updateTask(task);
-    assertThat(task.getDue()).isEqualTo(getInstant("2020-04-14T06:59:59.999")); // Tuesday
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-04-14T07:00:00")); // Tuesday
     assertThat(task.getPlanned()).isEqualTo(getInstant("2020-04-09T07:00:00")); // Thursday
   }
 }
