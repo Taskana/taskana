@@ -1,26 +1,25 @@
 package pro.taskana;
 
+import static pro.taskana.common.internal.configuration.TaskanaConfigurationInitializer.configureAnnotatedFields;
+import static pro.taskana.common.internal.configuration.TaskanaConfigurationInitializer.configureClassificationCategoriesForType;
+import static pro.taskana.common.internal.configuration.TaskanaConfigurationInitializer.configureRoles;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +27,7 @@ import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import pro.taskana.common.api.CustomHoliday;
 import pro.taskana.common.api.LocalTimeInterval;
 import pro.taskana.common.api.TaskanaRole;
@@ -35,10 +35,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.configuration.DB;
 import pro.taskana.common.internal.configuration.TaskanaProperty;
-import pro.taskana.common.internal.configuration.parser.PropertyParser;
 import pro.taskana.common.internal.util.FileLoaderUtil;
-import pro.taskana.common.internal.util.Pair;
-import pro.taskana.common.internal.util.ReflectionUtil;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 
 /**
@@ -51,12 +48,11 @@ public class TaskanaConfiguration {
 
   // region general configuration
   private final DataSource dataSource;
+  private final boolean securityEnabled;
   private final boolean useManagedTransactions;
   private final String schemaName;
-  private final boolean securityEnabled;
 
-  private final Set<String> domains;
-  private final boolean enforceServiceLevel;
+  private final List<String> domains;
   // endregion
 
   // region authentication configuration
@@ -64,221 +60,274 @@ public class TaskanaConfiguration {
   // endregion
 
   // region classification configuration
-  private final Set<String> classificationTypes;
+  private final List<String> classificationTypes;
 
-  private final Map<String, Set<String>> classificationCategoriesByType;
+  private final Map<String, List<String>> classificationCategoriesByType;
+
+  private final boolean allowTimestampServiceLevelMismatch;
   // endregion
 
-  // region working time configuration
-  private final Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule;
-  private final ZoneId workingTimeScheduleTimeZone;
-  private final Set<CustomHoliday> customHolidays;
+  // region holiday configuration
+  private final List<CustomHoliday> customHolidays;
+
   private final boolean germanPublicHolidaysEnabled;
-  private final boolean germanPublicHolidaysCorpusChristiEnabled;
+
+  private final boolean corpusChristiEnabled;
+
+  private final Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule;
   // endregion
 
   // region history configuration
-  private final boolean deleteHistoryEventsOnTaskDeletionEnabled;
-  private final String logHistoryLoggerName;
+  private final boolean deleteHistoryOnTaskDeletionEnabled;
   // endregion
 
   // region job configuration
-  private final boolean jobSchedulerEnabled;
-  private final long jobSchedulerInitialStartDelay;
-  private final long jobSchedulerPeriod;
-  private final TimeUnit jobSchedulerPeriodTimeUnit;
-  private final int maxNumberOfJobRetries;
   private final int jobBatchSize;
-  private final Instant jobFirstRun;
-  private final Duration jobRunEvery;
 
-  private final boolean taskCleanupJobEnabled;
-  private final Duration taskCleanupJobMinimumAge;
+  private final int maxNumberOfJobRetries;
+
+  private final Instant cleanupJobFirstRun;
+
+  private final Duration cleanupJobRunEvery;
+
+  private final Duration cleanupJobMinimumAge;
+
   private final boolean taskCleanupJobAllCompletedSameParentBusiness;
 
-  private final boolean workbasketCleanupJobEnabled;
+  private final int priorityJobBatchSize;
 
-  private final boolean simpleHistoryCleanupJobEnabled;
-  private final int simpleHistoryCleanupJobBatchSize;
-  private final Duration simpleHistoryCleanupJobMinimumAge;
-  private final boolean simpleHistoryCleanupJobAllCompletedSameParentBusiness;
+  private final Instant priorityJobFirstRun;
 
-  private final boolean taskUpdatePriorityJobEnabled;
-  private final int taskUpdatePriorityJobBatchSize;
-  private final Instant taskUpdatePriorityJobFirstRun;
-  private final Duration taskUpdatePriorityJobRunEvery;
+  private final Duration priorityJobRunEvery;
 
-  private final boolean userInfoRefreshJobEnabled;
-  private final Instant userRefreshJobFirstRun;
+  private final boolean priorityJobActive;
+
   private final Duration userRefreshJobRunEvery;
 
-  private final Set<String> customJobs;
+  private final Instant userRefreshJobFirstRun;
+
+  private final boolean jobSchedulerEnabled;
+
+  private final long jobSchedulerInitialStartDelay;
+
+  private final long jobSchedulerPeriod;
+
+  private final TimeUnit jobSchedulerPeriodTimeUnit;
+
+  private final boolean jobSchedulerEnableTaskCleanupJob;
+
+  private final boolean jobSchedulerEnableTaskUpdatePriorityJob;
+
+  private final boolean jobSchedulerEnableWorkbasketCleanupJob;
+
+  private final boolean jobSchedulerEnableUserInfoRefreshJob;
+
+  private final boolean jobSchedulerEnableHistorieCleanupJob;
+
+  private final List<String> jobSchedulerCustomJobs;
   // endregion
 
   // region user configuration
   private final boolean addAdditionalUserInfo;
-  private final Set<WorkbasketPermission> minimalPermissionsToAssignDomains;
+
+  // TODO: make Set
+  private final List<WorkbasketPermission> minimalPermissionsToAssignDomains;
   // endregion
 
   // region custom configuration
   private final Map<String, String> properties;
   // endregion
 
-  private TaskanaConfiguration(Builder builder) {
-    // general configuration
+  protected TaskanaConfiguration(Builder builder) {
     this.dataSource = builder.dataSource;
-    this.useManagedTransactions = builder.useManagedTransactions;
     this.schemaName = builder.schemaName;
-    this.securityEnabled = builder.securityEnabled;
-    this.domains = Collections.unmodifiableSet(builder.domains);
-    this.enforceServiceLevel = builder.enforceServiceLevel;
-    // authentication configuration
+    this.properties = Map.copyOf(builder.properties);
     this.roleMap =
         builder.roleMap.entrySet().stream()
             .collect(
                 Collectors.toUnmodifiableMap(
                     Entry::getKey, e -> Collections.unmodifiableSet(e.getValue())));
-    // classification configuration
-    this.classificationTypes = Collections.unmodifiableSet(builder.classificationTypes);
+    this.securityEnabled = builder.securityEnabled;
+    this.useManagedTransactions = builder.useManagedTransactions;
+    this.domains = Collections.unmodifiableList(builder.domains);
+    this.classificationTypes = Collections.unmodifiableList(builder.classificationTypes);
     this.classificationCategoriesByType =
         builder.classificationCategoriesByType.entrySet().stream()
             .collect(
                 Collectors.toUnmodifiableMap(
-                    Entry::getKey, e -> Collections.unmodifiableSet(e.getValue())));
-    // working time configuration
+                    Entry::getKey, e -> Collections.unmodifiableList(e.getValue())));
+    this.customHolidays = Collections.unmodifiableList(builder.customHolidays);
+    this.deleteHistoryOnTaskDeletionEnabled = builder.deleteHistoryOnTaskDeletionEnabled;
+    this.germanPublicHolidaysEnabled = builder.germanPublicHolidaysEnabled;
+    this.corpusChristiEnabled = builder.corpusChristiEnabled;
     this.workingTimeSchedule =
         builder.workingTimeSchedule.entrySet().stream()
             .collect(
                 Collectors.toUnmodifiableMap(
                     Entry::getKey, e -> Collections.unmodifiableSet(e.getValue())));
-    this.workingTimeScheduleTimeZone = builder.workingTimeScheduleTimeZone;
-    this.customHolidays = Collections.unmodifiableSet(builder.customHolidays);
-    this.germanPublicHolidaysEnabled = builder.germanPublicHolidaysEnabled;
-    this.germanPublicHolidaysCorpusChristiEnabled =
-        builder.germanPublicHolidaysCorpusChristiEnabled;
-    // history configuration
-    this.deleteHistoryEventsOnTaskDeletionEnabled =
-        builder.deleteHistoryEventsOnTaskDeletionEnabled;
-    this.logHistoryLoggerName = builder.logHistoryLoggerName;
-    // job configuration
+    this.jobBatchSize = builder.jobBatchSize;
+    this.maxNumberOfJobRetries = builder.maxNumberOfJobRetries;
+    this.cleanupJobFirstRun = builder.cleanupJobFirstRun;
+    this.cleanupJobRunEvery = builder.cleanupJobRunEvery;
+    this.cleanupJobMinimumAge = builder.cleanupJobMinimumAge;
+    this.taskCleanupJobAllCompletedSameParentBusiness =
+        builder.taskCleanupJobAllCompletedSameParentBusiness;
+    this.allowTimestampServiceLevelMismatch = builder.allowTimestampServiceLevelMismatch;
+    this.addAdditionalUserInfo = builder.addAdditionalUserInfo;
+    this.priorityJobBatchSize = builder.priorityJobBatchSize;
+    this.priorityJobFirstRun = builder.priorityJobFirstRun;
+    this.priorityJobRunEvery = builder.priorityJobRunEvery;
+    this.priorityJobActive = builder.priorityJobActive;
+    this.userRefreshJobRunEvery = builder.userRefreshJobRunEvery;
+    this.userRefreshJobFirstRun = builder.userRefreshJobFirstRun;
+    this.minimalPermissionsToAssignDomains =
+        Collections.unmodifiableList(builder.minimalPermissionsToAssignDomains);
     this.jobSchedulerEnabled = builder.jobSchedulerEnabled;
     this.jobSchedulerInitialStartDelay = builder.jobSchedulerInitialStartDelay;
     this.jobSchedulerPeriod = builder.jobSchedulerPeriod;
     this.jobSchedulerPeriodTimeUnit = builder.jobSchedulerPeriodTimeUnit;
-    this.maxNumberOfJobRetries = builder.maxNumberOfJobRetries;
-    this.jobBatchSize = builder.jobBatchSize;
-    this.jobFirstRun = builder.jobFirstRun;
-    this.jobRunEvery = builder.jobRunEvery;
-    this.taskCleanupJobEnabled = builder.taskCleanupJobEnabled;
-    this.taskCleanupJobMinimumAge = builder.taskCleanupJobMinimumAge;
-    this.taskCleanupJobAllCompletedSameParentBusiness =
-        builder.taskCleanupJobAllCompletedSameParentBusiness;
-    this.workbasketCleanupJobEnabled = builder.workbasketCleanupJobEnabled;
-    this.simpleHistoryCleanupJobEnabled = builder.simpleHistoryCleanupJobEnabled;
-    this.simpleHistoryCleanupJobBatchSize = builder.simpleHistoryCleanupJobBatchSize;
-    this.simpleHistoryCleanupJobMinimumAge = builder.simpleHistoryCleanupJobMinimumAge;
-    this.simpleHistoryCleanupJobAllCompletedSameParentBusiness =
-        builder.simpleHistoryCleanupJobAllCompletedSameParentBusiness;
-    this.taskUpdatePriorityJobEnabled = builder.taskUpdatePriorityJobEnabled;
-    this.taskUpdatePriorityJobBatchSize = builder.taskUpdatePriorityJobBatchSize;
-    this.taskUpdatePriorityJobFirstRun = builder.taskUpdatePriorityJobFirstRun;
-    this.taskUpdatePriorityJobRunEvery = builder.taskUpdatePriorityJobRunEvery;
-    this.userInfoRefreshJobEnabled = builder.userInfoRefreshJobEnabled;
-    this.userRefreshJobFirstRun = builder.userRefreshJobFirstRun;
-    this.userRefreshJobRunEvery = builder.userRefreshJobRunEvery;
-    this.customJobs = Collections.unmodifiableSet(builder.customJobs);
-    // user configuration
-    this.addAdditionalUserInfo = builder.addAdditionalUserInfo;
-    this.minimalPermissionsToAssignDomains =
-        Collections.unmodifiableSet(builder.minimalPermissionsToAssignDomains);
-    // custom configuration
-    this.properties = Map.copyOf(builder.properties);
-  }
-
-  /**
-   * Helper method to determine whether all access ids (user id and group ids) should be used in
-   * lower case.
-   *
-   * @return true if all access ids should be used in lower case, false otherwise
-   */
-  public static boolean shouldUseLowerCaseForAccessIds() {
-    return true;
-  }
-
-  public Set<String> getAllClassificationCategories() {
-    return this.classificationCategoriesByType.values().stream()
-        .flatMap(Collection::stream)
-        .collect(Collectors.toSet());
-  }
-
-  public Set<String> getClassificationCategoriesByType(String type) {
-    return classificationCategoriesByType.getOrDefault(type, Collections.emptySet());
-  }
-
-  public Map<String, Set<String>> getClassificationCategoriesByType() {
-    return this.classificationCategoriesByType;
-  }
-
-  // region getters
-
-  public DataSource getDataSource() {
-    return dataSource;
-  }
-
-  public boolean isUseManagedTransactions() {
-    return useManagedTransactions;
-  }
-
-  public String getSchemaName() {
-    return schemaName;
+    this.jobSchedulerEnableTaskCleanupJob = builder.jobSchedulerEnableTaskCleanupJob;
+    this.jobSchedulerEnableTaskUpdatePriorityJob = builder.jobSchedulerEnableTaskUpdatePriorityJob;
+    this.jobSchedulerEnableWorkbasketCleanupJob = builder.jobSchedulerEnableWorkbasketCleanupJob;
+    this.jobSchedulerEnableUserInfoRefreshJob = builder.jobSchedulerEnableUserInfoRefreshJob;
+    this.jobSchedulerEnableHistorieCleanupJob = builder.jobSchedulerEnableHistorieCleanupJob;
+    this.jobSchedulerCustomJobs = Collections.unmodifiableList(builder.jobSchedulerCustomJobs);
   }
 
   public boolean isSecurityEnabled() {
-    return securityEnabled;
+    return this.securityEnabled;
   }
 
-  public Set<String> getDomains() {
-    return domains;
+  public DataSource getDatasource() {
+    return this.dataSource;
   }
 
-  public boolean isEnforceServiceLevel() {
-    return enforceServiceLevel;
+  /**
+   * return all properties loaded from taskana properties file. Per Design the normal Properties are
+   * not immutable, so we return here an ImmutableMap, because we don't want direct changes in the
+   * configuration.
+   *
+   * @return all properties loaded from taskana properties file
+   */
+  public Map<String, String> getProperties() {
+    return this.properties;
   }
 
-  public Map<TaskanaRole, Set<String>> getRoleMap() {
-    return roleMap;
+  public boolean isUseManagedTransactions() {
+    return this.useManagedTransactions;
   }
 
-  public Set<String> getClassificationTypes() {
-    return classificationTypes;
+  public int getJobBatchSize() {
+    return jobBatchSize;
+  }
+
+  public int getMaxNumberOfJobRetries() {
+    return maxNumberOfJobRetries;
+  }
+
+  public boolean isCorpusChristiEnabled() {
+    return corpusChristiEnabled;
+  }
+
+  public boolean isGermanPublicHolidaysEnabled() {
+    return this.germanPublicHolidaysEnabled;
+  }
+
+  public boolean isAllowTimestampServiceLevelMismatch() {
+    return allowTimestampServiceLevelMismatch;
+  }
+
+  public boolean isDeleteHistoryOnTaskDeletionEnabled() {
+    return deleteHistoryOnTaskDeletionEnabled;
+  }
+
+  public List<CustomHoliday> getCustomHolidays() {
+    return customHolidays;
   }
 
   public Map<DayOfWeek, Set<LocalTimeInterval>> getWorkingTimeSchedule() {
     return workingTimeSchedule;
   }
 
-  public ZoneId getWorkingTimeScheduleTimeZone() {
-    return workingTimeScheduleTimeZone;
+  public Map<TaskanaRole, Set<String>> getRoleMap() {
+    return roleMap;
   }
 
-  public Set<CustomHoliday> getCustomHolidays() {
-    return customHolidays;
+  public List<String> getDomains() {
+    return domains;
   }
 
-  public boolean isGermanPublicHolidaysEnabled() {
-    return germanPublicHolidaysEnabled;
+  public boolean isAddAdditionalUserInfo() {
+    return addAdditionalUserInfo;
   }
 
-  public boolean isGermanPublicHolidaysCorpusChristiEnabled() {
-    return germanPublicHolidaysCorpusChristiEnabled;
+  public List<String> getClassificationTypes() {
+    return classificationTypes;
   }
 
-  public boolean isDeleteHistoryEventsOnTaskDeletionEnabled() {
-    return deleteHistoryEventsOnTaskDeletionEnabled;
+  public List<String> getAllClassificationCategories() {
+    List<String> classificationCategories = new ArrayList<>();
+    for (Map.Entry<String, List<String>> type : this.classificationCategoriesByType.entrySet()) {
+      classificationCategories.addAll(type.getValue());
+    }
+    return classificationCategories;
   }
 
-  public String getLogHistoryLoggerName() {
-    return logHistoryLoggerName;
+  public Map<String, List<String>> getClassificationCategoriesByType() {
+    return this.classificationCategoriesByType.entrySet().stream()
+        .collect(Collectors.toMap(Entry::getKey, e -> new ArrayList<>(e.getValue())));
+  }
+
+  public List<String> getClassificationCategoriesByType(String type) {
+    return classificationCategoriesByType.getOrDefault(type, Collections.emptyList());
+  }
+
+  public Instant getCleanupJobFirstRun() {
+    return cleanupJobFirstRun;
+  }
+
+  public Duration getCleanupJobRunEvery() {
+    return cleanupJobRunEvery;
+  }
+
+  public Duration getCleanupJobMinimumAge() {
+    return cleanupJobMinimumAge;
+  }
+
+  public boolean isTaskCleanupJobAllCompletedSameParentBusiness() {
+    return taskCleanupJobAllCompletedSameParentBusiness;
+  }
+
+  public int getPriorityJobBatchSize() {
+    return priorityJobBatchSize;
+  }
+
+  public Instant getPriorityJobFirstRun() {
+    return priorityJobFirstRun;
+  }
+
+  public Duration getPriorityJobRunEvery() {
+    return priorityJobRunEvery;
+  }
+
+  public Duration getUserRefreshJobRunEvery() {
+    return userRefreshJobRunEvery;
+  }
+
+  public List<WorkbasketPermission> getMinimalPermissionsToAssignDomains() {
+    return minimalPermissionsToAssignDomains;
+  }
+
+  public Instant getUserRefreshJobFirstRun() {
+    return userRefreshJobFirstRun;
+  }
+
+  public boolean isPriorityJobActive() {
+    return priorityJobActive;
+  }
+
+  public String getSchemaName() {
+    return schemaName;
   }
 
   public boolean isJobSchedulerEnabled() {
@@ -297,250 +346,60 @@ public class TaskanaConfiguration {
     return jobSchedulerPeriodTimeUnit;
   }
 
-  public int getMaxNumberOfJobRetries() {
-    return maxNumberOfJobRetries;
+  public boolean isJobSchedulerEnableTaskCleanupJob() {
+    return jobSchedulerEnableTaskCleanupJob;
   }
 
-  public int getJobBatchSize() {
-    return jobBatchSize;
+  public boolean isJobSchedulerEnableTaskUpdatePriorityJob() {
+    return jobSchedulerEnableTaskUpdatePriorityJob;
   }
 
-  public Instant getJobFirstRun() {
-    return jobFirstRun;
+  public boolean isJobSchedulerEnableWorkbasketCleanupJob() {
+    return jobSchedulerEnableWorkbasketCleanupJob;
   }
 
-  public Duration getJobRunEvery() {
-    return jobRunEvery;
+  public boolean isJobSchedulerEnableUserInfoRefreshJob() {
+    return jobSchedulerEnableUserInfoRefreshJob;
   }
 
-  public boolean isTaskCleanupJobEnabled() {
-    return taskCleanupJobEnabled;
+  public boolean isJobSchedulerEnableHistorieCleanupJob() {
+    return jobSchedulerEnableHistorieCleanupJob;
   }
 
-  public Duration getTaskCleanupJobMinimumAge() {
-    return taskCleanupJobMinimumAge;
-  }
-
-  public boolean isTaskCleanupJobAllCompletedSameParentBusiness() {
-    return taskCleanupJobAllCompletedSameParentBusiness;
-  }
-
-  public boolean isWorkbasketCleanupJobEnabled() {
-    return workbasketCleanupJobEnabled;
-  }
-
-  public boolean isSimpleHistoryCleanupJobEnabled() {
-    return simpleHistoryCleanupJobEnabled;
-  }
-
-  public int getSimpleHistoryCleanupJobBatchSize() {
-    return simpleHistoryCleanupJobBatchSize;
-  }
-
-  public Duration getSimpleHistoryCleanupJobMinimumAge() {
-    return simpleHistoryCleanupJobMinimumAge;
-  }
-
-  public boolean isSimpleHistoryCleanupJobAllCompletedSameParentBusiness() {
-    return simpleHistoryCleanupJobAllCompletedSameParentBusiness;
-  }
-
-  public boolean isTaskUpdatePriorityJobEnabled() {
-    return taskUpdatePriorityJobEnabled;
-  }
-
-  public int getTaskUpdatePriorityJobBatchSize() {
-    return taskUpdatePriorityJobBatchSize;
-  }
-
-  public Instant getTaskUpdatePriorityJobFirstRun() {
-    return taskUpdatePriorityJobFirstRun;
-  }
-
-  public Duration getTaskUpdatePriorityJobRunEvery() {
-    return taskUpdatePriorityJobRunEvery;
-  }
-
-  public boolean isUserInfoRefreshJobEnabled() {
-    return userInfoRefreshJobEnabled;
-  }
-
-  public Instant getUserRefreshJobFirstRun() {
-    return userRefreshJobFirstRun;
-  }
-
-  public Duration getUserRefreshJobRunEvery() {
-    return userRefreshJobRunEvery;
-  }
-
-  public Set<String> getCustomJobs() {
-    return customJobs;
-  }
-
-  public boolean isAddAdditionalUserInfo() {
-    return addAdditionalUserInfo;
-  }
-
-  public Set<WorkbasketPermission> getMinimalPermissionsToAssignDomains() {
-    return minimalPermissionsToAssignDomains;
+  public List<String> getJobSchedulerCustomJobs() {
+    return jobSchedulerCustomJobs;
   }
 
   /**
-   * return all properties loaded from taskana properties file. Per Design the normal Properties are
-   * not immutable, so we return here an ImmutableMap, because we don't want direct changes in the
-   * configuration.
+   * Helper method to determine whether all access ids (user Id and group ids) should be used in
+   * lower case.
    *
-   * @return all properties loaded from taskana properties file
+   * @return true if all access ids should be used in lower case, false otherwise
    */
-  public Map<String, String> getProperties() {
-    return properties;
-  }
-
-  // endregion
-
-  // region hashCode, equals + toString
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        dataSource,
-        useManagedTransactions,
-        schemaName,
-        securityEnabled,
-        domains,
-        enforceServiceLevel,
-        roleMap,
-        classificationTypes,
-        classificationCategoriesByType,
-        workingTimeSchedule,
-        workingTimeScheduleTimeZone,
-        customHolidays,
-        germanPublicHolidaysEnabled,
-        germanPublicHolidaysCorpusChristiEnabled,
-        deleteHistoryEventsOnTaskDeletionEnabled,
-        logHistoryLoggerName,
-        jobSchedulerEnabled,
-        jobSchedulerInitialStartDelay,
-        jobSchedulerPeriod,
-        jobSchedulerPeriodTimeUnit,
-        maxNumberOfJobRetries,
-        jobBatchSize,
-        jobFirstRun,
-        jobRunEvery,
-        taskCleanupJobEnabled,
-        taskCleanupJobMinimumAge,
-        taskCleanupJobAllCompletedSameParentBusiness,
-        workbasketCleanupJobEnabled,
-        simpleHistoryCleanupJobEnabled,
-        simpleHistoryCleanupJobBatchSize,
-        simpleHistoryCleanupJobMinimumAge,
-        simpleHistoryCleanupJobAllCompletedSameParentBusiness,
-        taskUpdatePriorityJobEnabled,
-        taskUpdatePriorityJobBatchSize,
-        taskUpdatePriorityJobFirstRun,
-        taskUpdatePriorityJobRunEvery,
-        userInfoRefreshJobEnabled,
-        userRefreshJobFirstRun,
-        userRefreshJobRunEvery,
-        customJobs,
-        addAdditionalUserInfo,
-        minimalPermissionsToAssignDomains,
-        properties);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof TaskanaConfiguration)) {
-      return false;
-    }
-    TaskanaConfiguration other = (TaskanaConfiguration) obj;
-    return useManagedTransactions == other.useManagedTransactions
-        && securityEnabled == other.securityEnabled
-        && enforceServiceLevel == other.enforceServiceLevel
-        && germanPublicHolidaysEnabled == other.germanPublicHolidaysEnabled
-        && germanPublicHolidaysCorpusChristiEnabled
-            == other.germanPublicHolidaysCorpusChristiEnabled
-        && deleteHistoryEventsOnTaskDeletionEnabled
-            == other.deleteHistoryEventsOnTaskDeletionEnabled
-        && jobSchedulerEnabled == other.jobSchedulerEnabled
-        && jobSchedulerInitialStartDelay == other.jobSchedulerInitialStartDelay
-        && jobSchedulerPeriod == other.jobSchedulerPeriod
-        && maxNumberOfJobRetries == other.maxNumberOfJobRetries
-        && jobBatchSize == other.jobBatchSize
-        && taskCleanupJobEnabled == other.taskCleanupJobEnabled
-        && taskCleanupJobAllCompletedSameParentBusiness
-            == other.taskCleanupJobAllCompletedSameParentBusiness
-        && workbasketCleanupJobEnabled == other.workbasketCleanupJobEnabled
-        && simpleHistoryCleanupJobEnabled == other.simpleHistoryCleanupJobEnabled
-        && simpleHistoryCleanupJobBatchSize == other.simpleHistoryCleanupJobBatchSize
-        && simpleHistoryCleanupJobAllCompletedSameParentBusiness
-            == other.simpleHistoryCleanupJobAllCompletedSameParentBusiness
-        && taskUpdatePriorityJobEnabled == other.taskUpdatePriorityJobEnabled
-        && taskUpdatePriorityJobBatchSize == other.taskUpdatePriorityJobBatchSize
-        && userInfoRefreshJobEnabled == other.userInfoRefreshJobEnabled
-        && addAdditionalUserInfo == other.addAdditionalUserInfo
-        && Objects.equals(dataSource, other.dataSource)
-        && Objects.equals(schemaName, other.schemaName)
-        && Objects.equals(domains, other.domains)
-        && Objects.equals(roleMap, other.roleMap)
-        && Objects.equals(classificationTypes, other.classificationTypes)
-        && Objects.equals(classificationCategoriesByType, other.classificationCategoriesByType)
-        && Objects.equals(workingTimeSchedule, other.workingTimeSchedule)
-        && Objects.equals(workingTimeScheduleTimeZone, other.workingTimeScheduleTimeZone)
-        && Objects.equals(customHolidays, other.customHolidays)
-        && Objects.equals(logHistoryLoggerName, other.logHistoryLoggerName)
-        && jobSchedulerPeriodTimeUnit == other.jobSchedulerPeriodTimeUnit
-        && Objects.equals(jobFirstRun, other.jobFirstRun)
-        && Objects.equals(jobRunEvery, other.jobRunEvery)
-        && Objects.equals(taskCleanupJobMinimumAge, other.taskCleanupJobMinimumAge)
-        && Objects.equals(
-            simpleHistoryCleanupJobMinimumAge, other.simpleHistoryCleanupJobMinimumAge)
-        && Objects.equals(taskUpdatePriorityJobFirstRun, other.taskUpdatePriorityJobFirstRun)
-        && Objects.equals(taskUpdatePriorityJobRunEvery, other.taskUpdatePriorityJobRunEvery)
-        && Objects.equals(userRefreshJobFirstRun, other.userRefreshJobFirstRun)
-        && Objects.equals(userRefreshJobRunEvery, other.userRefreshJobRunEvery)
-        && Objects.equals(customJobs, other.customJobs)
-        && Objects.equals(
-            minimalPermissionsToAssignDomains, other.minimalPermissionsToAssignDomains)
-        && Objects.equals(properties, other.properties);
+  public static boolean shouldUseLowerCaseForAccessIds() {
+    return true;
   }
 
   @Override
   public String toString() {
     return "TaskanaConfiguration [dataSource="
         + dataSource
+        + ", securityEnabled="
+        + securityEnabled
         + ", useManagedTransactions="
         + useManagedTransactions
         + ", schemaName="
         + schemaName
-        + ", securityEnabled="
-        + securityEnabled
-        + ", domains="
-        + domains
-        + ", enforceServiceLevel="
-        + enforceServiceLevel
-        + ", roleMap="
-        + roleMap
-        + ", classificationTypes="
-        + classificationTypes
-        + ", classificationCategoriesByType="
-        + classificationCategoriesByType
-        + ", workingTimeSchedule="
-        + workingTimeSchedule
-        + ", workingTimeScheduleTimeZone="
-        + workingTimeScheduleTimeZone
-        + ", customHolidays="
-        + customHolidays
         + ", germanPublicHolidaysEnabled="
         + germanPublicHolidaysEnabled
-        + ", germanPublicHolidaysCorpusChristiEnabled="
-        + germanPublicHolidaysCorpusChristiEnabled
-        + ", deleteHistoryEventsOnTaskDeletionEnabled="
-        + deleteHistoryEventsOnTaskDeletionEnabled
-        + ", logHistoryLoggerName="
-        + logHistoryLoggerName
+        + ", corpusChristiEnabled="
+        + corpusChristiEnabled
+        + ", deleteHistoryOnTaskDeletionEnabled="
+        + deleteHistoryOnTaskDeletionEnabled
+        + ", properties="
+        + properties
+        + ", workingTimeSchedule="
+        + workingTimeSchedule
         + ", jobSchedulerEnabled="
         + jobSchedulerEnabled
         + ", jobSchedulerInitialStartDelay="
@@ -549,200 +408,236 @@ public class TaskanaConfiguration {
         + jobSchedulerPeriod
         + ", jobSchedulerPeriodTimeUnit="
         + jobSchedulerPeriodTimeUnit
-        + ", maxNumberOfJobRetries="
-        + maxNumberOfJobRetries
+        + ", jobSchedulerEnableTaskCleanupJob="
+        + jobSchedulerEnableTaskCleanupJob
+        + ", jobSchedulerEnableTaskUpdatePriorityJob="
+        + jobSchedulerEnableTaskUpdatePriorityJob
+        + ", jobSchedulerEnableWorkbasketCleanupJob="
+        + jobSchedulerEnableWorkbasketCleanupJob
+        + ", jobSchedulerEnableUserInfoRefreshJob="
+        + jobSchedulerEnableUserInfoRefreshJob
+        + ", jobSchedulerEnableHistorieCleanupJob="
+        + jobSchedulerEnableHistorieCleanupJob
+        + ", jobSchedulerCustomJobs="
+        + jobSchedulerCustomJobs
+        + ", domains="
+        + domains
+        + ", roleMap="
+        + roleMap
+        + ", classificationTypes="
+        + classificationTypes
+        + ", classificationCategoriesByType="
+        + classificationCategoriesByType
+        + ", allowTimestampServiceLevelMismatch="
+        + allowTimestampServiceLevelMismatch
+        + ", customHolidays="
+        + customHolidays
         + ", jobBatchSize="
         + jobBatchSize
-        + ", jobFirstRun="
-        + jobFirstRun
-        + ", jobRunEvery="
-        + jobRunEvery
-        + ", taskCleanupJobEnabled="
-        + taskCleanupJobEnabled
-        + ", taskCleanupJobMinimumAge="
-        + taskCleanupJobMinimumAge
+        + ", maxNumberOfJobRetries="
+        + maxNumberOfJobRetries
+        + ", cleanupJobFirstRun="
+        + cleanupJobFirstRun
+        + ", cleanupJobRunEvery="
+        + cleanupJobRunEvery
+        + ", cleanupJobMinimumAge="
+        + cleanupJobMinimumAge
         + ", taskCleanupJobAllCompletedSameParentBusiness="
         + taskCleanupJobAllCompletedSameParentBusiness
-        + ", workbasketCleanupJobEnabled="
-        + workbasketCleanupJobEnabled
-        + ", simpleHistoryCleanupJobEnabled="
-        + simpleHistoryCleanupJobEnabled
-        + ", simpleHistoryCleanupJobBatchSize="
-        + simpleHistoryCleanupJobBatchSize
-        + ", simpleHistoryCleanupJobMinimumAge="
-        + simpleHistoryCleanupJobMinimumAge
-        + ", simpleHistoryCleanupJobAllCompletedSameParentBusiness="
-        + simpleHistoryCleanupJobAllCompletedSameParentBusiness
-        + ", taskUpdatePriorityJobEnabled="
-        + taskUpdatePriorityJobEnabled
-        + ", taskUpdatePriorityJobBatchSize="
-        + taskUpdatePriorityJobBatchSize
-        + ", taskUpdatePriorityJobFirstRun="
-        + taskUpdatePriorityJobFirstRun
-        + ", taskUpdatePriorityJobRunEvery="
-        + taskUpdatePriorityJobRunEvery
-        + ", userInfoRefreshJobEnabled="
-        + userInfoRefreshJobEnabled
-        + ", userRefreshJobFirstRun="
-        + userRefreshJobFirstRun
+        + ", priorityJobBatchSize="
+        + priorityJobBatchSize
+        + ", priorityJobFirstRun="
+        + priorityJobFirstRun
+        + ", priorityJobRunEvery="
+        + priorityJobRunEvery
+        + ", priorityJobActive="
+        + priorityJobActive
         + ", userRefreshJobRunEvery="
         + userRefreshJobRunEvery
-        + ", customJobs="
-        + customJobs
+        + ", userRefreshJobFirstRun="
+        + userRefreshJobFirstRun
         + ", addAdditionalUserInfo="
         + addAdditionalUserInfo
         + ", minimalPermissionsToAssignDomains="
         + minimalPermissionsToAssignDomains
-        + ", properties="
-        + properties
         + "]";
   }
-
-  // endregion
 
   public static class Builder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Builder.class);
-    private static final String DEFAULT_TASKANA_PROPERTIES = "/taskana.properties";
-    private static final String DEFAULT_TASKANA_PROPERTY_SEPARATOR = "|";
+    private static final String TASKANA_PROPERTIES = "/taskana.properties";
+    private static final String TASKANA_PROPERTY_SEPARATOR = "|";
 
     // region general configuration
     private final DataSource dataSource;
-    private final boolean useManagedTransactions;
-    private final String schemaName;
     private final boolean securityEnabled;
+    private final boolean useManagedTransactions;
+    private String schemaName;
 
     @TaskanaProperty("taskana.domains")
-    private Set<String> domains = new HashSet<>();
-
-    @TaskanaProperty("taskana.servicelevel.validation.enforce")
-    private boolean enforceServiceLevel = true;
+    private List<String> domains = new ArrayList<>();
     // endregion
 
     // region authentication configuration
-    @TaskanaProperty("taskana.roles")
     private Map<TaskanaRole, Set<String>> roleMap = new EnumMap<>(TaskanaRole.class);
     // endregion
 
     // region classification configuration
     @TaskanaProperty("taskana.classification.types")
-    private Set<String> classificationTypes = new HashSet<>();
+    private List<String> classificationTypes = new ArrayList<>();
 
-    @TaskanaProperty("taskana.classification.categories")
-    private Map<String, Set<String>> classificationCategoriesByType = new HashMap<>();
+    // TODO: make this a Set
+    private Map<String, List<String>> classificationCategoriesByType = new HashMap<>();
+
+    @TaskanaProperty("taskana.validation.allowTimestampServiceLevelMismatch")
+    private boolean allowTimestampServiceLevelMismatch = false;
     // endregion
 
-    // region working time configuration
-    @TaskanaProperty("taskana.workingTime.schedule")
+    // region holiday configuration
+    @TaskanaProperty("taskana.custom.holidays")
+    private List<CustomHoliday> customHolidays = new ArrayList<>();
+
+    @TaskanaProperty("taskana.german.holidays.enabled")
+    private boolean germanPublicHolidaysEnabled;
+
+    @TaskanaProperty("taskana.german.holidays.corpus-christi.enabled")
+    private boolean corpusChristiEnabled;
+
+    @TaskanaProperty("taskana.workingtime.schedule")
     private Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule =
         initDefaultWorkingTimeSchedule();
-
-    @TaskanaProperty("taskana.workingTime.timezone")
-    private ZoneId workingTimeScheduleTimeZone = ZoneId.of("Europe/Berlin");
-
-    @TaskanaProperty("taskana.workingTime.holidays.custom")
-    private Set<CustomHoliday> customHolidays = new HashSet<>();
-
-    @TaskanaProperty("taskana.workingTime.holidays.german.enabled")
-    private boolean germanPublicHolidaysEnabled = true;
-
-    @TaskanaProperty("taskana.workingTime.holidays.german.corpus-christi.enabled")
-    private boolean germanPublicHolidaysCorpusChristiEnabled = false;
     // endregion
 
     // region history configuration
-    @TaskanaProperty("taskana.history.simple.deleteOnTaskDeletion.enabled")
-    private boolean deleteHistoryEventsOnTaskDeletionEnabled = false;
-
-    @TaskanaProperty("taskana.history.logger.name")
-    private String logHistoryLoggerName = null; // default value will be set in the logger class.
+    @TaskanaProperty("taskana.history.deletion.on.task.deletion.enabled")
+    private boolean deleteHistoryOnTaskDeletionEnabled;
     // endregion
 
     // region job configuration
-    @TaskanaProperty("taskana.jobs.scheduler.enabled")
-    private boolean jobSchedulerEnabled = true;
-
-    @TaskanaProperty("taskana.jobs.scheduler.initialStartDelay")
-    private long jobSchedulerInitialStartDelay = 100;
-
-    @TaskanaProperty("taskana.jobs.scheduler.period")
-    private long jobSchedulerPeriod = 5;
-
-    @TaskanaProperty("taskana.jobs.scheduler.periodTimeUnit")
-    private TimeUnit jobSchedulerPeriodTimeUnit = TimeUnit.MINUTES;
+    @TaskanaProperty("taskana.jobs.batchSize")
+    private int jobBatchSize = 100;
 
     @TaskanaProperty("taskana.jobs.maxRetries")
     private int maxNumberOfJobRetries = 3;
 
-    @TaskanaProperty("taskana.jobs.batchSize")
-    private int jobBatchSize = 100;
+    @TaskanaProperty("taskana.jobs.cleanup.firstRunAt")
+    private Instant cleanupJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
 
-    @TaskanaProperty("taskana.jobs.firstRunAt")
-    private Instant jobFirstRun = Instant.parse("2023-01-01T00:00:00Z");
+    @TaskanaProperty("taskana.jobs.cleanup.runEvery")
+    private Duration cleanupJobRunEvery = Duration.ofDays(1);
 
-    @TaskanaProperty("taskana.jobs.runEvery")
-    private Duration jobRunEvery = Duration.ofDays(1);
+    @TaskanaProperty("taskana.jobs.cleanup.minimumAge")
+    private Duration cleanupJobMinimumAge = Duration.ofDays(14);
 
-    @TaskanaProperty("taskana.jobs.cleanup.task.enable")
-    private boolean taskCleanupJobEnabled = true;
-
-    @TaskanaProperty("taskana.jobs.cleanup.task.minimumAge")
-    private Duration taskCleanupJobMinimumAge = Duration.ofDays(14);
-
-    @TaskanaProperty("taskana.jobs.cleanup.task.allCompletedSameParentBusiness")
+    @TaskanaProperty("taskana.jobs.cleanup.allCompletedSameParentBusiness")
     private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
 
-    @TaskanaProperty("taskana.jobs.cleanup.workbasket.enable")
-    private boolean workbasketCleanupJobEnabled = true;
+    @TaskanaProperty("taskana.jobs.priority.batchSize")
+    private int priorityJobBatchSize = 100;
 
-    @TaskanaProperty("taskana.jobs.cleanup.history.simple.enable")
-    private boolean simpleHistoryCleanupJobEnabled = false;
+    @TaskanaProperty("taskana.jobs.priority.firstRunAt")
+    private Instant priorityJobFirstRun = Instant.parse("2018-01-01T00:00:00Z");
 
-    @TaskanaProperty("taskana.jobs.cleanup.history.simple.batchSize")
-    private int simpleHistoryCleanupJobBatchSize = 100;
+    @TaskanaProperty("taskana.jobs.priority.runEvery")
+    private Duration priorityJobRunEvery = Duration.ofDays(1);
 
-    @TaskanaProperty("taskana.jobs.cleanup.history.simple.minimumAge")
-    private Duration simpleHistoryCleanupJobMinimumAge = Duration.ofDays(14);
+    @TaskanaProperty("taskana.jobs.priority.active")
+    private boolean priorityJobActive = false;
 
-    @TaskanaProperty("taskana.jobs.cleanup.history.simple.allCompletedSameParentBusiness")
-    private boolean simpleHistoryCleanupJobAllCompletedSameParentBusiness = true;
-
-    @TaskanaProperty("taskana.jobs.priority.task.enable")
-    private boolean taskUpdatePriorityJobEnabled = false;
-
-    @TaskanaProperty("taskana.jobs.priority.task.batchSize")
-    private int taskUpdatePriorityJobBatchSize = 100;
-
-    @TaskanaProperty("taskana.jobs.priority.task.firstRunAt")
-    private Instant taskUpdatePriorityJobFirstRun = Instant.parse("2023-01-01T00:00:00Z");
-
-    @TaskanaProperty("taskana.jobs.priority.task.runEvery")
-    private Duration taskUpdatePriorityJobRunEvery = Duration.ofDays(1);
-
-    @TaskanaProperty("taskana.jobs.refresh.user.enable")
-    private boolean userInfoRefreshJobEnabled = false;
-
-    @TaskanaProperty("taskana.jobs.refresh.user.firstRunAt")
-    private Instant userRefreshJobFirstRun = Instant.parse("2023-01-01T23:00:00Z");
-
-    @TaskanaProperty("taskana.jobs.refresh.user.runEvery")
+    @TaskanaProperty("taskana.jobs.user.refresh.runEvery")
     private Duration userRefreshJobRunEvery = Duration.ofDays(1);
 
-    @TaskanaProperty("taskana.jobs.customJobs")
-    private Set<String> customJobs = new HashSet<>();
+    @TaskanaProperty("taskana.jobs.user.refresh.firstRunAt")
+    private Instant userRefreshJobFirstRun = Instant.parse("2018-01-01T23:00:00Z");
+
+    @TaskanaProperty("taskana.jobscheduler.enabled")
+    private boolean jobSchedulerEnabled = true;
+
+    @TaskanaProperty("taskana.jobscheduler.initialstartdelay")
+    private long jobSchedulerInitialStartDelay = 100;
+
+    @TaskanaProperty("taskana.jobscheduler.period")
+    private long jobSchedulerPeriod = 12;
+
+    @TaskanaProperty("taskana.jobscheduler.periodtimeunit")
+    private TimeUnit jobSchedulerPeriodTimeUnit = TimeUnit.HOURS;
+
+    @TaskanaProperty("taskana.jobscheduler.enableTaskCleanupJob")
+    private boolean jobSchedulerEnableTaskCleanupJob = true;
+
+    @TaskanaProperty("taskana.jobscheduler.enableTaskUpdatePriorityJob")
+    private boolean jobSchedulerEnableTaskUpdatePriorityJob = true;
+
+    @TaskanaProperty("taskana.jobscheduler.enableWorkbasketCleanupJob")
+    private boolean jobSchedulerEnableWorkbasketCleanupJob = true;
+
+    @TaskanaProperty("taskana.jobscheduler.enableUserInfoRefreshJob")
+    private boolean jobSchedulerEnableUserInfoRefreshJob = true;
+
+    @TaskanaProperty("taskana.jobscheduler.enableHistorieCleanupJob")
+    private boolean jobSchedulerEnableHistorieCleanupJob = true;
+
+    @TaskanaProperty("taskana.jobscheduler.customJobs")
+    private List<String> jobSchedulerCustomJobs = new ArrayList<>();
     // endregion
 
     // region user configuration
-    @TaskanaProperty("taskana.user.addAdditionalUserInfo")
+    @TaskanaProperty("taskana.addAdditionalUserInfo")
     private boolean addAdditionalUserInfo = false;
 
+    // TODO: make Set
     @TaskanaProperty("taskana.user.minimalPermissionsToAssignDomains")
-    private Set<WorkbasketPermission> minimalPermissionsToAssignDomains = new HashSet<>();
+    private List<WorkbasketPermission> minimalPermissionsToAssignDomains = new ArrayList<>();
     // endregion
 
     // region custom configuration
     private Map<String, String> properties = Collections.emptyMap();
     // endregion
+
+    public Builder(TaskanaConfiguration conf) {
+      this.dataSource = conf.getDatasource();
+      this.schemaName = conf.getSchemaName();
+      this.properties = conf.getProperties();
+      this.roleMap = conf.getRoleMap();
+      this.securityEnabled = conf.isSecurityEnabled();
+      this.useManagedTransactions = conf.isUseManagedTransactions();
+      this.domains = conf.getDomains();
+      this.classificationTypes = conf.getClassificationTypes();
+      this.classificationCategoriesByType = conf.getClassificationCategoriesByType();
+      this.customHolidays = conf.getCustomHolidays();
+      this.deleteHistoryOnTaskDeletionEnabled = conf.isDeleteHistoryOnTaskDeletionEnabled();
+      this.germanPublicHolidaysEnabled = conf.isGermanPublicHolidaysEnabled();
+      this.corpusChristiEnabled = conf.isCorpusChristiEnabled();
+      this.workingTimeSchedule = conf.getWorkingTimeSchedule();
+      this.jobBatchSize = conf.getJobBatchSize();
+      this.maxNumberOfJobRetries = conf.getMaxNumberOfJobRetries();
+      this.cleanupJobFirstRun = conf.getCleanupJobFirstRun();
+      this.cleanupJobRunEvery = conf.getCleanupJobRunEvery();
+      this.cleanupJobMinimumAge = conf.getCleanupJobMinimumAge();
+      this.taskCleanupJobAllCompletedSameParentBusiness =
+          conf.isTaskCleanupJobAllCompletedSameParentBusiness();
+      this.allowTimestampServiceLevelMismatch = conf.isAllowTimestampServiceLevelMismatch();
+      this.addAdditionalUserInfo = conf.isAddAdditionalUserInfo();
+      this.priorityJobBatchSize = conf.getPriorityJobBatchSize();
+      this.priorityJobFirstRun = conf.getPriorityJobFirstRun();
+      this.priorityJobRunEvery = conf.getPriorityJobRunEvery();
+      this.priorityJobActive = conf.isPriorityJobActive();
+      this.userRefreshJobRunEvery = conf.getUserRefreshJobRunEvery();
+      this.userRefreshJobFirstRun = conf.getUserRefreshJobFirstRun();
+      this.minimalPermissionsToAssignDomains = conf.getMinimalPermissionsToAssignDomains();
+      this.jobSchedulerEnabled = conf.isJobSchedulerEnabled();
+      this.jobSchedulerInitialStartDelay = conf.getJobSchedulerInitialStartDelay();
+      this.jobSchedulerPeriod = conf.getJobSchedulerPeriod();
+      this.jobSchedulerPeriodTimeUnit = conf.getJobSchedulerPeriodTimeUnit();
+      this.jobSchedulerEnableTaskCleanupJob = conf.isJobSchedulerEnableTaskCleanupJob();
+      this.jobSchedulerEnableTaskUpdatePriorityJob =
+          conf.isJobSchedulerEnableTaskUpdatePriorityJob();
+      this.jobSchedulerEnableWorkbasketCleanupJob = conf.isJobSchedulerEnableWorkbasketCleanupJob();
+      this.jobSchedulerEnableUserInfoRefreshJob = conf.isJobSchedulerEnableUserInfoRefreshJob();
+      this.jobSchedulerEnableHistorieCleanupJob = conf.isJobSchedulerEnableHistorieCleanupJob();
+      this.jobSchedulerCustomJobs = conf.getJobSchedulerCustomJobs();
+    }
 
     public Builder(DataSource dataSource, boolean useManagedTransactions, String schemaName) {
       this(dataSource, useManagedTransactions, schemaName, true);
@@ -759,114 +654,245 @@ public class TaskanaConfiguration {
       this.schemaName = initSchemaName(schemaName);
     }
 
-    public Builder(TaskanaConfiguration conf) {
-      this(
-          conf,
-          conf.dataSource,
-          conf.useManagedTransactions,
-          conf.schemaName,
-          conf.securityEnabled);
-    }
+    // region builder methods
 
-    public Builder(TaskanaConfiguration conf, DataSource dataSource) {
-      this(conf, dataSource, conf.useManagedTransactions, conf.schemaName, conf.securityEnabled);
-    }
-
-    public Builder(
-        TaskanaConfiguration conf, DataSource dataSource, boolean useManagedTransactions) {
-      this(conf, dataSource, useManagedTransactions, conf.schemaName, conf.securityEnabled);
-    }
-
-    public Builder(
-        TaskanaConfiguration conf,
-        DataSource dataSource,
-        boolean useManagedTransactions,
-        String schemaName) {
-      this(conf, dataSource, useManagedTransactions, schemaName, conf.securityEnabled);
-    }
-
-    public Builder(
-        TaskanaConfiguration conf,
-        DataSource dataSource,
-        boolean useManagedTransactions,
-        String schemaName,
-        boolean securityEnabled) {
-      // general configuration
-      this.dataSource = dataSource;
-      this.useManagedTransactions = useManagedTransactions;
+    @SuppressWarnings("unused")
+    // TODO: why do we need this method?
+    public Builder schemaName(String schemaName) {
       this.schemaName = initSchemaName(schemaName);
-      this.securityEnabled = securityEnabled;
-      this.domains = conf.domains;
-      this.enforceServiceLevel = conf.enforceServiceLevel;
-      // authentication configuration
-      this.roleMap = conf.roleMap;
-      // classification configuration
-      this.classificationTypes = conf.classificationTypes;
-      this.classificationCategoriesByType = conf.classificationCategoriesByType;
-      // working time configuration
-      this.workingTimeSchedule = conf.workingTimeSchedule;
-      this.workingTimeScheduleTimeZone = conf.workingTimeScheduleTimeZone;
-      this.customHolidays = conf.customHolidays;
-      this.germanPublicHolidaysEnabled = conf.germanPublicHolidaysEnabled;
-      this.germanPublicHolidaysCorpusChristiEnabled = conf.germanPublicHolidaysCorpusChristiEnabled;
-      // holiday configuration
-      this.deleteHistoryEventsOnTaskDeletionEnabled = conf.deleteHistoryEventsOnTaskDeletionEnabled;
-      this.logHistoryLoggerName = conf.logHistoryLoggerName;
-      // job configuration
-      this.jobSchedulerEnabled = conf.jobSchedulerEnabled;
-      this.jobSchedulerInitialStartDelay = conf.jobSchedulerInitialStartDelay;
-      this.jobSchedulerPeriod = conf.jobSchedulerPeriod;
-      this.jobSchedulerPeriodTimeUnit = conf.jobSchedulerPeriodTimeUnit;
-      this.maxNumberOfJobRetries = conf.maxNumberOfJobRetries;
-      this.jobBatchSize = conf.jobBatchSize;
-      this.jobFirstRun = conf.jobFirstRun;
-      this.jobRunEvery = conf.jobRunEvery;
-      this.taskCleanupJobEnabled = conf.taskCleanupJobEnabled;
-      this.taskCleanupJobMinimumAge = conf.taskCleanupJobMinimumAge;
-      this.taskCleanupJobAllCompletedSameParentBusiness =
-          conf.taskCleanupJobAllCompletedSameParentBusiness;
-      this.workbasketCleanupJobEnabled = conf.workbasketCleanupJobEnabled;
-      this.simpleHistoryCleanupJobEnabled = conf.simpleHistoryCleanupJobEnabled;
-      this.simpleHistoryCleanupJobBatchSize = conf.simpleHistoryCleanupJobBatchSize;
-      this.simpleHistoryCleanupJobMinimumAge = conf.simpleHistoryCleanupJobMinimumAge;
-      this.simpleHistoryCleanupJobAllCompletedSameParentBusiness =
-          conf.simpleHistoryCleanupJobAllCompletedSameParentBusiness;
-      this.taskUpdatePriorityJobEnabled = conf.taskUpdatePriorityJobEnabled;
-      this.taskUpdatePriorityJobBatchSize = conf.taskUpdatePriorityJobBatchSize;
-      this.taskUpdatePriorityJobFirstRun = conf.taskUpdatePriorityJobFirstRun;
-      this.taskUpdatePriorityJobRunEvery = conf.taskUpdatePriorityJobRunEvery;
-      this.userInfoRefreshJobEnabled = conf.userInfoRefreshJobEnabled;
-      this.userRefreshJobFirstRun = conf.userRefreshJobFirstRun;
-      this.userRefreshJobRunEvery = conf.userRefreshJobRunEvery;
-      this.customJobs = conf.customJobs;
-      // user configuration
-      this.addAdditionalUserInfo = conf.addAdditionalUserInfo;
-      this.minimalPermissionsToAssignDomains = conf.minimalPermissionsToAssignDomains;
-      // custom configuration
-      this.properties = conf.properties;
+      return this;
     }
+
+    @SuppressWarnings("unused")
+    public Builder roleMap(Map<TaskanaRole, Set<String>> roleMap) {
+      this.roleMap = roleMap;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder domains(List<String> domains) {
+      this.domains = domains;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder classificationTypes(List<String> classificationTypes) {
+      this.classificationTypes = classificationTypes;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder classificationCategoriesByTypeMap(
+        Map<String, List<String>> classificationCategoriesByTypeMap) {
+      this.classificationCategoriesByType = classificationCategoriesByTypeMap;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder customHolidays(List<CustomHoliday> customHolidays) {
+      this.customHolidays = customHolidays;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder deleteHistoryOnTaskDeletionEnabled(boolean deleteHistoryOnTaskDeletionEnabled) {
+      this.deleteHistoryOnTaskDeletionEnabled = deleteHistoryOnTaskDeletionEnabled;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder germanPublicHolidaysEnabled(boolean germanPublicHolidaysEnabled) {
+      this.germanPublicHolidaysEnabled = germanPublicHolidaysEnabled;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder corpusChristiEnabled(boolean corpusChristiEnabled) {
+      this.corpusChristiEnabled = corpusChristiEnabled;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder jobBatchSize(int jobBatchSize) {
+      this.jobBatchSize = jobBatchSize;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder maxNumberOfJobRetries(int maxNumberOfJobRetries) {
+      this.maxNumberOfJobRetries = maxNumberOfJobRetries;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder cleanupJobFirstRun(Instant cleanupJobFirstRun) {
+      this.cleanupJobFirstRun = cleanupJobFirstRun;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder cleanupJobRunEvery(Duration cleanupJobRunEvery) {
+      this.cleanupJobRunEvery = cleanupJobRunEvery;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder cleanupJobMinimumAge(Duration cleanupJobMinimumAge) {
+      this.cleanupJobMinimumAge = cleanupJobMinimumAge;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder taskCleanupJobAllCompletedSameParentBusiness(
+        boolean taskCleanupJobAllCompletedSameParentBusiness) {
+      this.taskCleanupJobAllCompletedSameParentBusiness =
+          taskCleanupJobAllCompletedSameParentBusiness;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder allowTimestampServiceLevelMismatch(
+        boolean validationAllowTimestampServiceLevelMismatch) {
+      this.allowTimestampServiceLevelMismatch = validationAllowTimestampServiceLevelMismatch;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder addAdditionalUserInfo(boolean addAdditionalUserInfo) {
+      this.addAdditionalUserInfo = addAdditionalUserInfo;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder priorityJobBatchSize(int priorityJobBatchSize) {
+      this.priorityJobBatchSize = priorityJobBatchSize;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder priorityJobFirstRun(Instant priorityJobFirstRun) {
+      this.priorityJobFirstRun = priorityJobFirstRun;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder priorityJobRunEvery(Duration priorityJobRunEvery) {
+      this.priorityJobRunEvery = priorityJobRunEvery;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder priorityJobActive(boolean priorityJobActive) {
+      this.priorityJobActive = priorityJobActive;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder userRefreshJobRunEvery(Duration userRefreshJobRunEvery) {
+      this.userRefreshJobRunEvery = userRefreshJobRunEvery;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder userRefreshJobFirstRun(Instant userRefreshJobFirstRun) {
+      this.userRefreshJobFirstRun = userRefreshJobFirstRun;
+      return this;
+    }
+
+    @SuppressWarnings("unused")
+    public Builder minimalPermissionsToAssignDomains(
+        List<WorkbasketPermission> minimalPermissionsToAssignDomains) {
+      this.minimalPermissionsToAssignDomains = minimalPermissionsToAssignDomains;
+      return this;
+    }
+
+    public Builder jobSchedulerEnabled(boolean jobSchedulerEnabled) {
+      this.jobSchedulerEnabled = jobSchedulerEnabled;
+      return this;
+    }
+
+    public Builder jobSchedulerInitialStartDelay(long jobSchedulerInitialStartDelay) {
+      this.jobSchedulerInitialStartDelay = jobSchedulerInitialStartDelay;
+      return this;
+    }
+
+    public Builder jobSchedulerPeriod(long jobSchedulerPeriod) {
+      this.jobSchedulerPeriod = jobSchedulerPeriod;
+      return this;
+    }
+
+    public Builder jobSchedulerPeriodTimeUnit(TimeUnit jobSchedulerPeriodTimeUnit) {
+      this.jobSchedulerPeriodTimeUnit = jobSchedulerPeriodTimeUnit;
+      return this;
+    }
+
+    public Builder jobSchedulerEnableTaskCleanupJob(boolean jobSchedulerEnableTaskCleanupJob) {
+      this.jobSchedulerEnableTaskCleanupJob = jobSchedulerEnableTaskCleanupJob;
+      return this;
+    }
+
+    public Builder jobSchedulerEnableTaskUpdatePriorityJob(
+        boolean jobSchedulerEnableTaskUpdatePriorityJob) {
+      this.jobSchedulerEnableTaskUpdatePriorityJob = jobSchedulerEnableTaskUpdatePriorityJob;
+      return this;
+    }
+
+    public Builder jobSchedulerEnableWorkbasketCleanupJob(
+        boolean jobSchedulerEnableWorkbasketCleanupJob) {
+      this.jobSchedulerEnableWorkbasketCleanupJob = jobSchedulerEnableWorkbasketCleanupJob;
+      return this;
+    }
+
+    public Builder jobSchedulerEnableUserInfoRefreshJob(
+        boolean jobSchedulerEnableUserInfoRefreshJob) {
+      this.jobSchedulerEnableUserInfoRefreshJob = jobSchedulerEnableUserInfoRefreshJob;
+      return this;
+    }
+
+    public Builder jobSchedulerEnableHistorieCleanupJob(
+        boolean jobSchedulerEnableHistorieCleanupJob) {
+      this.jobSchedulerEnableHistorieCleanupJob = jobSchedulerEnableHistorieCleanupJob;
+      return this;
+    }
+
+    public Builder jobSchedulerCustomJobs(List<String> jobSchedulerCustomJobs) {
+      this.jobSchedulerCustomJobs = jobSchedulerCustomJobs;
+      return this;
+    }
+
+    public Builder workingTimeSchedule(Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule) {
+      this.workingTimeSchedule = workingTimeSchedule;
+      return this;
+    }
+
+    public TaskanaConfiguration build() {
+      validateConfiguration();
+      return new TaskanaConfiguration(this);
+    }
+
+    // endregion
 
     /**
      * Configure the {@linkplain TaskanaConfiguration} with the default {@linkplain
-     * #DEFAULT_TASKANA_PROPERTIES property file location} and {@linkplain
-     * #DEFAULT_TASKANA_PROPERTY_SEPARATOR property separator}.
+     * #TASKANA_PROPERTIES property file location} and {@linkplain #TASKANA_PROPERTY_SEPARATOR
+     * property separator}.
      *
      * @see #initTaskanaProperties(String, String)
      */
     @SuppressWarnings({"unused", "checkstyle:JavadocMethod"})
     public Builder initTaskanaProperties() {
-      return initTaskanaProperties(DEFAULT_TASKANA_PROPERTIES, DEFAULT_TASKANA_PROPERTY_SEPARATOR);
+      return this.initTaskanaProperties(TASKANA_PROPERTIES, TASKANA_PROPERTY_SEPARATOR);
     }
 
     /**
      * Configure the {@linkplain TaskanaConfiguration} with the default {@linkplain
-     * #DEFAULT_TASKANA_PROPERTY_SEPARATOR property separator}.
+     * #TASKANA_PROPERTY_SEPARATOR property separator}.
      *
      * @see #initTaskanaProperties(String, String)
      */
     @SuppressWarnings({"unused", "checkstyle:JavadocMethod"})
     public Builder initTaskanaProperties(String propertiesFile) {
-      return initTaskanaProperties(propertiesFile, DEFAULT_TASKANA_PROPERTY_SEPARATOR);
+      return this.initTaskanaProperties(propertiesFile, TASKANA_PROPERTY_SEPARATOR);
     }
 
     /**
@@ -895,297 +921,11 @@ public class TaskanaConfiguration {
             "Reading taskana configuration from {} with separator {}", propertiesFile, separator);
       }
       properties = loadProperties(propertiesFile);
-      configureAnnotatedFields(separator, properties);
-      return this;
-    }
-
-    // region builder methods
-
-    // region general configuration
-
-    public Builder domains(Set<String> domains) {
-      this.domains = domains;
-      return this;
-    }
-
-    public Builder enforceServiceLevel(boolean enforceServiceLevel) {
-      this.enforceServiceLevel = enforceServiceLevel;
-      return this;
-    }
-
-    // endregion
-
-    // region authentication configuration
-
-    public Builder roleMap(Map<TaskanaRole, Set<String>> roleMap) {
-      this.roleMap = roleMap;
-      return this;
-    }
-
-    // endregion
-
-    // region classification configuration
-
-    public Builder classificationTypes(Set<String> classificationTypes) {
-      this.classificationTypes = classificationTypes;
-      return this;
-    }
-
-    public Builder classificationCategoriesByType(
-        Map<String, Set<String>> classificationCategoriesByType) {
-      this.classificationCategoriesByType = classificationCategoriesByType;
-      return this;
-    }
-
-    // endregion
-
-    // region working time configuration
-
-    public Builder workingTimeSchedule(Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule) {
-      this.workingTimeSchedule = workingTimeSchedule;
-      return this;
-    }
-
-    public Builder workingTimeScheduleTimeZone(ZoneId workingTimeScheduleTimeZone) {
-      this.workingTimeScheduleTimeZone = workingTimeScheduleTimeZone;
-      return this;
-    }
-
-    public Builder customHolidays(Set<CustomHoliday> customHolidays) {
-      this.customHolidays = customHolidays;
-      return this;
-    }
-
-    public Builder germanPublicHolidaysEnabled(boolean germanPublicHolidaysEnabled) {
-      this.germanPublicHolidaysEnabled = germanPublicHolidaysEnabled;
-      return this;
-    }
-
-    public Builder germanPublicHolidaysCorpusChristiEnabled(
-        boolean germanPublicHolidaysCorpusChristiEnabled) {
-      this.germanPublicHolidaysCorpusChristiEnabled = germanPublicHolidaysCorpusChristiEnabled;
-      return this;
-    }
-
-    // endregion
-
-    // region history configuration
-
-    public Builder deleteHistoryEventsOnTaskDeletionEnabled(
-        boolean deleteHistoryEventsOnTaskDeletionEnabled) {
-      this.deleteHistoryEventsOnTaskDeletionEnabled = deleteHistoryEventsOnTaskDeletionEnabled;
-      return this;
-    }
-
-    public Builder logHistoryLoggerName(String loggerName) {
-      this.logHistoryLoggerName = loggerName;
-      return this;
-    }
-
-    // endregion
-
-    // region job configuration
-
-    public Builder jobSchedulerEnabled(boolean jobSchedulerEnabled) {
-      this.jobSchedulerEnabled = jobSchedulerEnabled;
-      return this;
-    }
-
-    public Builder jobSchedulerInitialStartDelay(long jobSchedulerInitialStartDelay) {
-      this.jobSchedulerInitialStartDelay = jobSchedulerInitialStartDelay;
-      return this;
-    }
-
-    public Builder jobSchedulerPeriod(long jobSchedulerPeriod) {
-      this.jobSchedulerPeriod = jobSchedulerPeriod;
-      return this;
-    }
-
-    public Builder jobSchedulerPeriodTimeUnit(TimeUnit jobSchedulerPeriodTimeUnit) {
-      this.jobSchedulerPeriodTimeUnit = jobSchedulerPeriodTimeUnit;
-      return this;
-    }
-
-    public Builder maxNumberOfJobRetries(int maxNumberOfJobRetries) {
-      this.maxNumberOfJobRetries = maxNumberOfJobRetries;
-      return this;
-    }
-
-    public Builder jobBatchSize(int jobBatchSize) {
-      this.jobBatchSize = jobBatchSize;
-      return this;
-    }
-
-    public Builder jobFirstRun(Instant jobFirstRun) {
-      this.jobFirstRun = jobFirstRun;
-      return this;
-    }
-
-    public Builder jobRunEvery(Duration jobRunEvery) {
-      this.jobRunEvery = jobRunEvery;
-      return this;
-    }
-
-    public Builder taskCleanupJobEnabled(boolean taskCleanupJobEnabled) {
-      this.taskCleanupJobEnabled = taskCleanupJobEnabled;
-      return this;
-    }
-
-    public Builder taskCleanupJobMinimumAge(Duration taskCleanupJobMinimumAge) {
-      this.taskCleanupJobMinimumAge = taskCleanupJobMinimumAge;
-      return this;
-    }
-
-    public Builder taskCleanupJobAllCompletedSameParentBusiness(
-        boolean taskCleanupJobAllCompletedSameParentBusiness) {
-      this.taskCleanupJobAllCompletedSameParentBusiness =
-          taskCleanupJobAllCompletedSameParentBusiness;
-      return this;
-    }
-
-    public Builder workbasketCleanupJobEnabled(boolean workbasketCleanupJobEnabled) {
-      this.workbasketCleanupJobEnabled = workbasketCleanupJobEnabled;
-      return this;
-    }
-
-    public Builder simpleHistoryCleanupJobEnabled(boolean simpleHistoryCleanupJobEnabled) {
-      this.simpleHistoryCleanupJobEnabled = simpleHistoryCleanupJobEnabled;
-      return this;
-    }
-
-    public Builder simpleHistoryCleanupJobBatchSize(int simpleHistoryCleanupJobBatchSize) {
-      this.simpleHistoryCleanupJobBatchSize = simpleHistoryCleanupJobBatchSize;
-      return this;
-    }
-
-    public Builder simpleHistoryCleanupJobMinimumAge(Duration simpleHistoryCleanupJobMinimumAge) {
-      this.simpleHistoryCleanupJobMinimumAge = simpleHistoryCleanupJobMinimumAge;
-      return this;
-    }
-
-    public Builder simpleHistoryCleanupJobAllCompletedSameParentBusiness(
-        boolean simpleHistoryCleanupJobAllCompletedSameParentBusiness) {
-      this.simpleHistoryCleanupJobAllCompletedSameParentBusiness =
-          simpleHistoryCleanupJobAllCompletedSameParentBusiness;
-      return this;
-    }
-
-    public Builder taskUpdatePriorityJobEnabled(boolean taskUpdatePriorityJobEnabled) {
-      this.taskUpdatePriorityJobEnabled = taskUpdatePriorityJobEnabled;
-      return this;
-    }
-
-    public Builder taskUpdatePriorityJobBatchSize(int priorityJobBatchSize) {
-      this.taskUpdatePriorityJobBatchSize = priorityJobBatchSize;
-      return this;
-    }
-
-    public Builder taskUpdatePriorityJobFirstRun(Instant taskUpdatePriorityJobFirstRun) {
-      this.taskUpdatePriorityJobFirstRun = taskUpdatePriorityJobFirstRun;
-      return this;
-    }
-
-    public Builder taskUpdatePriorityJobRunEvery(Duration taskUpdatePriorityJobRunEvery) {
-      this.taskUpdatePriorityJobRunEvery = taskUpdatePriorityJobRunEvery;
-      return this;
-    }
-
-    public Builder userInfoRefreshJobEnabled(boolean userInfoRefreshJobEnabled) {
-      this.userInfoRefreshJobEnabled = userInfoRefreshJobEnabled;
-      return this;
-    }
-
-    public Builder userRefreshJobFirstRun(Instant userRefreshJobFirstRun) {
-      this.userRefreshJobFirstRun = userRefreshJobFirstRun;
-      return this;
-    }
-
-    public Builder userRefreshJobRunEvery(Duration userRefreshJobRunEvery) {
-      this.userRefreshJobRunEvery = userRefreshJobRunEvery;
-      return this;
-    }
-
-    public Builder customJobs(Set<String> customJobs) {
-      this.customJobs = customJobs;
-      return this;
-    }
-
-    // endregion
-
-    // region user configuration
-
-    public Builder addAdditionalUserInfo(boolean addAdditionalUserInfo) {
-      this.addAdditionalUserInfo = addAdditionalUserInfo;
-      return this;
-    }
-
-    public Builder minimalPermissionsToAssignDomains(
-        Set<WorkbasketPermission> minimalPermissionsToAssignDomains) {
-      this.minimalPermissionsToAssignDomains = minimalPermissionsToAssignDomains;
-      return this;
-    }
-
-    // endregion
-
-    public TaskanaConfiguration build() {
-      adjustConfiguration();
-      validateConfiguration();
-      return new TaskanaConfiguration(this);
-    }
-
-    // endregion
-
-    private void configureAnnotatedFields(String separator, Map<String, String> props) {
-      final List<Field> fields = ReflectionUtil.retrieveAllFields(getClass());
-      for (Field field : fields) {
-        Optional.ofNullable(field.getAnnotation(TaskanaProperty.class))
-            .flatMap(
-                taskanaProperty ->
-                    PropertyParser.getPropertyParser(field.getType())
-                        .parse(props, separator, field, taskanaProperty))
-            .ifPresent(value -> setFieldValue(field, value));
-      }
-    }
-
-    private void setFieldValue(Field field, Object value) {
-      try {
-        field.set(this, value);
-      } catch (IllegalAccessException | IllegalArgumentException e) {
-        throw new SystemException(
-            String.format("Property value '%s' is invalid for field '%s'", value, field.getName()),
-            e);
-      }
-    }
-
-    private void adjustConfiguration() {
-      domains = domains.stream().map(String::toUpperCase).collect(Collectors.toSet());
-      classificationTypes =
-          classificationTypes.stream().map(String::toUpperCase).collect(Collectors.toSet());
+      configureAnnotatedFields(this, separator, properties);
+      roleMap = configureRoles(separator, properties, shouldUseLowerCaseForAccessIds());
       classificationCategoriesByType =
-          classificationCategoriesByType.entrySet().stream()
-              .map(
-                  e ->
-                      Map.entry(
-                          e.getKey().toUpperCase(),
-                          e.getValue().stream()
-                              .map(String::toUpperCase)
-                              .collect(Collectors.toSet())))
-              .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-      roleMap =
-          Arrays.stream(TaskanaRole.values())
-              .map(role -> Pair.of(role, roleMap.getOrDefault(role, Set.of())))
-              .map(
-                  pair -> {
-                    if (TaskanaConfiguration.shouldUseLowerCaseForAccessIds()) {
-                      return Pair.of(
-                          pair.getLeft(),
-                          pair.getRight().stream()
-                              .map(String::toLowerCase)
-                              .collect(Collectors.toSet()));
-                    }
-                    return pair;
-                  })
-              .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
+          configureClassificationCategoriesForType(properties, classificationTypes);
+      return this;
     }
 
     private void validateConfiguration() {
@@ -1198,69 +938,46 @@ public class TaskanaConfiguration {
             "Parameter maxNumberOfJobRetries (taskana.jobs.maxRetries)"
                 + " must be a positive integer");
       }
-      if (jobRunEvery == null || jobRunEvery.isNegative() || jobRunEvery.isZero()) {
+      if (cleanupJobRunEvery == null
+          || cleanupJobRunEvery.isNegative()
+          || cleanupJobRunEvery.isZero()) {
         throw new InvalidArgumentException(
-            "Parameter jobRunEvery (taskana.jobs.runEvery) must be a positive duration");
-      }
-      if (simpleHistoryCleanupJobMinimumAge == null
-          || simpleHistoryCleanupJobMinimumAge.isNegative()) {
-        throw new InvalidArgumentException(
-            "Parameter simpleHistoryCleanupJobMinimumAge "
-                + "(taskana.jobs.cleanup.history.simple.minimumAge) must not be negative");
-      }
-      if (taskCleanupJobMinimumAge == null || taskCleanupJobMinimumAge.isNegative()) {
-        throw new InvalidArgumentException(
-            "Parameter taskCleanupJobMinimumAge "
-                + "(taskana.jobs.cleanup.task.minimumAge) must not be negative");
-      }
-      if (taskUpdatePriorityJobBatchSize <= 0) {
-        throw new InvalidArgumentException(
-            "Parameter taskUpdatePriorityJobBatchSize (taskana.jobs.priority.task.batchSize)"
+            "Parameter cleanupJobRunEvery (taskana.jobs.cleanup.runEvery)"
                 + " must be a positive integer");
       }
-      if (taskUpdatePriorityJobRunEvery == null
-          || taskUpdatePriorityJobRunEvery.isNegative()
-          || taskUpdatePriorityJobRunEvery.isZero()) {
+      if (cleanupJobMinimumAge == null || cleanupJobMinimumAge.isNegative()) {
         throw new InvalidArgumentException(
-            "Parameter taskUpdatePriorityJobRunEvery (taskana.jobs.priority.task.runEvery)"
-                + " must be a positive duration");
+            "Parameter cleanupJobMinimumAge (taskana.jobs.cleanup.minimumAge)"
+                + " must be a positive integer");
+      }
+      if (priorityJobBatchSize <= 0) {
+        throw new InvalidArgumentException(
+            "Parameter priorityJobBatchSize (taskana.jobs.priority.batchSize)"
+                + " must be a positive integer");
+      }
+      if (priorityJobRunEvery == null
+          || priorityJobRunEvery.isNegative()
+          || priorityJobRunEvery.isZero()) {
+        throw new InvalidArgumentException(
+            "Parameter priorityJobRunEvery (taskana.jobs.priority.runEvery)"
+                + " must be a positive integer");
       }
       if (userRefreshJobRunEvery == null
           || userRefreshJobRunEvery.isNegative()
           || userRefreshJobRunEvery.isZero()) {
         throw new InvalidArgumentException(
-            "Parameter userRefreshJobRunEvery (taskana.jobs.refresh.user.runEvery)"
-                + " must be a positive duration");
+            "Parameter userRefreshJobRunEvery (taskana.jobs.user.refresh.runEvery)"
+                + " must be a positive integer");
       }
       if (jobSchedulerInitialStartDelay < 0) {
         throw new InvalidArgumentException(
-            "Parameter jobSchedulerInitialStartDelay (taskana.jobs.scheduler.initialStartDelay)"
-                + " must be a natural integer");
+            "Parameter jobSchedulerInitialStartDelay (taskana.jobscheduler.initialstartdelay)"
+                + " must be a positive integer");
       }
       if (jobSchedulerPeriod <= 0) {
         throw new InvalidArgumentException(
-            "Parameter jobSchedulerPeriod (taskana.jobs.scheduler.period) "
+            "Parameter jobSchedulerPeriod (taskana.jobscheduler.period) "
                 + "must be a positive integer");
-      }
-      if (!new HashSet<>(classificationTypes)
-          .containsAll(classificationCategoriesByType.keySet())) {
-        throw new InvalidArgumentException(
-            String.format(
-                "Parameter classificationCategoriesByType (taskana.classification.categories.<KEY>)"
-                    + " contains invalid Classification Types. "
-                    + "configured: %s "
-                    + "detected: %s",
-                classificationTypes, classificationCategoriesByType.keySet()));
-      }
-
-      if (!classificationCategoriesByType.keySet().containsAll(classificationTypes)) {
-        throw new InvalidArgumentException(
-            String.format(
-                "Some Classification Categories for parameter classificationTypes "
-                    + "(taskana.classification.types) are missing. "
-                    + "configured: %s "
-                    + "detected: %s",
-                classificationTypes, classificationCategoriesByType.keySet()));
       }
     }
 
@@ -1300,13 +1017,18 @@ public class TaskanaConfiguration {
 
     private static Map<DayOfWeek, Set<LocalTimeInterval>> initDefaultWorkingTimeSchedule() {
       Map<DayOfWeek, Set<LocalTimeInterval>> workingTime = new EnumMap<>(DayOfWeek.class);
+
+      // Default working time schedule is from Monday 00:00 - Friday 24:00, but CET (hence -1 hour)
       Set<LocalTimeInterval> standardWorkingSlots =
           Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.MAX));
+      workingTime.put(
+          DayOfWeek.SUNDAY, Set.of(new LocalTimeInterval(LocalTime.of(23, 0), LocalTime.MAX)));
       workingTime.put(DayOfWeek.MONDAY, standardWorkingSlots);
       workingTime.put(DayOfWeek.TUESDAY, standardWorkingSlots);
       workingTime.put(DayOfWeek.WEDNESDAY, standardWorkingSlots);
       workingTime.put(DayOfWeek.THURSDAY, standardWorkingSlots);
-      workingTime.put(DayOfWeek.FRIDAY, standardWorkingSlots);
+      workingTime.put(
+          DayOfWeek.FRIDAY, Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.of(23, 0))));
       return workingTime;
     }
   }

@@ -6,11 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Nested;
@@ -36,8 +32,7 @@ class WorkingTimeCalculatorImplTest {
                 DayOfWeek.TUESDAY, standardWorkingSlots,
                 DayOfWeek.WEDNESDAY, standardWorkingSlots,
                 DayOfWeek.THURSDAY, standardWorkingSlots,
-                DayOfWeek.FRIDAY, standardWorkingSlots),
-            ZoneOffset.UTC);
+                DayOfWeek.FRIDAY, standardWorkingSlots));
 
     @Nested
     class WorkingTimeAddition {
@@ -386,8 +381,7 @@ class WorkingTimeCalculatorImplTest {
                 DayOfWeek.TUESDAY, standardWorkday,
                 DayOfWeek.WEDNESDAY, standardWorkday,
                 DayOfWeek.THURSDAY, standardWorkday,
-                DayOfWeek.FRIDAY, standardWorkday),
-            ZoneOffset.UTC);
+                DayOfWeek.FRIDAY, standardWorkday));
 
     @Test
     void addTimeToMatchEndOfFirstAndStartOfSecondSlot() {
@@ -422,8 +416,7 @@ class WorkingTimeCalculatorImplTest {
                 DayOfWeek.TUESDAY, completeWorkDay,
                 DayOfWeek.WEDNESDAY, completeWorkDay,
                 DayOfWeek.THURSDAY, completeWorkDay,
-                DayOfWeek.FRIDAY, completeWorkDay),
-            ZoneOffset.UTC);
+                DayOfWeek.FRIDAY, completeWorkDay));
 
     @Test
     void withDurationOfZeroOnHolySaturday() {
@@ -469,8 +462,7 @@ class WorkingTimeCalculatorImplTest {
     private final WorkingTimeCalculator cut =
         new WorkingTimeCalculatorImpl(
             new HolidaySchedule(true, false),
-            Map.of(DayOfWeek.SUNDAY, Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.MAX))),
-            ZoneOffset.UTC);
+            Map.of(DayOfWeek.SUNDAY, Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.MAX))));
 
     @Test
     void returnsTrueIfWorkingTimeScheduleIsDefinedForDayOfWeek() {
@@ -503,104 +495,6 @@ class WorkingTimeCalculatorImplTest {
     void failForNull() {
       assertThatExceptionOfType(NullPointerException.class)
           .isThrownBy(() -> cut.isWorkingDay(null));
-    }
-  }
-
-  @Nested
-  class WorkingTimeWithNonUtcTimeZoneAcrossDaylightSavingTimeSwitch {
-
-    private final ZoneId cet = ZoneId.of("Europe/Berlin");
-    private final Set<LocalTimeInterval> completeWorkDay =
-        Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.MAX));
-
-    private final WorkingTimeCalculator cut =
-        new WorkingTimeCalculatorImpl(
-            new HolidaySchedule(true, false),
-            Map.of(
-                DayOfWeek.MONDAY, completeWorkDay,
-                DayOfWeek.TUESDAY, completeWorkDay,
-                DayOfWeek.WEDNESDAY, completeWorkDay,
-                DayOfWeek.THURSDAY, completeWorkDay,
-                DayOfWeek.FRIDAY, completeWorkDay),
-            cet);
-
-    @Test
-    void addsWorkingTimeCorrectly() {
-      Instant fridayBefore =
-          ZonedDateTime.of(LocalDateTime.parse("2022-03-25T09:30:00"), cet).toInstant();
-
-      Instant dueDate = cut.addWorkingTime(fridayBefore, Duration.ofHours(17));
-
-      assertThat(dueDate)
-          .isEqualTo(ZonedDateTime.of(LocalDateTime.parse("2022-03-28T02:30:00"), cet).toInstant());
-    }
-
-    @Test
-    void subtractsWorkingTimeCorrectly() {
-      Instant mondayAfter =
-          ZonedDateTime.of(LocalDateTime.parse("2022-10-31T08:54:00"), cet).toInstant();
-
-      Instant dueDate = cut.subtractWorkingTime(mondayAfter, Duration.ofHours(18));
-
-      assertThat(dueDate)
-          .isEqualTo(ZonedDateTime.of(LocalDateTime.parse("2022-10-28T14:54:00"), cet).toInstant());
-    }
-
-    @Test
-    void calculatesWorkingTimeBetweenCorrectly() {
-      Instant fridayBefore =
-          ZonedDateTime.of(LocalDateTime.parse("2023-03-24T09:30:00"), cet).toInstant();
-      Instant mondayAfter =
-          ZonedDateTime.of(LocalDateTime.parse("2023-03-27T02:30:00"), cet).toInstant();
-
-      Duration duration = cut.workingTimeBetween(fridayBefore, mondayAfter);
-
-      assertThat(duration).isEqualTo(Duration.ofHours(17));
-    }
-  }
-
-  @Nested
-  class WorkingTimeWithWorkSlotsSpanningAcrossDaylightSavingTimeSwitch {
-
-    ZoneId cet = ZoneId.of("Europe/Berlin");
-    WorkingTimeCalculator cut =
-        new WorkingTimeCalculatorImpl(
-            new HolidaySchedule(true, false),
-            Map.of(DayOfWeek.SUNDAY, Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.MAX))),
-            cet);
-
-    @Test
-    void addsCorrectly() {
-      Instant beforeSwitch =
-          ZonedDateTime.of(LocalDateTime.parse("2023-03-26T00:00:00"), cet).toInstant();
-
-      Instant afterSwitch = cut.addWorkingTime(beforeSwitch, Duration.ofHours(3));
-
-      assertThat(afterSwitch)
-          .isEqualTo(ZonedDateTime.of(LocalDateTime.parse("2023-03-26T04:00:00"), cet).toInstant());
-    }
-
-    @Test
-    void subtractsCorrectly() {
-      Instant afterSwitch =
-          ZonedDateTime.of(LocalDateTime.parse("2023-03-26T05:00:00"), cet).toInstant();
-
-      Instant beforeSwitch = cut.subtractWorkingTime(afterSwitch, Duration.ofHours(3));
-
-      assertThat(beforeSwitch)
-          .isEqualTo(ZonedDateTime.of(LocalDateTime.parse("2023-03-26T01:00:00"), cet).toInstant());
-    }
-
-    @Test
-    void calculatesWorkingTimeBetweenCorrectly() {
-      Instant beforeSwitch =
-          ZonedDateTime.of(LocalDateTime.parse("2023-03-26T00:00:00"), cet).toInstant();
-      Instant afterSwitch =
-          ZonedDateTime.of(LocalDateTime.parse("2023-03-26T09:00:00"), cet).toInstant();
-
-      Duration duration = cut.workingTimeBetween(beforeSwitch, afterSwitch);
-
-      assertThat(duration).isEqualTo(Duration.ofHours(8));
     }
   }
 }
