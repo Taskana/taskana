@@ -51,6 +51,7 @@ import pro.taskana.common.internal.persistence.MapTypeHandler;
 import pro.taskana.common.internal.persistence.StringTypeHandler;
 import pro.taskana.common.internal.security.CurrentUserContextImpl;
 import pro.taskana.common.internal.workingtime.HolidaySchedule;
+import pro.taskana.common.internal.workingtime.WorkingDayCalculatorImpl;
 import pro.taskana.common.internal.workingtime.WorkingTimeCalculatorImpl;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.internal.MonitorMapper;
@@ -128,11 +129,18 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             taskanaConfiguration.isGermanPublicHolidaysEnabled(),
             taskanaConfiguration.isGermanPublicHolidaysCorpusChristiEnabled(),
             taskanaConfiguration.getCustomHolidays());
-    workingTimeCalculator =
-        new WorkingTimeCalculatorImpl(
-            holidaySchedule,
-            taskanaConfiguration.getWorkingTimeSchedule(),
-            taskanaConfiguration.getWorkingTimeScheduleTimeZone());
+    if (taskanaConfiguration.isUseDetailedWorkingTimeCalculation()) {
+      workingTimeCalculator =
+          new WorkingTimeCalculatorImpl(
+              holidaySchedule,
+              taskanaConfiguration.getWorkingTimeSchedule(),
+              taskanaConfiguration.getWorkingTimeScheduleTimeZone());
+    } else {
+      workingTimeCalculator =
+          new WorkingDayCalculatorImpl(
+              holidaySchedule, taskanaConfiguration.getWorkingTimeScheduleTimeZone());
+    }
+
     currentUserContext =
         new CurrentUserContextImpl(TaskanaConfiguration.shouldUseLowerCaseForAccessIds());
     createTransactionFactory(taskanaConfiguration.isUseManagedTransactions());
