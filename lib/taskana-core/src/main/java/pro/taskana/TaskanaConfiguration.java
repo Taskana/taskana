@@ -16,9 +16,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -148,10 +150,14 @@ public class TaskanaConfiguration {
     // classification configuration
     this.classificationTypes = Collections.unmodifiableList(builder.classificationTypes);
     this.classificationCategoriesByType =
-        builder.classificationCategoriesByType.entrySet().stream()
-            .collect(
-                Collectors.toUnmodifiableMap(
-                    Entry::getKey, e -> Collections.unmodifiableList(e.getValue())));
+        Collections.unmodifiableMap(
+            builder.classificationCategoriesByType.entrySet().stream()
+                .collect(
+                    Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> Collections.unmodifiableList(e.getValue()),
+                        (oldValue, newValue) -> oldValue,
+                        LinkedHashMap::new)));
     // working time configuration
     this.workingTimeSchedule =
         builder.workingTimeSchedule.entrySet().stream()
@@ -1207,7 +1213,13 @@ public class TaskanaConfiguration {
                           e.getValue().stream()
                               .map(String::toUpperCase)
                               .collect(Collectors.toList())))
-              .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+              .sorted(Comparator.comparingInt(e -> classificationTypes.indexOf(e.getKey())))
+              .collect(
+                  Collectors.toMap(
+                      Map.Entry::getKey,
+                      Map.Entry::getValue,
+                      (oldValue, newValue) -> oldValue,
+                      LinkedHashMap::new));
       roleMap =
           Arrays.stream(TaskanaRole.values())
               .map(role -> Pair.of(role, roleMap.getOrDefault(role, Set.of())))
