@@ -58,8 +58,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.function.ThrowingConsumer;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.platform.commons.support.AnnotationSupport;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.ErrorCode;
@@ -67,8 +67,8 @@ import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.Interval;
+import pro.taskana.common.internal.jobs.JobScheduler;
 import pro.taskana.common.internal.logging.LoggingAspect;
-import pro.taskana.common.internal.util.MapCreator;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 
 /**
@@ -106,6 +106,7 @@ class ArchitectureTest {
         .that(
             are(
                 annotatedWith(Test.class)
+                    .or(annotatedWith(ParameterizedTest.class))
                     .or(annotatedWith(TestFactory.class))
                     .or(annotatedWith(TestTemplate.class))))
         .and()
@@ -220,7 +221,7 @@ class ArchitectureTest {
         .should()
         .onlyDependOnClassesThat(
             resideOutsideOfPackage("..pro.taskana..internal..")
-                .or(assignableTo(LoggingAspect.class).or(assignableTo(MapCreator.class))))
+                .or(assignableTo(LoggingAspect.class)))
         .check(importedClasses);
   }
 
@@ -326,6 +327,8 @@ class ArchitectureTest {
                 .areNotAssignableTo(TaskanaEngine.class)
                 .and()
                 .areNotAssignableTo(InternalTaskanaEngine.class)
+                .and()
+                .areNotAssignableTo(JobScheduler.class)
                 .should()
                 .onlyDependOnClassesThat()
                 .resideOutsideOfPackage(rootPackage + "..")

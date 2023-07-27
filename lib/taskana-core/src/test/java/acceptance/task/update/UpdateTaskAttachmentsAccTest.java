@@ -70,7 +70,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @Test
   void should_UpdateTaskCorrectlyInDatabase_When_AddingAnAttachment() throws Exception {
     final int attachmentCount = task.getAttachments().size();
-    assertThat(task.getPriority()).isEqualTo(1);
+    assertThat(task.getPriority()).isOne();
     assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
     task.addAttachment(attachment);
 
@@ -154,11 +154,10 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   @Test
   void should_ThrowAttachmentPersistenceException_When_UpdatingTaskWithTwoIdenticalAttachments()
       throws Exception {
-    final int attachmentCount = 0;
     task.getAttachments().clear();
     task = taskService.updateTask(task);
     task = taskService.getTask(task.getId());
-    assertThat(task.getAttachments()).hasSize(attachmentCount);
+    assertThat(task.getAttachments()).isEmpty();
 
     AttachmentImpl attachment = (AttachmentImpl) this.attachment;
     attachment.setId("TAI:000017");
@@ -249,7 +248,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments()).hasSize(attachmentCount2); // locally, not inserted
     task = taskService.getTask(task.getId());
     assertThat(task.getAttachments()).hasSize(attachmentCount2); // inserted values not changed
-    assertThat(task.getPriority()).isEqualTo(1);
+    assertThat(task.getPriority()).isOne();
     assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
   }
 
@@ -268,7 +267,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
         .hasSize(attachmentCount - 1); // locally, removed and not inserted
     task = taskService.getTask(task.getId());
     assertThat(task.getAttachments()).hasSize(attachmentCount - 1); // inserted, values removed
-    assertThat(task.getPriority()).isEqualTo(1);
+    assertThat(task.getPriority()).isOne();
     assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
   }
 
@@ -297,7 +296,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
   void testUpdateAttachment() throws Exception {
     ((TaskImpl) task).setAttachments(new ArrayList<>());
     task = taskService.updateTask(task);
-    assertThat(task.getPriority()).isEqualTo(1);
+    assertThat(task.getPriority()).isOne();
     assertThat(task.getPlanned().plus(Duration.ofDays(1))).isEqualTo(task.getDue());
 
     Attachment attachment = this.attachment;
@@ -321,7 +320,6 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments().get(0).getChannel()).isEqualTo(newChannel);
     assertThat(task.getPriority()).isEqualTo(99);
     Instant expDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1));
-
     assertThat(task.getDue()).isEqualTo(expDue);
   }
 
@@ -502,18 +500,14 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(readTask).isNotNull();
     assertThat(createdTask.getCreator())
         .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
-    assertThat(readTask.getAttachments()).isNotNull();
     assertThat(readTask.getAttachments()).hasSize(2);
     assertThat(readTask.getAttachments().get(1).getCreated()).isNotNull();
     assertThat(readTask.getAttachments().get(1).getModified()).isNotNull();
     assertThat(readTask.getAttachments().get(0).getCreated())
         .isEqualTo(readTask.getAttachments().get(1).getModified());
     assertThat(readTask.getAttachments().get(0).getObjectReference()).isNotNull();
-
     assertThat(readTask.getPriority()).isEqualTo(99);
-
     Instant expDue = converter.addWorkingDaysToInstant(readTask.getPlanned(), Duration.ofDays(1));
-
     assertThat(readTask.getDue()).isEqualTo(expDue);
   }
 

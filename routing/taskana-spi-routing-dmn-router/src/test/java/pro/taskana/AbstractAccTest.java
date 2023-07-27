@@ -2,10 +2,8 @@ package pro.taskana;
 
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
-
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
-import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
 import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
@@ -14,9 +12,8 @@ import pro.taskana.task.internal.models.ObjectReferenceImpl;
 
 public abstract class AbstractAccTest {
 
-  protected static TaskanaConfiguration taskanaEngineConfiguration;
+  protected static TaskanaConfiguration taskanaConfiguration;
   protected static TaskanaEngine taskanaEngine;
-  protected static WorkingDaysToDaysConverter converter;
 
   @BeforeAll
   protected static void setupTest() throws Exception {
@@ -32,20 +29,18 @@ public abstract class AbstractAccTest {
       sampleDataGenerator.dropDb();
     }
     dataSource = DataSourceGenerator.getDataSource();
-    taskanaEngineConfiguration =
+    taskanaConfiguration =
         new TaskanaConfiguration.Builder(dataSource, false, schemaName)
             .initTaskanaProperties()
             .germanPublicHolidaysEnabled(true)
             .build();
     DbSchemaCreator dbSchemaCreator =
-        new DbSchemaCreator(dataSource, taskanaEngineConfiguration.getSchemaName());
+        new DbSchemaCreator(dataSource, taskanaConfiguration.getSchemaName());
     dbSchemaCreator.run();
     sampleDataGenerator.clearDb();
     sampleDataGenerator.generateTestData();
     taskanaEngine =
-        TaskanaEngine.buildTaskanaEngine(
-            taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
-    converter = taskanaEngine.getWorkingDaysToDaysConverter();
+        TaskanaEngine.buildTaskanaEngine(taskanaConfiguration, ConnectionManagementMode.AUTOCOMMIT);
   }
 
   protected ObjectReference createObjectReference(

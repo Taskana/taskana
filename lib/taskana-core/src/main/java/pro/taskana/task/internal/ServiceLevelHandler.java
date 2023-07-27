@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
@@ -108,12 +107,14 @@ class ServiceLevelHandler {
     return bulkLog;
   }
 
-  TaskImpl updatePrioPlannedDueOfTask(
-      TaskImpl newTaskImpl, TaskImpl oldTaskImpl, boolean forRefreshOnClassificationUpdate)
+  // TODO: Is it worth splitting the logic of this method into two separate methods one for
+  //  creating new task the other for updating a task.
+  TaskImpl updatePrioPlannedDueOfTask(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
       throws InvalidArgumentException {
     boolean onlyPriority = false;
     if (newTaskImpl.getClassificationSummary() == null
         || newTaskImpl.getClassificationSummary().getServiceLevel() == null) {
+      // TODO this should never be the case
       setPlannedDueOnMissingServiceLevel(newTaskImpl);
       onlyPriority = true;
     }
@@ -123,6 +124,7 @@ class ServiceLevelHandler {
     }
 
     if (newTaskImpl.getPlanned() == null && newTaskImpl.getDue() == null) {
+      // TODO bitte oldTaskImpl berücksichtigen
       newTaskImpl.setPlanned(Instant.now());
     }
 
@@ -135,12 +137,7 @@ class ServiceLevelHandler {
     if (onlyPriority) {
       return newTaskImpl;
     }
-    // classification update
-    if (forRefreshOnClassificationUpdate) {
-      newTaskImpl.setDue(
-          getFollowingWorkingDays(newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
-      return newTaskImpl;
-    }
+
     // creation of new task
     if (oldTaskImpl == null) {
       return updatePlannedDueOnCreationOfNewTask(newTaskImpl, durationPrioHolder);
@@ -149,7 +146,7 @@ class ServiceLevelHandler {
     }
   }
 
-  DurationPrioHolder determineTaskPrioDuration(TaskImpl newTaskImpl, boolean onlyPriority) {
+  private DurationPrioHolder determineTaskPrioDuration(TaskImpl newTaskImpl, boolean onlyPriority) {
     Set<ClassificationSummary> classificationsInvolved =
         getClassificationsReferencedByATask(newTaskImpl);
 
@@ -228,6 +225,7 @@ class ServiceLevelHandler {
       MinimalTaskSummary minimalTaskSummary,
       Map<String, Integer> classificationIdToPriorityMap,
       Map<String, Set<String>> taskIdToClassificationIdsMap) {
+    // TODO this should allow negative Priorities just like #getFinalPrioDurationOfTask
     int actualPriority = 0;
     for (String classificationId :
         taskIdToClassificationIdsMap.get(minimalTaskSummary.getTaskId())) {
@@ -252,7 +250,8 @@ class ServiceLevelHandler {
   private TaskImpl updatePlannedDueOnTaskUpdate(
       TaskImpl newTaskImpl, TaskImpl oldTaskImpl, DurationPrioHolder durationPrioHolder)
       throws InvalidArgumentException {
-    if (taskanaEngine.getEngine().getConfiguration().isAllowTimestampServiceLevelMismatch()
+    // TODO pull this one out and in updatePlannedDueOnCreationOfNewTask, too.
+    if (!taskanaEngine.getEngine().getConfiguration().isEnforceServiceLevel()
         && newTaskImpl.getDue() != null
         && newTaskImpl.getPlanned() != null) {
 
@@ -339,8 +338,10 @@ class ServiceLevelHandler {
   }
 
   private TaskImpl updatePlannedDueOnCreationOfNewTask(
-      TaskImpl newTask, DurationPrioHolder durationPrioHolder) throws InvalidArgumentException {
-    if (taskanaEngine.getEngine().getConfiguration().isAllowTimestampServiceLevelMismatch()
+      TaskImpl newTask,
+      DurationPrioHolder durationPrioHolder
+  ) throws InvalidArgumentException {
+    if (taskanaEngine.getEngine().getConfiguration().isEnforceServiceLevel()
         && newTask.getDue() != null
         && newTask.getPlanned() != null) {
       return newTask;
@@ -610,14 +611,14 @@ class ServiceLevelHandler {
   }
 
   private boolean areAttachmentsUnchanged(TaskImpl newTaskImpl, TaskImpl oldTaskImpl) {
-    List<String> oldAttachmentIds =
+    Set<String> oldAttachmentIds =
         oldTaskImpl.getAttachments().stream()
             .map(AttachmentSummary::getId)
-            .collect(Collectors.toList());
-    List<String> newAttachmentIds =
+            .collect(Collectors.toSet());
+    Set<String> newAttachmentIds =
         newTaskImpl.getAttachments().stream()
             .map(AttachmentSummary::getId)
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
     Set<String> oldClassificationIds =
         oldTaskImpl.getAttachments().stream()
             .map(Attachment::getClassificationSummary)

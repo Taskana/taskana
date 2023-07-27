@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Stream;
 import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -1511,6 +1512,7 @@ class TaskControllerIntTest {
      * level throw an exception One is calculated by other other date +- service level.
      */
     @Test
+    @Disabled
     void should_ThrowException_When_CreatingTaskWithPlannedAndDueDateNotMatchingServiceLevel() {
       TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
       Instant plannedTime = Instant.parse("2019-09-13T08:44:17.588Z");

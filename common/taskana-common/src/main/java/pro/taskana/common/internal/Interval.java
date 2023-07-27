@@ -11,9 +11,9 @@ import java.util.Objects;
  */
 public class Interval<T extends Comparable<? super T>> {
 
-  private final T begin;
+  protected final T begin;
 
-  private final T end;
+  protected final T end;
 
   public Interval(T begin, T end) {
     this.begin = begin;

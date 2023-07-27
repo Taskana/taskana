@@ -1,7 +1,6 @@
 package pro.taskana.monitor.internal.preprocessor;
 
 import java.util.List;
-
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;

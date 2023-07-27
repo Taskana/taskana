@@ -13,7 +13,6 @@ import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
-
 import pro.taskana.common.api.WorkingDaysToDaysConverter.EasterCalculator;
 
 /** Test for the WorkingDaysToDaysConverter. */

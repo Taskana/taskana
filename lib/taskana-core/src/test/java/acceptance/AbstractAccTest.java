@@ -9,12 +9,13 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionManager;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaEngine.ConnectionManagementMode;
@@ -22,6 +23,7 @@ import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.internal.JobMapper;
 import pro.taskana.common.internal.TaskanaEngineImpl;
+import pro.taskana.common.internal.jobs.JobScheduler;
 import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.models.Attachment;
@@ -37,7 +39,7 @@ public abstract class AbstractAccTest {
   public static final String GROUP_2_DN =
       "cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA";
 
-  protected static TaskanaConfiguration taskanaEngineConfiguration;
+  protected static TaskanaConfiguration taskanaConfiguration;
   protected static TaskanaEngine taskanaEngine;
 
   protected static TaskServiceImpl taskService;
@@ -48,24 +50,31 @@ public abstract class AbstractAccTest {
     resetDb(false);
   }
 
+  @AfterAll
+  protected static void destroyClass() {
+    if (taskanaEngine != null) {
+      Optional.ofNullable(((TaskanaEngineImpl) taskanaEngine).getJobScheduler())
+          .ifPresent(JobScheduler::stop);
+    }
+  }
+
   protected static void resetDb(boolean dropTables) throws Exception {
 
     DataSource dataSource = DataSourceGenerator.getDataSource();
     String schemaName = DataSourceGenerator.getSchemaName();
 
-    taskanaEngineConfiguration =
+    taskanaConfiguration =
         new TaskanaConfiguration.Builder(dataSource, false, schemaName)
             .initTaskanaProperties()
             .germanPublicHolidaysEnabled(true)
             .build();
     SampleDataGenerator sampleDataGenerator =
-        new SampleDataGenerator(dataSource, taskanaEngineConfiguration.getSchemaName());
+        new SampleDataGenerator(dataSource, taskanaConfiguration.getSchemaName());
     if (dropTables) {
       sampleDataGenerator.dropDb();
     }
     taskanaEngine =
-        TaskanaEngine.buildTaskanaEngine(
-            taskanaEngineConfiguration, ConnectionManagementMode.AUTOCOMMIT);
+        TaskanaEngine.buildTaskanaEngine(taskanaConfiguration, ConnectionManagementMode.AUTOCOMMIT);
     converter = taskanaEngine.getWorkingDaysToDaysConverter();
     taskService = (TaskServiceImpl) taskanaEngine.getTaskService();
 

@@ -10,7 +10,6 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.EnumMap;
 import java.util.Map;
-
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 
 public class WorkingTimeCalculator {

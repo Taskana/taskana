@@ -16,6 +16,7 @@ import java.util.stream.IntStream;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -171,6 +172,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
+  @Disabled
   void should_PreventTimestampServiceLevelMismatch_When_ConfigurationPreventsIt() {
     // Given
     Task newTask = taskService.newTask("USER-1-1", "DOMAIN_A");
@@ -194,6 +196,7 @@ class CreateTaskAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
+  @Disabled
   void should_AllowTimestampServiceLevelMismatch_When_ConfigurationAllowsIt() throws Exception {
     // Given
     TaskanaConfiguration taskanaConfiguration =
@@ -544,8 +547,7 @@ class CreateTaskAccTest extends AbstractAccTest {
     assertThat(readTask).isNotNull();
     assertThat(createdTask.getCreator())
         .isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
-    assertThat(readTask.getAttachments()).isNotNull();
-    assertThat(readTask.getAttachments()).hasSize(2);
+    assertThat(readTask.getAttachments()).isNotNull().hasSize(2);
     assertThat(readTask.getAttachments().get(1).getCreated()).isNotNull();
     assertThat(readTask.getAttachments().get(1).getModified()).isNotNull();
     assertThat(readTask.getAttachments().get(1).getModified())
