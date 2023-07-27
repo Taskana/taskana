@@ -303,7 +303,7 @@ class ServiceLevelHandler {
 
   private Instant calculateDue(Instant planned, Duration duration) {
     Instant dueExclusive = workingTimeCalculator.addWorkingTime(planned, duration);
-    if (taskanaEngine.getEngine().getConfiguration().isUseDetailedWorkingTimeCalculation()
+    if (taskanaEngine.getEngine().getConfiguration().isUseWorkingTimeCalculation()
         && !planned.equals(dueExclusive)) {
       // Calculation is exclusive, but we want due date to be inclusive. Hence, we subtract a
       // millisecond
@@ -322,7 +322,7 @@ class ServiceLevelHandler {
     } else {
       // due is inclusive, but calculation happens exclusive.
       Instant normalize =
-          taskanaEngine.getEngine().getConfiguration().isUseDetailedWorkingTimeCalculation()
+          taskanaEngine.getEngine().getConfiguration().isUseWorkingTimeCalculation()
               ? due.plusMillis(1)
               : due;
       return workingTimeCalculator.subtractWorkingTime(normalize, duration);
@@ -334,7 +334,7 @@ class ServiceLevelHandler {
     // minusMillis since we calculated a due date
     // Without that some edge case fail (e.g. due is exactly the start of weekend)
     Instant normalize =
-        taskanaEngine.getEngine().getConfiguration().isUseDetailedWorkingTimeCalculation()
+        taskanaEngine.getEngine().getConfiguration().isUseWorkingTimeCalculation()
             ? due.plusMillis(1)
             : due;
     return workingTimeCalculator.subtractWorkingTime(normalize, Duration.ZERO);

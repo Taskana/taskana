@@ -39,7 +39,7 @@ public class ServiceLevelPriorityWithWorkingDaysCalculationAccTest extends Abstr
     resetDb(false);
 
     TaskanaConfiguration config =
-        new Builder(taskanaConfiguration).useDetailedWorkingTimeCalculation(false).build();
+        new Builder(taskanaConfiguration).useWorkingTimeCalculation(false).build();
 
     initTaskanaEngine(config);
     classificationService = taskanaEngine.getClassificationService();

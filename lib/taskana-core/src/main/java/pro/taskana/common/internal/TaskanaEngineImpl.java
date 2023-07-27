@@ -129,7 +129,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
             taskanaConfiguration.isGermanPublicHolidaysEnabled(),
             taskanaConfiguration.isGermanPublicHolidaysCorpusChristiEnabled(),
             taskanaConfiguration.getCustomHolidays());
-    if (taskanaConfiguration.isUseDetailedWorkingTimeCalculation()) {
+    if (taskanaConfiguration.isUseWorkingTimeCalculation()) {
       workingTimeCalculator =
           new WorkingTimeCalculatorImpl(
               holidaySchedule,

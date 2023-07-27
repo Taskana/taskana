@@ -235,7 +235,7 @@ class ServiceLevelOfAllTasksAccTest {
 
     @Override
     public Builder modify(Builder builder) {
-      return builder.useDetailedWorkingTimeCalculation(false);
+      return builder.useWorkingTimeCalculation(false);
     }
 
     @WithAccessId(user = "businessadmin")

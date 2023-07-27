@@ -305,7 +305,7 @@ class TaskanaConfigurationTest {
               .classificationTypes(expectedClassificationTypes)
               .classificationCategoriesByType(expectedClassificationCategories)
               // working time configuration
-              .useDetailedWorkingTimeCalculation(expectedUseDetailedWorkingTimeCalculation)
+              .useWorkingTimeCalculation(expectedUseDetailedWorkingTimeCalculation)
               .workingTimeSchedule(expectedWorkingTimeSchedule)
               .workingTimeScheduleTimeZone(expectedWorkingTimeScheduleTimeZone)
               .customHolidays(expectedCustomHolidays)
@@ -365,7 +365,7 @@ class TaskanaConfigurationTest {
       assertThat(configuration.getClassificationCategoriesByType())
           .isEqualTo(expectedClassificationCategories);
       // working time configuration
-      assertThat(configuration.isUseDetailedWorkingTimeCalculation())
+      assertThat(configuration.isUseWorkingTimeCalculation())
           .isEqualTo(expectedUseDetailedWorkingTimeCalculation);
       assertThat(configuration.getWorkingTimeSchedule()).isEqualTo(expectedWorkingTimeSchedule);
       assertThat(configuration.getWorkingTimeScheduleTimeZone())
@@ -441,7 +441,7 @@ class TaskanaConfigurationTest {
               .classificationCategoriesByType(
                   Map.of("typeA", Set.of("categoryA"), "typeB", Set.of("categoryB")))
               // working time configuration
-              .useDetailedWorkingTimeCalculation(false)
+              .useWorkingTimeCalculation(false)
               .workingTimeSchedule(
                   Map.of(
                       DayOfWeek.MONDAY,
