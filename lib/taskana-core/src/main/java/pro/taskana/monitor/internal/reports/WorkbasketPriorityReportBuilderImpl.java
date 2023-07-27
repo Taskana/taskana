@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.TaskanaRole;
+import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -30,6 +31,7 @@ public class WorkbasketPriorityReportBuilderImpl implements WorkbasketPriorityRe
   protected String[] domains;
   protected String[] classificationIds;
   protected String[] excludedClassificationIds;
+  protected WorkingDaysToDaysConverter converter;
   private WorkbasketType[] workbasketTypes;
   private String[] custom1In;
   private String[] custom1NotIn;

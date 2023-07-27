@@ -7,9 +7,11 @@ import acceptance.AbstractAccTest;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicReference;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.task.internal.jobs.helper.SqlConnectionRunner;
@@ -19,21 +21,23 @@ import pro.taskana.task.internal.jobs.helper.SqlConnectionRunner;
 class SqlConnectionRunnerAccTest extends AbstractAccTest {
 
   @Test
-  void should_executeSimpleQuery() {
+  void should_executeSimpleQuery() throws Exception {
     // given
     SqlConnectionRunner runner = new SqlConnectionRunner(taskanaEngine);
     String taskId = "TKI:000000000000000000000000000000000050";
 
     // when
+    AtomicReference<ResultSet> resultSet = new AtomicReference<>();
     runner.runWithConnection(
         connection -> {
           PreparedStatement preparedStatement =
               connection.prepareStatement("select * from TASK where ID = ?");
           preparedStatement.setString(1, taskId);
-          ResultSet resultSet = preparedStatement.executeQuery();
-          // then
-          assertThat(resultSet.next()).isTrue();
+          resultSet.set(preparedStatement.executeQuery());
         });
+
+    // then
+    assertThat(resultSet.get().next()).isTrue();
   }
 
   @Test

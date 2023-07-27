@@ -49,7 +49,7 @@ public class WorkbasketReportBuilderImpl
       report.addItems(
           monitorQueryItems,
           new DaysToWorkingDaysReportPreProcessor<>(
-              this.columnHeaders, workingTimeCalculator, this.inWorkingDays));
+              this.columnHeaders, converter, this.inWorkingDays));
 
       Map<String, String> displayMap =
           taskanaEngine

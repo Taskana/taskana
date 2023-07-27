@@ -7,7 +7,6 @@ import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.TaskanaEngineImpl;
-import pro.taskana.common.internal.workingtime.WorkingTimeCalculatorImpl;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
@@ -112,13 +111,12 @@ public interface TaskanaEngine {
   }
 
   /**
-   * Returns the {@linkplain WorkingTimeCalculator} of the TaskanaEngine. The {@linkplain
-   * WorkingTimeCalculator} is used to add or subtract working time from Instants according to a
-   * working time schedule or to calculate the working time between Instants.
+   * Returns the {@linkplain WorkingDaysToDaysConverter} of the TaskanaEngine. The {@linkplain
+   * WorkingDaysToDaysConverter} is used to compute holidays.
    *
-   * @return {@linkplain WorkingTimeCalculatorImpl}
+   * @return {@linkplain WorkingDaysToDaysConverter}
    */
-  WorkingTimeCalculator getWorkingTimeCalculator();
+  WorkingDaysToDaysConverter getWorkingDaysToDaysConverter();
 
   /**
    * Checks if the {@linkplain pro.taskana.spi.history.api.TaskanaHistory TaskanaHistory} plugin is

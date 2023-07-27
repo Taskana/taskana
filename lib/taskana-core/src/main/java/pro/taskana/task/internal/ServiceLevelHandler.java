@@ -15,9 +15,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.BulkOperationResults;
-import pro.taskana.common.api.WorkingTimeCalculator;
+import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
@@ -37,7 +38,7 @@ class ServiceLevelHandler {
   private final InternalTaskanaEngine taskanaEngine;
   private final TaskMapper taskMapper;
   private final AttachmentMapper attachmentMapper;
-  private final WorkingTimeCalculator workingTimeCalculator;
+  private final WorkingDaysToDaysConverter converter;
   private final TaskServiceImpl taskServiceImpl;
 
   ServiceLevelHandler(
@@ -48,7 +49,7 @@ class ServiceLevelHandler {
     this.taskanaEngine = taskanaEngine;
     this.taskMapper = taskMapper;
     this.attachmentMapper = attachmentMapper;
-    workingTimeCalculator = taskanaEngine.getEngine().getWorkingTimeCalculator();
+    converter = taskanaEngine.getEngine().getWorkingDaysToDaysConverter();
     this.taskServiceImpl = taskServiceImpl;
   }
 
@@ -107,14 +108,12 @@ class ServiceLevelHandler {
     return bulkLog;
   }
 
-  // TODO: Is it worth splitting the logic of this method into two separate methods one for
-  //  creating new task the other for updating a task.
-  TaskImpl updatePrioPlannedDueOfTask(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
+  TaskImpl updatePrioPlannedDueOfTask(
+      TaskImpl newTaskImpl, TaskImpl oldTaskImpl, boolean forRefreshOnClassificationUpdate)
       throws InvalidArgumentException {
     boolean onlyPriority = false;
     if (newTaskImpl.getClassificationSummary() == null
         || newTaskImpl.getClassificationSummary().getServiceLevel() == null) {
-      // TODO this should never be the case
       setPlannedDueOnMissingServiceLevel(newTaskImpl);
       onlyPriority = true;
     }
@@ -124,7 +123,6 @@ class ServiceLevelHandler {
     }
 
     if (newTaskImpl.getPlanned() == null && newTaskImpl.getDue() == null) {
-      // TODO bitte oldTaskImpl berücksichtigen
       newTaskImpl.setPlanned(Instant.now());
     }
 
@@ -137,17 +135,21 @@ class ServiceLevelHandler {
     if (onlyPriority) {
       return newTaskImpl;
     }
-
+    // classification update
+    if (forRefreshOnClassificationUpdate) {
+      newTaskImpl.setDue(
+          getFollowingWorkingDays(newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
+      return newTaskImpl;
+    }
     // creation of new task
     if (oldTaskImpl == null) {
-      return updatePlannedDueOnCreationOfNewTask(newTaskImpl, durationPrioHolder.getDuration());
+      return updatePlannedDueOnCreationOfNewTask(newTaskImpl, durationPrioHolder);
     } else {
-      return updatePlannedDueOnTaskUpdate(
-          newTaskImpl, oldTaskImpl, durationPrioHolder.getDuration());
+      return updatePlannedDueOnTaskUpdate(newTaskImpl, oldTaskImpl, durationPrioHolder);
     }
   }
 
-  private DurationPrioHolder determineTaskPrioDuration(TaskImpl newTaskImpl, boolean onlyPriority) {
+  DurationPrioHolder determineTaskPrioDuration(TaskImpl newTaskImpl, boolean onlyPriority) {
     Set<ClassificationSummary> classificationsInvolved =
         getClassificationsReferencedByATask(newTaskImpl);
 
@@ -226,7 +228,6 @@ class ServiceLevelHandler {
       MinimalTaskSummary minimalTaskSummary,
       Map<String, Integer> classificationIdToPriorityMap,
       Map<String, Set<String>> taskIdToClassificationIdsMap) {
-    // TODO this should allow negative Priorities just like #getFinalPrioDurationOfTask
     int actualPriority = 0;
     for (String classificationId :
         taskIdToClassificationIdsMap.get(minimalTaskSummary.getTaskId())) {
@@ -249,71 +250,56 @@ class ServiceLevelHandler {
   }
 
   private TaskImpl updatePlannedDueOnTaskUpdate(
-      TaskImpl newTaskImpl, TaskImpl oldTaskImpl, Duration duration)
+      TaskImpl newTaskImpl, TaskImpl oldTaskImpl, DurationPrioHolder durationPrioHolder)
       throws InvalidArgumentException {
-    // TODO pull this one out and in updatePlannedDueOnCreationOfNewTask, too.
-    if (!taskanaEngine.getEngine().getConfiguration().isEnforceServiceLevel()
+    if (taskanaEngine.getEngine().getConfiguration().isAllowTimestampServiceLevelMismatch()
         && newTaskImpl.getDue() != null
         && newTaskImpl.getPlanned() != null) {
 
       return newTaskImpl;
     }
+    if (newTaskImpl.getPlanned() == null && newTaskImpl.getDue() == null) {
+      newTaskImpl.setPlanned(oldTaskImpl.getPlanned());
+    }
 
-    boolean forcedDueRecalculation = newTaskImpl.getDue() == null;
-    boolean forcedPlannedRecalculation = newTaskImpl.getPlanned() == null;
-    if (forcedDueRecalculation) {
-      recalcDueBasedPlanned(newTaskImpl, duration);
-    } else if (forcedPlannedRecalculation) {
-      recalcPlannedBasedOnDue(newTaskImpl, oldTaskImpl, duration);
-    } else if (oldTaskImpl.getDue().equals(newTaskImpl.getDue())) {
-      // We know due has not changed, but the following two options may happen
-      //  * no change of planned, but potentially change of an attachment or classification
-      //  * planned has changed
-      // -> normalize planned and recalculate due
-      recalcDueBasedPlanned(newTaskImpl, duration);
+    if (oldTaskImpl.getDue().equals(newTaskImpl.getDue())
+        && oldTaskImpl.getPlanned().equals(newTaskImpl.getPlanned())) {
+      // case 1: no change of planned/due, but potentially change of an attachment or classification
+      // -> recalculate due
+      newTaskImpl.setDue(
+          getFollowingWorkingDays(newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
+    } else if (dueIsUnchangedOrNull(newTaskImpl, oldTaskImpl) && newTaskImpl.getPlanned() != null) {
+      // case 2: due is null or only planned was changed -> normalize planned & recalculate due
+      newTaskImpl.setPlanned(getFollowingWorkingDays(newTaskImpl.getPlanned(), Duration.ofDays(0)));
+      newTaskImpl.setDue(
+          getFollowingWorkingDays(newTaskImpl.getPlanned(), durationPrioHolder.getDuration()));
     } else {
-      // Due has changed and (maybe) planned has changed
-      // -> normalize due and recalculate planned
-      recalcPlannedBasedOnDue(newTaskImpl, oldTaskImpl, duration);
+      // case 3: due and (maybe) planned were changed -> validate SLA if planned changed
+      Instant calcDue = getPrecedingWorkingDays(newTaskImpl.getDue(), Duration.ofDays(0));
+      Instant calcPlanned = getPrecedingWorkingDays(calcDue, durationPrioHolder.getDuration());
+      if (plannedHasChanged(newTaskImpl, oldTaskImpl)) {
+        ensureServiceLevelIsNotViolated(newTaskImpl, durationPrioHolder.getDuration(), calcPlanned);
+      }
+      newTaskImpl.setPlanned(calcPlanned);
+      newTaskImpl.setDue(calcDue);
     }
     return newTaskImpl;
   }
 
-  private void recalcPlannedBasedOnDue(
-      TaskImpl newTaskImpl, TaskImpl oldTaskImpl, Duration duration)
-      throws InvalidArgumentException {
-    Instant calcDue = instantOrEndOfPreviousWorkSlot(newTaskImpl.getDue());
-    Instant calcPlanned = subtractWorkingTime(calcDue, duration);
-    if (plannedHasChanged(newTaskImpl, oldTaskImpl)) {
-      ensureServiceLevelIsNotViolated(newTaskImpl, duration, calcPlanned);
-    }
-    newTaskImpl.setPlanned(calcPlanned);
-    newTaskImpl.setDue(calcDue);
-  }
-
-  private void recalcDueBasedPlanned(TaskImpl newTaskImpl, Duration duration) {
-    newTaskImpl.setPlanned(instantOrStartOfNextWorkSlot(newTaskImpl.getPlanned()));
-    newTaskImpl.setDue(addWorkingTime(newTaskImpl.getPlanned(), duration));
+  private boolean dueIsUnchangedOrNull(Task newTask, Task oldTask) {
+    return newTask.getDue() == null || oldTask.getDue().equals(newTask.getDue());
   }
 
   private boolean plannedHasChanged(Task newTask, Task oldTask) {
     return newTask.getPlanned() != null && !oldTask.getPlanned().equals(newTask.getPlanned());
   }
 
-  private Instant instantOrEndOfPreviousWorkSlot(Instant instant) {
-    return subtractWorkingTime(instant, Duration.ZERO);
+  private Instant getPrecedingWorkingDays(Instant instant, Duration days) {
+    return converter.subtractWorkingDaysFromInstant(instant, days);
   }
 
-  private Instant subtractWorkingTime(Instant instant, Duration workingTime) {
-    return workingTimeCalculator.subtractWorkingTime(instant, workingTime);
-  }
-
-  private Instant instantOrStartOfNextWorkSlot(Instant instant) {
-    return addWorkingTime(instant, Duration.ZERO);
-  }
-
-  private Instant addWorkingTime(Instant instant, Duration workingTime) {
-    return workingTimeCalculator.addWorkingTime(instant, workingTime);
+  private Instant getFollowingWorkingDays(Instant instant, Duration days) {
+    return converter.addWorkingDaysToInstant(instant, days);
   }
 
   /**
@@ -339,12 +325,11 @@ class ServiceLevelHandler {
    */
   private void ensureServiceLevelIsNotViolated(
       TaskImpl task, Duration duration, Instant calcPlanned) throws InvalidArgumentException {
-    // TODO tests mit coverage. falls die Exception nie auftritt weg mit der Methode
     if (task.getPlanned() != null
         && !task.getPlanned().equals(calcPlanned)
         // manual entered planned date is a different working day than computed value
-        && (workingTimeCalculator.isWorkingDay(task.getPlanned())
-            || workingTimeCalculator.isWorkingTimeBetween(task.getPlanned(), calcPlanned))) {
+        && (converter.isWorkingDay(task.getPlanned())
+            || converter.hasWorkingDaysInBetween(task.getPlanned(), calcPlanned))) {
       throw new InvalidArgumentException(
           String.format(
               "Cannot update a task with given planned %s "
@@ -353,23 +338,25 @@ class ServiceLevelHandler {
     }
   }
 
-  private TaskImpl updatePlannedDueOnCreationOfNewTask(TaskImpl newTask, Duration duration)
-      throws InvalidArgumentException {
-    if (!taskanaEngine.getEngine().getConfiguration().isEnforceServiceLevel()
+  private TaskImpl updatePlannedDueOnCreationOfNewTask(
+      TaskImpl newTask, DurationPrioHolder durationPrioHolder) throws InvalidArgumentException {
+    if (taskanaEngine.getEngine().getConfiguration().isAllowTimestampServiceLevelMismatch()
         && newTask.getDue() != null
         && newTask.getPlanned() != null) {
       return newTask;
     }
     if (newTask.getDue() != null) {
       // due is specified: calculate back and check correctness
-      Instant calcDue = instantOrEndOfPreviousWorkSlot(newTask.getDue());
-      Instant calcPlanned = subtractWorkingTime(calcDue, duration);
-      ensureServiceLevelIsNotViolated(newTask, duration, calcPlanned);
+      Instant calcDue = getPrecedingWorkingDays(newTask.getDue(), Duration.ofDays(0));
+      Instant calcPlanned = getPrecedingWorkingDays(calcDue, durationPrioHolder.getDuration());
+      ensureServiceLevelIsNotViolated(newTask, durationPrioHolder.getDuration(), calcPlanned);
       newTask.setDue(calcDue);
       newTask.setPlanned(calcPlanned);
     } else {
       // task.due is null: calculate forward from planned
-      recalcDueBasedPlanned(newTask, duration);
+      newTask.setPlanned(getFollowingWorkingDays(newTask.getPlanned(), Duration.ofDays(0)));
+      newTask.setDue(
+          getFollowingWorkingDays(newTask.getPlanned(), durationPrioHolder.getDuration()));
     }
     return newTask;
   }
@@ -391,7 +378,8 @@ class ServiceLevelHandler {
     TaskImpl referenceTask = new TaskImpl();
     referenceTask.setPlanned(durationHolder.getPlanned());
     referenceTask.setModified(Instant.now());
-    referenceTask.setDue(addWorkingTime(referenceTask.getPlanned(), durationHolder.getDuration()));
+    referenceTask.setDue(
+        getFollowingWorkingDays(referenceTask.getPlanned(), durationHolder.getDuration()));
     List<String> taskIdsToUpdate =
         taskDurationList.stream().map(TaskDuration::getTaskId).collect(Collectors.toList());
     Pair<List<MinimalTaskSummary>, BulkLog> existingAndAuthorizedTasks =
@@ -411,7 +399,7 @@ class ServiceLevelHandler {
 
     taskIdsByDueDuration.forEach(
         (duration, taskIds) -> {
-          referenceTask.setDue(addWorkingTime(planned, duration));
+          referenceTask.setDue(getFollowingWorkingDays(planned, duration));
           Pair<List<MinimalTaskSummary>, BulkLog> existingAndAuthorizedTasks =
               taskServiceImpl.getMinimalTaskSummaries(taskIds);
           bulkLog.addAllErrors(existingAndAuthorizedTasks.getRight());
@@ -596,35 +584,40 @@ class ServiceLevelHandler {
   }
 
   private boolean isPriorityAndDurationAlreadyCorrect(TaskImpl newTaskImpl, TaskImpl oldTaskImpl) {
-    if (oldTaskImpl == null) {
+    if (oldTaskImpl != null) {
+      final boolean isClassificationKeyChanged =
+          newTaskImpl.getClassificationKey() != null
+              && (oldTaskImpl.getClassificationKey() == null
+                  || !newTaskImpl
+                      .getClassificationKey()
+                      .equals(oldTaskImpl.getClassificationKey()));
+      final boolean isManualPriorityChanged =
+          newTaskImpl.getManualPriority() != oldTaskImpl.getManualPriority();
+      final boolean isClassificationIdChanged =
+          newTaskImpl.getClassificationId() != null
+              && (oldTaskImpl.getClassificationId() == null
+                  || !newTaskImpl.getClassificationId().equals(oldTaskImpl.getClassificationId()));
+
+      return oldTaskImpl.getPlanned().equals(newTaskImpl.getPlanned())
+          && oldTaskImpl.getDue().equals(newTaskImpl.getDue())
+          && !isClassificationKeyChanged
+          && !isClassificationIdChanged
+          && !isManualPriorityChanged
+          && areAttachmentsUnchanged(newTaskImpl, oldTaskImpl);
+    } else {
       return false;
     }
-    // TODO Do we need to compare Key and Id or could we simply compare ClassificationSummary only?
-    final boolean isClassificationKeyChanged =
-        Objects.equals(newTaskImpl.getClassificationKey(), oldTaskImpl.getClassificationKey());
-    final boolean isClassificationIdChanged =
-        Objects.equals(newTaskImpl.getClassificationId(), oldTaskImpl.getClassificationId());
-
-    final boolean isManualPriorityChanged =
-        newTaskImpl.getManualPriority() != oldTaskImpl.getManualPriority();
-
-    return oldTaskImpl.getPlanned().equals(newTaskImpl.getPlanned())
-        && oldTaskImpl.getDue().equals(newTaskImpl.getDue())
-        && !isClassificationKeyChanged
-        && !isClassificationIdChanged
-        && !isManualPriorityChanged
-        && areAttachmentsUnchanged(newTaskImpl, oldTaskImpl);
   }
 
   private boolean areAttachmentsUnchanged(TaskImpl newTaskImpl, TaskImpl oldTaskImpl) {
-    Set<String> oldAttachmentIds =
+    List<String> oldAttachmentIds =
         oldTaskImpl.getAttachments().stream()
             .map(AttachmentSummary::getId)
-            .collect(Collectors.toSet());
-    Set<String> newAttachmentIds =
+            .collect(Collectors.toList());
+    List<String> newAttachmentIds =
         newTaskImpl.getAttachments().stream()
             .map(AttachmentSummary::getId)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toList());
     Set<String> oldClassificationIds =
         oldTaskImpl.getAttachments().stream()
             .map(Attachment::getClassificationSummary)

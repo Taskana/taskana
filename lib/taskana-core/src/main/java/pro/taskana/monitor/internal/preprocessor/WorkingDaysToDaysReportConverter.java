@@ -10,14 +10,15 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pro.taskana.common.api.WorkingTimeCalculator;
+
+import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.monitor.api.reports.header.TimeIntervalColumnHeader;
 
 /**
  * The DaysToWorkingDaysReportConverter provides a method to convert an age in days into an age in
  * working days. Before the method convertDaysToWorkingDays() can be used, the
- * WorkingDaysToDaysReportConverter has to be initialized. For a list of {@linkplain
+ * WorkingDaysToDaysConverter has to be initialized. For a list of {@linkplain
  * TimeIntervalColumnHeader}s the converter creates a "table" with integer that represents the age
  * in days from the largest lower limit until the smallest upper limit of the
  * timeIntervalColumnHeaders. This table is valid for a whole day until the converter is initialized
@@ -28,22 +29,21 @@ public class WorkingDaysToDaysReportConverter {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(WorkingDaysToDaysReportConverter.class);
 
-  private final WorkingTimeCalculator workingTimeCalculator;
+  private final WorkingDaysToDaysConverter daysToWorkingDaysConverter;
   private final Map<Integer, Integer> cacheDaysToWorkingDays;
 
   WorkingDaysToDaysReportConverter(
       List<? extends TimeIntervalColumnHeader> columnHeaders,
-      WorkingTimeCalculator workingTimeCalculator,
+      WorkingDaysToDaysConverter daysToWorkingDaysConverter,
       Instant referenceDate) {
-    this.workingTimeCalculator = workingTimeCalculator;
+    this.daysToWorkingDaysConverter = daysToWorkingDaysConverter;
     cacheDaysToWorkingDays = generateDaysToWorkingDays(columnHeaders, referenceDate);
   }
 
   public static WorkingDaysToDaysReportConverter initialize(
-      List<? extends TimeIntervalColumnHeader> columnHeaders,
-      WorkingTimeCalculator workingTimeCalculator)
+      List<? extends TimeIntervalColumnHeader> columnHeaders, WorkingDaysToDaysConverter converter)
       throws InvalidArgumentException {
-    return initialize(columnHeaders, workingTimeCalculator, Instant.now());
+    return initialize(columnHeaders, converter, Instant.now());
   }
 
   /**
@@ -53,22 +53,21 @@ public class WorkingDaysToDaysReportConverter {
    *
    * @param columnHeaders a list of {@linkplain TimeIntervalColumnHeader}s that determines the size
    *     of the table
-   * @param workingTimeCalculator the workingTimeCalculator used by taskana to determine if a
-   *     specific day is a working day.
+   * @param converter the converter used by taskana to determine if a specific day is a working day.
    * @param referenceDate a {@linkplain Instant} that represents the current day of the table
    * @return an instance of the WorkingDaysToDaysConverter
    * @throws InvalidArgumentException thrown if columnHeaders or referenceDate is null
    */
   public static WorkingDaysToDaysReportConverter initialize(
       List<? extends TimeIntervalColumnHeader> columnHeaders,
-      WorkingTimeCalculator workingTimeCalculator,
+      WorkingDaysToDaysConverter converter,
       Instant referenceDate)
       throws InvalidArgumentException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Initialize WorkingDaysToDaysConverter with columnHeaders: {}", columnHeaders);
     }
 
-    if (workingTimeCalculator == null) {
+    if (converter == null) {
       throw new InvalidArgumentException("WorkingDaysToDaysConverter can't be null");
     }
     if (columnHeaders == null) {
@@ -78,8 +77,7 @@ public class WorkingDaysToDaysReportConverter {
       throw new InvalidArgumentException("ReferenceDate can't be null");
     }
 
-    return new WorkingDaysToDaysReportConverter(
-        columnHeaders, workingTimeCalculator, referenceDate);
+    return new WorkingDaysToDaysReportConverter(columnHeaders, converter, referenceDate);
   }
 
   public int convertDaysToWorkingDays(int amountOfDays) {
@@ -131,7 +129,8 @@ public class WorkingDaysToDaysReportConverter {
     int amountOfWorkdays = 0;
     while (Math.abs(amountOfWorkdays) < Math.abs(workdayLimit)) {
       amountOfDays += direction;
-      if (workingTimeCalculator.isWorkingDay(referenceDate.plus(amountOfDays, ChronoUnit.DAYS))) {
+      if (daysToWorkingDaysConverter.isWorkingDay(
+          referenceDate.plus(amountOfDays, ChronoUnit.DAYS))) {
         amountOfWorkdays += direction;
       }
       daysToWorkingDaysMap.put(amountOfDays, amountOfWorkdays);
@@ -143,7 +142,7 @@ public class WorkingDaysToDaysReportConverter {
     return "DaysToWorkingDaysReportConverter [cacheDaysToWorkingDays="
         + cacheDaysToWorkingDays
         + ", daysToWorkingDaysConverter="
-        + workingTimeCalculator
+        + daysToWorkingDaysConverter
         + "]";
   }
 }

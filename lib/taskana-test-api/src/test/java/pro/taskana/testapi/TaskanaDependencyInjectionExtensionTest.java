@@ -9,7 +9,7 @@ import pro.taskana.classification.internal.ClassificationServiceImpl;
 import pro.taskana.common.api.ConfigurationService;
 import pro.taskana.common.api.JobService;
 import pro.taskana.common.api.TaskanaEngine;
-import pro.taskana.common.api.WorkingTimeCalculator;
+import pro.taskana.common.api.WorkingDaysToDaysConverter;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.ConfigurationMapper;
 import pro.taskana.common.internal.ConfigurationServiceImpl;
@@ -17,7 +17,6 @@ import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.JobServiceImpl;
 import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.security.CurrentUserContextImpl;
-import pro.taskana.common.internal.workingtime.WorkingTimeCalculatorImpl;
 import pro.taskana.monitor.api.MonitorService;
 import pro.taskana.monitor.internal.MonitorServiceImpl;
 import pro.taskana.task.api.TaskService;
@@ -48,8 +47,7 @@ class TaskanaDependencyInjectionExtensionTest {
   @TaskanaInject JobServiceImpl jobServiceImpl;
   @TaskanaInject ConfigurationService configurationService;
   @TaskanaInject ConfigurationServiceImpl configurationServiceImpl;
-  @TaskanaInject WorkingTimeCalculator workingTimeCalculator;
-  @TaskanaInject WorkingTimeCalculatorImpl workingTimeCalculatorImpl;
+  @TaskanaInject WorkingDaysToDaysConverter workingDaysToDaysConverter;
   @TaskanaInject CurrentUserContext currentUserContext;
   @TaskanaInject CurrentUserContextImpl currentUserContextImpl;
   @TaskanaInject ConfigurationMapper configurationMapper;
@@ -195,21 +193,9 @@ class TaskanaDependencyInjectionExtensionTest {
   }
 
   @Test
-  void should_InjectWorkingTimeCalculator_When_FieldIsAnnotatedOrDeclaredAsParameter(
-      WorkingTimeCalculator workingTimeCalculator) {
-    assertThat(workingTimeCalculator)
-        .isSameAs(this.workingTimeCalculator)
-        .isSameAs(this.workingTimeCalculatorImpl)
-        .isNotNull();
-  }
-
-  @Test
-  void should_InjectWorkingTimeCalculatorImpl_When_FieldIsAnnotatedOrDeclaredAsParameter(
-      WorkingTimeCalculatorImpl workingTimeCalculatorImpl) {
-    assertThat(workingTimeCalculatorImpl)
-        .isSameAs(this.workingTimeCalculatorImpl)
-        .isSameAs(this.workingTimeCalculator)
-        .isNotNull();
+  void should_InjectWorkingDaysToDaysConverter_When_FieldIsAnnotatedOrDeclaredAsParameter(
+      WorkingDaysToDaysConverter workingDaysToDaysConverter) {
+    assertThat(workingDaysToDaysConverter).isSameAs(this.workingDaysToDaysConverter).isNotNull();
   }
 
   @Test

@@ -49,7 +49,7 @@ public class TaskCustomFieldValueReportBuilderImpl
       report.addItems(
           monitorQueryItems,
           new DaysToWorkingDaysReportPreProcessor<>(
-              this.columnHeaders, workingTimeCalculator, this.inWorkingDays));
+              this.columnHeaders, converter, this.inWorkingDays));
       return report;
     } finally {
       this.taskanaEngine.returnConnection();

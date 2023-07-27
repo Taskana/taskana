@@ -44,7 +44,7 @@ class UpdateObjectsUseUtcTimeStampsAccTest extends AbstractAccTest {
     task.setPlanned(now.plus(Duration.ofHours(17)));
 
     // associated Classification has ServiceLevel 'P1D'
-    task.setDue(workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(1)));
+    task.setDue(converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1)));
 
     TaskImpl ti = (TaskImpl) task;
     ti.setCompleted(now.plus(Duration.ofHours(27)));

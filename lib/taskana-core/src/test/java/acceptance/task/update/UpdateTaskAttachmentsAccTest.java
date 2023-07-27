@@ -197,7 +197,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments().get(0).getChannel()).isEqualTo(newChannel);
     assertThat(task.getPriority()).isEqualTo(99);
 
-    Instant expDue = workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(1));
+    Instant expDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1));
     assertThat(task.getDue()).isEqualTo(expDue);
   }
 
@@ -320,7 +320,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     assertThat(task.getAttachments()).hasSize(attachmentCount);
     assertThat(task.getAttachments().get(0).getChannel()).isEqualTo(newChannel);
     assertThat(task.getPriority()).isEqualTo(99);
-    Instant expDue = workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(1));
+    Instant expDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1));
 
     assertThat(task.getDue()).isEqualTo(expDue);
   }
@@ -349,7 +349,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task = taskService.getTask(task.getId());
 
     assertThat(task.getPriority()).isEqualTo(101);
-    Instant expDue = workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(1));
+    Instant expDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(1));
     assertThat(task.getDue()).isEqualTo(expDue);
     assertThat(task.getAttachments())
         .hasSize(2)
@@ -382,7 +382,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
     task = taskService.getTask(task.getId());
     assertThat(task.getPriority()).isEqualTo(99);
 
-    expDue = workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(16));
+    expDue = converter.addWorkingDaysToInstant(task.getPlanned(), Duration.ofDays(16));
     assertThat(task.getDue()).isEqualTo(expDue);
     assertThat(task.getAttachments())
         .hasSize(2)
@@ -512,8 +512,7 @@ class UpdateTaskAttachmentsAccTest extends AbstractAccTest {
 
     assertThat(readTask.getPriority()).isEqualTo(99);
 
-    Instant expDue =
-        workingTimeCalculator.addWorkingTime(readTask.getPlanned(), Duration.ofDays(1));
+    Instant expDue = converter.addWorkingDaysToInstant(readTask.getPlanned(), Duration.ofDays(1));
 
     assertThat(readTask.getDue()).isEqualTo(expDue);
   }
