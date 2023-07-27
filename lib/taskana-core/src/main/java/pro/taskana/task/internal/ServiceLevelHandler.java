@@ -333,11 +333,13 @@ class ServiceLevelHandler {
     // plusMillis since due is inclusive, but calculation happens exclusive.
     // minusMillis since we calculated a due date
     // Without that some edge case fail (e.g. due is exactly the start of weekend)
-    Instant normalize =
-        taskanaEngine.getEngine().getConfiguration().isUseWorkingTimeCalculation()
-            ? due.plusMillis(1)
-            : due;
-    return workingTimeCalculator.subtractWorkingTime(normalize, Duration.ZERO);
+    if (taskanaEngine.getEngine().getConfiguration().isUseWorkingTimeCalculation()) {
+      return workingTimeCalculator
+          .subtractWorkingTime(due.plusMillis(1), Duration.ZERO)
+          .minusMillis(1);
+    }
+
+    return workingTimeCalculator.subtractWorkingTime(due, Duration.ZERO);
   }
 
   private Instant normalizePlanned(Instant instant) {

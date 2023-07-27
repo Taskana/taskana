@@ -544,7 +544,7 @@ public class ServiceLevelPriorityWithWorkingDaysCalculationAccTest extends Abstr
     task = taskService.updateTask(task);
     assertThat(task.getPlanned())
         .isEqualTo(getInstant("2020-04-09T07:00:00")); // Thursday (skip Good Friday)
-    assertThat(task.getDue()).isEqualTo(getInstant("2020-04-091:00:00"));
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-04-09T07:00:00"));
 
     // due changed, planned is null
     task.setDue(getInstant("2020-04-11T07:00:00")); // Saturday
