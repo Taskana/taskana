@@ -140,6 +140,7 @@ public class TaskQueryImpl implements TaskQuery {
   private String[] parentBusinessProcessIdLike;
   private String[] parentBusinessProcessIdNotLike;
   private String[] ownerIn;
+  private boolean ownerInContainsNull;
   private String[] ownerNotIn;
   private String[] ownerLike;
   private String[] ownerNotLike;
@@ -865,7 +866,15 @@ public class TaskQueryImpl implements TaskQuery {
 
   @Override
   public TaskQuery ownerIn(String... owners) {
-    this.ownerIn = owners;
+    List<String> conditionList = new ArrayList<>(Arrays.asList(owners));
+    boolean containsNull = conditionList.contains(null);
+    if (containsNull) {
+      conditionList.remove(null);
+      ownerInContainsNull = true;
+      this.ownerIn = conditionList.toArray(new String[owners.length - 1]);
+    } else {
+      this.ownerIn = owners;
+    }
     return this;
   }
 

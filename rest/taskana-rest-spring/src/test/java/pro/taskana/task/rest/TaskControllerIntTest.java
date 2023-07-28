@@ -26,6 +26,8 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.function.ThrowingConsumer;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -37,6 +39,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
+import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.rest.test.RestHelper;
 import pro.taskana.rest.test.TaskanaSpringBootTest;
@@ -1163,6 +1166,46 @@ class TaskControllerIntTest {
           .endsWith(
               "/api/v1/tasks?por-type=VNR&por-value=22334455"
                   + "&sort-by=POR_VALUE&order=DESCENDING");
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+      "owner=user-1-1, 10",
+      "owner-is-null, 65",
+      "owner-is-null&owner=user-1-1, 75",
+      "state=READY&owner-is-null&owner=user-1-1, 56",
+    })
+    void should_ReturnTasksWithVariousOwnerParameters_When_GettingTasks(
+        String queryParams, int expectedSize) {
+      String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + "?" + queryParams;
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+      ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+      assertThat(response.getBody()).isNotNull();
+      assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+      assertThat((response.getBody()).getContent()).hasSize(expectedSize);
+    }
+    
+    @TestFactory
+    Stream<DynamicTest> should_ThrowException_When_OwnerIsNullParamNotStrict() {
+      List<Pair<String, String>> list =
+          List.of(
+              Pair.of("When owner-is-null=", "?owner-is-null="),
+              Pair.of("When owner-is-null=anyValue", "?owner-is-null=anyValue1,anyValue2"));
+      ThrowingConsumer<Pair<String, String>> testOwnerIsNull =
+          t -> {
+            String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + t.getRight();
+            HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+            assertThatThrownBy(
+                    () ->
+                        TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE))
+                .isInstanceOf(HttpStatusCodeException.class)
+                .hasMessageContaining(
+                    "It is prohibited to use the param owner-is-null with values.");
+          };
+      return DynamicTest.stream(list.iterator(), Pair::getLeft, testOwnerIsNull);
     }
 
     @Test

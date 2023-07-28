@@ -1814,6 +1814,7 @@ class TaskQueryImplAccTest {
       TaskSummary taskSummary1;
       TaskSummary taskSummary2;
       TaskSummary taskSummary3;
+      TaskSummary taskSummary4;
 
       @WithAccessId(user = "user-1-1")
       @BeforeAll
@@ -1822,6 +1823,7 @@ class TaskQueryImplAccTest {
         taskSummary1 = taskInWorkbasket(wb).owner("user-2-1").buildAndStoreAsSummary(taskService);
         taskSummary2 = taskInWorkbasket(wb).owner("user-1-2").buildAndStoreAsSummary(taskService);
         taskSummary3 = taskInWorkbasket(wb).owner("user-1-3").buildAndStoreAsSummary(taskService);
+        taskSummary4 = taskInWorkbasket(wb).owner(null).buildAndStoreAsSummary(taskService);
       }
 
       @WithAccessId(user = "user-1-1")
@@ -1858,6 +1860,29 @@ class TaskQueryImplAccTest {
             taskService.createTaskQuery().workbasketIdIn(wb.getId()).ownerNotLike("user-1%").list();
 
         assertThat(list).containsExactly(taskSummary1);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @Test
+      void should_ReturnTaskWithOwnerNull_When_QueryingForOwnerIn() {
+        String[] nullArray = {null};
+        List<TaskSummary> list =
+            taskService.createTaskQuery().workbasketIdIn(wb.getId()).ownerIn(nullArray).list();
+
+        assertThat(list).containsExactly(taskSummary4);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @Test
+      void should_ReturnTaskWithOwnerNullAndUser11_When_QueryingForOwnerIn() {
+        List<TaskSummary> list =
+            taskService
+                .createTaskQuery()
+                .workbasketIdIn(wb.getId())
+                .ownerIn("user-1-2", null)
+                .list();
+
+        assertThat(list).containsExactlyInAnyOrder(taskSummary2, taskSummary4);
       }
     }
 
