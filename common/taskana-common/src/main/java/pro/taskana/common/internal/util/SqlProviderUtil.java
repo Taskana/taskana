@@ -24,7 +24,7 @@ public class SqlProviderUtil {
         .append("</when>")
         .append("<otherwise>0=1</otherwise>")
         .append("</choose>");
-    if (column.matches("t.CUSTOM_\\d+")) {
+    if (column.matches("t.CUSTOM_\\d+") || column.matches("t.OWNER")) {
       sb.append("<if test='" + collection + "ContainsNull'> OR " + column + " IS NULL </if>");
     }
     return sb.append(")</if> ");
