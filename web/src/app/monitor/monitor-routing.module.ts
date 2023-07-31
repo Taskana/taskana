@@ -13,6 +13,11 @@ const routes: Routes = [
     component: MonitorComponent,
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'tasks-priority'
+      },
+      {
         path: 'tasks-priority',
         component: TaskPriorityReportComponent
       },
