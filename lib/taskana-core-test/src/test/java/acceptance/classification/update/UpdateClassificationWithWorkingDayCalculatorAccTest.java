@@ -10,6 +10,7 @@ import static pro.taskana.testapi.builder.TaskBuilder.newTask;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.function.ThrowingConsumer;
+import pro.taskana.TaskanaConfiguration.Builder;
 import pro.taskana.classification.api.ClassificationCustomField;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
@@ -44,6 +46,7 @@ import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Attachment;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.testapi.TaskanaConfigurationModifier;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.testapi.builder.TaskBuilder;
@@ -53,15 +56,23 @@ import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** Acceptance test for all "update classification" scenarios. */
 @TaskanaIntegrationTest
-class UpdateClassificationAccTest {
+public class UpdateClassificationWithWorkingDayCalculatorAccTest
+    implements TaskanaConfigurationModifier {
+
   @TaskanaInject ClassificationService classificationService;
   @TaskanaInject TaskanaEngine taskanaEngine;
   @TaskanaInject TaskService taskService;
   @TaskanaInject WorkbasketService workbasketService;
   @TaskanaInject WorkingTimeCalculator workingTimeCalculator;
   @TaskanaInject CurrentUserContext currentUserContext;
+
+  @Override
+  public Builder modify(Builder builder) {
+    return builder
+        .workingTimeScheduleTimeZone(ZoneId.of("UTC"))
+        .useWorkingTimeCalculation(false); // switch to WorkingDayCalculatorImpl
+  }
 
   @WithAccessId(user = "businessadmin")
   @Test
@@ -128,6 +139,7 @@ class UpdateClassificationAccTest {
 
   private String createTaskWithExistingClassification(ClassificationSummary classificationSummary)
       throws Exception {
+
     WorkbasketSummary workbasketSummary =
         defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
     WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
@@ -202,20 +214,21 @@ class UpdateClassificationAccTest {
           .permission(WorkbasketPermission.APPEND)
           .buildAndStore(workbasketService, "businessadmin");
 
-      Task task = new TaskBuilder()
-          .classificationSummary(classification.asSummary())
-          .workbasketSummary(workbasketSummary)
-          .primaryObjRef(defaultTestObjectReference().build())
-          .planned(Instant.parse("2021-04-27T15:34:00.000Z"))
-          .due(null)
-          .buildAndStore(taskService);
+      Task task =
+          new TaskBuilder()
+              .classificationSummary(classification.asSummary())
+              .workbasketSummary(workbasketSummary)
+              .primaryObjRef(defaultTestObjectReference().build())
+              .planned(Instant.parse("2021-04-27T15:34:00.000Z"))
+              .due(null)
+              .buildAndStore(taskService);
 
       classificationService.updateClassification(classification);
       runAssociatedJobs();
       // read again the task from DB
       task = taskService.getTask(task.getId());
       assertThat(task.getClassificationSummary().getServiceLevel()).isEqualTo("P1D");
-      assertThat(task.getDue()).isAfterOrEqualTo("2021-04-28T15:33:59.999Z");
+      assertThat(task.getDue()).isAfterOrEqualTo("2021-04-28T15:34:00.000Z");
 
       classification.setServiceLevel("P3D");
       classificationService.updateClassification(classification);
@@ -224,7 +237,7 @@ class UpdateClassificationAccTest {
       // read again the task from DB
       task = taskService.getTask(task.getId());
       assertThat(task.getClassificationSummary().getServiceLevel()).isEqualTo("P3D");
-      assertThat(task.getDue()).isEqualTo("2021-04-30T15:33:59.999Z");
+      assertThat(task.getDue()).isEqualTo("2021-04-30T15:34:00.000Z");
     }
 
     @WithAccessId(user = "businessadmin")
@@ -662,9 +675,7 @@ class UpdateClassificationAccTest {
         Task task = taskService.getTask(taskId);
 
         Instant expDue =
-            workingTimeCalculator
-                .addWorkingTime(task.getPlanned(), Duration.ofDays(serviceLevel))
-                .minusMillis(1);
+            workingTimeCalculator.addWorkingTime(task.getPlanned(), Duration.ofDays(serviceLevel));
         assertThat(task.getModified())
             .describedAs("Task " + task.getId() + " has not been refreshed.")
             .isAfter(before);
