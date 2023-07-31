@@ -524,6 +524,17 @@ public class ServiceLevelPriorityWithWorkingDaysCalculationAccTest extends Abstr
 
   @WithAccessId(user = "user-1-1")
   @Test
+  void should_UpdateTaskPlannedAndDueDate_When_PlannedDateIsNotWorkingDay() throws Exception {
+    Task task = taskService.getTask("TKI:000000000000000000000000000000000201"); // SL=P2D
+    assertThat(task.getClassificationSummary().getServiceLevel()).isEqualTo("P2D");
+    task.setPlanned(getInstant("2024-03-29T07:00:00")); // planned = Good Friday
+    task = taskService.updateTask(task);
+    assertThat(task.getPlanned()).isEqualTo(getInstant("2024-04-02T07:00:00")); // Tuesday
+    assertThat(task.getDue()).isEqualTo(getInstant("2024-04-04T07:00:00")); // Thursday
+  }
+
+  @WithAccessId(user = "user-1-1")
+  @Test
   void should_UpdateTaskPlannedOrDue_When_PlannedOrDueAreOnWeekends_ServiceLevel_P0D()
       throws Exception {
     Task task = taskService.getTask("TKI:000000000000000000000000000000000066"); // P0D

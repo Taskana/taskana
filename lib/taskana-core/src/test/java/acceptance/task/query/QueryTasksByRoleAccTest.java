@@ -47,7 +47,7 @@ class QueryTasksByRoleAccTest extends AbstractAccTest {
       switch (taskanaEngine.getCurrentUserContext().getUserid()) {
         case "admin":
         case "taskadmin":
-          expectedSize = 99;
+          expectedSize = 100;
           break;
         case "businessadmin":
         case "monitor":
@@ -57,7 +57,7 @@ class QueryTasksByRoleAccTest extends AbstractAccTest {
           expectedSize = 26;
           break;
         case "user-1-1":
-          expectedSize = 9;
+          expectedSize = 10;
           break;
         case "user-taskrouter":
           expectedSize = 0;
