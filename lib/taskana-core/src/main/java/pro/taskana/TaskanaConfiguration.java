@@ -73,6 +73,7 @@ public class TaskanaConfiguration {
   // endregion
 
   // region working time configuration
+  private final boolean useWorkingTimeCalculation;
   private final Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule;
   private final ZoneId workingTimeScheduleTimeZone;
   private final Set<CustomHoliday> customHolidays;
@@ -149,6 +150,7 @@ public class TaskanaConfiguration {
                 Collectors.toUnmodifiableMap(
                     Entry::getKey, e -> Collections.unmodifiableSet(e.getValue())));
     // working time configuration
+    this.useWorkingTimeCalculation = builder.useWorkingTimeCalculation;
     this.workingTimeSchedule =
         builder.workingTimeSchedule.entrySet().stream()
             .collect(
@@ -254,6 +256,10 @@ public class TaskanaConfiguration {
 
   public List<String> getClassificationTypes() {
     return classificationTypes;
+  }
+
+  public boolean isUseWorkingTimeCalculation() {
+    return useWorkingTimeCalculation;
   }
 
   public Map<DayOfWeek, Set<LocalTimeInterval>> getWorkingTimeSchedule() {
@@ -414,6 +420,7 @@ public class TaskanaConfiguration {
         roleMap,
         classificationTypes,
         classificationCategoriesByType,
+        useWorkingTimeCalculation,
         workingTimeSchedule,
         workingTimeScheduleTimeZone,
         customHolidays,
@@ -462,6 +469,7 @@ public class TaskanaConfiguration {
     return useManagedTransactions == other.useManagedTransactions
         && securityEnabled == other.securityEnabled
         && enforceServiceLevel == other.enforceServiceLevel
+        && useWorkingTimeCalculation == other.useWorkingTimeCalculation
         && germanPublicHolidaysEnabled == other.germanPublicHolidaysEnabled
         && germanPublicHolidaysCorpusChristiEnabled
             == other.germanPublicHolidaysCorpusChristiEnabled
@@ -530,6 +538,8 @@ public class TaskanaConfiguration {
         + classificationTypes
         + ", classificationCategoriesByType="
         + classificationCategoriesByType
+        + ", useWorkingTimeCalculation="
+        + useWorkingTimeCalculation
         + ", workingTimeSchedule="
         + workingTimeSchedule
         + ", workingTimeScheduleTimeZone="
@@ -636,6 +646,10 @@ public class TaskanaConfiguration {
     // endregion
 
     // region working time configuration
+
+    @TaskanaProperty("taskana.workingTime.useWorkingTimeCalculation")
+    private boolean useWorkingTimeCalculation = true;
+
     @TaskanaProperty("taskana.workingTime.schedule")
     private Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule =
         initDefaultWorkingTimeSchedule();
@@ -807,6 +821,7 @@ public class TaskanaConfiguration {
       this.classificationTypes = conf.classificationTypes;
       this.classificationCategoriesByType = conf.classificationCategoriesByType;
       // working time configuration
+      this.useWorkingTimeCalculation = conf.useWorkingTimeCalculation;
       this.workingTimeSchedule = conf.workingTimeSchedule;
       this.workingTimeScheduleTimeZone = conf.workingTimeScheduleTimeZone;
       this.customHolidays = conf.customHolidays;
@@ -942,6 +957,11 @@ public class TaskanaConfiguration {
     // endregion
 
     // region working time configuration
+
+    public Builder useWorkingTimeCalculation(boolean useWorkingTimeCalculation) {
+      this.useWorkingTimeCalculation = useWorkingTimeCalculation;
+      return this;
+    }
 
     public Builder workingTimeSchedule(Map<DayOfWeek, Set<LocalTimeInterval>> workingTimeSchedule) {
       this.workingTimeSchedule = workingTimeSchedule;
