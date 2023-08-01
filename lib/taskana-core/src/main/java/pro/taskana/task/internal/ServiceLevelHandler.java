@@ -634,9 +634,9 @@ class ServiceLevelHandler {
     }
     // TODO Do we need to compare Key and Id or could we simply compare ClassificationSummary only?
     final boolean isClassificationKeyChanged =
-        Objects.equals(newTaskImpl.getClassificationKey(), oldTaskImpl.getClassificationKey());
+        !Objects.equals(newTaskImpl.getClassificationKey(), oldTaskImpl.getClassificationKey());
     final boolean isClassificationIdChanged =
-        Objects.equals(newTaskImpl.getClassificationId(), oldTaskImpl.getClassificationId());
+        !Objects.equals(newTaskImpl.getClassificationId(), oldTaskImpl.getClassificationId());
 
     final boolean isManualPriorityChanged =
         newTaskImpl.getManualPriority() != oldTaskImpl.getManualPriority();

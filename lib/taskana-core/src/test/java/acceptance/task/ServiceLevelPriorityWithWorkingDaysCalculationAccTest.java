@@ -432,12 +432,12 @@ public class ServiceLevelPriorityWithWorkingDaysCalculationAccTest extends Abstr
   @Test
   void should_SetDue_When_OnlyPlannedWasChanged() throws Exception {
     String taskId = "TKI:000000000000000000000000000000000002"; // P1D ServiceLevel
-    Instant planned = getInstant("2020-05-03T07:00:00"); // Sunday
     Task task = taskService.getTask(taskId);
+    Instant planned = getInstant("2020-05-10T07:00:00"); // Sunday
     task.setPlanned(planned);
     task = taskService.updateTask(task);
-    assertThat(task.getPlanned()).isEqualTo(getInstant("2020-05-04T07:00:00")); // Monday
-    assertThat(task.getDue()).isEqualTo(getInstant("2020-05-05T07:00:00")); // Tuesday
+    assertThat(task.getPlanned()).isEqualTo(getInstant("2020-05-11T07:00:00")); // Monday
+    assertThat(task.getDue()).isEqualTo(getInstant("2020-05-12T07:00:00")); // Tuesday
   }
 
   @WithAccessId(user = "admin")

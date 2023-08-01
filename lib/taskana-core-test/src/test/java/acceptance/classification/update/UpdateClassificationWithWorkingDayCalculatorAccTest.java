@@ -11,6 +11,7 @@ import static pro.taskana.testapi.builder.TaskBuilder.newTask;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -195,6 +196,60 @@ public class UpdateClassificationWithWorkingDayCalculatorAccTest
   @TestInstance(Lifecycle.PER_CLASS)
   @Nested
   class UpdatePriorityAndServiceLevelTest {
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_ChangeDueDate_When_ClassificationOfTaskHasChanged() throws Exception {
+
+      final Instant plannedDate = Instant.parse("2021-04-27T15:34:00.000Z");
+      final String expectedDue1 = plannedDate.plus(1, ChronoUnit.DAYS).toString();
+      final String expectedDue3 = plannedDate.plus(3, ChronoUnit.DAYS).toString();
+
+      final Classification classificationWithSL1 =
+          defaultTestClassification()
+              .priority(1)
+              .serviceLevel("P1D")
+              .buildAndStore(classificationService);
+      final Classification classificationWithSL3 =
+          defaultTestClassification()
+              .priority(1)
+              .serviceLevel("P3D")
+              .buildAndStore(classificationService);
+
+      WorkbasketSummary workbasketSummary =
+          defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
+      WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+          .workbasketId(workbasketSummary.getId())
+          .accessId(currentUserContext.getUserid())
+          .permission(WorkbasketPermission.OPEN)
+          .permission(WorkbasketPermission.READ)
+          .permission(WorkbasketPermission.APPEND)
+          .buildAndStore(workbasketService, "businessadmin");
+
+      Task task =
+          new TaskBuilder()
+              .classificationSummary(classificationWithSL1.asSummary())
+              .workbasketSummary(workbasketSummary)
+              .primaryObjRef(defaultTestObjectReference().build())
+              .planned(plannedDate)
+              .due(null)
+              .buildAndStore(taskService);
+
+      classificationService.updateClassification(classificationWithSL1);
+      runAssociatedJobs();
+      // read again the task from DB
+      task = taskService.getTask(task.getId());
+      assertThat(task.getClassificationSummary().getServiceLevel()).isEqualTo("P1D");
+      assertThat(task.getDue()).isAfterOrEqualTo(expectedDue1);
+
+      task.setClassificationKey(classificationWithSL3.getKey());
+      taskService.updateTask(task);
+
+      // read again the task from DB
+      task = taskService.getTask(task.getId());
+      assertThat(task.getClassificationSummary().getServiceLevel()).isEqualTo("P3D");
+      assertThat(task.getDue()).isEqualTo(expectedDue3);
+    }
 
     @WithAccessId(user = "businessadmin")
     @Test
