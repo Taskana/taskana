@@ -249,6 +249,7 @@ class TaskanaConfigurationTest {
       Map<String, Set<String>> expectedClassificationCategories =
           Map.of("TYPE_A", Set.of("CATEGORY_A"), "TYPE_B", Set.of("CATEGORY_B"));
       // working time configuration
+      boolean expectedUseDetailedWorkingTimeCalculation = false;
       Map<DayOfWeek, Set<LocalTimeInterval>> expectedWorkingTimeSchedule =
           Map.of(DayOfWeek.MONDAY, Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.NOON)));
       ZoneId expectedWorkingTimeScheduleTimeZone = ZoneId.ofOffset("UTC", ZoneOffset.ofHours(4));
@@ -304,6 +305,7 @@ class TaskanaConfigurationTest {
               .classificationTypes(expectedClassificationTypes)
               .classificationCategoriesByType(expectedClassificationCategories)
               // working time configuration
+              .useWorkingTimeCalculation(expectedUseDetailedWorkingTimeCalculation)
               .workingTimeSchedule(expectedWorkingTimeSchedule)
               .workingTimeScheduleTimeZone(expectedWorkingTimeScheduleTimeZone)
               .customHolidays(expectedCustomHolidays)
@@ -363,6 +365,8 @@ class TaskanaConfigurationTest {
       assertThat(configuration.getClassificationCategoriesByType())
           .isEqualTo(expectedClassificationCategories);
       // working time configuration
+      assertThat(configuration.isUseWorkingTimeCalculation())
+          .isEqualTo(expectedUseDetailedWorkingTimeCalculation);
       assertThat(configuration.getWorkingTimeSchedule()).isEqualTo(expectedWorkingTimeSchedule);
       assertThat(configuration.getWorkingTimeScheduleTimeZone())
           .isEqualTo(expectedWorkingTimeScheduleTimeZone);
@@ -437,6 +441,7 @@ class TaskanaConfigurationTest {
               .classificationCategoriesByType(
                   Map.of("typeA", Set.of("categoryA"), "typeB", Set.of("categoryB")))
               // working time configuration
+              .useWorkingTimeCalculation(false)
               .workingTimeSchedule(
                   Map.of(
                       DayOfWeek.MONDAY,

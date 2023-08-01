@@ -43,10 +43,10 @@ class CancelTaskAccTest extends AbstractAccTest {
   @Test
   void testCancelReadyTask() throws Exception {
     List<TaskSummary> taskSummaries = taskService.createTaskQuery().stateIn(TaskState.READY).list();
-    assertThat(taskSummaries).hasSize(48);
+    assertThat(taskSummaries).hasSize(49);
     taskService.cancelTask(taskSummaries.get(0).getId());
     long numTasks = taskService.createTaskQuery().stateIn(TaskState.READY).count();
-    assertThat(numTasks).isEqualTo(47);
+    assertThat(numTasks).isEqualTo(48);
     numTasks = taskService.createTaskQuery().stateIn(TaskState.CANCELLED).count();
     assertThat(numTasks).isEqualTo(6);
   }

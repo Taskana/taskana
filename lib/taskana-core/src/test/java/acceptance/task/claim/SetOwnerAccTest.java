@@ -194,7 +194,7 @@ class SetOwnerAccTest extends AbstractAccTest {
         allTaskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngine.getTaskService().setOwnerOfTasks("theWorkaholic", allTaskIds);
-    assertThat(allTaskSummaries).hasSize(99);
+    assertThat(allTaskSummaries).hasSize(100);
     assertThat(results.containsErrors()).isTrue();
 
     Condition<Object> invalidTaskStateException =
@@ -205,12 +205,12 @@ class SetOwnerAccTest extends AbstractAccTest {
             c -> c.getClass() == NotAuthorizedOnWorkbasketException.class,
             "MismatchedWorkbasketPermissionException");
     assertThat(results.getErrorMap())
-        .hasSize(95)
+        .hasSize(96)
         .extractingFromEntries(Entry::getValue)
         .hasOnlyElementsOfTypes(
             InvalidTaskStateException.class, NotAuthorizedOnWorkbasketException.class)
         .areExactly(35, invalidTaskStateException)
-        .areExactly(60, mismatchedWorkbasketPermissionException);
+        .areExactly(61, mismatchedWorkbasketPermissionException);
   }
 
   @WithAccessId(user = "admin")
@@ -222,7 +222,7 @@ class SetOwnerAccTest extends AbstractAccTest {
         allTaskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngine.getTaskService().setOwnerOfTasks("theWorkaholic", allTaskIds);
-    assertThat(allTaskSummaries).hasSize(99);
+    assertThat(allTaskSummaries).hasSize(100);
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getErrorMap())
         .hasSize(49)

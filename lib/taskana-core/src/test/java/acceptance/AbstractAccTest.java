@@ -1,6 +1,7 @@
 package acceptance;
 
 import java.lang.reflect.Field;
+import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -54,6 +55,14 @@ public abstract class AbstractAccTest {
   protected static void destroyClass() {
     Optional.ofNullable(((TaskanaEngineImpl) taskanaEngine).getJobScheduler())
         .ifPresent(JobScheduler::stop);
+  }
+
+  protected static void initTaskanaEngine(TaskanaConfiguration configuration) throws SQLException {
+    taskanaConfiguration = configuration;
+    taskanaEngine =
+        TaskanaEngine.buildTaskanaEngine(taskanaConfiguration, ConnectionManagementMode.AUTOCOMMIT);
+    taskService = (TaskServiceImpl) taskanaEngine.getTaskService();
+    workingTimeCalculator = taskanaEngine.getWorkingTimeCalculator();
   }
 
   protected static void resetDb(boolean dropTables) throws Exception {

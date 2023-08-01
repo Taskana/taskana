@@ -30,9 +30,9 @@ class QueryTasksWithPaginationAccTest extends AbstractAccTest {
     void testQueryAllPaged() {
       TaskQuery taskQuery = taskanaEngine.getTaskService().createTaskQuery();
       long numberOfTasks = taskQuery.count();
-      assertThat(numberOfTasks).isEqualTo(99);
+      assertThat(numberOfTasks).isEqualTo(100);
       List<TaskSummary> tasks = taskQuery.orderByDue(DESCENDING).list();
-      assertThat(tasks).hasSize(99);
+      assertThat(tasks).hasSize(100);
       List<TaskSummary> tasksp = taskQuery.orderByDue(DESCENDING).listPage(4, 5);
       assertThat(tasksp).hasSize(5);
       tasksp = taskQuery.orderByDue(DESCENDING).listPage(5, 5);

@@ -62,7 +62,7 @@ class QueryTasksListValuesAccTest extends AbstractAccTest {
               .ownerLike("%user%")
               .orderByClassificationName(ASCENDING)
               .listValues(TaskQueryColumnName.CLASSIFICATION_NAME, null);
-      assertThat(columnValueList).hasSize(5);
+      assertThat(columnValueList).hasSize(6);
     }
 
     @WithAccessId(user = "admin")

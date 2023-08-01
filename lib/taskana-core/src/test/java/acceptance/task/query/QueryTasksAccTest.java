@@ -346,7 +346,7 @@ class QueryTasksAccTest extends AbstractAccTest {
       List<Triplet<TaskCustomField, String[], Integer>> list =
           List.of(
               Triplet.of(
-                  TaskCustomField.CUSTOM_1, new String[] {"custom%", "p%", "%xyz%", "efg"}, 3),
+                  TaskCustomField.CUSTOM_1, new String[] {"custom%", "p%", "%xyz%", "efg"}, 4),
               Triplet.of(TaskCustomField.CUSTOM_2, new String[] {"custom%", "a%"}, 2),
               Triplet.of(TaskCustomField.CUSTOM_3, new String[] {"ffg"}, 1),
               Triplet.of(TaskCustomField.CUSTOM_4, new String[] {"%ust%", "%ty"}, 2),
@@ -359,7 +359,7 @@ class QueryTasksAccTest extends AbstractAccTest {
               Triplet.of(TaskCustomField.CUSTOM_11, new String[] {"%ert"}, 3),
               Triplet.of(TaskCustomField.CUSTOM_12, new String[] {"dd%"}, 1),
               Triplet.of(TaskCustomField.CUSTOM_13, new String[] {"%dd_"}, 1),
-              Triplet.of(TaskCustomField.CUSTOM_14, new String[] {"%"}, 99),
+              Triplet.of(TaskCustomField.CUSTOM_14, new String[] {"%"}, 100),
               Triplet.of(TaskCustomField.CUSTOM_15, new String[] {"___"}, 4),
               Triplet.of(TaskCustomField.CUSTOM_16, new String[] {"___"}, 4));
       assertThat(list).hasSameSizeAs(TaskCustomField.values());
@@ -391,22 +391,22 @@ class QueryTasksAccTest extends AbstractAccTest {
       // carefully constructed to always return exactly 2 results
       List<Triplet<TaskCustomField, String[], Integer>> list =
           List.of(
-              Triplet.of(TaskCustomField.CUSTOM_1, new String[] {"custom1"}, 98),
+              Triplet.of(TaskCustomField.CUSTOM_1, new String[] {"custom1"}, 99),
               Triplet.of(TaskCustomField.CUSTOM_2, new String[] {""}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_3, new String[] {"custom3"}, 98),
+              Triplet.of(TaskCustomField.CUSTOM_3, new String[] {"custom3"}, 99),
               Triplet.of(TaskCustomField.CUSTOM_4, new String[] {""}, 2),
-              Triplet.of(TaskCustomField.CUSTOM_5, new String[] {"ew", "al", "el"}, 92),
-              Triplet.of(TaskCustomField.CUSTOM_6, new String[] {"11", "vvg"}, 95),
-              Triplet.of(TaskCustomField.CUSTOM_7, new String[] {"custom7", "ijk"}, 97),
-              Triplet.of(TaskCustomField.CUSTOM_8, new String[] {"not_existing"}, 99),
-              Triplet.of(TaskCustomField.CUSTOM_9, new String[] {"custom9"}, 98),
-              Triplet.of(TaskCustomField.CUSTOM_10, new String[] {"custom10"}, 98),
-              Triplet.of(TaskCustomField.CUSTOM_11, new String[] {"custom11"}, 98),
-              Triplet.of(TaskCustomField.CUSTOM_12, new String[] {"custom12"}, 98),
-              Triplet.of(TaskCustomField.CUSTOM_13, new String[] {"custom13"}, 98),
+              Triplet.of(TaskCustomField.CUSTOM_5, new String[] {"ew", "al", "el"}, 93),
+              Triplet.of(TaskCustomField.CUSTOM_6, new String[] {"11", "vvg"}, 96),
+              Triplet.of(TaskCustomField.CUSTOM_7, new String[] {"custom7", "ijk"}, 98),
+              Triplet.of(TaskCustomField.CUSTOM_8, new String[] {"not_existing"}, 100),
+              Triplet.of(TaskCustomField.CUSTOM_9, new String[] {"custom9"}, 99),
+              Triplet.of(TaskCustomField.CUSTOM_10, new String[] {"custom10"}, 99),
+              Triplet.of(TaskCustomField.CUSTOM_11, new String[] {"custom11"}, 99),
+              Triplet.of(TaskCustomField.CUSTOM_12, new String[] {"custom12"}, 99),
+              Triplet.of(TaskCustomField.CUSTOM_13, new String[] {"custom13"}, 99),
               Triplet.of(TaskCustomField.CUSTOM_14, new String[] {"abc"}, 0),
-              Triplet.of(TaskCustomField.CUSTOM_15, new String[] {"custom15"}, 98),
-              Triplet.of(TaskCustomField.CUSTOM_16, new String[] {"custom16"}, 98));
+              Triplet.of(TaskCustomField.CUSTOM_15, new String[] {"custom15"}, 99),
+              Triplet.of(TaskCustomField.CUSTOM_16, new String[] {"custom16"}, 99));
       assertThat(list).hasSameSizeAs(TaskCustomField.values());
 
       return DynamicTest.stream(
@@ -455,7 +455,7 @@ class QueryTasksAccTest extends AbstractAccTest {
         throws InvalidArgumentException {
       List<TaskSummary> results =
           taskService.createTaskQuery().customAttributeIn(TaskCustomField.CUSTOM_9, "").list();
-      assertThat(results).hasSize(97);
+      assertThat(results).hasSize(98);
     }
 
     @WithAccessId(user = "admin")
@@ -467,7 +467,7 @@ class QueryTasksAccTest extends AbstractAccTest {
               .createTaskQuery()
               .customAttributeIn(TaskCustomField.CUSTOM_9, "", null)
               .list();
-      assertThat(results).hasSize(98);
+      assertThat(results).hasSize(99);
     }
 
     @WithAccessId(user = "admin")
@@ -479,14 +479,14 @@ class QueryTasksAccTest extends AbstractAccTest {
               .createTaskQuery()
               .customAttributeNotIn(TaskCustomField.CUSTOM_9, new String[] {null})
               .list();
-      assertThat(results).hasSize(98);
+      assertThat(results).hasSize(99);
 
       results =
           taskService
               .createTaskQuery()
               .customAttributeNotIn(TaskCustomField.CUSTOM_9, null, "custom9")
               .list();
-      assertThat(results).hasSize(97);
+      assertThat(results).hasSize(98);
 
       results =
           taskService
@@ -494,7 +494,7 @@ class QueryTasksAccTest extends AbstractAccTest {
               .customAttributeNotIn(TaskCustomField.CUSTOM_9, new String[] {null})
               .customAttributeNotIn(TaskCustomField.CUSTOM_10, "custom10")
               .list();
-      assertThat(results).hasSize(97);
+      assertThat(results).hasSize(98);
     }
 
     @WithAccessId(user = "admin")
