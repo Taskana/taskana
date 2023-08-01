@@ -185,6 +185,8 @@ class DeleteWorkbasketAccTest extends AbstractAccTest {
     taskService.forceCompleteTask(task.getId());
     task = (TaskImpl) taskService.getTask("TKI:200000000000000000000000000000000066");
     taskService.forceCompleteTask(task.getId());
+    task = (TaskImpl) taskService.getTask("TKI:000000000000000000000000000000000201");
+    taskService.forceCompleteTask(task.getId());
 
     boolean canBeDeletedNow = workbasketService.deleteWorkbasket(wb.getId());
     assertThat(canBeDeletedNow).isFalse();
