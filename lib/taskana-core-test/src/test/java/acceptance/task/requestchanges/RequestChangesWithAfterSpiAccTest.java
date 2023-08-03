@@ -267,9 +267,9 @@ public class RequestChangesWithAfterSpiAccTest {
 
       assertThatThrownBy(call)
           .isInstanceOf(SystemException.class)
-          .getCause() // unwrap the "wrap" within "call"
+          .cause() // unwrap the "wrap" within "call"
           .hasMessage("service provider '%s' threw an exception", ExceptionThrower.class.getName())
-          .getCause() // unwrap the "wrap" from the service provider manager
+          .cause() // unwrap the "wrap" from the service provider manager
           .hasMessage("I AM THE EXCEPTION THROWER (*_*)");
 
       Task persistentTask = taskService.getTask(task.getId());

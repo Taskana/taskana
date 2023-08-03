@@ -34,17 +34,17 @@
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
-      <version>${version.jaxb}</version>
+      <version>${version.jaxb-api}</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-core</artifactId>
-      <version>${version.jaxb}</version>
+      <version>${version.jaxb-core}</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
-      <version>${version.jaxb}</version>
+      <version>${version.jaxb-impl}</version>
     </dependency>
     <dependency>
       <groupId>javax.activation</groupId>
@@ -79,6 +79,7 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <version>${version.assertj}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

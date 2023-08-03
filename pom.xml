@@ -83,6 +83,7 @@
     <version.arquillian.managed.wildfly>3.0.1.Final</version.arquillian.managed.wildfly>
 
     <!-- test dependencies -->
+    <version.assertj>3.24.2</version.assertj>
     <version.archunit>1.1.0</version.archunit>
     <version.equalsverifier>3.15.2</version.equalsverifier>
     <version.openpojo>0.9.1</version.openpojo>
@@ -97,7 +98,9 @@
 
     <!-- Excel to DMN converter dependencies -->
     <version.dmn-xlsx-converter>0.3.0</version.dmn-xlsx-converter>
-    <version.jaxb>2.3.0</version.jaxb>
+    <version.jaxb-api>2.3.1</version.jaxb-api>
+    <version.jaxb-core>2.3.0.1</version.jaxb-core>
+    <version.jaxb-impl>2.3.8</version.jaxb-impl>
     <version.javax.activation>1.1.1</version.javax.activation>
 
     <!-- database driver versions -->
