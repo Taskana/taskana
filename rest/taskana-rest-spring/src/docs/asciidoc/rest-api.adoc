@@ -11,6 +11,9 @@ Whenever a parameter is a complex type, the attributes of the value-object can b
 For example, a complex parameter with the name "complex-query-param" and attributes "attribute1" and "attribute2" would be specified in the following way: +
 complex-query-param={"attribute1":"value1","attribute2":"value2"}
 
+Whenever a parameter is a value-less type (e.g owner-is-null and current-user) it is expected to be defined without a value,
+i.e., it should be specified as ?parameter and not ?parameter= or ?parameter=someValue
+
 === Hypermedia Support
 
 NOTE: HATEOAS support is still in development.
