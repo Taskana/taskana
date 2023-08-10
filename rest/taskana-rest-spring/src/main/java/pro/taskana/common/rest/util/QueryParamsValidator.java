@@ -38,7 +38,7 @@ public class QueryParamsValidator {
     checkExactParam(request, "owner-is-null");
   }
 
-  private static void checkExactParam(HttpServletRequest request, String queryParameter) {
+  public static void checkExactParam(HttpServletRequest request, String queryParameter) {
     String queryString = request.getQueryString();
     boolean containParam = queryString != null && queryString.contains(queryParameter);
     if (containParam) {
