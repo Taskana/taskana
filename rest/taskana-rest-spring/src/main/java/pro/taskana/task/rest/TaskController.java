@@ -5,6 +5,7 @@ import static java.util.function.Predicate.not;
 import java.beans.ConstructorProperties;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -105,6 +106,15 @@ public class TaskController {
           AttachmentPersistenceException,
           ObjectReferencePersistenceException,
           NotAuthorizedOnWorkbasketException {
+
+    if (!taskRepresentationModel.getAttachments().stream()
+            .filter(att -> Objects.nonNull(att.getTaskId()))
+            .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
+            .collect(Collectors.toList()).isEmpty()) {
+      throw new InvalidArgumentException(
+              "An attachments' taskId must be empty or equal to the id of the task it belongs to");
+    }
+
     Task fromResource = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
     Task createdTask = taskService.createTask(fromResource);
 
@@ -580,6 +590,15 @@ public class TaskController {
                   + "object in the payload which should be updated. ID=('%s')",
               taskId, taskRepresentationModel.getTaskId()));
     }
+
+    if (!taskRepresentationModel.getAttachments().stream()
+            .filter(att -> Objects.nonNull(att.getTaskId()))
+            .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
+            .collect(Collectors.toList()).isEmpty()) {
+      throw new InvalidArgumentException(
+              "An attachments' taskId must be empty or equal to the id of the task it belongs to");
+    }
+
     Task task = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
     task = taskService.updateTask(task);
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));
