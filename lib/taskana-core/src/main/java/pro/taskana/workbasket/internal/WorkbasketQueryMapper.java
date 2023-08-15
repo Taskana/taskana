@@ -14,7 +14,7 @@ public interface WorkbasketQueryMapper {
   @Select(
       "<script>"
           + "SELECT DISTINCT "
-          + "w.ID, w.KEY, w.NAME, w.DOMAIN, W.TYPE, w.DESCRIPTION, w.OWNER, w.CUSTOM_1, w.CUSTOM_2, w.CUSTOM_3, w.CUSTOM_4, w.ORG_LEVEL_1, w.ORG_LEVEL_2, w.ORG_LEVEL_3, w.ORG_LEVEL_4, w.MARKED_FOR_DELETION from WORKBASKET w "
+          + "w.ID, w.KEY, w.NAME, w.DOMAIN, W.TYPE, w.DESCRIPTION, w.OWNER, w.CUSTOM_1, w.CUSTOM_2, w.CUSTOM_3, w.CUSTOM_4, w.ORG_LEVEL_1, w.ORG_LEVEL_2, w.ORG_LEVEL_3, w.ORG_LEVEL_4, w.MARKED_FOR_DELETION, w.CUSTOM_5, w.CUSTOM_6, w.CUSTOM_7, w.CUSTOM_8 from WORKBASKET w "
           + "<if test = 'joinWithAccessList'> "
           + "<choose>"
           + "<when test=\"_databaseId == 'db2' || _databaseId == 'oracle'\">"
@@ -56,6 +56,14 @@ public interface WorkbasketQueryMapper {
           + "<if test='custom3Like != null'>AND (<foreach item='item' collection='custom3Like' separator=' OR ' >LOWER(w.CUSTOM_3) LIKE #{item}</foreach>)</if> "
           + "<if test='custom4In != null'>AND w.CUSTOM_4 IN(<foreach item='item' collection='custom4In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom4Like != null'>AND (<foreach item='item' collection='custom4Like' separator=' OR ' >LOWER(w.CUSTOM_4) LIKE #{item}</foreach>)</if> "
+          + "<if test='custom5In != null'>AND w.CUSTOM_5 IN(<foreach item='item' collection='custom5In' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='custom5Like != null'>AND (<foreach item='item' collection='custom5Like' separator=' OR ' >LOWER(w.CUSTOM_5) LIKE #{item}</foreach>)</if> "
+          + "<if test='custom6In != null'>AND w.CUSTOM_6 IN(<foreach item='item' collection='custom6In' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='custom6Like != null'>AND (<foreach item='item' collection='custom6Like' separator=' OR ' >LOWER(w.CUSTOM_6) LIKE #{item}</foreach>)</if> "
+          + "<if test='custom7In != null'>AND w.CUSTOM_7 IN(<foreach item='item' collection='custom7In' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='custom7Like != null'>AND (<foreach item='item' collection='custom7Like' separator=' OR ' >LOWER(w.CUSTOM_7) LIKE #{item}</foreach>)</if> "
+          + "<if test='custom8In != null'>AND w.CUSTOM_8 IN(<foreach item='item' collection='custom8In' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='custom8Like != null'>AND (<foreach item='item' collection='custom8Like' separator=' OR ' >LOWER(w.CUSTOM_8) LIKE #{item}</foreach>)</if> "
           + "<if test='orgLevel1In != null'>AND w.ORG_LEVEL_1 IN(<foreach item='item' collection='orgLevel1In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='orgLevel1Like != null'>AND (<foreach item='item' collection='orgLevel1Like' separator=' OR ' >LOWER(w.ORG_LEVEL_1) LIKE #{item}</foreach>)</if> "
           + "<if test='orgLevel2In != null'>AND w.ORG_LEVEL_2 IN(<foreach item='item' collection='orgLevel2In' separator=',' >#{item}</foreach>)</if> "
@@ -115,6 +123,10 @@ public interface WorkbasketQueryMapper {
   @Result(property = "orgLevel3", column = "ORG_LEVEL_3")
   @Result(property = "orgLevel4", column = "ORG_LEVEL_4")
   @Result(property = "markedForDeletion", column = "MARKED_FOR_DELETION")
+  @Result(property = "custom5", column = "CUSTOM_5")
+  @Result(property = "custom6", column = "CUSTOM_6")
+  @Result(property = "custom7", column = "CUSTOM_7")
+  @Result(property = "custom8", column = "CUSTOM_8")
   List<WorkbasketSummaryImpl> queryWorkbasketSummaries(WorkbasketQueryImpl workbasketQuery);
 
   @Select(
@@ -205,6 +217,14 @@ public interface WorkbasketQueryMapper {
           + "<if test='custom3Like != null'>AND (<foreach item='item' collection='custom3Like' separator=' OR ' >LOWER(w.CUSTOM_3) LIKE #{item}</foreach>)</if> "
           + "<if test='custom4In != null'>AND LOWER(w.CUSTOM_4) IN(<foreach item='item' collection='custom4In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom4Like != null'>AND (<foreach item='item' collection='custom4Like' separator=' OR ' >LOWER(w.CUSTOM_4) LIKE #{item}</foreach>)</if> "
+          + "<if test='custom5In != null'>AND LOWER(w.CUSTOM_5) IN(<foreach item='item' collection='custom5In' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='custom5Like != null'>AND (<foreach item='item' collection='custom5Like' separator=' OR ' >LOWER(w.CUSTOM_5) LIKE #{item}</foreach>)</if> "
+          + "<if test='custom6In != null'>AND LOWER(w.CUSTOM_6) IN(<foreach item='item' collection='custom6In' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='custom6Like != null'>AND (<foreach item='item' collection='custom6Like' separator=' OR ' >LOWER(w.CUSTOM_6) LIKE #{item}</foreach>)</if> "
+          + "<if test='custom7In != null'>AND LOWER(w.CUSTOM_7) IN(<foreach item='item' collection='custom7In' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='custom7Like != null'>AND (<foreach item='item' collection='custom7Like' separator=' OR ' >LOWER(w.CUSTOM_7) LIKE #{item}</foreach>)</if> "
+          + "<if test='custom8In != null'>AND LOWER(w.CUSTOM_8) IN(<foreach item='item' collection='custom8In' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='custom8Like != null'>AND (<foreach item='item' collection='custom8Like' separator=' OR ' >LOWER(w.CUSTOM_8) LIKE #{item}</foreach>)</if> "
           + "<if test='orgLevel1In != null'>AND LOWER(w.ORG_LEVEL_1) IN(<foreach item='item' collection='orgLevel1In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='orgLevel1Like != null'>AND (<foreach item='item' collection='orgLevel1Like' separator=' OR ' >LOWER(w.ORG_LEVEL_1) LIKE #{item}</foreach>)</if> "
           + "<if test='orgLevel2In != null'>AND LOWER(w.ORG_LEVEL_2) IN(<foreach item='item' collection='orgLevel2In' separator=',' >#{item}</foreach>)</if> "
@@ -299,10 +319,19 @@ public interface WorkbasketQueryMapper {
           + "<if test='custom1In != null'>AND w.CUSTOM_1 IN(<foreach item='item' collection='custom1In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom1Like != null'>AND (<foreach item='item' collection='custom1Like' separator=' OR ' >LOWER(w.CUSTOM_1) LIKE #{item}</foreach>)</if> "
           + "<if test='custom2In != null'>AND w.CUSTOM_2 IN(<foreach item='item' collection='custom2In' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='custom2Like != null'>AND (<foreach item='item' collection='custom2Like' separator=' OR ' >LOWER(w.CUSTOM_2) LIKE #{item}</foreach>)</if> "
           + "<if test='custom3In != null'>AND w.CUSTOM_3 IN(<foreach item='item' collection='custom3In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom3Like != null'>AND (<foreach item='item' collection='custom3Like' separator=' OR ' >LOWER(w.CUSTOM_3) LIKE #{item}</foreach>)</if> "
           + "<if test='custom4In != null'>AND w.CUSTOM_4 IN(<foreach item='item' collection='custom4In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='custom4Like != null'>AND (<foreach item='item' collection='custom4Like' separator=' OR ' >LOWER(w.CUSTOM_4) LIKE #{item}</foreach>)</if> "
+          + "<if test='custom5In != null'>AND w.CUSTOM_5 IN(<foreach item='item' collection='custom5In' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='custom5Like != null'>AND (<foreach item='item' collection='custom5Like' separator=' OR ' >LOWER(w.CUSTOM_5) LIKE #{item}</foreach>)</if> "
+          + "<if test='custom6In != null'>AND w.CUSTOM_6 IN(<foreach item='item' collection='custom6In' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='custom6Like != null'>AND (<foreach item='item' collection='custom6Like' separator=' OR ' >LOWER(w.CUSTOM_6) LIKE #{item}</foreach>)</if> "
+          + "<if test='custom7In != null'>AND w.CUSTOM_7 IN(<foreach item='item' collection='custom7In' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='custom7Like != null'>AND (<foreach item='item' collection='custom7Like' separator=' OR ' >LOWER(w.CUSTOM_7) LIKE #{item}</foreach>)</if> "
+          + "<if test='custom8In != null'>AND w.CUSTOM_8 IN(<foreach item='item' collection='custom8In' separator=',' >#{item}</foreach>)</if> "
+          + "<if test='custom8Like != null'>AND (<foreach item='item' collection='custom8Like' separator=' OR ' >LOWER(w.CUSTOM_8) LIKE #{item}</foreach>)</if> "
           + "<if test='orgLevel1In != null'>AND w.ORG_LEVEL_1 IN(<foreach item='item' collection='orgLevel1In' separator=',' >#{item}</foreach>)</if> "
           + "<if test='orgLevel1Like != null'>AND (<foreach item='item' collection='orgLevel1Like' separator=' OR ' >LOWER(w.ORG_LEVEL_1) LIKE #{item}</foreach>)</if> "
           + "<if test='orgLevel2In != null'>AND w.ORG_LEVEL_2 IN(<foreach item='item' collection='orgLevel2In' separator=',' >#{item}</foreach>)</if> "

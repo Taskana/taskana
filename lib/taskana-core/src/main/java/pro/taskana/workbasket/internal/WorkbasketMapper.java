@@ -34,6 +34,10 @@ public interface WorkbasketMapper {
   @Result(property = "orgLevel3", column = "ORG_LEVEL_3")
   @Result(property = "orgLevel4", column = "ORG_LEVEL_4")
   @Result(property = "markedForDeletion", column = "MARKED_FOR_DELETION")
+  @Result(property = "custom5", column = "CUSTOM_5")
+  @Result(property = "custom6", column = "CUSTOM_6")
+  @Result(property = "custom7", column = "CUSTOM_7")
+  @Result(property = "custom8", column = "CUSTOM_8")
   WorkbasketImpl findById(@Param("id") String id);
 
   @SelectProvider(type = WorkbasketSqlProvider.class, method = "findByKeyAndDomain")
@@ -55,6 +59,10 @@ public interface WorkbasketMapper {
   @Result(property = "orgLevel3", column = "ORG_LEVEL_3")
   @Result(property = "orgLevel4", column = "ORG_LEVEL_4")
   @Result(property = "markedForDeletion", column = "MARKED_FOR_DELETION")
+  @Result(property = "custom5", column = "CUSTOM_5")
+  @Result(property = "custom6", column = "CUSTOM_6")
+  @Result(property = "custom7", column = "CUSTOM_7")
+  @Result(property = "custom8", column = "CUSTOM_8")
   WorkbasketImpl findByKeyAndDomain(@Param("key") String key, @Param("domain") String domain);
 
   @SelectProvider(type = WorkbasketSqlProvider.class, method = "findDistributionTargets")
@@ -73,6 +81,10 @@ public interface WorkbasketMapper {
   @Result(property = "orgLevel2", column = "ORG_LEVEL_2")
   @Result(property = "orgLevel3", column = "ORG_LEVEL_3")
   @Result(property = "orgLevel4", column = "ORG_LEVEL_4")
+  @Result(property = "custom5", column = "CUSTOM_5")
+  @Result(property = "custom6", column = "CUSTOM_6")
+  @Result(property = "custom7", column = "CUSTOM_7")
+  @Result(property = "custom8", column = "CUSTOM_8")
   List<WorkbasketSummaryImpl> findDistributionTargets(@Param("id") String id);
 
   @SelectProvider(type = WorkbasketSqlProvider.class, method = "findDistributionSources")
@@ -91,6 +103,10 @@ public interface WorkbasketMapper {
   @Result(property = "orgLevel2", column = "ORG_LEVEL_2")
   @Result(property = "orgLevel3", column = "ORG_LEVEL_3")
   @Result(property = "orgLevel4", column = "ORG_LEVEL_4")
+  @Result(property = "custom5", column = "CUSTOM_5")
+  @Result(property = "custom6", column = "CUSTOM_6")
+  @Result(property = "custom7", column = "CUSTOM_7")
+  @Result(property = "custom8", column = "CUSTOM_8")
   List<WorkbasketSummaryImpl> findDistributionSources(@Param("id") String id);
 
   @SelectProvider(type = WorkbasketSqlProvider.class, method = "findSummaryById")
@@ -109,6 +125,10 @@ public interface WorkbasketMapper {
   @Result(property = "orgLevel2", column = "ORG_LEVEL_2")
   @Result(property = "orgLevel3", column = "ORG_LEVEL_3")
   @Result(property = "orgLevel4", column = "ORG_LEVEL_4")
+  @Result(property = "custom5", column = "CUSTOM_5")
+  @Result(property = "custom6", column = "CUSTOM_6")
+  @Result(property = "custom7", column = "CUSTOM_7")
+  @Result(property = "custom8", column = "CUSTOM_8")
   List<WorkbasketSummaryImpl> findSummaryById(@Param("key") String id);
 
   @SelectProvider(type = WorkbasketSqlProvider.class, method = "findAll")
@@ -127,6 +147,10 @@ public interface WorkbasketMapper {
   @Result(property = "orgLevel2", column = "ORG_LEVEL_2")
   @Result(property = "orgLevel3", column = "ORG_LEVEL_3")
   @Result(property = "orgLevel4", column = "ORG_LEVEL_4")
+  @Result(property = "custom5", column = "CUSTOM_5")
+  @Result(property = "custom6", column = "CUSTOM_6")
+  @Result(property = "custom7", column = "CUSTOM_7")
+  @Result(property = "custom8", column = "CUSTOM_8")
   List<WorkbasketSummaryImpl> findAll();
 
   @InsertProvider(type = WorkbasketSqlProvider.class, method = "insert")

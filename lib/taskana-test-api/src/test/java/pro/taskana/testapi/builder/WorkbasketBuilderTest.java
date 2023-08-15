@@ -78,6 +78,10 @@ class WorkbasketBuilderTest {
             .customAttribute(WorkbasketCustomField.CUSTOM_2, "custom 2 value")
             .customAttribute(WorkbasketCustomField.CUSTOM_3, "custom 3 value")
             .customAttribute(WorkbasketCustomField.CUSTOM_4, "custom 4 value")
+            .customAttribute(WorkbasketCustomField.CUSTOM_5, "custom 5 value")
+            .customAttribute(WorkbasketCustomField.CUSTOM_6, "custom 6 value")
+            .customAttribute(WorkbasketCustomField.CUSTOM_7, "custom 7 value")
+            .customAttribute(WorkbasketCustomField.CUSTOM_8, "custom 8 value")
             .orgLevel1("org level 1")
             .orgLevel2("org level 2")
             .orgLevel3("org level 3")
@@ -97,6 +101,10 @@ class WorkbasketBuilderTest {
     expectedWorkbasket.setCustomField(WorkbasketCustomField.CUSTOM_2, "custom 2 value");
     expectedWorkbasket.setCustomField(WorkbasketCustomField.CUSTOM_3, "custom 3 value");
     expectedWorkbasket.setCustomField(WorkbasketCustomField.CUSTOM_4, "custom 4 value");
+    expectedWorkbasket.setCustomField(WorkbasketCustomField.CUSTOM_5, "custom 5 value");
+    expectedWorkbasket.setCustomField(WorkbasketCustomField.CUSTOM_6, "custom 6 value");
+    expectedWorkbasket.setCustomField(WorkbasketCustomField.CUSTOM_7, "custom 7 value");
+    expectedWorkbasket.setCustomField(WorkbasketCustomField.CUSTOM_8, "custom 8 value");
     expectedWorkbasket.setOrgLevel1("org level 1");
     expectedWorkbasket.setOrgLevel2("org level 2");
     expectedWorkbasket.setOrgLevel3("org level 3");

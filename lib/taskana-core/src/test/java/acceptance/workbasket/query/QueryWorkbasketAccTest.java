@@ -33,7 +33,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1")
   @Test
-  void testQueryAllForUserMultipleTimes() {
+  void should_QueryAllMultipleTimes_When_UserIsTeamlead1() {
     WorkbasketQuery query = WORKBASKET_SERVICE.createWorkbasketQuery();
     int count = (int) query.count();
     assertThat(count).isEqualTo(4);
@@ -45,7 +45,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void testQueryAllForBusinessAdminMultipleTimes() {
+  void should_QueryAllMultipleTimes_When_UserIsBusinessAdmin() {
     WorkbasketQuery query = WORKBASKET_SERVICE.createWorkbasketQuery();
     int count = (int) query.count();
     assertThat(count).isEqualTo(26);
@@ -57,7 +57,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryAllForAdminMultipleTimes() {
+  void should_QueryAllMultipleTimes_When_UserIsAdmin() {
     WorkbasketQuery query = WORKBASKET_SERVICE.createWorkbasketQuery();
     int count = (int) query.count();
     assertThat(count).isEqualTo(26);
@@ -69,7 +69,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketValuesForColumnName() {
+  void should_QueryWorkbasketValues_When_ColumnIsName() {
     List<String> columnValueList =
         WORKBASKET_SERVICE.createWorkbasketQuery().listValues(NAME, null);
     assertThat(columnValueList).hasSize(10);
@@ -85,7 +85,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByDomain() {
+  void should_ApplyFilter_When_QueryingForDomainIn() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().domainIn("DOMAIN_B").list();
     assertThat(results).hasSize(1);
@@ -93,7 +93,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByDomainAndType() {
+  void should_ApplyFilter_When_QueryingForDomainInAndTypeIn() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -129,7 +129,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByNameStartsWith() {
+  void should_ApplyFilter_When_QueryingForNameStartsWith() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().nameLike("%Gruppenpostkorb KSC%").list();
     assertThat(results).hasSize(3);
@@ -137,7 +137,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByNameContains() {
+  void should_ApplyFilter_When_QueryingForNameContains() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -148,7 +148,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByNameContainsCaseInsensitive() {
+  void should_ApplyFilter_When_QueryingForNameContainsCaseInsensitive() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().nameLike("%TEAMLEAD%").list();
     assertThat(results).hasSize(2);
@@ -156,7 +156,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByDescription() {
+  void should_ApplyFilter_When_QueryingForDescriptionLike() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -169,7 +169,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByOwnerLike() {
+  void should_ApplyFilter_When_QueryingForOwnerLike() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -181,7 +181,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByKey() {
+  void should_QuerySingleWb_When_UsingKeyIn() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().keyIn("GPK_KSC").list();
     assertThat(results).hasSize(1);
@@ -189,7 +189,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByMultipleKeys() {
+  void should_QueryMultipleWbs_When_UsingKeyIn() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().keyIn("GPK_KSC_1", "GPK_KSC").list();
     assertThat(results).hasSize(2);
@@ -197,7 +197,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByMultipleKeysWithUnknownKey() {
+  void should_QueryMultipleWbs_When_UsingKeyInWithUnknownKey() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -208,7 +208,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByKeyContains() {
+  void should_QueryByKeyContains_When_UsingKeyIn() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().keyLike("%KSC%").list();
     assertThat(results).hasSize(3);
@@ -216,7 +216,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByKeyContainsIgnoreCase() {
+  void should_QueryByKeyContainsIgnoreCase_When_UsingKeyIn() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().keyLike("%kSc%").list();
     assertThat(results).hasSize(3);
@@ -224,7 +224,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByKeyOrNameContainsIgnoreCase() {
+  void should_QueryByKeyOrNameContainsIgnoreCase_When_UsingKeyIn() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().keyOrNameLike("%kSc%").list();
     assertThat(results).hasSize(9);
@@ -232,7 +232,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByNameStartsWithSortedByNameAscending() {
+  void should_QueryByNameStartsWithSortedByNameAscending_When_UsingNameLike() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -247,7 +247,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-b-1")
   @Test
-  void testQueryWorkbasketByNameStartsWithSortedByNameDescending() {
+  void should_QueryByNameStartsWithSortedByNameDescending_When_UsingNameLike() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -262,7 +262,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-b-1")
   @Test
-  void testQueryWorkbasketByNameStartsWithSortedByKeyAscending() {
+  void should_QueryByNameStartsWithSortedByKeyAscending_When_UsingNameLike() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().nameLike("basxet%").orderByKey(ASCENDING).list();
     assertThat(results)
@@ -273,7 +273,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "user-b-1")
   @Test
-  void testQueryWorkbasketByNameStartsWithSortedByKeyDescending() {
+  void should_QueryByNameStartsWithSortedByKeyDescending_When_UsingNameLike() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -288,7 +288,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByCreated() {
+  void should_ApplyFilter_When_QueryingForCreatedWithin() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().createdWithin(toDaysInterval()).list();
     assertThat(results).hasSize(9);
@@ -296,7 +296,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByModified() {
+  void should_ApplyFilter_When_QueryingForModifiedWithinW() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().modifiedWithin(toDaysInterval()).list();
     assertThat(results).hasSize(9);
@@ -304,7 +304,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryWorkbasketByAdmin() throws Exception {
+  void should_QueryWorkbaskets_When_UserIsAdmin() throws Exception {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().nameLike("%").orderByName(DESCENDING).list();
     assertThat(results)
@@ -326,7 +326,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
-  void testQueryWorkbasketByDomainLike() {
+  void should_ApplyFilter_When_QueryingForDomainLike() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -351,7 +351,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryWorkbasketByOwnerInOrderByDomainDesc() {
+  void should_ApplyFilter_When_QueryingForOwnerInOrderByDomainDesc() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -366,7 +366,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "teamlead-1")
   @Test
-  void testQueryForCustom1In() {
+  void should_ApplyFilter_When_QueryingForCustom1In() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -380,7 +380,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForCustom1Like() {
+  void should_ApplyFilter_When_QueryingForCustom1Like() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -391,7 +391,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForCustom2In() {
+  void should_ApplyFilter_When_QueryingForCustom2In() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -402,7 +402,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForCustom2Like() {
+  void should_ApplyFilter_When_QueryingForCustom2Like() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -413,7 +413,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForCustom3In() {
+  void should_ApplyFilter_When_QueryingForCustom3In() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -424,7 +424,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForCustom3Like() {
+  void should_ApplyFilter_When_QueryingForCustom3Like() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -435,7 +435,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForCustom4In() {
+  void should_ApplyFilter_When_QueryingForCustom4In() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -446,7 +446,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForCustom4Like() {
+  void should_ApplyFilter_When_QueryingForCustom4Like() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
@@ -457,7 +457,101 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForOrgLevl1In() {
+  void should_ApplyFilter_When_QueryingForCustom5In() throws Exception {
+
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .customAttributeIn(WorkbasketCustomField.CUSTOM_5, "custom5")
+            .list();
+
+    assertThat(results).hasSize(1);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_ApplyFilter_When_QueryingForCustom5Like() throws Exception {
+
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .customAttributeLike(WorkbasketCustomField.CUSTOM_5, "custo%")
+            .list();
+    assertThat(results).hasSize(1);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_ApplyFilter_When_QueryingForCustom6In() throws Exception {
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .customAttributeIn(WorkbasketCustomField.CUSTOM_6, "custom6")
+            .list();
+
+    assertThat(results).hasSize(1);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_ApplyFilter_When_QueryingForCustom6Like() throws Exception {
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .customAttributeLike(WorkbasketCustomField.CUSTOM_6, "cust%")
+            .list();
+    assertThat(results).hasSize(2);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_ApplyFilter_When_QueryingForCustom7In() throws Exception {
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .customAttributeIn(WorkbasketCustomField.CUSTOM_7, "custom7")
+            .list();
+
+    assertThat(results).hasSize(1);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_ApplyFilter_When_QueryingForCustom7Like() throws Exception {
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .customAttributeLike(WorkbasketCustomField.CUSTOM_7, "cust%")
+            .list();
+    assertThat(results).hasSize(2);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_ApplyFilter_When_QueryingForCustom8In() throws Exception {
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .customAttributeIn(WorkbasketCustomField.CUSTOM_8, "custom8")
+            .list();
+
+    assertThat(results).hasSize(1);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_ApplyFilter_When_QueryingForCustom8Like() throws Exception {
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .customAttributeLike(WorkbasketCustomField.CUSTOM_8, "cust%")
+            .list();
+    assertThat(results).hasSize(3);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_ApplyFilter_When_QueryingForOrgLevel1In() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().orgLevel1In("orgl1", "").list();
     assertThat(results).hasSize(25);
@@ -465,7 +559,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForOrgLevel1Like() {
+  void should_ApplyFilter_When_QueryingForOrgLevel1Like() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().orgLevel1Like("%1").list();
     assertThat(results).hasSize(2);
@@ -473,7 +567,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForOrgLevel2In() {
+  void should_ApplyFilter_When_QueryingForOrgLevel2In() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().orgLevel2In("abteilung").list();
     assertThat(results).hasSize(1);
@@ -481,7 +575,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForOrgLevel2Like() {
+  void should_ApplyFilter_When_QueryingForOrgLevel2Like() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().orgLevel2Like("ab%").list();
     assertThat(results).hasSize(1);
@@ -489,7 +583,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForOrgLevel3In() {
+  void should_ApplyFilter_When_QueryingForOrgLevel3In() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().orgLevel3In("orgl3").list();
     assertThat(results).hasSize(2);
@@ -497,7 +591,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForOrgLevel3Like() {
+  void should_ApplyFilter_When_QueryingForOrgLevel3Like() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().orgLevel3Like("org%").list();
     assertThat(results).hasSize(2);
@@ -505,7 +599,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForOrgLevel4In() {
+  void should_ApplyFilter_When_QueryingForOrgLevel4In() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().orgLevel4In("team", "orgl4").list();
     assertThat(results).hasSize(2);
@@ -513,7 +607,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForOrgLevel4Like() {
+  void should_ApplyFilter_When_QueryingForOrgLevel4Like() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().orgLevel4Like("%").list();
     assertThat(results).hasSize(26);
@@ -521,7 +615,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForOrderByOrgLevel1Desc() {
+  void should_OrderByOrgLevel1Desc_When_QueryingWorkbaskets() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().orderByOrgLevel1(DESCENDING).list();
 
@@ -533,7 +627,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForOrderByOrgLevel2Asc() {
+  void should_OrderByOrgLevel2Asc_When_QueryingWorkbaskets() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().orderByOrgLevel2(ASCENDING).list();
 
@@ -545,7 +639,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForOrderByOrgLevel3Desc() {
+  void should_OrderByOrgLevel3Desc_When_QueryingWorkbaskets() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().orderByOrgLevel3(DESCENDING).list();
 
@@ -557,7 +651,7 @@ class QueryWorkbasketAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "admin")
   @Test
-  void testQueryForOrderByOrgLevel4Asc() {
+  void should_OrderByOrgLevel4Asc_When_QueryingWorkbaskets() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE.createWorkbasketQuery().orderByOrgLevel4(ASCENDING).list();
 

@@ -20,6 +20,10 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
   protected String custom2;
   protected String custom3;
   protected String custom4;
+  protected String custom5;
+  protected String custom6;
+  protected String custom7;
+  protected String custom8;
   protected String orgLevel1;
   protected String orgLevel2;
   protected String orgLevel3;
@@ -38,6 +42,10 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     custom2 = copyFrom.custom2;
     custom3 = copyFrom.custom3;
     custom4 = copyFrom.custom4;
+    custom5 = copyFrom.custom5;
+    custom6 = copyFrom.custom6;
+    custom7 = copyFrom.custom7;
+    custom8 = copyFrom.custom8;
     orgLevel1 = copyFrom.orgLevel1;
     orgLevel2 = copyFrom.orgLevel2;
     orgLevel3 = copyFrom.orgLevel3;
@@ -125,6 +133,14 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
         return custom3;
       case CUSTOM_4:
         return custom4;
+      case CUSTOM_5:
+        return custom5;
+      case CUSTOM_6:
+        return custom6;
+      case CUSTOM_7:
+        return custom7;
+      case CUSTOM_8:
+        return custom8;
       default:
         throw new SystemException("Unknown customField '" + customField + "'");
     }
@@ -212,6 +228,38 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
     this.custom4 = custom4 == null ? null : custom4.trim();
   }
 
+  public String getCustom5() {
+    return custom5;
+  }
+
+  public void setCustom5(String custom5) {
+    this.custom5 = custom5 == null ? null : custom5.trim();
+  }
+
+  public String getCustom6() {
+    return custom6;
+  }
+
+  public void setCustom6(String custom6) {
+    this.custom6 = custom6 == null ? null : custom6.trim();
+  }
+
+  public String getCustom7() {
+    return custom7;
+  }
+
+  public void setCustom7(String custom7) {
+    this.custom7 = custom7 == null ? null : custom7.trim();
+  }
+
+  public String getCustom8() {
+    return custom8;
+  }
+
+  public void setCustom8(String custom8) {
+    this.custom8 = custom8 == null ? null : custom8.trim();
+  }
+
   protected boolean canEqual(Object other) {
     return (other instanceof WorkbasketSummaryImpl);
   }
@@ -230,6 +278,10 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
         custom2,
         custom3,
         custom4,
+        custom5,
+        custom6,
+        custom7,
+        custom8,
         orgLevel1,
         orgLevel2,
         orgLevel3,
@@ -261,6 +313,10 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
         && Objects.equals(custom2, other.custom2)
         && Objects.equals(custom3, other.custom3)
         && Objects.equals(custom4, other.custom4)
+        && Objects.equals(custom5, other.custom5)
+        && Objects.equals(custom6, other.custom6)
+        && Objects.equals(custom7, other.custom7)
+        && Objects.equals(custom8, other.custom8)
         && Objects.equals(orgLevel1, other.orgLevel1)
         && Objects.equals(orgLevel2, other.orgLevel2)
         && Objects.equals(orgLevel3, other.orgLevel3)
@@ -291,6 +347,14 @@ public class WorkbasketSummaryImpl implements WorkbasketSummary {
         + custom3
         + ", custom4="
         + custom4
+        + ", custom5="
+        + custom5
+        + ", custom6="
+        + custom6
+        + ", custom7="
+        + custom7
+        + ", custom8="
+        + custom8
         + ", orgLevel1="
         + orgLevel1
         + ", orgLevel2="

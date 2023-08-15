@@ -5,6 +5,10 @@ import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_1;
 import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_2;
 import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_3;
 import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_4;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_5;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_6;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_7;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_8;
 
 import org.junit.jupiter.api.Test;
 import pro.taskana.workbasket.api.WorkbasketPermission;
@@ -22,6 +26,10 @@ class WorkbasketModelsCloneTest {
     dummyWorkbasketForSummaryTest.setCustomField(CUSTOM_2, "dummyCustom2");
     dummyWorkbasketForSummaryTest.setCustomField(CUSTOM_3, "dummyCustom3");
     dummyWorkbasketForSummaryTest.setCustomField(CUSTOM_4, "dummyCustom4");
+    dummyWorkbasketForSummaryTest.setCustomField(CUSTOM_5, "dummyCustom5");
+    dummyWorkbasketForSummaryTest.setCustomField(CUSTOM_6, "dummyCustom6");
+    dummyWorkbasketForSummaryTest.setCustomField(CUSTOM_7, "dummyCustom7");
+    dummyWorkbasketForSummaryTest.setCustomField(CUSTOM_8, "dummyCustom8");
     dummyWorkbasketForSummaryTest.setDescription("dummyDescription");
     dummyWorkbasketForSummaryTest.setMarkedForDeletion(false);
     dummyWorkbasketForSummaryTest.setName("dummyName");
@@ -51,6 +59,10 @@ class WorkbasketModelsCloneTest {
     dummyWorkbasket.setCustom2("dummyCustom2");
     dummyWorkbasket.setCustom3("dummyCustom3");
     dummyWorkbasket.setCustom4("dummyCustom4");
+    dummyWorkbasket.setCustom5("dummyCustom5");
+    dummyWorkbasket.setCustom6("dummyCustom6");
+    dummyWorkbasket.setCustom7("dummyCustom7");
+    dummyWorkbasket.setCustom8("dummyCustom8");
     dummyWorkbasket.setDescription("dummyDescription");
     dummyWorkbasket.setMarkedForDeletion(false);
     dummyWorkbasket.setName("dummyName");

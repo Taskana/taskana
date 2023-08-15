@@ -45,6 +45,10 @@ class WorkbasketRepresentationModelAssemblerTest {
     workbasket.setCustom2("2");
     workbasket.setCustom3("3");
     workbasket.setCustom4("4");
+    workbasket.setCustom5("5");
+    workbasket.setCustom6("6");
+    workbasket.setCustom7("7");
+    workbasket.setCustom8("8");
     workbasket.setOwner("Lars");
     workbasket.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     workbasket.setModified(Instant.parse("2010-01-01T12:00:00Z"));
@@ -68,6 +72,10 @@ class WorkbasketRepresentationModelAssemblerTest {
     workbasketRepresentationModel.setCustom2("Custom2");
     workbasketRepresentationModel.setCustom3("Custom3");
     workbasketRepresentationModel.setCustom4("Custom4");
+    workbasketRepresentationModel.setCustom5("Custom5");
+    workbasketRepresentationModel.setCustom6("Custom6");
+    workbasketRepresentationModel.setCustom7("Custom7");
+    workbasketRepresentationModel.setCustom8("Custom8");
     workbasketRepresentationModel.setDescription("Test Ressource");
     workbasketRepresentationModel.setDomain("DOMAIN_A");
     workbasketRepresentationModel.setKey("1");
@@ -100,6 +108,10 @@ class WorkbasketRepresentationModelAssemblerTest {
     workbasket.setCustomField(WorkbasketCustomField.CUSTOM_2, "2");
     workbasket.setCustomField(WorkbasketCustomField.CUSTOM_3, "3");
     workbasket.setCustomField(WorkbasketCustomField.CUSTOM_4, "4");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_5, "5");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_6, "6");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_7, "7");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_8, "8");
     workbasket.setOwner("Lars");
     workbasket.setCreated(Instant.parse("2010-01-01T12:00:00Z"));
     workbasket.setModified(Instant.parse("2010-01-01T12:00:00Z"));
