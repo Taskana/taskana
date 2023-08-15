@@ -14,6 +14,7 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.test.security.JaasExtension;
 import pro.taskana.common.test.security.WithAccessId;
+import pro.taskana.workbasket.api.WorkbasketCustomField;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.WorkbasketType;
@@ -55,6 +56,48 @@ class CreateWorkbasketAccTest extends AbstractAccTest {
     Workbasket createdWorkbasket2 = workbasketService.getWorkbasket(createdWorkbasket.getId());
     assertThat(createdWorkbasket).isNotNull();
     assertThat(createdWorkbasket2).isEqualTo(createdWorkbasket);
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_CreateWorkbasketWithCustomValues() throws Exception {
+    WorkbasketService workbasketService = taskanaEngine.getWorkbasketService();
+
+    Workbasket workbasket = workbasketService.newWorkbasket("NT2345", "DOMAIN_A");
+    workbasket.setName("Megabasket");
+    workbasket.setType(WorkbasketType.GROUP);
+    workbasket.setOrgLevel1("company");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_1, "custom1");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_2, "custom2");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_3, "custom3");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_4, "custom4");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_5, "custom5");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_6, "custom6");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_7, "custom7");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_8, "custom8");
+    workbasket = workbasketService.createWorkbasket(workbasket);
+    WorkbasketAccessItem wbai =
+        workbasketService.newWorkbasketAccessItem(workbasket.getId(), "user-1-2");
+    wbai.setPermission(WorkbasketPermission.READ, true);
+    workbasketService.createWorkbasketAccessItem(wbai);
+
+    Workbasket receivedWorkbasket = workbasketService.getWorkbasket(workbasket.getId());
+    assertThat(receivedWorkbasket.getCustomField(WorkbasketCustomField.CUSTOM_1))
+        .isEqualTo("custom1");
+    assertThat(receivedWorkbasket.getCustomField(WorkbasketCustomField.CUSTOM_2))
+        .isEqualTo("custom2");
+    assertThat(receivedWorkbasket.getCustomField(WorkbasketCustomField.CUSTOM_3))
+        .isEqualTo("custom3");
+    assertThat(receivedWorkbasket.getCustomField(WorkbasketCustomField.CUSTOM_4))
+        .isEqualTo("custom4");
+    assertThat(receivedWorkbasket.getCustomField(WorkbasketCustomField.CUSTOM_5))
+        .isEqualTo("custom5");
+    assertThat(receivedWorkbasket.getCustomField(WorkbasketCustomField.CUSTOM_6))
+        .isEqualTo("custom6");
+    assertThat(receivedWorkbasket.getCustomField(WorkbasketCustomField.CUSTOM_7))
+        .isEqualTo("custom7");
+    assertThat(receivedWorkbasket.getCustomField(WorkbasketCustomField.CUSTOM_8))
+        .isEqualTo("custom8");
   }
 
   @WithAccessId(user = "user-1-1")

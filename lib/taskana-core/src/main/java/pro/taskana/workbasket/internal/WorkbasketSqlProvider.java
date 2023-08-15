@@ -30,7 +30,11 @@ public class WorkbasketSqlProvider {
           Pair.of("ORG_LEVEL_2", "#{workbasket.orgLevel2}"),
           Pair.of("ORG_LEVEL_3", "#{workbasket.orgLevel3}"),
           Pair.of("ORG_LEVEL_4", "#{workbasket.orgLevel4}"),
-          Pair.of("MARKED_FOR_DELETION", "#{workbasket.markedForDeletion}"));
+          Pair.of("MARKED_FOR_DELETION", "#{workbasket.markedForDeletion}"),
+          Pair.of("CUSTOM_5", "#{workbasket.custom5}"),
+          Pair.of("CUSTOM_6", "#{workbasket.custom6}"),
+          Pair.of("CUSTOM_7", "#{workbasket.custom7}"),
+          Pair.of("CUSTOM_8", "#{workbasket.custom8}"));
 
   private WorkbasketSqlProvider() {}
 

@@ -59,6 +59,14 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
   private String[] custom3Like;
   private String[] custom4In;
   private String[] custom4Like;
+  private String[] custom5In;
+  private String[] custom5Like;
+  private String[] custom6In;
+  private String[] custom6Like;
+  private String[] custom7In;
+  private String[] custom7Like;
+  private String[] custom8In;
+  private String[] custom8Like;
   private String[] orgLevel1In;
   private String[] orgLevel1Like;
   private String[] orgLevel2In;
@@ -271,6 +279,18 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
       case CUSTOM_4:
         custom4In = searchArguments;
         break;
+      case CUSTOM_5:
+        custom5In = searchArguments;
+        break;
+      case CUSTOM_6:
+        custom6In = searchArguments;
+        break;
+      case CUSTOM_7:
+        custom7In = searchArguments;
+        break;
+      case CUSTOM_8:
+        custom8In = searchArguments;
+        break;
       default:
         throw new SystemException("Unknown customField '" + customField + "'");
     }
@@ -292,6 +312,18 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         break;
       case CUSTOM_4:
         custom4Like = toLowerCopy(searchArguments);
+        break;
+      case CUSTOM_5:
+        custom5Like = toLowerCopy(searchArguments);
+        break;
+      case CUSTOM_6:
+        custom6Like = toLowerCopy(searchArguments);
+        break;
+      case CUSTOM_7:
+        custom7Like = toLowerCopy(searchArguments);
+        break;
+      case CUSTOM_8:
+        custom8Like = toLowerCopy(searchArguments);
         break;
       default:
         throw new SystemException("Unknown customField '" + customField + "'");
@@ -512,6 +544,38 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     return custom4Like;
   }
 
+  public String[] getCustom5In() {
+    return custom5In;
+  }
+
+  public String[] getCustom5Like() {
+    return custom5Like;
+  }
+
+  public String[] getCustom6In() {
+    return custom6In;
+  }
+
+  public String[] getCustom6Like() {
+    return custom6Like;
+  }
+
+  public String[] getCustom7In() {
+    return custom7In;
+  }
+
+  public String[] getCustom7Like() {
+    return custom7Like;
+  }
+
+  public String[] getCustom8In() {
+    return custom8In;
+  }
+
+  public String[] getCustom8Like() {
+    return custom8Like;
+  }
+
   public String[] getOrgLevel1In() {
     return orgLevel1In;
   }
@@ -702,6 +766,22 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
         + Arrays.toString(custom4In)
         + ", custom4Like="
         + Arrays.toString(custom4Like)
+        + ", custom5In="
+        + Arrays.toString(custom5In)
+        + ", custom5Like="
+        + Arrays.toString(custom5Like)
+        + ", custom6In="
+        + Arrays.toString(custom6In)
+        + ", custom6Like="
+        + Arrays.toString(custom6Like)
+        + ", custom7In="
+        + Arrays.toString(custom7In)
+        + ", custom7Like="
+        + Arrays.toString(custom7Like)
+        + ", custom8In="
+        + Arrays.toString(custom8In)
+        + ", custom8Like="
+        + Arrays.toString(custom8Like)
         + ", orgLevel1In="
         + Arrays.toString(orgLevel1In)
         + ", orgLevel1Like="

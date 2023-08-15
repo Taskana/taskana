@@ -44,6 +44,18 @@ public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket 
       case CUSTOM_4:
         custom4 = value;
         break;
+      case CUSTOM_5:
+        custom5 = value;
+        break;
+      case CUSTOM_6:
+        custom6 = value;
+        break;
+      case CUSTOM_7:
+        custom7 = value;
+        break;
+      case CUSTOM_8:
+        custom8 = value;
+        break;
       default:
         throw new SystemException("Unknown customField '" + customField + "'");
     }
@@ -86,6 +98,10 @@ public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket 
     result.setCustom2(this.getCustom2());
     result.setCustom3(this.getCustom3());
     result.setCustom4(this.getCustom4());
+    result.setCustom5(this.getCustom5());
+    result.setCustom6(this.getCustom6());
+    result.setCustom7(this.getCustom7());
+    result.setCustom8(this.getCustom8());
     result.setOrgLevel1(this.getOrgLevel1());
     result.setOrgLevel2(this.getOrgLevel2());
     result.setOrgLevel3(this.getOrgLevel3());
@@ -115,6 +131,10 @@ public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket 
         custom2,
         custom3,
         custom4,
+        custom5,
+        custom6,
+        custom7,
+        custom8,
         orgLevel1,
         orgLevel2,
         orgLevel3,
@@ -168,6 +188,14 @@ public class WorkbasketImpl extends WorkbasketSummaryImpl implements Workbasket 
         + custom3
         + ", custom4="
         + custom4
+        + ", custom5="
+        + custom5
+        + ", custom6="
+        + custom6
+        + ", custom7="
+        + custom7
+        + ", custom8="
+        + custom8
         + ", orgLevel1="
         + orgLevel1
         + ", orgLevel2="

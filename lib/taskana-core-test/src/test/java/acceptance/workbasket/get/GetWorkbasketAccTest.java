@@ -8,6 +8,10 @@ import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_1;
 import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_2;
 import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_3;
 import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_4;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_5;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_6;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_7;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_8;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -64,6 +68,10 @@ class GetWorkbasketAccTest {
             .customAttribute(CUSTOM_2, "custom2")
             .customAttribute(CUSTOM_3, "custom3")
             .customAttribute(CUSTOM_4, "custom4")
+            .customAttribute(CUSTOM_5, "custom5")
+            .customAttribute(CUSTOM_6, "custom6")
+            .customAttribute(CUSTOM_7, "custom7")
+            .customAttribute(CUSTOM_8, "custom8")
             .buildAndStoreAsSummary(workbasketService);
 
     WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
