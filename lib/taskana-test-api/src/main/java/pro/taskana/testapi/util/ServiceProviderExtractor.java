@@ -20,6 +20,7 @@ import pro.taskana.spi.task.api.BeforeRequestChangesProvider;
 import pro.taskana.spi.task.api.BeforeRequestReviewProvider;
 import pro.taskana.spi.task.api.CreateTaskPreprocessor;
 import pro.taskana.spi.task.api.ReviewRequiredProvider;
+import pro.taskana.spi.task.api.TaskEndstatePreprocessor;
 import pro.taskana.testapi.WithServiceProvider;
 
 public class ServiceProviderExtractor {
@@ -34,7 +35,8 @@ public class ServiceProviderExtractor {
           BeforeRequestReviewProvider.class,
           AfterRequestReviewProvider.class,
           BeforeRequestChangesProvider.class,
-          AfterRequestChangesProvider.class);
+          AfterRequestChangesProvider.class,
+          TaskEndstatePreprocessor.class);
 
   private ServiceProviderExtractor() {
     throw new IllegalStateException("utility class");

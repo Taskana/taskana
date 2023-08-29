@@ -58,6 +58,7 @@ import pro.taskana.spi.task.internal.BeforeRequestChangesManager;
 import pro.taskana.spi.task.internal.BeforeRequestReviewManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 import pro.taskana.spi.task.internal.ReviewRequiredManager;
+import pro.taskana.spi.task.internal.TaskEndstatePreprocessorManager;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCommentQuery;
 import pro.taskana.task.api.TaskCustomField;
@@ -123,6 +124,7 @@ public class TaskServiceImpl implements TaskService {
   private final AfterRequestReviewManager afterRequestReviewManager;
   private final BeforeRequestChangesManager beforeRequestChangesManager;
   private final AfterRequestChangesManager afterRequestChangesManager;
+  private final TaskEndstatePreprocessorManager taskEndstatePreprocessorManager;
 
   public TaskServiceImpl(
       InternalTaskanaEngine taskanaEngine,
@@ -146,6 +148,7 @@ public class TaskServiceImpl implements TaskService {
     this.afterRequestReviewManager = taskanaEngine.getAfterRequestReviewManager();
     this.beforeRequestChangesManager = taskanaEngine.getBeforeRequestChangesManager();
     this.afterRequestChangesManager = taskanaEngine.getAfterRequestChangesManager();
+    this.taskEndstatePreprocessorManager = taskanaEngine.getTaskEndstatePreprocessorManager();
     this.taskTransferrer = new TaskTransferrer(taskanaEngine, taskMapper, this);
     this.taskCommentService =
         new TaskCommentServiceImpl(taskanaEngine, taskCommentMapper, userMapper, this);
@@ -874,12 +877,35 @@ public class TaskServiceImpl implements TaskService {
   public Task cancelTask(String taskId)
       throws TaskNotFoundException, NotAuthorizedOnWorkbasketException, InvalidTaskStateException {
 
-    Task cancelledTask;
+    TaskImpl cancelledTask;
 
     try {
       taskanaEngine.openConnection();
-      cancelledTask = terminateCancelCommonActions(taskId, TaskState.CANCELLED);
+      if (taskId == null || taskId.isEmpty()) {
+        throw new TaskNotFoundException(taskId);
+      }
+      cancelledTask = (TaskImpl) getTask(taskId);
+      TaskState state = cancelledTask.getState();
+      if (state.isEndState()) {
+        throw new InvalidTaskStateException(
+            taskId,
+            state,
+            TaskState.READY,
+            TaskState.CLAIMED,
+            TaskState.READY_FOR_REVIEW,
+            TaskState.IN_REVIEW);
+      }
 
+      terminateCancelCommonActions(cancelledTask, TaskState.CANCELLED);
+      cancelledTask =
+          (TaskImpl) taskEndstatePreprocessorManager.processTaskBeforeEndstate(cancelledTask);
+      taskMapper.update(cancelledTask);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            "Task '{}' cancelled by user '{}'.",
+            taskId,
+            taskanaEngine.getEngine().getCurrentUserContext().getUserid());
+      }
       if (historyEventManager.isEnabled()) {
         historyEventManager.createEvent(
             new TaskCancelledEvent(
@@ -901,12 +927,35 @@ public class TaskServiceImpl implements TaskService {
 
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN);
 
-    Task terminatedTask;
+    TaskImpl terminatedTask;
 
     try {
       taskanaEngine.openConnection();
-      terminatedTask = terminateCancelCommonActions(taskId, TaskState.TERMINATED);
+      if (taskId == null || taskId.isEmpty()) {
+        throw new TaskNotFoundException(taskId);
+      }
+      terminatedTask = (TaskImpl) getTask(taskId);
+      TaskState state = terminatedTask.getState();
+      if (state.isEndState()) {
+        throw new InvalidTaskStateException(
+            taskId,
+            state,
+            TaskState.READY,
+            TaskState.CLAIMED,
+            TaskState.READY_FOR_REVIEW,
+            TaskState.IN_REVIEW);
+      }
 
+      terminateCancelCommonActions(terminatedTask, TaskState.TERMINATED);
+      terminatedTask =
+          (TaskImpl) taskEndstatePreprocessorManager.processTaskBeforeEndstate(terminatedTask);
+      taskMapper.update(terminatedTask);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            "Task '{}' cancelled by user '{}'.",
+            taskId,
+            taskanaEngine.getEngine().getCurrentUserContext().getUserid());
+      }
       if (historyEventManager.isEnabled()) {
         historyEventManager.createEvent(
             new TaskTerminatedEvent(
@@ -1208,35 +1257,11 @@ public class TaskServiceImpl implements TaskService {
     newTaskImpl.setModified(Instant.now());
   }
 
-  private TaskImpl terminateCancelCommonActions(String taskId, TaskState targetState)
-      throws TaskNotFoundException, NotAuthorizedOnWorkbasketException, InvalidTaskStateException {
-    if (taskId == null || taskId.isEmpty()) {
-      throw new TaskNotFoundException(taskId);
-    }
-    TaskImpl task = (TaskImpl) getTask(taskId);
-    TaskState state = task.getState();
-    if (state.isEndState()) {
-      throw new InvalidTaskStateException(
-          taskId,
-          state,
-          TaskState.READY,
-          TaskState.CLAIMED,
-          TaskState.READY_FOR_REVIEW,
-          TaskState.IN_REVIEW);
-    }
-
+  private static void terminateCancelCommonActions(TaskImpl task, TaskState targetState) {
     Instant now = Instant.now();
     task.setModified(now);
     task.setCompleted(now);
     task.setState(targetState);
-    taskMapper.update(task);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "Task '{}' cancelled by user '{}'.",
-          taskId,
-          taskanaEngine.getEngine().getCurrentUserContext().getUserid());
-    }
-    return task;
   }
 
   private Task claim(String taskId, boolean forceClaim)
@@ -1552,6 +1577,7 @@ public class TaskServiceImpl implements TaskService {
 
       Instant now = Instant.now();
       completeActionsOnTask(task, userId, now);
+      task = (TaskImpl) taskEndstatePreprocessorManager.processTaskBeforeEndstate(task);
       taskMapper.update(task);
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Task '{}' completed by user '{}'.", taskId, userId);

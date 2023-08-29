@@ -12,6 +12,7 @@ import pro.taskana.spi.task.internal.BeforeRequestChangesManager;
 import pro.taskana.spi.task.internal.BeforeRequestReviewManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 import pro.taskana.spi.task.internal.ReviewRequiredManager;
+import pro.taskana.spi.task.internal.TaskEndstatePreprocessorManager;
 
 /**
  * FOR INTERNAL USE ONLY.
@@ -144,4 +145,11 @@ public interface InternalTaskanaEngine {
    * @return the {@linkplain AfterRequestChangesManager} instance
    */
   AfterRequestChangesManager getAfterRequestChangesManager();
+
+  /**
+   * Retrieves the {@linkplain pro.taskana.spi.task.internal.TaskEndstatePreprocessorManager}.
+   *
+   * @return the {@linkplain pro.taskana.spi.task.internal.TaskEndstatePreprocessorManager} instance
+   */
+  TaskEndstatePreprocessorManager getTaskEndstatePreprocessorManager();
 }
