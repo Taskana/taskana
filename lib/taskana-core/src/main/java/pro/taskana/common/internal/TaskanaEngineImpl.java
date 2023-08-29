@@ -65,6 +65,7 @@ import pro.taskana.spi.task.internal.BeforeRequestChangesManager;
 import pro.taskana.spi.task.internal.BeforeRequestReviewManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 import pro.taskana.spi.task.internal.ReviewRequiredManager;
+import pro.taskana.spi.task.internal.TaskEndstatePreprocessorManager;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.internal.AttachmentMapper;
 import pro.taskana.task.internal.ObjectReferenceMapper;
@@ -98,6 +99,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   private final AfterRequestReviewManager afterRequestReviewManager;
   private final BeforeRequestChangesManager beforeRequestChangesManager;
   private final AfterRequestChangesManager afterRequestChangesManager;
+  private final TaskEndstatePreprocessorManager taskEndstatePreprocessorManager;
+
   private final InternalTaskanaEngineImpl internalTaskanaEngineImpl;
   private final WorkingTimeCalculator workingTimeCalculator;
   private final HistoryEventManager historyEventManager;
@@ -176,6 +179,7 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     afterRequestReviewManager = new AfterRequestReviewManager(this);
     beforeRequestChangesManager = new BeforeRequestChangesManager(this);
     afterRequestChangesManager = new AfterRequestChangesManager(this);
+    taskEndstatePreprocessorManager = new TaskEndstatePreprocessorManager();
 
     // don't remove, to reset possible explicit mode
     this.mode = connectionManagementMode;
@@ -623,6 +627,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     @Override
     public AfterRequestChangesManager getAfterRequestChangesManager() {
       return afterRequestChangesManager;
+    }
+
+    @Override
+    public TaskEndstatePreprocessorManager getTaskEndstatePreprocessorManager() {
+      return taskEndstatePreprocessorManager;
     }
   }
 }

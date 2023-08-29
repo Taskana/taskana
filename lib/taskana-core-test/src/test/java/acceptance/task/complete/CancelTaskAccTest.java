@@ -6,18 +6,23 @@ import static pro.taskana.testapi.DefaultTestEntities.defaultTestClassification;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestObjectReference;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 
+import acceptance.task.complete.CompleteTaskWithSpiAccTest.SetCustomAttributeToEndstate;
 import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.internal.util.Triplet;
+import pro.taskana.spi.task.api.TaskEndstatePreprocessor;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidTaskStateException;
@@ -26,6 +31,7 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.testapi.DefaultTestEntities;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.WithServiceProvider;
 import pro.taskana.testapi.builder.TaskBuilder;
 import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
@@ -181,5 +187,34 @@ class CancelTaskAccTest {
           assertThat(e.getTaskState()).isEqualTo(t.getRight());
         };
     return DynamicTest.stream(list.iterator(), Triplet::getLeft, testCancelTask);
+  }
+
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  @WithServiceProvider(
+      serviceProviderInterface = TaskEndstatePreprocessor.class,
+      serviceProviders = SetCustomAttributeToEndstate.class)
+  class ServiceProviderSetsCustomAttributeToCancelled {
+
+    @TaskanaInject TaskService taskService;
+
+    @WithAccessId(user = "user-1-2")
+    @Test
+    void should_SetCustomAttribute_When_UserCancelsTask() throws Exception {
+      Task task =
+          TaskBuilder.newTask()
+              .classificationSummary(defaultClassificationSummary)
+              .workbasketSummary(defaultWorkbasketSummary)
+              .state(TaskState.CLAIMED)
+              .primaryObjRef(DefaultTestEntities.defaultTestObjectReference().build())
+              .buildAndStore(taskService);
+      Task processedTask = taskService.cancelTask(task.getId());
+      assertThat(processedTask.getState()).isEqualTo(TaskState.CANCELLED);
+      assertThat(processedTask.getCustomAttributeMap())
+          .containsEntry(
+              "camunda:attribute1",
+              "{\"valueInfo\":{\"objectTypeName\":\"java.lang.String\"},"
+                  + "\"type\":\"String\",\"value\":\"CANCELLED\"}");
+    }
   }
 }

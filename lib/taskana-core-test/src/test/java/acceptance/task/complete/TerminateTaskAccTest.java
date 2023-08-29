@@ -5,12 +5,17 @@ import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestClassification;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 
+import acceptance.task.complete.CompleteTaskWithSpiAccTest.SetCustomAttributeToEndstate;
 import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 import pro.taskana.classification.api.ClassificationService;
@@ -19,6 +24,7 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.security.CurrentUserContext;
 import pro.taskana.common.internal.util.Triplet;
+import pro.taskana.spi.task.api.TaskEndstatePreprocessor;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.InvalidTaskStateException;
@@ -26,6 +32,7 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.testapi.DefaultTestEntities;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.WithServiceProvider;
 import pro.taskana.testapi.builder.TaskBuilder;
 import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
@@ -156,5 +163,34 @@ class TerminateTaskAccTest {
         };
 
     return DynamicTest.stream(testValues.iterator(), Triplet::getLeft, test);
+  }
+
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  @WithServiceProvider(
+      serviceProviderInterface = TaskEndstatePreprocessor.class,
+      serviceProviders = SetCustomAttributeToEndstate.class)
+  class ServiceProviderSetsCustomAttributeToTerminated {
+
+    @TaskanaInject TaskService taskService;
+
+    @WithAccessId(user = "admin")
+    @Test
+    void should_SetCustomAttribute_When_UserTerminatesTask() throws Exception {
+      Task task =
+          TaskBuilder.newTask()
+              .classificationSummary(defaultClassificationSummary)
+              .workbasketSummary(defaultWorkbasketSummary)
+              .state(TaskState.READY)
+              .primaryObjRef(DefaultTestEntities.defaultTestObjectReference().build())
+              .buildAndStore(taskService);
+      Task processedTask = taskService.terminateTask(task.getId());
+      assertThat(processedTask.getState()).isEqualTo(TaskState.TERMINATED);
+      assertThat(processedTask.getCustomAttributeMap())
+          .containsEntry(
+              "camunda:attribute1",
+              "{\"valueInfo\":{\"objectTypeName\":\"java.lang.String\"},"
+                  + "\"type\":\"String\",\"value\":\"TERMINATED\"}");
+    }
   }
 }

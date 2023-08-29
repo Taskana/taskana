@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.spi.task.api.ReviewRequiredProvider;
+import pro.taskana.spi.task.api.TaskEndstatePreprocessor;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.models.ObjectReference;
@@ -88,6 +90,21 @@ class CompleteTaskWithSpiAccTest {
     @Override
     public boolean reviewRequired(Task task) {
       return false;
+    }
+  }
+
+  static class SetCustomAttributeToEndstate implements TaskEndstatePreprocessor {
+    @Override
+    public Task processTaskBeforeEndstate(Task task) {
+      String endstate = task.getState().toString();
+      task.getCustomAttributeMap()
+          .put(
+              "camunda:attribute1",
+              "{\"valueInfo\":{\"objectTypeName\":\"java.lang.String\"},"
+                  + "\"type\":\"String\",\"value\":\""
+                  + endstate
+                  + "\"}");
+      return task;
     }
   }
 
@@ -169,6 +186,29 @@ class CompleteTaskWithSpiAccTest {
           };
       return DynamicTest.stream(
           tasks.iterator(), t -> "Try to complete " + t.getState().name() + " Task", test);
+    }
+  }
+
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  @WithServiceProvider(
+      serviceProviderInterface = TaskEndstatePreprocessor.class,
+      serviceProviders = SetCustomAttributeToEndstate.class)
+  class ServiceProviderSetsCustomAttributeToCompleted {
+
+    @TaskanaInject TaskService taskService;
+
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_SetCustomAttribute_When_UserCompletesTask() throws Exception {
+      Task task = createTaskClaimedByUser("user-1-1").buildAndStore(taskService);
+      Task processedTask = taskService.completeTask(task.getId());
+      assertThat(processedTask.getState()).isEqualTo(TaskState.COMPLETED);
+      assertThat(processedTask.getCustomAttributeMap())
+          .containsEntry(
+              "camunda:attribute1",
+              "{\"valueInfo\":{\"objectTypeName\":\"java.lang.String\"},"
+                  + "\"type\":\"String\",\"value\":\"COMPLETED\"}");
     }
   }
 }
