@@ -62,7 +62,7 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
               .map(refreshUserPostprocessorManager::processUserAfterRefresh)
               .collect(Collectors.toList());
       addExistingConfigurationDataToUsers(usersAfterProcessing);
-      clearExistingUsersAndGroups();
+      clearExistingUsersAndGroupsAndPermissions();
       insertNewUsers(usersAfterProcessing);
 
       LOGGER.info("Job to refresh all user info has finished.");
@@ -72,18 +72,18 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
     }
   }
 
-  private void clearExistingUsersAndGroups() {
+  private void clearExistingUsersAndGroupsAndPermissions() {
 
     sqlConnectionRunner.runWithConnection(
         connection -> {
           if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Trying to delete all users and groups");
+            LOGGER.debug("Trying to delete all users, groups and permissions");
           }
-          String sql = "DELETE FROM USER_INFO; DELETE FROM GROUP_INFO";
+          String sql = "DELETE FROM USER_INFO; DELETE FROM GROUP_INFO; DELETE FROM PERMISSION_INFO";
           PreparedStatement statement = connection.prepareStatement(sql);
           statement.execute();
           if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Successfully deleted all users and groups");
+            LOGGER.debug("Successfully deleted all users, groups and permissions");
           }
 
           if (!connection.getAutoCommit()) {

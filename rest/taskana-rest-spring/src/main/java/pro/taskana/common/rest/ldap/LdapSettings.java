@@ -19,6 +19,7 @@ enum LdapSettings {
   TASKANA_LDAP_USER_ORG_LEVEL_3_ATTRIBUTE("taskana.ldap.userOrglevel3Attribute"),
   TASKANA_LDAP_USER_ORG_LEVEL_4_ATTRIBUTE("taskana.ldap.userOrglevel4Attribute"),
   TASKANA_LDAP_USER_MEMBER_OF_GROUP_ATTRIBUTE("taskana.ldap.userMemberOfGroupAttribute"),
+  TASKANA_LDAP_USER_PERMISSIONS_ATTRIBUTE("taskana.ldap.userPermissionsAttribute"),
   TASKANA_LDAP_GROUP_SEARCH_BASE("taskana.ldap.groupSearchBase"),
   TASKANA_LDAP_BASE_DN("taskana.ldap.baseDn"),
   TASKANA_LDAP_GROUP_SEARCH_FILTER_NAME("taskana.ldap.groupSearchFilterName"),

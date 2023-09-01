@@ -91,6 +91,23 @@ class UserInfoRefreshJobIntTest {
             .hasSameSizeAs(ldapGroups)
             .containsExactlyElementsOf(ldapGroups);
       }
+
+      // validate permissions
+      for (int i = 0; i < users.size(); i++) {
+        User user = users.get(i);
+        List<String> permissionIds = getPermissionInfo(connection, user.getId());
+        permissionIds.sort(Comparator.naturalOrder());
+
+        User ldapUser = ldapusers.get(i);
+        List<String> ldapPermissions =
+            ldapUser.getPermissions().stream()
+                .sorted(Comparator.naturalOrder())
+                .collect(Collectors.toList());
+
+        assertThat(permissionIds)
+            .hasSameSizeAs(ldapPermissions)
+            .containsExactlyElementsOf(ldapPermissions);
+      }
     }
   }
 
@@ -141,5 +158,20 @@ class UserInfoRefreshJobIntTest {
       groupIds.add(rs.getString(1));
     }
     return groupIds;
+  }
+
+  private List<String> getPermissionInfo(Connection connection, String userId) throws Exception {
+    List<String> permissionIds = new ArrayList<>();
+    PreparedStatement ps =
+        connection.prepareStatement(
+            "SELECT permission_id FROM "
+                + connection.getSchema()
+                + ".permission_info WHERE user_id = ?");
+    ps.setString(1, userId);
+    ResultSet rs = ps.executeQuery();
+    while (rs.next()) {
+      permissionIds.add(rs.getString(1));
+    }
+    return permissionIds;
   }
 }

@@ -16,6 +16,8 @@ public interface UserMapper {
   @SelectProvider(type = UserMapperSqlProvider.class, method = "findById")
   @Result(property = "id", column = "USER_ID")
   @Result(property = "groups", column = "USER_ID", many = @Many(select = "findGroupsById"))
+  @Result(property = "permissions", column = "USER_ID",
+          many = @Many(select = "findPermissionsById"))
   @Result(property = "firstName", column = "FIRST_NAME")
   @Result(property = "lastName", column = "LASTNAME")
   @Result(property = "fullName", column = "FULL_NAME")
@@ -32,6 +34,8 @@ public interface UserMapper {
 
   @Result(property = "id", column = "USER_ID")
   @Result(property = "groups", column = "USER_ID", many = @Many(select = "findGroupsById"))
+  @Result(property = "permissions", column = "USER_ID",
+          many = @Many(select = "findPermissionsById"))
   @Result(property = "firstName", column = "FIRST_NAME")
   @Result(property = "lastName", column = "LASTNAME")
   @Result(property = "fullName", column = "FULL_NAME")
@@ -50,6 +54,9 @@ public interface UserMapper {
   @SelectProvider(type = UserMapperSqlProvider.class, method = "findGroupsById")
   Set<String> findGroupsById(String id);
 
+  @SelectProvider(type = UserMapperSqlProvider.class, method = "findPermissionsById")
+  Set<String> findPermissionsById(String id);
+
   @InsertProvider(type = UserMapperSqlProvider.class, method = "insert")
   void insert(User user);
 
@@ -60,6 +67,13 @@ public interface UserMapper {
   @InsertProvider(type = UserMapperSqlProvider.class, method = "insertGroups")
   void insertGroups(User user);
 
+  @InsertProvider(
+          type = UserMapperSqlProvider.class,
+          method = "insertPermissionsOracle",
+          databaseId = "oracle")
+  @InsertProvider(type = UserMapperSqlProvider.class, method = "insertPermissions")
+  void insertPermissions(User user);
+
   @UpdateProvider(type = UserMapperSqlProvider.class, method = "update")
   void update(User user);
 
@@ -68,4 +82,7 @@ public interface UserMapper {
 
   @DeleteProvider(type = UserMapperSqlProvider.class, method = "deleteGroups")
   void deleteGroups(String id);
+
+  @DeleteProvider(type = UserMapperSqlProvider.class, method = "deletePermissions")
+  void deletePermissions(String id);
 }

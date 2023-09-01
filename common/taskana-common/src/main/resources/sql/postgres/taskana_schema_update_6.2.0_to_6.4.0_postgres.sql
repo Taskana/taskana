@@ -1,0 +1,13 @@
+-- this script updates the TASKANA database schema from version 6.2.0 to version 6.4.0.
+
+SET search_path = %schemaName%;
+
+INSERT INTO TASKANA_SCHEMA_VERSION (ID, VERSION, CREATED)
+VALUES (nextval('TASKANA_SCHEMA_VERSION_ID_SEQ'), '6.4.0', CURRENT_TIMESTAMP);
+
+CREATE TABLE PERMISSION_INFO
+(
+    USER_ID     VARCHAR(32) NOT NULL,
+    PERMISSION_ID    VARCHAR(256) NOT NULL,
+    PRIMARY KEY (USER_ID, PERMISSION_ID)
+);

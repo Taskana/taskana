@@ -28,6 +28,11 @@ public class UserBuilder implements EntityBuilder<User, UserService> {
     return this;
   }
 
+  public UserBuilder permissions(Set<String> permissions) {
+    testUser.setPermissions(permissions);
+    return this;
+  }
+
   public UserBuilder firstName(String firstName) {
     testUser.setFirstName(firstName);
     return this;
