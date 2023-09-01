@@ -29,6 +29,7 @@ class UserRepresentationModelAssemblerTest {
     UserImpl user = (UserImpl) userService.newUser();
     user.setId("user-1-2");
     user.setGroups(Set.of("group1", "group2"));
+    user.setPermissions(Set.of("perm1", "perm2"));
     user.setFirstName("Hans");
     user.setLastName("Georg");
     user.setFullName("Hans Georg");
@@ -52,6 +53,7 @@ class UserRepresentationModelAssemblerTest {
     UserRepresentationModel repModel = new UserRepresentationModel();
     repModel.setUserId("user-1-2");
     repModel.setGroups(Set.of("group1", "group2"));
+    repModel.setPermissions(Set.of("perm1", "perm2"));
     repModel.setFirstName("Hans");
     repModel.setLastName("Georg");
     repModel.setFullName("Hans Georg");
@@ -75,6 +77,7 @@ class UserRepresentationModelAssemblerTest {
     UserImpl user = (UserImpl) userService.newUser();
     user.setId("user-1-2");
     user.setGroups(Set.of("group1", "group2"));
+    user.setPermissions(Set.of("perm1", "perm2"));
     user.setFirstName("Hans");
     user.setLastName("Georg");
     user.setFullName("Hans Georg");
@@ -104,6 +107,7 @@ class UserRepresentationModelAssemblerTest {
 
     assertThat(entity.getId()).isEqualTo(repModel.getUserId());
     assertThat(entity.getGroups()).isEqualTo(repModel.getGroups());
+    assertThat(entity.getPermissions()).isEqualTo(repModel.getPermissions());
     assertThat(entity.getFirstName()).isEqualTo(repModel.getFirstName());
     assertThat(entity.getLastName()).isEqualTo(repModel.getLastName());
     assertThat(entity.getFullName()).isEqualTo(repModel.getFullName());

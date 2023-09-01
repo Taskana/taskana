@@ -413,6 +413,10 @@ public class LdapClient {
     return LdapSettings.TASKANA_LDAP_USER_MEMBER_OF_GROUP_ATTRIBUTE.getValueFromEnv(env);
   }
 
+  public String getUserPermissionsAttribute() {
+    return LdapSettings.TASKANA_LDAP_USER_PERMISSIONS_ATTRIBUTE.getValueFromEnv(env);
+  }
+
   public String getGroupSearchBase() {
     return LdapSettings.TASKANA_LDAP_GROUP_SEARCH_BASE.getValueFromEnv(env);
   }
@@ -538,6 +542,7 @@ public class LdapClient {
     return new String[] {
       getUserIdAttribute(),
       getUserMemberOfGroupAttribute(),
+      getUserPermissionsAttribute(),
       getUserFirstnameAttribute(),
       getUserLastnameAttribute(),
       getUserFullnameAttribute(),
@@ -630,6 +635,20 @@ public class LdapClient {
     return groups;
   }
 
+  private Set<String> getPermissionIdsFromContext(final DirContextOperations context) {
+    String[] permissionAttributes = context.getStringAttributes(getUserPermissionsAttribute());
+    Set<String> permissions =
+        permissionAttributes != null ? Set.of(permissionAttributes) : Collections.emptySet();
+    if (useLowerCaseForAccessIds) {
+      permissions =
+          permissions.stream()
+              .filter(Objects::nonNull)
+              .map(String::toLowerCase)
+              .collect(Collectors.toSet());
+    }
+    return permissions;
+  }
+
   /** Context Mapper for user entries. */
   class GroupContextMapper extends AbstractContextMapper<AccessIdRepresentationModel> {
 
@@ -650,6 +669,7 @@ public class LdapClient {
       final User user = new UserImpl();
       user.setId(getUserIdFromContext(context));
       user.setGroups(getGroupIdsFromContext(context));
+      user.setPermissions(getPermissionIdsFromContext(context));
       user.setFirstName(context.getStringAttribute(getUserFirstnameAttribute()));
       user.setLastName(context.getStringAttribute(getUserLastnameAttribute()));
       user.setFullName(context.getStringAttribute(getUserFullnameAttribute()));

@@ -184,6 +184,7 @@ class UserControllerIntTest {
     UserRepresentationModel newUser = new UserRepresentationModel();
     newUser.setUserId("12345");
     newUser.setGroups(Set.of("group1", "group2"));
+    newUser.setPermissions(Set.of("perm1", "perm2"));
     newUser.setFirstName("Hans");
     newUser.setLastName("Georg");
     newUser.setFullName("Georg, Hans");

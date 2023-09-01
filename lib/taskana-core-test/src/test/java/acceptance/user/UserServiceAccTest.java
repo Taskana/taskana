@@ -204,6 +204,59 @@ class UserServiceAccTest {
 
     @WithAccessId(user = "user-1-1")
     @Test
+    void should_DetermineDomains_When_WorkbasketPermissionsExistForUsersWithPermissions()
+            throws Exception {
+      Workbasket workbasketDomainA =
+              defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
+      createAccessItem(
+              "permissions-domaina",
+              workbasketDomainA,
+              WorkbasketPermission.READ,
+              WorkbasketPermission.OPEN);
+      Workbasket workbasketDomainB =
+              defaultTestWorkbasket()
+                      .domain("DOMAIN_B")
+                      .buildAndStore(workbasketService, "businessadmin");
+      createAccessItem(
+              "permissions-domainb",
+              workbasketDomainB,
+              WorkbasketPermission.READ,
+              WorkbasketPermission.OPEN);
+      Set<User> users = new HashSet<>();
+      for (int i = 0; i < 6; i++) {
+        users.add(
+                randomTestUser()
+                        .permissions(Set.of("test1", "test2", "permissions-domaina"))
+                        .buildAndStore(userService, "businessadmin"));
+      }
+      for (int i = 0; i < 4; i++) {
+        users.add(
+                randomTestUser()
+                        .permissions(Set.of("test1", "test2", "permissions-domainb"))
+                        .buildAndStore(userService, "businessadmin"));
+      }
+      Set<String> userIds = users.stream().map(User::getId).collect(Collectors.toSet());
+
+      List<User> returnedUsers = userService.getUsers(userIds);
+
+      assertThat(returnedUsers)
+              .extracting(User::getDomains)
+              .areExactly(
+                      6,
+                      new Condition<>(
+                              domains ->
+                                      Set.of(workbasketDomainA.getDomain())
+                                              .equals(domains), "DOMAIN_A"))
+              .areExactly(
+                      4,
+                      new Condition<>(
+                              domains ->
+                                      Set.of(workbasketDomainB.getDomain())
+                                              .equals(domains), "DOMAIN_B"));
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
     void should_ReturnAllUsers_When_TryingToGetUsersWithIdsExistingInCaps() throws Exception {
       Set<User> users = new HashSet<>();
       for (int i = 0; i < 10; i++) {
@@ -306,6 +359,20 @@ class UserServiceAccTest {
       userToCreate.setFirstName("Anton");
       userToCreate.setLastName("Miller");
       userToCreate.setGroups(Set.of("groupX", "groupY"));
+      userService.createUser(userToCreate);
+
+      User userInDatabase = userService.getUser(userToCreate.getId());
+      assertThat(userToCreate).isNotSameAs(userInDatabase).isEqualTo(userInDatabase);
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_InsertUserInDatabase_When_CreatingUserWithPermissions() throws Exception {
+      User userToCreate = userService.newUser();
+      userToCreate.setId("anton4");
+      userToCreate.setFirstName("Anton");
+      userToCreate.setLastName("Miller");
+      userToCreate.setPermissions(Set.of("perm1", "perm2"));
       userService.createUser(userToCreate);
 
       User userInDatabase = userService.getUser(userToCreate.getId());
@@ -483,12 +550,15 @@ class UserServiceAccTest {
       userToCreate.setFirstName("firstName");
       userToCreate.setLastName("lastName");
       userToCreate.setGroups(Set.of("GROUP1-ID-WITH-CAPS", "Group2-Id-With-Caps"));
+      userToCreate.setPermissions(Set.of("PERMISSION1-ID-WITH-CAPS", "Permission2-Id-With-Caps"));
 
       User userInDatabase = userService.createUser(userToCreate);
 
       assertThat(userInDatabase.getId()).isEqualTo("user-id-with-caps");
       assertThat(userInDatabase.getGroups())
           .containsExactlyInAnyOrder("group1-id-with-caps", "group2-id-with-caps");
+      assertThat(userInDatabase.getPermissions())
+          .containsExactlyInAnyOrder("permission1-id-with-caps", "permission2-id-with-caps");
     }
   }
 
@@ -544,6 +614,36 @@ class UserServiceAccTest {
 
             User userInDatabase = userService.getUser(userToUpdate.getId());
             assertThat(userInDatabase.getGroups()).containsExactlyInAnyOrderElementsOf(newGroups);
+          };
+
+      return DynamicTest.stream(testCases, Triplet::getLeft, test);
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @TestFactory
+    Stream<DynamicTest> should_UpdatePermissions() {
+      Stream<Triplet<String, Set<String>, Set<String>>> testCases =
+          Stream.of(
+              Triplet.of(
+                  "User has no permissions before updating", Set.of(), Set.of("perm1", "perm2")),
+              Triplet.of("new permissions differ all", Set.of("perm1"), Set.of("perm2", "perm3")),
+              Triplet.of("some new permissions differ", Set.of("perm1"), Set.of("perm1", "perm2")),
+              Triplet.of("new permissions are all the same", Set.of("perm1"), Set.of("perm1")));
+
+      ThrowingConsumer<Triplet<String, Set<String>, Set<String>>> test =
+          t -> {
+            Set<String> existingPerms = t.getMiddle();
+            Set<String> newPerms = t.getMiddle();
+            User userToUpdate = randomTestUser()
+                    .permissions(existingPerms)
+                    .buildAndStore(userService);
+
+            userToUpdate.setPermissions(newPerms);
+            userService.updateUser(userToUpdate);
+
+            User userInDatabase = userService.getUser(userToUpdate.getId());
+            assertThat(userInDatabase.getPermissions())
+                .containsExactlyInAnyOrderElementsOf(newPerms);
           };
 
       return DynamicTest.stream(testCases, Triplet::getLeft, test);
@@ -724,6 +824,19 @@ class UserServiceAccTest {
 
     @WithAccessId(user = "businessadmin")
     @Test
+    void should_MakePermissionsIdsLowerCase_When_UpdatingUserWithUpperCasePermissions()
+        throws Exception {
+      User userToUpdate = randomTestUser().buildAndStore(userService);
+      userToUpdate.setPermissions(Set.of("PERM1-ID-WITH-CAPS", "Permission2-Id-With-Caps"));
+
+      User updatedUser = userService.updateUser(userToUpdate);
+
+      assertThat(updatedUser.getPermissions())
+          .containsExactlyInAnyOrder("perm1-id-with-caps", "permission2-id-with-caps");
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
     void should_ThrowInvalidArgumentException_When_TryingToUpdateUserWithFirstNameNull() {
       User userToUpdate = userService.newUser();
       userToUpdate.setId("user-3");
@@ -828,6 +941,22 @@ class UserServiceAccTest {
 
     @WithAccessId(user = "businessadmin")
     @Test
+    void should_DeletePermissionsFromDatabase_When_UserHadPermissions() throws Exception {
+      User userToDelete =
+          randomTestUser()
+                  .permissions(Set.of("permission1", "permission2"))
+                  .buildAndStore(userService);
+
+      userService.deleteUser(userToDelete.getId());
+
+      // verify that groups are deleted by creating a new user with the same id and check its groups
+      User newUserWithSameId = randomTestUser().id(userToDelete.getId()).buildAndStore(userService);
+      User userInDatabase = userService.getUser(newUserWithSameId.getId());
+      assertThat(userInDatabase.getPermissions()).isEmpty();
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
     void should_ThrowUserNotFoundException_When_TryingToDeleteUserWithNonExistingId() {
       ThrowingCallable callable = () -> userService.deleteUser("NOT_EXISTING");
 
@@ -915,6 +1044,25 @@ class UserServiceAccTest {
 
     @WithAccessId(user = "user-1-1")
     @Test
+    void should_ReturnOneDomain_When_PermissionHasSufficientMinimalPermissionsToAssignDomains()
+            throws Exception {
+      String permissionsId = UUID.randomUUID().toString();
+      User user =
+              randomTestUser()
+                      .permissions(Set.of(permissionsId))
+                      .buildAndStore(userService, "businessadmin");
+      Workbasket workbasket =
+              defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
+      createAccessItem(permissionsId,
+              workbasket, WorkbasketPermission.OPEN, WorkbasketPermission.READ);
+
+      User userInDatabase = userService.getUser(user.getId());
+
+      assertThat(userInDatabase.getDomains()).containsExactly(workbasket.getDomain());
+    }
+
+    @WithAccessId(user = "user-1-1")
+    @Test
     void should_ReturnEmptyDomains_When_UserHasSufficientPermissionsWhichThenGetRevoked()
         throws Exception {
       User user = randomTestUser().buildAndStore(userService, "businessadmin");
@@ -954,6 +1102,29 @@ class UserServiceAccTest {
       // then user is updated and other group is assigned
 
       user.setGroups(Set.of("new group"));
+      userService.updateUser(user);
+
+      userInDatabase = userService.getUser(user.getId());
+
+      assertThat(userInDatabase.getDomains()).isEmpty();
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_ReturnEmptyDomains_When_GroupHasSufficientPermissionsAndThenPermissionIsUpdated()
+            throws Exception {
+      String groupId = UUID.randomUUID().toString();
+      User user = randomTestUser().permissions(Set.of(groupId)).buildAndStore(userService);
+      Workbasket workbasket = defaultTestWorkbasket().buildAndStore(workbasketService);
+      createAccessItem(groupId, workbasket, WorkbasketPermission.OPEN, WorkbasketPermission.READ);
+
+      User userInDatabase = userService.getUser(user.getId());
+
+      assertThat(userInDatabase.getDomains()).containsExactly(workbasket.getDomain());
+
+      // then user is updated and other group is assigned
+
+      user.setPermissions(Set.of("new group"));
       userService.updateUser(user);
 
       userInDatabase = userService.getUser(user.getId());
@@ -1007,6 +1178,32 @@ class UserServiceAccTest {
           .containsExactlyInAnyOrder(workbasket1.getDomain(), workbasket2.getDomain());
     }
 
+    @WithAccessId(user = "user-1-1")
+    @Test
+    void should_ReturnMultipleDomains_When_UserAndPermHaveSufficientMinimalPermsForMultipleDomains()
+            throws Exception {
+      String permissionId = UUID.randomUUID().toString();
+      User user =
+              randomTestUser()
+                      .permissions(Set.of(permissionId))
+                      .buildAndStore(userService, "businessadmin");
+      Workbasket workbasket1 =
+              defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
+      Workbasket workbasket2 =
+              defaultTestWorkbasket()
+                      .domain("DOMAIN_B")
+                      .buildAndStore(workbasketService, "businessadmin");
+      createAccessItem(
+              user.getId(), workbasket1, WorkbasketPermission.OPEN, WorkbasketPermission.READ);
+      createAccessItem(
+              permissionId, workbasket2, WorkbasketPermission.OPEN, WorkbasketPermission.READ);
+
+      User userInDatabase = userService.getUser(user.getId());
+
+      assertThat(userInDatabase.getDomains())
+              .containsExactlyInAnyOrder(workbasket1.getDomain(), workbasket2.getDomain());
+    }
+
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
     class DifferentMinimalPermissionsToAssignDomains implements TaskanaConfigurationModifier {
@@ -1052,6 +1249,27 @@ class UserServiceAccTest {
 
       @WithAccessId(user = "user-1-1")
       @Test
+      void should_ReturnEmptyDomains_When_PermHasInsufficientMinimalPermissionsToAssignDomains()
+              throws Exception {
+        String permissionId = UUID.randomUUID().toString();
+        User user =
+                randomTestUser()
+                        .permissions(Set.of(permissionId))
+                        .buildAndStore(userService, "businessadmin");
+        Workbasket workbasket =
+                defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
+        createAccessItem(permissionId,
+                workbasket,
+                WorkbasketPermission.OPEN,
+                WorkbasketPermission.READ);
+
+        User userInDatabase = userService.getUser(user.getId());
+
+        assertThat(userInDatabase.getDomains()).isEmpty();
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @Test
       void should_ReturnOneDomain_When_UserHasSufficientMinimalPermissionsToAssignDomains()
           throws Exception {
         User user = randomTestUser().buildAndStore(userService, "businessadmin");
@@ -1081,6 +1299,7 @@ class UserServiceAccTest {
 
         assertThat(userInDatabase.getDomains()).containsExactly(workbasket.getDomain());
       }
+
     }
 
     @Nested
@@ -1119,6 +1338,27 @@ class UserServiceAccTest {
         Workbasket workbasket =
             defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
         createAccessItem(groupId, workbasket, WorkbasketPermission.OPEN, WorkbasketPermission.READ);
+
+        User userInDatabase = userService.getUser(user.getId());
+
+        assertThat(userInDatabase.getDomains()).isEmpty();
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @Test
+      void should_ReturnEmptyDomains_When_PropertyIsNotSetAndPermission()
+              throws Exception {
+        String permissionId = UUID.randomUUID().toString();
+        User user =
+                randomTestUser()
+                        .permissions(Set.of(permissionId))
+                        .buildAndStore(userService, "businessadmin");
+        Workbasket workbasket =
+                defaultTestWorkbasket().buildAndStore(workbasketService, "businessadmin");
+        createAccessItem(permissionId,
+                workbasket,
+                WorkbasketPermission.OPEN,
+                WorkbasketPermission.READ);
 
         User userInDatabase = userService.getUser(user.getId());
 
