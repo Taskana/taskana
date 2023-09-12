@@ -694,7 +694,7 @@ public class TaskanaConfiguration {
     private boolean jobSchedulerEnabled = true;
 
     @TaskanaProperty("taskana.jobs.scheduler.initialStartDelay")
-    private long jobSchedulerInitialStartDelay = 100;
+    private long jobSchedulerInitialStartDelay = 0;
 
     @TaskanaProperty("taskana.jobs.scheduler.period")
     private long jobSchedulerPeriod = 5;
