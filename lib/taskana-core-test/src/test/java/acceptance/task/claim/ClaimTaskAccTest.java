@@ -43,7 +43,7 @@ import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
 @TaskanaIntegrationTest
-class ClaimTaskAccTest {
+class ClaimTaskAccTest implements TaskanaConfigurationModifier {
   @TaskanaInject TaskService taskService;
   @TaskanaInject ClassificationService classificationService;
   @TaskanaInject WorkbasketService workbasketService;
@@ -55,6 +55,11 @@ class ClaimTaskAccTest {
   WorkbasketSummary wbWithoutEditTasks;
   WorkbasketSummary wbWithoutReadTasks;
   WorkbasketSummary wbWithoutRead;
+
+  @Override
+  public TaskanaConfiguration.Builder modify(TaskanaConfiguration.Builder builder) {
+    return builder.addAdditionalUserInfo(true);
+  }
 
   @WithAccessId(user = "businessadmin")
   @BeforeAll
@@ -369,6 +374,52 @@ class ClaimTaskAccTest {
     assertThat(unclaimedTask.isRead()).isTrue();
     assertThat(unclaimedTask.getOwner()).isNull();
     assertThat(unclaimedTask.getOwnerLongName()).isNull();
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_KeepOwnerAndOwnerLongName_When_CancelClaimWithKeepOwner() throws Exception {
+    Task claimedTask =
+        TaskBuilder.newTask()
+            .state(TaskState.CLAIMED)
+            .claimed(Instant.now())
+            .owner("user-1-2")
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary)
+            .primaryObjRef(defaultObjectReference)
+            .buildAndStore(taskService);
+
+    Task unclaimedTask = taskService.cancelClaim(claimedTask.getId(), true);
+
+    assertThat(unclaimedTask).isNotNull();
+    assertThat(unclaimedTask.getState()).isEqualTo(TaskState.READY);
+    assertThat(unclaimedTask.getClaimed()).isNull();
+    assertThat(unclaimedTask.isRead()).isTrue();
+    assertThat(unclaimedTask.getOwner()).isEqualTo("user-1-2");
+    assertThat(unclaimedTask.getOwnerLongName()).isEqualTo("Long name of user-1-2");
+  }
+
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_KeepOwnerAndOwnerLongName_When_ForceCancelClaimWithKeepOwner() throws Exception {
+    Task claimedTask =
+        TaskBuilder.newTask()
+            .state(TaskState.CLAIMED)
+            .claimed(Instant.now())
+            .owner("user-1-2")
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary)
+            .primaryObjRef(defaultObjectReference)
+            .buildAndStore(taskService);
+
+    Task unclaimedTask = taskService.forceCancelClaim(claimedTask.getId(), true);
+
+    assertThat(unclaimedTask).isNotNull();
+    assertThat(unclaimedTask.getState()).isEqualTo(TaskState.READY);
+    assertThat(unclaimedTask.getClaimed()).isNull();
+    assertThat(unclaimedTask.isRead()).isTrue();
+    assertThat(unclaimedTask.getOwner()).isEqualTo("user-1-2");
+    assertThat(unclaimedTask.getOwnerLongName()).isEqualTo("Long name of user-1-2");
   }
 
   @WithAccessId(user = "user-1-2")
