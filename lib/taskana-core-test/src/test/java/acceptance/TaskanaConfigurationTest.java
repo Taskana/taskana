@@ -115,7 +115,7 @@ class TaskanaConfigurationTest {
       assertThat(configuration.getLogHistoryLoggerName()).isNull();
       // job configuration
       assertThat(configuration.isJobSchedulerEnabled()).isTrue();
-      assertThat(configuration.getJobSchedulerInitialStartDelay()).isEqualTo(100);
+      assertThat(configuration.getJobSchedulerInitialStartDelay()).isEqualTo(0);
       assertThat(configuration.getJobSchedulerPeriod()).isEqualTo(5);
       assertThat(configuration.getJobSchedulerPeriodTimeUnit()).isEqualTo(TimeUnit.MINUTES);
       assertThat(configuration.getMaxNumberOfJobRetries()).isEqualTo(3);
