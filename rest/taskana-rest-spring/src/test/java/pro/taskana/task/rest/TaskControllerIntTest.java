@@ -64,16 +64,12 @@ class TaskControllerIntTest {
   @Autowired TaskanaConfiguration taskanaConfiguration;
   private static final ParameterizedTypeReference<TaskSummaryPagedRepresentationModel>
       TASK_SUMMARY_PAGE_MODEL_TYPE = new ParameterizedTypeReference<>() {};
-
   private static final ParameterizedTypeReference<TaskSummaryCollectionRepresentationModel>
       TASK_SUMMARY_COLLECTION_MODEL_TYPE = new ParameterizedTypeReference<>() {};
-
   private static final ParameterizedTypeReference<TaskRepresentationModel> TASK_MODEL_TYPE =
       ParameterizedTypeReference.forType(TaskRepresentationModel.class);
-
   private final RestHelper restHelper;
   private final DataSource dataSource;
-
   private final String schemaName;
 
   @Autowired
@@ -1213,7 +1209,7 @@ class TaskControllerIntTest {
       assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
       assertThat((response.getBody()).getContent()).hasSize(expectedSize);
     }
-    
+
     @TestFactory
     Stream<DynamicTest> should_ThrowException_When_OwnerIsNullParamNotStrict() {
       List<Pair<String, String>> list =
@@ -2348,6 +2344,70 @@ class TaskControllerIntTest {
       assertThat(cancelClaimedtaskRepresentationModel.getOwner()).isNull();
       assertThat(cancelClaimedtaskRepresentationModel.getClaimed()).isNull();
       assertThat(cancelClaimedtaskRepresentationModel.getState()).isEqualTo(TaskState.READY);
+    }
+
+    @Test
+    void should_KeepOwnerAndOwnerLongName_When_CancelClaimWithKeepOwner() {
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000000");
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+
+      // retrieve task from Rest Api
+      ResponseEntity<TaskRepresentationModel> getTaskResponse =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+      assertThat(getTaskResponse.getBody()).isNotNull();
+      TaskRepresentationModel taskRepresentationModel = getTaskResponse.getBody();
+      assertThat(taskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
+      assertThat(taskRepresentationModel.getOwner()).isEqualTo("user-1-1");
+
+      // cancel claim
+      String url2 =
+          restHelper.toUrl(
+              RestEndpoints.URL_TASKS_ID_CLAIM + "?keepOwner=true",
+              "TKI:000000000000000000000000000000000000");
+      ResponseEntity<TaskRepresentationModel> cancelClaimResponse =
+          TEMPLATE.exchange(url2, HttpMethod.DELETE, auth, TASK_MODEL_TYPE);
+
+      assertThat(cancelClaimResponse.getBody()).isNotNull();
+      assertThat(cancelClaimResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+      TaskRepresentationModel cancelClaimedtaskRepresentationModel = cancelClaimResponse.getBody();
+      assertThat(cancelClaimedtaskRepresentationModel.getClaimed()).isNull();
+      assertThat(cancelClaimedtaskRepresentationModel.getState()).isEqualTo(TaskState.READY);
+      assertThat(cancelClaimedtaskRepresentationModel.getOwner()).isEqualTo("user-1-1");
+      assertThat(cancelClaimedtaskRepresentationModel.getOwnerLongName())
+          .isEqualTo("Mustermann, Max - (user-1-1)");
+    }
+
+    @Test
+    void should_KeepOwnerAndOwnerLongName_When_ForceCancelClaimWithKeepOwner() {
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000001");
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+
+      // retrieve task from Rest Api
+      ResponseEntity<TaskRepresentationModel> getTaskResponse =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+      assertThat(getTaskResponse.getBody()).isNotNull();
+      TaskRepresentationModel taskRepresentationModel = getTaskResponse.getBody();
+      assertThat(taskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
+      assertThat(taskRepresentationModel.getOwner()).isEqualTo("user-1-1");
+
+      // cancel claim
+      String url2 =
+          restHelper.toUrl(
+              RestEndpoints.URL_TASKS_ID_CLAIM_FORCE + "?keepOwner=true",
+              "TKI:000000000000000000000000000000000001");
+      ResponseEntity<TaskRepresentationModel> cancelClaimResponse =
+          TEMPLATE.exchange(url2, HttpMethod.DELETE, auth, TASK_MODEL_TYPE);
+
+      assertThat(cancelClaimResponse.getBody()).isNotNull();
+      assertThat(cancelClaimResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+      TaskRepresentationModel cancelClaimedtaskRepresentationModel = cancelClaimResponse.getBody();
+      assertThat(cancelClaimedtaskRepresentationModel.getClaimed()).isNull();
+      assertThat(cancelClaimedtaskRepresentationModel.getState()).isEqualTo(TaskState.READY);
+      assertThat(cancelClaimedtaskRepresentationModel.getOwner()).isEqualTo("user-1-1");
+      assertThat(cancelClaimedtaskRepresentationModel.getOwnerLongName())
+          .isEqualTo("Mustermann, Max - (user-1-1)");
     }
 
     @Test

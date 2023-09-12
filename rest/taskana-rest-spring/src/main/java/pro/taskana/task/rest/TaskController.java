@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.BaseQuery.SortDirection;
@@ -288,6 +289,7 @@ public class TaskController {
    * before.
    *
    * @param taskId the Id of the requested Task.
+   * @param keepOwner flag whether or not to keep the owner despite the cancel claim
    * @return the unclaimed Task.
    * @throws TaskNotFoundException if the requested Task does not exist.
    * @throws InvalidTaskStateException if the Task is already in an end state.
@@ -298,12 +300,13 @@ public class TaskController {
    */
   @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskRepresentationModel> cancelClaimTask(@PathVariable String taskId)
+  public ResponseEntity<TaskRepresentationModel> cancelClaimTask(
+      @PathVariable String taskId, @RequestParam(defaultValue = "false") boolean keepOwner)
       throws TaskNotFoundException,
           InvalidTaskStateException,
           InvalidOwnerException,
           NotAuthorizedOnWorkbasketException {
-    Task updatedTask = taskService.cancelClaim(taskId);
+    Task updatedTask = taskService.cancelClaim(taskId, keepOwner);
 
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }
@@ -312,6 +315,7 @@ public class TaskController {
    * This endpoint force cancels the claim of an existing Task.
    *
    * @param taskId the Id of the requested Task.
+   * @param keepOwner flag whether or not to keep the owner despite the cancel claim
    * @return the unclaimed Task.
    * @throws TaskNotFoundException if the requested Task does not exist.
    * @throws InvalidTaskStateException if the Task is already in an end state.
@@ -322,12 +326,13 @@ public class TaskController {
    */
   @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM_FORCE)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskRepresentationModel> forceCancelClaimTask(@PathVariable String taskId)
+  public ResponseEntity<TaskRepresentationModel> forceCancelClaimTask(
+      @PathVariable String taskId, @RequestParam(defaultValue = "false") boolean keepOwner)
       throws TaskNotFoundException,
           InvalidTaskStateException,
           InvalidOwnerException,
           NotAuthorizedOnWorkbasketException {
-    Task updatedTask = taskService.forceCancelClaim(taskId);
+    Task updatedTask = taskService.forceCancelClaim(taskId, keepOwner);
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }
 
