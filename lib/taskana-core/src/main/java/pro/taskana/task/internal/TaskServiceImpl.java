@@ -46,6 +46,7 @@ import pro.taskana.spi.history.api.events.task.TaskClaimCancelledEvent;
 import pro.taskana.spi.history.api.events.task.TaskClaimedEvent;
 import pro.taskana.spi.history.api.events.task.TaskCompletedEvent;
 import pro.taskana.spi.history.api.events.task.TaskCreatedEvent;
+import pro.taskana.spi.history.api.events.task.TaskDeletedEvent;
 import pro.taskana.spi.history.api.events.task.TaskRequestChangesEvent;
 import pro.taskana.spi.history.api.events.task.TaskRequestReviewEvent;
 import pro.taskana.spi.history.api.events.task.TaskTerminatedEvent;
@@ -704,6 +705,9 @@ public class TaskServiceImpl implements TaskService {
                 .isDeleteHistoryEventsOnTaskDeletionEnabled()) {
           historyEventManager.deleteEvents(taskIds);
         }
+        if (historyEventManager.isEnabled()) {
+          taskIds.forEach(this::createTaskDeletedEvent);
+        }        
       }
       return bulkLog;
     } finally {
@@ -1709,6 +1713,10 @@ public class TaskServiceImpl implements TaskService {
         historyEventManager.deleteEvents(Collections.singletonList(taskId));
       }
 
+      if (historyEventManager.isEnabled()) {
+        createTaskDeletedEvent(taskId);
+      }
+
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Task {} deleted.", taskId);
       }
@@ -2239,6 +2247,15 @@ public class TaskServiceImpl implements TaskService {
                     IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
                     task,
                     taskanaEngine.getEngine().getCurrentUserContext().getUserid())));
+  }
+
+  private void createTaskDeletedEvent(String taskId) {
+    historyEventManager.createEvent(
+        new TaskDeletedEvent(
+            IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
+            newTask().asSummary(),
+            taskId,
+            taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
   }
 
   private TaskImpl duplicateTaskExactly(TaskImpl task) {
