@@ -2205,7 +2205,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     if (this.ownerIn == null) {
       return new String[]{null};
     }
-    List<String> ownerInAsList = new ArrayList(Arrays.asList(this.ownerIn));
+    List<String> ownerInAsList = new ArrayList<>(Arrays.asList(this.ownerIn));
     ownerInAsList.add(null);
     return ownerInAsList.toArray(new String[ownerInAsList.size()]);
   }

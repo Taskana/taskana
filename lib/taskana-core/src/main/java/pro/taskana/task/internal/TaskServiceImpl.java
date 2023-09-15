@@ -2255,10 +2255,6 @@ public class TaskServiceImpl implements TaskService {
     String workbasketId = task.getWorkbasketSummary().getId();
     WorkbasketSummary workbasket =
         query.idIn(workbasketId).callerHasPermissions(WorkbasketPermission.EDITTASKS).single();
-    if (workbasket == null) {
-      return false;
-    } else {
-      return true;
-    }
+    return workbasket != null;
   }
 }
