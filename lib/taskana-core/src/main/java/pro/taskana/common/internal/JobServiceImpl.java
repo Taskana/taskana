@@ -1,19 +1,22 @@
 package pro.taskana.common.internal;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.JobService;
 import pro.taskana.common.api.ScheduledJob;
+import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
 
 /** Controls all job activities. */
 public class JobServiceImpl implements JobService {
 
   public static final int JOB_DEFAULT_PRIORITY = 50;
-  private static final Duration JOB_DEFAULT_LOCK_EXPIRATION_PERIOD = Duration.ofSeconds(60);
-
   private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
   private final JobMapper jobMapper;
   private final InternalTaskanaEngine taskanaEngineImpl;
@@ -43,7 +46,25 @@ public class JobServiceImpl implements JobService {
 
   public ScheduledJob lockJob(ScheduledJob job, String owner) {
     job.setLockedBy(owner);
-    job.setLockExpires(Instant.now().plus(JOB_DEFAULT_LOCK_EXPIRATION_PERIOD));
+    Class<?> jobClass = null;
+    try {
+      jobClass = Thread.currentThread().getContextClassLoader().loadClass(job.getType());
+      job.setLockExpires(
+          Instant.now()
+              .plus(
+                  (Duration)
+                      jobClass
+                          .getMethod("getLockExpirationPeriod", TaskanaConfiguration.class)
+                          .invoke(null, taskanaEngineImpl.getEngine().getConfiguration())));
+    } catch (ClassNotFoundException
+        | NoSuchMethodException
+        | IllegalAccessException
+        | InvocationTargetException noSuchMethodOrClass) {
+      throw new SystemException(
+          String.format(
+              "Job '%s' does not have a constructor matching (%s, %s, %s)",
+              jobClass, TaskanaEngine.class, TaskanaTransactionProvider.class, ScheduledJob.class));
+    }
     job.setRetryCount(job.getRetryCount() - 1);
     taskanaEngineImpl.executeInDatabaseConnection(() -> jobMapper.update(job));
     if (LOGGER.isDebugEnabled()) {
@@ -77,6 +98,7 @@ public class JobServiceImpl implements JobService {
       job.setDue(now);
     }
     job.setRetryCount(taskanaEngineImpl.getEngine().getConfiguration().getMaxNumberOfJobRetries());
+
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Job after initialization: {}", job);
     }
