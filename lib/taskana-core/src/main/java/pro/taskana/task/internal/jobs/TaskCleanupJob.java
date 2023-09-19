@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.ScheduledJob;
@@ -62,6 +63,10 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
     } catch (Exception e) {
       throw new SystemException("Error while processing TaskCleanupJob.", e);
     }
+  }
+
+  public static Duration getLockExpirationPeriod(TaskanaConfiguration taskanaConfiguration) {
+    return taskanaConfiguration.getTaskCleanupJobLockExpirationPeriod();
   }
 
   @Override
