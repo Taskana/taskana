@@ -95,26 +95,30 @@ public class TaskanaConfiguration {
   private final int jobBatchSize;
   private final Instant jobFirstRun;
   private final Duration jobRunEvery;
-
+  private final Duration jobLockExpirationPeriod;
   private final boolean taskCleanupJobEnabled;
   private final Duration taskCleanupJobMinimumAge;
   private final boolean taskCleanupJobAllCompletedSameParentBusiness;
+  private final Duration taskCleanupJobLockExpirationPeriod;
 
   private final boolean workbasketCleanupJobEnabled;
 
+  private final Duration workbasketCleanupJobLockExpirationPeriod;
   private final boolean simpleHistoryCleanupJobEnabled;
   private final int simpleHistoryCleanupJobBatchSize;
   private final Duration simpleHistoryCleanupJobMinimumAge;
   private final boolean simpleHistoryCleanupJobAllCompletedSameParentBusiness;
-
+  private final Duration simpleHistoryCleanupJobLockExpirationPeriod;
   private final boolean taskUpdatePriorityJobEnabled;
   private final int taskUpdatePriorityJobBatchSize;
   private final Instant taskUpdatePriorityJobFirstRun;
   private final Duration taskUpdatePriorityJobRunEvery;
+  private final Duration taskUpdatePriorityJobLockExpirationPeriod;
 
   private final boolean userInfoRefreshJobEnabled;
   private final Instant userRefreshJobFirstRun;
   private final Duration userRefreshJobRunEvery;
+  private final Duration userRefreshJobLockExpirationPeriod;
 
   private final Set<String> customJobs;
   // endregion
@@ -178,23 +182,32 @@ public class TaskanaConfiguration {
     this.jobBatchSize = builder.jobBatchSize;
     this.jobFirstRun = builder.jobFirstRun;
     this.jobRunEvery = builder.jobRunEvery;
+    this.jobLockExpirationPeriod = builder.jobLockExpirationPeriod;
     this.taskCleanupJobEnabled = builder.taskCleanupJobEnabled;
     this.taskCleanupJobMinimumAge = builder.taskCleanupJobMinimumAge;
     this.taskCleanupJobAllCompletedSameParentBusiness =
         builder.taskCleanupJobAllCompletedSameParentBusiness;
+    this.taskCleanupJobLockExpirationPeriod = builder.taskCleanupJobLockExpirationPeriod;
     this.workbasketCleanupJobEnabled = builder.workbasketCleanupJobEnabled;
+    this.workbasketCleanupJobLockExpirationPeriod =
+        builder.workbasketCleanupJobLockExpirationPeriod;
     this.simpleHistoryCleanupJobEnabled = builder.simpleHistoryCleanupJobEnabled;
     this.simpleHistoryCleanupJobBatchSize = builder.simpleHistoryCleanupJobBatchSize;
     this.simpleHistoryCleanupJobMinimumAge = builder.simpleHistoryCleanupJobMinimumAge;
     this.simpleHistoryCleanupJobAllCompletedSameParentBusiness =
         builder.simpleHistoryCleanupJobAllCompletedSameParentBusiness;
+    this.simpleHistoryCleanupJobLockExpirationPeriod =
+        builder.simpleHistoryCleanupJobLockExpirationPeriod;
     this.taskUpdatePriorityJobEnabled = builder.taskUpdatePriorityJobEnabled;
     this.taskUpdatePriorityJobBatchSize = builder.taskUpdatePriorityJobBatchSize;
     this.taskUpdatePriorityJobFirstRun = builder.taskUpdatePriorityJobFirstRun;
     this.taskUpdatePriorityJobRunEvery = builder.taskUpdatePriorityJobRunEvery;
+    this.taskUpdatePriorityJobLockExpirationPeriod =
+        builder.taskUpdatePriorityJobLockExpirationPeriod;
     this.userInfoRefreshJobEnabled = builder.userInfoRefreshJobEnabled;
     this.userRefreshJobFirstRun = builder.userRefreshJobFirstRun;
     this.userRefreshJobRunEvery = builder.userRefreshJobRunEvery;
+    this.userRefreshJobLockExpirationPeriod = builder.userRefreshJobLockExpirationPeriod;
     this.customJobs = Collections.unmodifiableSet(builder.customJobs);
     // user configuration
     this.addAdditionalUserInfo = builder.addAdditionalUserInfo;
@@ -328,6 +341,10 @@ public class TaskanaConfiguration {
     return jobRunEvery;
   }
 
+  public Duration getJobLockExpirationPeriod() {
+    return jobLockExpirationPeriod;
+  }
+
   public boolean isTaskCleanupJobEnabled() {
     return taskCleanupJobEnabled;
   }
@@ -340,8 +357,16 @@ public class TaskanaConfiguration {
     return taskCleanupJobAllCompletedSameParentBusiness;
   }
 
+  public Duration getTaskCleanupJobLockExpirationPeriod() {
+    return taskCleanupJobLockExpirationPeriod;
+  }
+
   public boolean isWorkbasketCleanupJobEnabled() {
     return workbasketCleanupJobEnabled;
+  }
+
+  public Duration getWorkbasketCleanupJobLockExpirationPeriod() {
+    return workbasketCleanupJobLockExpirationPeriod;
   }
 
   public boolean isSimpleHistoryCleanupJobEnabled() {
@@ -360,6 +385,10 @@ public class TaskanaConfiguration {
     return simpleHistoryCleanupJobAllCompletedSameParentBusiness;
   }
 
+  public Duration getSimpleHistoryCleanupJobLockExpirationPeriod() {
+    return simpleHistoryCleanupJobLockExpirationPeriod;
+  }
+
   public boolean isTaskUpdatePriorityJobEnabled() {
     return taskUpdatePriorityJobEnabled;
   }
@@ -376,6 +405,10 @@ public class TaskanaConfiguration {
     return taskUpdatePriorityJobRunEvery;
   }
 
+  public Duration getTaskUpdatePriorityJobLockExpirationPeriod() {
+    return taskUpdatePriorityJobLockExpirationPeriod;
+  }
+
   public boolean isUserInfoRefreshJobEnabled() {
     return userInfoRefreshJobEnabled;
   }
@@ -386,6 +419,10 @@ public class TaskanaConfiguration {
 
   public Duration getUserRefreshJobRunEvery() {
     return userRefreshJobRunEvery;
+  }
+
+  public Duration getUserRefreshJobLockExpirationPeriod() {
+    return userRefreshJobLockExpirationPeriod;
   }
 
   public Set<String> getCustomJobs() {
@@ -418,6 +455,7 @@ public class TaskanaConfiguration {
   // endregion
 
   // region hashCode, equals + toString
+
   @Override
   public int hashCode() {
     return Objects.hash(
@@ -446,21 +484,27 @@ public class TaskanaConfiguration {
         jobBatchSize,
         jobFirstRun,
         jobRunEvery,
+        jobLockExpirationPeriod,
         taskCleanupJobEnabled,
         taskCleanupJobMinimumAge,
         taskCleanupJobAllCompletedSameParentBusiness,
+        taskCleanupJobLockExpirationPeriod,
         workbasketCleanupJobEnabled,
+        workbasketCleanupJobLockExpirationPeriod,
         simpleHistoryCleanupJobEnabled,
         simpleHistoryCleanupJobBatchSize,
         simpleHistoryCleanupJobMinimumAge,
         simpleHistoryCleanupJobAllCompletedSameParentBusiness,
+        simpleHistoryCleanupJobLockExpirationPeriod,
         taskUpdatePriorityJobEnabled,
         taskUpdatePriorityJobBatchSize,
         taskUpdatePriorityJobFirstRun,
         taskUpdatePriorityJobRunEvery,
+        taskUpdatePriorityJobLockExpirationPeriod,
         userInfoRefreshJobEnabled,
         userRefreshJobFirstRun,
         userRefreshJobRunEvery,
+        userRefreshJobLockExpirationPeriod,
         customJobs,
         addAdditionalUserInfo,
         minimalPermissionsToAssignDomains,
@@ -500,10 +544,10 @@ public class TaskanaConfiguration {
         && simpleHistoryCleanupJobAllCompletedSameParentBusiness
             == other.simpleHistoryCleanupJobAllCompletedSameParentBusiness
         && taskUpdatePriorityJobEnabled == other.taskUpdatePriorityJobEnabled
-        && useSpecificDb2Taskquery == other.useSpecificDb2Taskquery
         && taskUpdatePriorityJobBatchSize == other.taskUpdatePriorityJobBatchSize
         && userInfoRefreshJobEnabled == other.userInfoRefreshJobEnabled
         && addAdditionalUserInfo == other.addAdditionalUserInfo
+        && useSpecificDb2Taskquery == other.useSpecificDb2Taskquery
         && Objects.equals(dataSource, other.dataSource)
         && Objects.equals(schemaName, other.schemaName)
         && Objects.equals(domains, other.domains)
@@ -517,13 +561,27 @@ public class TaskanaConfiguration {
         && jobSchedulerPeriodTimeUnit == other.jobSchedulerPeriodTimeUnit
         && Objects.equals(jobFirstRun, other.jobFirstRun)
         && Objects.equals(jobRunEvery, other.jobRunEvery)
+        && Objects.equals(jobLockExpirationPeriod, other.jobLockExpirationPeriod)
         && Objects.equals(taskCleanupJobMinimumAge, other.taskCleanupJobMinimumAge)
         && Objects.equals(
+            taskCleanupJobLockExpirationPeriod, other.taskCleanupJobLockExpirationPeriod)
+        && Objects.equals(
+            workbasketCleanupJobLockExpirationPeriod,
+            other.workbasketCleanupJobLockExpirationPeriod)
+        && Objects.equals(
             simpleHistoryCleanupJobMinimumAge, other.simpleHistoryCleanupJobMinimumAge)
+        && Objects.equals(
+            simpleHistoryCleanupJobLockExpirationPeriod,
+            other.simpleHistoryCleanupJobLockExpirationPeriod)
         && Objects.equals(taskUpdatePriorityJobFirstRun, other.taskUpdatePriorityJobFirstRun)
         && Objects.equals(taskUpdatePriorityJobRunEvery, other.taskUpdatePriorityJobRunEvery)
+        && Objects.equals(
+            taskUpdatePriorityJobLockExpirationPeriod,
+            other.taskUpdatePriorityJobLockExpirationPeriod)
         && Objects.equals(userRefreshJobFirstRun, other.userRefreshJobFirstRun)
         && Objects.equals(userRefreshJobRunEvery, other.userRefreshJobRunEvery)
+        && Objects.equals(
+            userRefreshJobLockExpirationPeriod, other.userRefreshJobLockExpirationPeriod)
         && Objects.equals(customJobs, other.customJobs)
         && Objects.equals(
             minimalPermissionsToAssignDomains, other.minimalPermissionsToAssignDomains)
@@ -532,12 +590,14 @@ public class TaskanaConfiguration {
 
   @Override
   public String toString() {
-    return "TaskanaConfiguration [dataSource="
+    return "TaskanaConfiguration{"
+        + "dataSource="
         + dataSource
         + ", useManagedTransactions="
         + useManagedTransactions
-        + ", schemaName="
+        + ", schemaName='"
         + schemaName
+        + '\''
         + ", securityEnabled="
         + securityEnabled
         + ", domains="
@@ -564,8 +624,9 @@ public class TaskanaConfiguration {
         + germanPublicHolidaysCorpusChristiEnabled
         + ", deleteHistoryEventsOnTaskDeletionEnabled="
         + deleteHistoryEventsOnTaskDeletionEnabled
-        + ", logHistoryLoggerName="
+        + ", logHistoryLoggerName='"
         + logHistoryLoggerName
+        + '\''
         + ", jobSchedulerEnabled="
         + jobSchedulerEnabled
         + ", jobSchedulerInitialStartDelay="
@@ -582,14 +643,20 @@ public class TaskanaConfiguration {
         + jobFirstRun
         + ", jobRunEvery="
         + jobRunEvery
+        + ", jobLockExpirationPeriod="
+        + jobLockExpirationPeriod
         + ", taskCleanupJobEnabled="
         + taskCleanupJobEnabled
         + ", taskCleanupJobMinimumAge="
         + taskCleanupJobMinimumAge
         + ", taskCleanupJobAllCompletedSameParentBusiness="
         + taskCleanupJobAllCompletedSameParentBusiness
+        + ", taskCleanupJobLockExpirationPeriod="
+        + taskCleanupJobLockExpirationPeriod
         + ", workbasketCleanupJobEnabled="
         + workbasketCleanupJobEnabled
+        + ", workbasketCleanupJobLockExpirationPeriod="
+        + workbasketCleanupJobLockExpirationPeriod
         + ", simpleHistoryCleanupJobEnabled="
         + simpleHistoryCleanupJobEnabled
         + ", simpleHistoryCleanupJobBatchSize="
@@ -598,6 +665,8 @@ public class TaskanaConfiguration {
         + simpleHistoryCleanupJobMinimumAge
         + ", simpleHistoryCleanupJobAllCompletedSameParentBusiness="
         + simpleHistoryCleanupJobAllCompletedSameParentBusiness
+        + ", simpleHistoryCleanupJobLockExpirationPeriod="
+        + simpleHistoryCleanupJobLockExpirationPeriod
         + ", taskUpdatePriorityJobEnabled="
         + taskUpdatePriorityJobEnabled
         + ", taskUpdatePriorityJobBatchSize="
@@ -606,12 +675,16 @@ public class TaskanaConfiguration {
         + taskUpdatePriorityJobFirstRun
         + ", taskUpdatePriorityJobRunEvery="
         + taskUpdatePriorityJobRunEvery
+        + ", taskUpdatePriorityJobLockExpirationPeriod="
+        + taskUpdatePriorityJobLockExpirationPeriod
         + ", userInfoRefreshJobEnabled="
         + userInfoRefreshJobEnabled
         + ", userRefreshJobFirstRun="
         + userRefreshJobFirstRun
         + ", userRefreshJobRunEvery="
         + userRefreshJobRunEvery
+        + ", userRefreshJobLockExpirationPeriod="
+        + userRefreshJobLockExpirationPeriod
         + ", customJobs="
         + customJobs
         + ", addAdditionalUserInfo="
@@ -622,7 +695,7 @@ public class TaskanaConfiguration {
         + useSpecificDb2Taskquery
         + ", properties="
         + properties
-        + "]";
+        + '}';
   }
 
   // endregion
@@ -714,6 +787,9 @@ public class TaskanaConfiguration {
     @TaskanaProperty("taskana.jobs.runEvery")
     private Duration jobRunEvery = Duration.ofDays(1);
 
+    @TaskanaProperty("taskana.jobs.lockExpirationPeriod")
+    private Duration jobLockExpirationPeriod = Duration.ofMinutes(30);
+
     @TaskanaProperty("taskana.jobs.cleanup.task.enable")
     private boolean taskCleanupJobEnabled = true;
 
@@ -723,8 +799,14 @@ public class TaskanaConfiguration {
     @TaskanaProperty("taskana.jobs.cleanup.task.allCompletedSameParentBusiness")
     private boolean taskCleanupJobAllCompletedSameParentBusiness = true;
 
+    @TaskanaProperty("taskana.jobs.cleanup.task.lockExpirationPeriod")
+    private Duration taskCleanupJobLockExpirationPeriod = Duration.ofMinutes(30);
+
     @TaskanaProperty("taskana.jobs.cleanup.workbasket.enable")
     private boolean workbasketCleanupJobEnabled = true;
+
+    @TaskanaProperty("taskana.jobs.cleanup.workbasket.lockExpirationPeriod")
+    private Duration workbasketCleanupJobLockExpirationPeriod = Duration.ofMinutes(30);
 
     @TaskanaProperty("taskana.jobs.cleanup.history.simple.enable")
     private boolean simpleHistoryCleanupJobEnabled = false;
@@ -738,6 +820,9 @@ public class TaskanaConfiguration {
     @TaskanaProperty("taskana.jobs.cleanup.history.simple.allCompletedSameParentBusiness")
     private boolean simpleHistoryCleanupJobAllCompletedSameParentBusiness = true;
 
+    @TaskanaProperty("taskana.jobs.cleanup.history.simple.lockExpirationPeriod")
+    private Duration simpleHistoryCleanupJobLockExpirationPeriod = Duration.ofMinutes(30);
+
     @TaskanaProperty("taskana.jobs.priority.task.enable")
     private boolean taskUpdatePriorityJobEnabled = false;
 
@@ -750,6 +835,9 @@ public class TaskanaConfiguration {
     @TaskanaProperty("taskana.jobs.priority.task.runEvery")
     private Duration taskUpdatePriorityJobRunEvery = Duration.ofDays(1);
 
+    @TaskanaProperty("taskana.jobs.priority.task.lockExpirationPeriod")
+    private Duration taskUpdatePriorityJobLockExpirationPeriod = Duration.ofMinutes(30);
+
     @TaskanaProperty("taskana.jobs.refresh.user.enable")
     private boolean userInfoRefreshJobEnabled = false;
 
@@ -758,6 +846,9 @@ public class TaskanaConfiguration {
 
     @TaskanaProperty("taskana.jobs.refresh.user.runEvery")
     private Duration userRefreshJobRunEvery = Duration.ofDays(1);
+
+    @TaskanaProperty("taskana.jobs.refresh.user.lockExpirationPeriod")
+    private Duration userRefreshJobLockExpirationPeriod = Duration.ofMinutes(30);
 
     @TaskanaProperty("taskana.jobs.customJobs")
     private Set<String> customJobs = new HashSet<>();
@@ -858,23 +949,31 @@ public class TaskanaConfiguration {
       this.jobBatchSize = conf.jobBatchSize;
       this.jobFirstRun = conf.jobFirstRun;
       this.jobRunEvery = conf.jobRunEvery;
+      this.jobLockExpirationPeriod = conf.jobLockExpirationPeriod;
       this.taskCleanupJobEnabled = conf.taskCleanupJobEnabled;
       this.taskCleanupJobMinimumAge = conf.taskCleanupJobMinimumAge;
       this.taskCleanupJobAllCompletedSameParentBusiness =
           conf.taskCleanupJobAllCompletedSameParentBusiness;
+      this.taskCleanupJobLockExpirationPeriod = conf.taskCleanupJobLockExpirationPeriod;
       this.workbasketCleanupJobEnabled = conf.workbasketCleanupJobEnabled;
+      this.workbasketCleanupJobLockExpirationPeriod = conf.workbasketCleanupJobLockExpirationPeriod;
       this.simpleHistoryCleanupJobEnabled = conf.simpleHistoryCleanupJobEnabled;
       this.simpleHistoryCleanupJobBatchSize = conf.simpleHistoryCleanupJobBatchSize;
       this.simpleHistoryCleanupJobMinimumAge = conf.simpleHistoryCleanupJobMinimumAge;
       this.simpleHistoryCleanupJobAllCompletedSameParentBusiness =
           conf.simpleHistoryCleanupJobAllCompletedSameParentBusiness;
+      this.simpleHistoryCleanupJobLockExpirationPeriod =
+          conf.simpleHistoryCleanupJobLockExpirationPeriod;
       this.taskUpdatePriorityJobEnabled = conf.taskUpdatePriorityJobEnabled;
       this.taskUpdatePriorityJobBatchSize = conf.taskUpdatePriorityJobBatchSize;
       this.taskUpdatePriorityJobFirstRun = conf.taskUpdatePriorityJobFirstRun;
       this.taskUpdatePriorityJobRunEvery = conf.taskUpdatePriorityJobRunEvery;
+      this.taskUpdatePriorityJobLockExpirationPeriod =
+          conf.taskUpdatePriorityJobLockExpirationPeriod;
       this.userInfoRefreshJobEnabled = conf.userInfoRefreshJobEnabled;
       this.userRefreshJobFirstRun = conf.userRefreshJobFirstRun;
       this.userRefreshJobRunEvery = conf.userRefreshJobRunEvery;
+      this.userRefreshJobLockExpirationPeriod = conf.userRefreshJobLockExpirationPeriod;
       this.customJobs = conf.customJobs;
       // user configuration
       this.addAdditionalUserInfo = conf.addAdditionalUserInfo;
@@ -1074,6 +1173,11 @@ public class TaskanaConfiguration {
       return this;
     }
 
+    public Builder jobLockExpirationPeriod(Duration jobLockExpirationPeriod) {
+      this.jobLockExpirationPeriod = jobLockExpirationPeriod;
+      return this;
+    }
+
     public Builder taskCleanupJobMinimumAge(Duration taskCleanupJobMinimumAge) {
       this.taskCleanupJobMinimumAge = taskCleanupJobMinimumAge;
       return this;
@@ -1086,8 +1190,19 @@ public class TaskanaConfiguration {
       return this;
     }
 
+    public Builder taskCleanupJobLockExpirationPeriod(Duration taskCleanupJobLockExpirationPeriod) {
+      this.taskCleanupJobLockExpirationPeriod = taskCleanupJobLockExpirationPeriod;
+      return this;
+    }
+
     public Builder workbasketCleanupJobEnabled(boolean workbasketCleanupJobEnabled) {
       this.workbasketCleanupJobEnabled = workbasketCleanupJobEnabled;
+      return this;
+    }
+
+    public Builder workbasketCleanupJobLockExpirationPeriod(
+        Duration workbasketCleanupJobLockExpirationPeriod) {
+      this.workbasketCleanupJobLockExpirationPeriod = workbasketCleanupJobLockExpirationPeriod;
       return this;
     }
 
@@ -1113,6 +1228,13 @@ public class TaskanaConfiguration {
       return this;
     }
 
+    public Builder simpleHistoryCleanupJobLockExpirationPeriod(
+        Duration simpleHistoryCleanupJobLockExpirationPeriod) {
+      this.simpleHistoryCleanupJobLockExpirationPeriod =
+          simpleHistoryCleanupJobLockExpirationPeriod;
+      return this;
+    }
+
     public Builder taskUpdatePriorityJobEnabled(boolean taskUpdatePriorityJobEnabled) {
       this.taskUpdatePriorityJobEnabled = taskUpdatePriorityJobEnabled;
       return this;
@@ -1133,6 +1255,12 @@ public class TaskanaConfiguration {
       return this;
     }
 
+    public Builder taskUpdatePriorityJobLockExpirationPeriod(
+        Duration taskUpdatePriorityJobLockExpirationPeriod) {
+      this.taskUpdatePriorityJobLockExpirationPeriod = taskUpdatePriorityJobLockExpirationPeriod;
+      return this;
+    }
+
     public Builder userInfoRefreshJobEnabled(boolean userInfoRefreshJobEnabled) {
       this.userInfoRefreshJobEnabled = userInfoRefreshJobEnabled;
       return this;
@@ -1145,6 +1273,11 @@ public class TaskanaConfiguration {
 
     public Builder userRefreshJobRunEvery(Duration userRefreshJobRunEvery) {
       this.userRefreshJobRunEvery = userRefreshJobRunEvery;
+      return this;
+    }
+
+    public Builder userRefreshJobLockExpirationPeriod(Duration userRefreshJobLockExpirationPeriod) {
+      this.userRefreshJobLockExpirationPeriod = userRefreshJobLockExpirationPeriod;
       return this;
     }
 

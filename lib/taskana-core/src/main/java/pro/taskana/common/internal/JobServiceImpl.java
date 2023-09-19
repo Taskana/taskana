@@ -1,18 +1,20 @@
 package pro.taskana.common.internal;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.JobService;
 import pro.taskana.common.api.ScheduledJob;
+import pro.taskana.common.api.exceptions.SystemException;
 
 /** Controls all job activities. */
 public class JobServiceImpl implements JobService {
 
   public static final int JOB_DEFAULT_PRIORITY = 50;
-  private static final Duration JOB_DEFAULT_LOCK_EXPIRATION_PERIOD = Duration.ofSeconds(60);
 
   private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
   private final JobMapper jobMapper;
@@ -43,7 +45,27 @@ public class JobServiceImpl implements JobService {
 
   public ScheduledJob lockJob(ScheduledJob job, String owner) {
     job.setLockedBy(owner);
-    job.setLockExpires(Instant.now().plus(JOB_DEFAULT_LOCK_EXPIRATION_PERIOD));
+    Class<?> jobClass = null;
+    try {
+      jobClass = Thread.currentThread().getContextClassLoader().loadClass(job.getType());
+      job.setLockExpires(
+          Instant.now()
+              .plus(
+                  (Duration)
+                      jobClass
+                          .getMethod("getLockExpirationPeriod", TaskanaConfiguration.class)
+                          .invoke(null, taskanaEngineImpl.getEngine().getConfiguration())));
+    } catch (ClassNotFoundException | NoSuchMethodException e) {
+      throw new SystemException(
+          String.format(
+              "Job '%s' does not have a method matching ('getLockExpirationPeriod', %s",
+              jobClass, TaskanaConfiguration.class));
+    } catch (InvocationTargetException | IllegalAccessException e) {
+      throw new SystemException(
+          String.format(
+              "Caught Exception while invoking method 'getLockExpirationPeriod' by reflection"));
+    }
+
     job.setRetryCount(job.getRetryCount() - 1);
     taskanaEngineImpl.executeInDatabaseConnection(() -> jobMapper.update(job));
     if (LOGGER.isDebugEnabled()) {

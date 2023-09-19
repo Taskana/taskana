@@ -1,8 +1,10 @@
 package pro.taskana.workbasket.internal.jobs;
 
+import java.time.Duration;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.ScheduledJob;
@@ -46,6 +48,10 @@ public class WorkbasketCleanupJob extends AbstractTaskanaJob {
     } catch (Exception e) {
       throw new SystemException("Error while processing WorkbasketCleanupJob.", e);
     }
+  }
+
+  public static Duration getLockExpirationPeriod(TaskanaConfiguration taskanaConfiguration) {
+    return taskanaConfiguration.getWorkbasketCleanupJobLockExpirationPeriod();
   }
 
   @Override
