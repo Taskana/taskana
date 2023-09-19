@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TimeInterval;
@@ -50,6 +51,10 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
       TaskanaTransactionProvider txProvider,
       ScheduledJob scheduledJob) {
     super(taskanaEngine, txProvider, scheduledJob, true);
+  }
+
+  public static Duration getLockExpirationPeriod(TaskanaConfiguration taskanaConfiguration) {
+    return taskanaConfiguration.getSimpleHistoryCleanupJobLockExpirationPeriod();
   }
 
   @Override
