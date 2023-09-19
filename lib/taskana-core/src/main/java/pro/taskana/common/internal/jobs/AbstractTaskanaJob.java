@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.time.Instant;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.SystemException;
@@ -42,8 +43,7 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
     try {
       jobClass = Thread.currentThread().getContextClassLoader().loadClass(job.getType());
     } catch (ClassNotFoundException e) {
-      throw new SystemException(
-          String.format("Can't load class '%s'", job.getType()));
+      throw new SystemException(String.format("Can't load class '%s'", job.getType()));
     }
 
     return initTaskanaJob(engine, jobClass, txProvider, job);
@@ -74,6 +74,46 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
     JobServiceImpl jobService = (JobServiceImpl) taskanaEngine.getJobService();
     jobService.deleteJobs(job.getType());
     job.scheduleNextJob();
+  }
+
+  public boolean isAsync() {
+    return async;
+  }
+
+  public Instant getFirstRun() {
+    return firstRun;
+  }
+
+  public Duration getRunEvery() {
+    return runEvery;
+  }
+
+  public static Duration getLockExpirationPeriod(TaskanaConfiguration taskanaConfiguration) {
+    return taskanaConfiguration.getJobLockExpirationPeriod();
+  }
+
+  protected abstract String getType();
+
+  protected abstract void execute() throws TaskanaException;
+
+  protected Instant getNextDueForJob() {
+    Instant nextRun = firstRun;
+    if (scheduledJob != null && scheduledJob.getDue() != null) {
+      nextRun = scheduledJob.getDue();
+    }
+
+    while (nextRun.isBefore(Instant.now())) {
+      nextRun = nextRun.plus(runEvery);
+    }
+
+    return nextRun;
+  }
+
+  protected void scheduleNextJob() {
+    ScheduledJob job = new ScheduledJob();
+    job.setType(getType());
+    job.setDue(getNextDueForJob());
+    taskanaEngineImpl.getJobService().createJob(job);
   }
 
   private static AbstractTaskanaJob initTaskanaJob(
@@ -119,41 +159,5 @@ public abstract class AbstractTaskanaJob implements TaskanaJob {
           e);
     }
     return job;
-  }
-
-  public boolean isAsync() {
-    return async;
-  }
-
-  public Instant getFirstRun() {
-    return firstRun;
-  }
-
-  public Duration getRunEvery() {
-    return runEvery;
-  }
-
-  protected abstract String getType();
-
-  protected abstract void execute() throws TaskanaException;
-
-  protected Instant getNextDueForJob() {
-    Instant nextRun = firstRun;
-    if (scheduledJob != null && scheduledJob.getDue() != null) {
-      nextRun = scheduledJob.getDue();
-    }
-
-    while (nextRun.isBefore(Instant.now())) {
-      nextRun = nextRun.plus(runEvery);
-    }
-
-    return nextRun;
-  }
-
-  protected void scheduleNextJob() {
-    ScheduledJob job = new ScheduledJob();
-    job.setType(getType());
-    job.setDue(getNextDueForJob());
-    taskanaEngineImpl.getJobService().createJob(job);
   }
 }

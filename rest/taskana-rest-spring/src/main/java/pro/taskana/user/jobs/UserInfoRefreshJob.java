@@ -1,10 +1,12 @@
 package pro.taskana.user.jobs;
 
 import java.sql.PreparedStatement;
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -40,6 +42,10 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
     firstRun = taskanaEngine.getConfiguration().getUserRefreshJobFirstRun();
     sqlConnectionRunner = new SqlConnectionRunner(taskanaEngine);
     refreshUserPostprocessorManager = new RefreshUserPostprocessorManager();
+  }
+
+  public static Duration getLockExpirationPeriod(TaskanaConfiguration taskanaConfiguration) {
+    return taskanaConfiguration.getUserRefreshJobLockExpirationPeriod();
   }
 
   @Override
