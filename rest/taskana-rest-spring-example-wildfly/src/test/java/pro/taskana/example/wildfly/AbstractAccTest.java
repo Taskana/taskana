@@ -22,7 +22,7 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 @TaskanaSpringBootTest
 public class AbstractAccTest {
 
-  protected static final String DEPENDENCY_VERSION = "6.2.2-SNAPSHOT";
+  protected static final String DEPENDENCY_VERSION = "6.2.3-SNAPSHOT";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccTest.class);
 
