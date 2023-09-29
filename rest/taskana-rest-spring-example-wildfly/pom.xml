@@ -11,7 +11,7 @@
   <parent>
     <groupId>pro.taskana</groupId>
     <artifactId>taskana-rest-parent</artifactId>
-    <version>6.4.0-SNAPSHOT</version>
+    <version>7.0.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
