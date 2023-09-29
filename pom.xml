@@ -100,7 +100,7 @@
     <version.dmn-xlsx-converter>0.3.0</version.dmn-xlsx-converter>
     <version.jaxb-api>2.3.1</version.jaxb-api>
     <version.jaxb-core>2.3.0.1</version.jaxb-core>
-    <version.jaxb-impl>2.3.8</version.jaxb-impl>
+    <version.jaxb-impl>4.0.3</version.jaxb-impl>
     <version.javax.activation>1.1.1</version.javax.activation>
 
     <!-- database driver versions -->
