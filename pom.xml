@@ -48,7 +48,7 @@
     <version.google-java-format>1.16.0</version.google-java-format>
     <version.maven.checkstyle>3.3.0</version.maven.checkstyle>
     <version.maven.jar>3.3.0</version.maven.jar>
-    <version.maven.war>3.3.2</version.maven.war>
+    <version.maven.war>3.4.0</version.maven.war>
     <version.maven.compiler>3.11.0</version.maven.compiler>
     <version.maven.source>3.3.0</version.maven.source>
     <version.maven.javadoc>3.6.0</version.maven.javadoc>
