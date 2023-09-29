@@ -16,7 +16,7 @@ import pro.taskana.workbasket.api.WorkbasketService;
 
 /** The TaskanaEngine represents an overall set of all needed services. */
 public interface TaskanaEngine {
-  String MINIMAL_TASKANA_SCHEMA_VERSION = "5.2.0";
+  String MINIMAL_TASKANA_SCHEMA_VERSION = "7.0.0";
 
   /**
    * Returns a {@linkplain TaskService} initialized with the current TaskanaEngine. {@linkplain

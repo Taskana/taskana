@@ -1,7 +1,7 @@
--- this script updates the TASKANA database schema from version 6.2.0 to version 6.4.0.
+-- this script updates the TASKANA database schema from version 6.2.0 to version 7.0.0.
 
 INSERT INTO TASKANA_SCHEMA_VERSION (ID, VERSION, CREATED)
-VALUES (nextval('TASKANA_SCHEMA_VERSION_ID_SEQ'), '6.4.0', CURRENT_TIMESTAMP);
+VALUES (nextval('TASKANA_SCHEMA_VERSION_ID_SEQ'), '7.0.0', CURRENT_TIMESTAMP);
 
 CREATE TABLE PERMISSION_INFO
 (
