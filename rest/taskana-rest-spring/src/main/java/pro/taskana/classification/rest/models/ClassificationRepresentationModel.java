@@ -8,18 +8,21 @@ public class ClassificationRepresentationModel extends ClassificationSummaryRepr
 
   /** True, if this classification to objects in this domain. */
   private Boolean isValidInDomain;
+
   /**
    * The creation timestamp of the classification in the system.
    *
    * <p>The format is ISO-8601.
    */
   private Instant created;
+
   /**
    * The timestamp of the last modification.
    *
    * <p>The format is ISO-8601.
    */
   private Instant modified;
+
   /** The description of the classification. */
   private String description;
 

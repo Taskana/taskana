@@ -11,18 +11,25 @@ public class AttachmentSummaryRepresentationModel
 
   /** Unique Id. */
   protected String attachmentId;
+
   /** the referenced task id. */
   protected String taskId;
+
   /** The creation timestamp in the system. */
   protected Instant created;
+
   /** The timestamp of the last modification. */
   protected Instant modified;
+
   /** The timestamp of the entry date. */
   protected Instant received;
+
   /** The classification of this attachment. */
   protected ClassificationSummaryRepresentationModel classificationSummary;
+
   /** The Objects primary ObjectReference. */
   protected ObjectReferenceRepresentationModel objectReference;
+
   /** Determines on which channel this attachment was received. */
   protected String channel;
 

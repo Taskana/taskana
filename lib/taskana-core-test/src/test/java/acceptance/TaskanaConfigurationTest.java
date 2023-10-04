@@ -507,7 +507,7 @@ class TaskanaConfigurationTest {
               // user configuration
               .addAdditionalUserInfo(true)
               .minimalPermissionsToAssignDomains(Set.of(WorkbasketPermission.CUSTOM_2))
-              //database configuration
+              // database configuration
               .useSpecificDb2Taskquery(false)
               .build();
 

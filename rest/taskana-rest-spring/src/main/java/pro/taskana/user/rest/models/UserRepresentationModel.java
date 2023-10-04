@@ -12,10 +12,13 @@ public class UserRepresentationModel extends RepresentationModel<UserRepresentat
 
   /** Unique Id. */
   @NotNull private String userId;
+
   /** The groups of the User. */
   private Set<String> groups;
+
   /** The permissions of the User. */
   private Set<String> permissions;
+
   /**
    * The domains of the User.
    *
@@ -23,28 +26,40 @@ public class UserRepresentationModel extends RepresentationModel<UserRepresentat
    * taskana.user.minimalPermissionsToAssignDomains
    */
   private Set<String> domains = Collections.emptySet();
+
   /** The first name of the User. */
   private String firstName;
+
   /** The last name of the User. */
   private String lastName;
+
   /** The full name of the User. */
   private String fullName;
+
   /** The long name of the User. */
   private String longName;
+
   /** The email of the User. */
   private String email;
+
   /** The phone number of the User. */
   private String phone;
+
   /** The mobile phone number of the User. */
   private String mobilePhone;
+
   /** The fourth organisation level of the User. */
   private String orgLevel4;
+
   /** The third organisation level of the User. */
   private String orgLevel3;
+
   /** The second organisation level of the User. */
   private String orgLevel2;
+
   /** The first organisation level of the User. */
   private String orgLevel1;
+
   /** The data of the User. This field is used for additional information about the User. */
   private String data;
 

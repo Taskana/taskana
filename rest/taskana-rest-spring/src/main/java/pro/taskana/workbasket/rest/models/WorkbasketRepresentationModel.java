@@ -12,6 +12,7 @@ public class WorkbasketRepresentationModel extends WorkbasketSummaryRepresentati
    * <p>The format is ISO-8601.
    */
   private Instant created;
+
   /**
    * The timestamp of the last modification.
    *

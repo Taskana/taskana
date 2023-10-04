@@ -69,11 +69,11 @@ class UserControllerIntTest {
     HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<UserCollectionRepresentationModel> response =
-            TEMPLATE.exchange(
-                    url,
-                    HttpMethod.GET,
-                    auth,
-                    ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(1);
     assertThat(response.getBody().getContent()).extracting("userId").containsExactly("teamlead-1");
@@ -85,16 +85,17 @@ class UserControllerIntTest {
     HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
-            () -> TEMPLATE.exchange(
-                    url,
-                    HttpMethod.GET,
-                    auth,
-                    ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
+        () ->
+            TEMPLATE.exchange(
+                url,
+                HttpMethod.GET,
+                auth,
+                ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
     assertThatThrownBy(httpCall)
-            .isInstanceOf(HttpStatusCodeException.class)
-            .extracting(HttpStatusCodeException.class::cast)
-            .extracting(HttpStatusCodeException::getStatusCode)
-            .isEqualTo(HttpStatus.BAD_REQUEST);
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
@@ -103,16 +104,17 @@ class UserControllerIntTest {
     HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
-            () -> TEMPLATE.exchange(
-                    url,
-                    HttpMethod.GET,
-                    auth,
-                    ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
+        () ->
+            TEMPLATE.exchange(
+                url,
+                HttpMethod.GET,
+                auth,
+                ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
     assertThatThrownBy(httpCall)
-            .isInstanceOf(HttpStatusCodeException.class)
-            .extracting(HttpStatusCodeException.class::cast)
-            .extracting(HttpStatusCodeException::getStatusCode)
-            .isEqualTo(HttpStatus.BAD_REQUEST);
+        .isInstanceOf(HttpStatusCodeException.class)
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
@@ -121,11 +123,11 @@ class UserControllerIntTest {
     HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<UserCollectionRepresentationModel> response =
-            TEMPLATE.exchange(
-                    url,
-                    HttpMethod.GET,
-                    auth,
-                    ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getContent()).hasSize(1);
     assertThat(response.getBody().getContent()).extracting("userId").containsExactly("teamlead-1");
@@ -133,22 +135,23 @@ class UserControllerIntTest {
 
   @Test
   void should_ReturnExistingUsersAndCurrentUser() throws Exception {
-    String url = restHelper.toUrl(RestEndpoints.URL_USERS)
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_USERS)
             + "?user-id=user-1-1&user-id=USER-1-2&current-user";
     HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<UserCollectionRepresentationModel> responseEntity =
-            TEMPLATE.exchange(
-                    url,
-                    HttpMethod.GET,
-                    auth,
-                    ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
     UserCollectionRepresentationModel response = responseEntity.getBody();
     assertThat(response).isNotNull();
     assertThat(response.getContent()).hasSize(3);
     assertThat(response.getContent())
-            .extracting("userId")
-            .containsExactlyInAnyOrder("user-1-1", "user-1-2", "teamlead-1");
+        .extracting("userId")
+        .containsExactlyInAnyOrder("user-1-1", "user-1-2", "teamlead-1");
   }
 
   @Test

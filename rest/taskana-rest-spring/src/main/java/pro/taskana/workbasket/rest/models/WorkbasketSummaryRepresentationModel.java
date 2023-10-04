@@ -10,37 +10,52 @@ public class WorkbasketSummaryRepresentationModel
 
   /** Unique Id. */
   protected String workbasketId;
+
   /** the professional key for the workbasket. */
   protected String key;
+
   /** The name of the workbasket. */
   protected String name;
+
   /** The domain the workbasket belongs to. */
   protected String domain;
+
   /** The type of the workbasket. */
   protected WorkbasketType type;
+
   /** the description of the workbasket. */
   protected String description;
+
   /**
    * The owner of the workbasket. The owner is responsible for the on-time completion of all tasks
    * in the workbasket.
    */
   protected String owner;
+
   /** A custom property with name "1". */
   protected String custom1;
+
   /** A custom property with name "2". */
   protected String custom2;
+
   /** A custom property with name "3". */
   protected String custom3;
+
   /** A custom property with name "4". */
   protected String custom4;
+
   /** A custom property with name "5". */
   protected String custom5;
+
   /** A custom property with name "6". */
   protected String custom6;
+
   /** A custom property with name "7". */
   protected String custom7;
+
   /** A custom property with name "8". */
   protected String custom8;
+
   /**
    * The first Org Level (the top one).
    *
@@ -49,12 +64,16 @@ public class WorkbasketSummaryRepresentationModel
    * tasks in the workbasket.
    */
   protected String orgLevel1;
+
   /** The second Org Level. */
   protected String orgLevel2;
+
   /** The third Org Level. */
   protected String orgLevel3;
+
   /** The fourth Org Level (the lowest one). */
   protected String orgLevel4;
+
   /** Identifier to tell if this workbasket can be deleted. */
   private boolean markedForDeletion;
 

@@ -205,13 +205,14 @@ class UpdateClassificationAccTest {
           .permission(WorkbasketPermission.APPEND)
           .buildAndStore(workbasketService, "businessadmin");
 
-      Task task = new TaskBuilder()
-          .classificationSummary(classification.asSummary())
-          .workbasketSummary(workbasketSummary)
-          .primaryObjRef(defaultTestObjectReference().build())
-          .planned(Instant.parse("2021-04-27T15:34:00.000Z"))
-          .due(null)
-          .buildAndStore(taskService);
+      Task task =
+          new TaskBuilder()
+              .classificationSummary(classification.asSummary())
+              .workbasketSummary(workbasketSummary)
+              .primaryObjRef(defaultTestObjectReference().build())
+              .planned(Instant.parse("2021-04-27T15:34:00.000Z"))
+              .due(null)
+              .buildAndStore(taskService);
 
       classificationService.updateClassification(classification);
       runAssociatedJobs();

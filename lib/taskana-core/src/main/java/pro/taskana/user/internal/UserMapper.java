@@ -16,8 +16,10 @@ public interface UserMapper {
   @SelectProvider(type = UserMapperSqlProvider.class, method = "findById")
   @Result(property = "id", column = "USER_ID")
   @Result(property = "groups", column = "USER_ID", many = @Many(select = "findGroupsById"))
-  @Result(property = "permissions", column = "USER_ID",
-          many = @Many(select = "findPermissionsById"))
+  @Result(
+      property = "permissions",
+      column = "USER_ID",
+      many = @Many(select = "findPermissionsById"))
   @Result(property = "firstName", column = "FIRST_NAME")
   @Result(property = "lastName", column = "LASTNAME")
   @Result(property = "fullName", column = "FULL_NAME")
@@ -34,8 +36,10 @@ public interface UserMapper {
 
   @Result(property = "id", column = "USER_ID")
   @Result(property = "groups", column = "USER_ID", many = @Many(select = "findGroupsById"))
-  @Result(property = "permissions", column = "USER_ID",
-          many = @Many(select = "findPermissionsById"))
+  @Result(
+      property = "permissions",
+      column = "USER_ID",
+      many = @Many(select = "findPermissionsById"))
   @Result(property = "firstName", column = "FIRST_NAME")
   @Result(property = "lastName", column = "LASTNAME")
   @Result(property = "fullName", column = "FULL_NAME")
@@ -68,9 +72,9 @@ public interface UserMapper {
   void insertGroups(User user);
 
   @InsertProvider(
-          type = UserMapperSqlProvider.class,
-          method = "insertPermissionsOracle",
-          databaseId = "oracle")
+      type = UserMapperSqlProvider.class,
+      method = "insertPermissionsOracle",
+      databaseId = "oracle")
   @InsertProvider(type = UserMapperSqlProvider.class, method = "insertPermissions")
   void insertPermissions(User user);
 

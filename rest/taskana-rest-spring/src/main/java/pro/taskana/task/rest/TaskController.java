@@ -109,11 +109,12 @@ public class TaskController {
           NotAuthorizedOnWorkbasketException {
 
     if (!taskRepresentationModel.getAttachments().stream()
-            .filter(att -> Objects.nonNull(att.getTaskId()))
-            .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
-            .collect(Collectors.toList()).isEmpty()) {
+        .filter(att -> Objects.nonNull(att.getTaskId()))
+        .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
+        .collect(Collectors.toList())
+        .isEmpty()) {
       throw new InvalidArgumentException(
-              "An attachments' taskId must be empty or equal to the id of the task it belongs to");
+          "An attachments' taskId must be empty or equal to the id of the task it belongs to");
     }
 
     Task fromResource = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
@@ -597,11 +598,12 @@ public class TaskController {
     }
 
     if (!taskRepresentationModel.getAttachments().stream()
-            .filter(att -> Objects.nonNull(att.getTaskId()))
-            .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
-            .collect(Collectors.toList()).isEmpty()) {
+        .filter(att -> Objects.nonNull(att.getTaskId()))
+        .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
+        .collect(Collectors.toList())
+        .isEmpty()) {
       throw new InvalidArgumentException(
-              "An attachments' taskId must be empty or equal to the id of the task it belongs to");
+          "An attachments' taskId must be empty or equal to the id of the task it belongs to");
     }
 
     Task task = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);

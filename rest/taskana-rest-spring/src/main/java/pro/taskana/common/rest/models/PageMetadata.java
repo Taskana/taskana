@@ -12,10 +12,13 @@ public class PageMetadata {
 
   /** The element size of the page. */
   private final long size;
+
   /** The total number of elements available. */
   private final long totalElements;
+
   /** Amount of pages that are available in total. */
   private final long totalPages;
+
   /** The current page number. */
   private final long number;
 

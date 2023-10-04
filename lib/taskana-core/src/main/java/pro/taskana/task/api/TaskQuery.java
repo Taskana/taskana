@@ -975,6 +975,7 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * @return the query
    */
   TaskQuery primaryObjectReferenceIn(ObjectReference... objectReferences);
+
   // endregion
   // region primaryObjectReferenceCompany
 

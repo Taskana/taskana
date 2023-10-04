@@ -105,32 +105,6 @@ class AbstractTaskanaJobAccTest {
     assertThat(jobsToRun).doesNotContainAnyElementsOf(taskCleanupJobs);
   }
 
-  @Nested
-  @TestInstance(Lifecycle.PER_CLASS)
-  class CleanCompletedTasks implements TaskanaConfigurationModifier {
-    @TaskanaInject TaskanaEngine taskanaEngine;
-
-    @TaskanaInject JobMapper jobMapper;
-
-    @Override
-    public Builder modify(Builder builder) {
-      return builder
-          .taskCleanupJobEnabled(true)
-          .jobRunEvery(Duration.ofMillis(1))
-          .jobFirstRun(Instant.now().plus(5, ChronoUnit.MINUTES));
-    }
-
-    @WithAccessId(user = "admin")
-    @Test
-    void should_FindNoJobsToRunUntilFirstRunIsReached_When_CleanupScheduleIsInitialized()
-        throws Exception {
-      AbstractTaskanaJob.initializeSchedule(taskanaEngine, TaskCleanupJob.class);
-
-      List<ScheduledJob> nextJobs = jobMapper.findJobsToRun(Instant.now());
-      assertThat(nextJobs).isEmpty();
-    }
-  }
-
   @Test
   void should_CreateSampleTaskanaJob_When_JobHasMoreThenOneConstructor() {
 
@@ -171,5 +145,31 @@ class AbstractTaskanaJobAccTest {
 
     @Override
     protected void execute() throws TaskanaException {}
+  }
+
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  class CleanCompletedTasks implements TaskanaConfigurationModifier {
+    @TaskanaInject TaskanaEngine taskanaEngine;
+
+    @TaskanaInject JobMapper jobMapper;
+
+    @Override
+    public Builder modify(Builder builder) {
+      return builder
+          .taskCleanupJobEnabled(true)
+          .jobRunEvery(Duration.ofMillis(1))
+          .jobFirstRun(Instant.now().plus(5, ChronoUnit.MINUTES));
+    }
+
+    @WithAccessId(user = "admin")
+    @Test
+    void should_FindNoJobsToRunUntilFirstRunIsReached_When_CleanupScheduleIsInitialized()
+        throws Exception {
+      AbstractTaskanaJob.initializeSchedule(taskanaEngine, TaskCleanupJob.class);
+
+      List<ScheduledJob> nextJobs = jobMapper.findJobsToRun(Instant.now());
+      assertThat(nextJobs).isEmpty();
+    }
   }
 }

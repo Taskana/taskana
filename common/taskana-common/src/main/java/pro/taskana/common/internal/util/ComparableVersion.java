@@ -436,6 +436,7 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
         Arrays.asList("alpha", "beta", "milestone", "rc", "snapshot", "", "sp");
 
     private static final Properties ALIASES = new Properties();
+
     /**
      * A comparable value for the empty-string qualifier. This one is used to determine if a given
      * qualifier makes the version older than one without a qualifier, or more recent.

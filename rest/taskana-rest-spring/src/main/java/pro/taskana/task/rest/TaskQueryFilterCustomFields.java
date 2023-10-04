@@ -395,6 +395,7 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
   /** Filter out by values of the field custom16 of the Task. This is an exact match. */
   @JsonProperty("custom-16-not")
   private final String[] custom16NotIn;
+
   /**
    * Filter by the custom16 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be

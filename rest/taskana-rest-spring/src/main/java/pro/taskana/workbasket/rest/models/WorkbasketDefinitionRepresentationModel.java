@@ -14,8 +14,10 @@ public class WorkbasketDefinitionRepresentationModel
   /** The workbasket which is represented. */
   @JsonIgnoreProperties("_links")
   private WorkbasketRepresentationModel workbasket;
+
   /** The workbasket authorizations. */
   private Collection<WorkbasketAccessItemRepresentationModel> authorizations = new ArrayList<>();
+
   /** The distribution targets for this workbasket. */
   private Set<String> distributionTargets = new HashSet<>();
 

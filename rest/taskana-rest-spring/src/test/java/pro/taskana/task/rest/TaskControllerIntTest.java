@@ -61,7 +61,6 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 @TaskanaSpringBootTest
 class TaskControllerIntTest {
 
-  @Autowired TaskanaConfiguration taskanaConfiguration;
   private static final ParameterizedTypeReference<TaskSummaryPagedRepresentationModel>
       TASK_SUMMARY_PAGE_MODEL_TYPE = new ParameterizedTypeReference<>() {};
   private static final ParameterizedTypeReference<TaskSummaryCollectionRepresentationModel>
@@ -71,6 +70,7 @@ class TaskControllerIntTest {
   private final RestHelper restHelper;
   private final DataSource dataSource;
   private final String schemaName;
+  @Autowired TaskanaConfiguration taskanaConfiguration;
 
   @Autowired
   TaskControllerIntTest(

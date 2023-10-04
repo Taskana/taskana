@@ -219,6 +219,10 @@ public class TaskSummaryImpl implements TaskSummary {
     return this.groupByCount;
   }
 
+  public void setGroupByCount(Integer n) {
+    groupByCount = n;
+  }
+
   @Override
   public Instant getDue() {
     return due != null ? due.truncatedTo(ChronoUnit.MILLIS) : null;
@@ -491,10 +495,6 @@ public class TaskSummaryImpl implements TaskSummary {
   // auxiliary method to allow mybatis access to workbasketSummary
   public void setWorkbasketSummaryImpl(WorkbasketSummaryImpl workbasketSummary) {
     setWorkbasketSummary(workbasketSummary);
-  }
-
-  public void setGroupByCount(Integer n) {
-    groupByCount = n;
   }
 
   public void addAttachmentSummary(AttachmentSummary attachmentSummary) {

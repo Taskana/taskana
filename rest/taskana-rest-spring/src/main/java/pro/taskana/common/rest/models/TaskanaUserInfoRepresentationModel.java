@@ -12,8 +12,10 @@ public class TaskanaUserInfoRepresentationModel
 
   /** The user Id of the current user. */
   private String userId;
+
   /** All groups the current user is a member of. */
   private List<String> groupIds = new ArrayList<>();
+
   /** All taskana roles the current user fulfills. */
   private List<TaskanaRole> roles = new ArrayList<>();
 

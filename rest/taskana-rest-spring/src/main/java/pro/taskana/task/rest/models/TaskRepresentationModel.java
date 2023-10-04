@@ -53,6 +53,7 @@ public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
 
     /** the key of the custom attribute. */
     private String key;
+
     /** the value of the custom attribute. */
     private String value;
 

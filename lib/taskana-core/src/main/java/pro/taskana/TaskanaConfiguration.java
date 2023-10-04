@@ -134,6 +134,7 @@ public class TaskanaConfiguration {
 
   // region custom configuration
   private final Map<String, String> properties;
+
   // endregion
 
   private TaskanaConfiguration(Builder builder) {
@@ -717,11 +718,13 @@ public class TaskanaConfiguration {
 
     @TaskanaProperty("taskana.servicelevel.validation.enforce")
     private boolean enforceServiceLevel = true;
+
     // endregion
 
     // region authentication configuration
     @TaskanaProperty("taskana.roles")
     private Map<TaskanaRole, Set<String>> roleMap = new EnumMap<>(TaskanaRole.class);
+
     // endregion
 
     // region classification configuration
@@ -730,6 +733,7 @@ public class TaskanaConfiguration {
 
     @TaskanaProperty("taskana.classification.categories")
     private Map<String, List<String>> classificationCategoriesByType = new HashMap<>();
+
     // endregion
 
     // region working time configuration
@@ -752,6 +756,7 @@ public class TaskanaConfiguration {
 
     @TaskanaProperty("taskana.workingTime.holidays.german.corpus-christi.enabled")
     private boolean germanPublicHolidaysCorpusChristiEnabled = false;
+
     // endregion
 
     // region history configuration
@@ -760,6 +765,7 @@ public class TaskanaConfiguration {
 
     @TaskanaProperty("taskana.history.logger.name")
     private String logHistoryLoggerName = null; // default value will be set in the logger class.
+
     // endregion
 
     // region job configuration
@@ -852,6 +858,7 @@ public class TaskanaConfiguration {
 
     @TaskanaProperty("taskana.jobs.customJobs")
     private Set<String> customJobs = new HashSet<>();
+
     // endregion
 
     // region user configuration
@@ -860,15 +867,18 @@ public class TaskanaConfiguration {
 
     @TaskanaProperty("taskana.user.minimalPermissionsToAssignDomains")
     private Set<WorkbasketPermission> minimalPermissionsToAssignDomains = new HashSet<>();
+
     // endregion
 
     // region database configuration
     @TaskanaProperty("taskana.feature.useSpecificDb2Taskquery")
     private boolean useSpecificDb2Taskquery = true;
+
     // endregion
 
     // region custom configuration
     private Map<String, String> properties = Collections.emptyMap();
+
     // endregion
 
     public Builder(DataSource dataSource, boolean useManagedTransactions, String schemaName) {

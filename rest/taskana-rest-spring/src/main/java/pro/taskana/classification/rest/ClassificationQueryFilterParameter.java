@@ -90,6 +90,7 @@ public class ClassificationQueryFilterParameter
    */
   @JsonProperty("custom-6-like")
   private final String[] custom6Like;
+
   /**
    * Filter by the value of the field custom7. This results in a substring search.. (% is appended
    * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will

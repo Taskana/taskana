@@ -424,6 +424,7 @@ public interface WorkbasketService {
    *     pro.taskana.common.api.TaskanaRole#BUSINESS_ADMIN business-admin}
    */
   WorkbasketAccessItemQuery createWorkbasketAccessItemQuery() throws NotAuthorizedException;
+
   // endregion
 
   // region Permission and Authorization

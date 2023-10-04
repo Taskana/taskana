@@ -179,8 +179,11 @@ public class ClassificationServiceImpl implements ClassificationService {
 
   @Override
   public Classification createClassification(Classification classification)
-      throws ClassificationAlreadyExistException, DomainNotFoundException, InvalidArgumentException,
-          MalformedServiceLevelException, NotAuthorizedException {
+      throws ClassificationAlreadyExistException,
+          DomainNotFoundException,
+          InvalidArgumentException,
+          MalformedServiceLevelException,
+          NotAuthorizedException {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     if (!taskanaEngine.domainExists(classification.getDomain())
         && !MASTER_DOMAIN.equals(classification.getDomain())) {
@@ -235,8 +238,11 @@ public class ClassificationServiceImpl implements ClassificationService {
 
   @Override
   public Classification updateClassification(Classification classification)
-      throws ConcurrencyException, ClassificationNotFoundException, InvalidArgumentException,
-          MalformedServiceLevelException, NotAuthorizedException {
+      throws ConcurrencyException,
+          ClassificationNotFoundException,
+          InvalidArgumentException,
+          MalformedServiceLevelException,
+          NotAuthorizedException {
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
     ClassificationImpl classificationImpl;
     try {

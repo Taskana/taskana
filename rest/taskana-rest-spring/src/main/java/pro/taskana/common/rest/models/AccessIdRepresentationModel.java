@@ -8,6 +8,7 @@ public class AccessIdRepresentationModel extends RepresentationModel<AccessIdRep
 
   /** The name of this Access Id. */
   private String name;
+
   /**
    * The value of the Access Id. This value will be used to determine the access to a workbasket.
    */
