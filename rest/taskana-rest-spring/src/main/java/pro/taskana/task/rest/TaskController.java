@@ -2,6 +2,7 @@ package pro.taskana.task.rest;
 
 import static java.util.function.Predicate.not;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.beans.ConstructorProperties;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +11,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -109,11 +109,12 @@ public class TaskController {
           NotAuthorizedOnWorkbasketException {
 
     if (!taskRepresentationModel.getAttachments().stream()
-            .filter(att -> Objects.nonNull(att.getTaskId()))
-            .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
-            .collect(Collectors.toList()).isEmpty()) {
+        .filter(att -> Objects.nonNull(att.getTaskId()))
+        .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
+        .collect(Collectors.toList())
+        .isEmpty()) {
       throw new InvalidArgumentException(
-              "An attachments' taskId must be empty or equal to the id of the task it belongs to");
+          "An attachments' taskId must be empty or equal to the id of the task it belongs to");
     }
 
     Task fromResource = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
@@ -597,11 +598,12 @@ public class TaskController {
     }
 
     if (!taskRepresentationModel.getAttachments().stream()
-            .filter(att -> Objects.nonNull(att.getTaskId()))
-            .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
-            .collect(Collectors.toList()).isEmpty()) {
+        .filter(att -> Objects.nonNull(att.getTaskId()))
+        .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
+        .collect(Collectors.toList())
+        .isEmpty()) {
       throw new InvalidArgumentException(
-              "An attachments' taskId must be empty or equal to the id of the task it belongs to");
+          "An attachments' taskId must be empty or equal to the id of the task it belongs to");
     }
 
     Task task = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);

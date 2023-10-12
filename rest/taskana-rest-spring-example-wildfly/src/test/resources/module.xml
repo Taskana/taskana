@@ -3,8 +3,8 @@
 <module xmlns="urn:jboss:module:1.1" name="org.postgresql.postgresql">
 
   <dependencies>
-    <module name="javax.api"/>
-    <module name="javax.transaction.api"/>
+    <module name="jakarta.api"/>
+    <module name="jakarta.transaction.api"/>
   </dependencies>
 
   <resources>

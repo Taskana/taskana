@@ -9,7 +9,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.ldap.core.support.BaseLdapPathContextSource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.ldap.LdapPasswordComparisonAuthenticationManagerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -58,33 +61,30 @@ public class BootWebSecurityConfigurer {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     HttpSecurity httpSecurity =
-        http.authorizeRequests()
-            .antMatchers("/css/**", "/img/**")
-            .permitAll()
-            .and()
-            .authorizeRequests()
-            .antMatchers(HttpMethod.GET, "/docs/**")
-            .permitAll()
-            .and()
+        http.authorizeHttpRequests(
+                authorizeHttpRequests ->
+                    authorizeHttpRequests
+                        .requestMatchers("/css/**", "/img/**")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/docs/**")
+                        .permitAll())
             .addFilter(jaasApiIntegrationFilter())
             .addFilterAfter(new SpringSecurityToJaasFilter(), JaasApiIntegrationFilter.class);
 
     if (enableCsrf) {
       CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
       csrfTokenRepository.setCookiePath("/");
-      httpSecurity.csrf().csrfTokenRepository(csrfTokenRepository);
+      httpSecurity.csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository));
     } else {
-      httpSecurity.csrf().disable().httpBasic();
+      httpSecurity.csrf(AbstractHttpConfigurer::disable).httpBasic(Customizer.withDefaults());
     }
 
     if (devMode) {
-      http.headers()
-          .frameOptions()
-          .sameOrigin()
-          .and()
-          .authorizeRequests()
-          .antMatchers("/h2-console/**")
-          .permitAll();
+      http.headers(
+              headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+          .authorizeHttpRequests(
+              authorizeHttpRequests ->
+                  authorizeHttpRequests.requestMatchers("/h2-console/**").permitAll());
     } else {
       addLoginPageConfiguration(http);
     }
@@ -119,23 +119,19 @@ public class BootWebSecurityConfigurer {
   }
 
   protected void addLoginPageConfiguration(HttpSecurity http) throws Exception {
-    http.authorizeRequests()
-        .anyRequest()
-        .fullyAuthenticated()
-        .and()
-        .formLogin()
-        .loginPage("/login")
-        .failureUrl("/login?error")
-        .defaultSuccessUrl("/")
-        .permitAll()
-        .and()
-        .logout()
-        .invalidateHttpSession(true)
-        .clearAuthentication(true)
-        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-        .logoutSuccessUrl("/login?logout")
-        .deleteCookies("JSESSIONID")
-        .permitAll();
+    http.authorizeHttpRequests(
+            authorizeHttpRequests -> authorizeHttpRequests.anyRequest().fullyAuthenticated())
+        .formLogin(
+            formLogin ->
+                formLogin.loginPage("/login").failureUrl("/login?error").defaultSuccessUrl("/"))
+        .logout(
+            logout ->
+                logout
+                    .invalidateHttpSession(true)
+                    .clearAuthentication(true)
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logoutSuccessUrl("/login?logout")
+                    .deleteCookies("JSESSIONID"));
   }
 
   protected JaasApiIntegrationFilter jaasApiIntegrationFilter() {

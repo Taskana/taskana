@@ -1,9 +1,9 @@
 package pro.taskana.user.rest.models;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
-import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.RepresentationModel;
 import pro.taskana.user.api.models.User;
 

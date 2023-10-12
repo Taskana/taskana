@@ -20,10 +20,11 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -172,10 +173,10 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
 
   @Override
   @NonNull
-  protected ResponseEntity<Object> handleBindException(
-      BindException ex,
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(
+      MethodArgumentNotValidException ex,
       @NonNull HttpHeaders headers,
-      @NonNull HttpStatus status,
+      @NonNull HttpStatusCode status,
       @NonNull WebRequest request) {
 
     MalformedQueryParameter[] wrongQueryParameters =
