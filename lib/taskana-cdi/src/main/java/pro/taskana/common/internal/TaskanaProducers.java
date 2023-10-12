@@ -1,15 +1,15 @@
 package pro.taskana.common.internal;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.Properties;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;

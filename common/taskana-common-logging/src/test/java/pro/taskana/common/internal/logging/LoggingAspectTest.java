@@ -2,6 +2,9 @@ package pro.taskana.common.internal.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.github.valfirst.slf4jtest.LoggingEvent;
+import com.github.valfirst.slf4jtest.TestLogger;
+import com.github.valfirst.slf4jtest.TestLoggerFactory;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,12 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.internal.stubbing.answers.CallsRealMethods;
+import org.slf4j.event.Level;
 import outside.of.pro.taskana.OutsideOfProTaskanaPackageLoggingTestClass;
 import pro.taskana.AtProTaskanaRootPackageLoggingTestClass;
-import uk.org.lidalia.slf4jext.Level;
-import uk.org.lidalia.slf4jtest.LoggingEvent;
-import uk.org.lidalia.slf4jtest.TestLogger;
-import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
 @NoLogging
 class LoggingAspectTest {

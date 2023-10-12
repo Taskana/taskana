@@ -1,9 +1,9 @@
 package pro.taskana.user.rest;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -41,9 +41,10 @@ public class UserController {
   private final CurrentUserContext currentUserContext;
 
   @Autowired
-  UserController(UserService userService,
-                 UserRepresentationModelAssembler userAssembler,
-                 CurrentUserContext currentUserContext) {
+  UserController(
+      UserService userService,
+      UserRepresentationModelAssembler userAssembler,
+      CurrentUserContext currentUserContext) {
     this.userService = userService;
     this.userAssembler = userAssembler;
     this.currentUserContext = currentUserContext;
@@ -68,8 +69,8 @@ public class UserController {
 
   /**
    * This endpoint retrieves multiple Users. If a userId can't be found in the database it will be
-   * ignored. If none of the given userIds is valid, the returned list will be empty.
-   * If currentUser is set, the current User from the context will be retrieved as well
+   * ignored. If none of the given userIds is valid, the returned list will be empty. If currentUser
+   * is set, the current User from the context will be retrieved as well
    *
    * @title Get multiple Users
    * @param request the HttpServletRequest of the request itself
@@ -85,7 +86,7 @@ public class UserController {
       HttpServletRequest request,
       @RequestParam(name = "user-id", required = false) String[] userIds,
       @RequestParam(name = "current-user", required = false) String currentUser)
-          throws InvalidArgumentException, UserNotFoundException {
+      throws InvalidArgumentException, UserNotFoundException {
     Set<User> users = new HashSet<>();
 
     if (userIds != null) {

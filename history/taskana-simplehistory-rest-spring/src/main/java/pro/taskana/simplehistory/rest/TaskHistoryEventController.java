@@ -1,10 +1,10 @@
 package pro.taskana.simplehistory.rest;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.beans.ConstructorProperties;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.function.BiConsumer;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.config.EnableHypermediaSupport;

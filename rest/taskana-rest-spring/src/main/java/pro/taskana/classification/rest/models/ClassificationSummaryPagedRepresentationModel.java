@@ -1,9 +1,9 @@
 package pro.taskana.classification.rest.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 import java.beans.ConstructorProperties;
 import java.util.Collection;
-import javax.validation.constraints.NotNull;
 import pro.taskana.common.rest.models.PageMetadata;
 import pro.taskana.common.rest.models.PagedRepresentationModel;
 

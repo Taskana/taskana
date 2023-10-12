@@ -35,6 +35,7 @@
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
+      <version>${version.mockito-inline}</version>
       <artifactId>mockito-inline</artifactId>
     </dependency>
     <dependency>

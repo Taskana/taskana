@@ -2,9 +2,9 @@ package pro.taskana.common.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Min;
 import java.beans.ConstructorProperties;
 import java.util.List;
-import javax.validation.constraints.Min;
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.rest.models.PageMetadata;
 

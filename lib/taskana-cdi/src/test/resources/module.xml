@@ -6,8 +6,8 @@
     <resource-root path="h2-2.1.214.jar"/>
   </resources>
   <dependencies>
-    <module name="javax.api"/>
-    <module name="javax.transaction.api"/>
-    <module name="javax.servlet.api" optional="true"/>
+    <module name="jakarta.api"/>
+    <module name="jakarta.transaction.api"/>
+    <module name="jakarta.servlet.api" optional="true"/>
   </dependencies>
 </module>

@@ -2,10 +2,10 @@ package pro.taskana.task.rest.models;
 
 import static pro.taskana.task.api.models.TaskSummary.DEFAULT_MANUAL_PRIORITY;
 
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.RepresentationModel;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
 import pro.taskana.task.api.TaskState;
