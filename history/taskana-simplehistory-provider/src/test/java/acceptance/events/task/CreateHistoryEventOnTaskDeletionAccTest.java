@@ -26,10 +26,10 @@ import pro.taskana.testapi.builder.TaskBuilder;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
+@TaskanaIntegrationTest
 @WithServiceProvider(
     serviceProviderInterface = TaskanaHistory.class,
     serviceProviders = SimpleHistoryServiceImpl.class)
-@TaskanaIntegrationTest
 @ExtendWith(JaasExtension.class)
 class CreateHistoryEventOnTaskDeletionAccTest {
   @TaskanaInject TaskanaEngine taskanaEngine;
@@ -47,8 +47,6 @@ class CreateHistoryEventOnTaskDeletionAccTest {
   @WithAccessId(user = "admin")
   @BeforeAll
   void setUp() throws Exception {
-    historyService = new SimpleHistoryServiceImpl();
-    historyService.initialize(taskanaEngine);
 
     defaultClassificationSummary =
         DefaultTestEntities.defaultTestClassification()
@@ -60,11 +58,15 @@ class CreateHistoryEventOnTaskDeletionAccTest {
     task2 = createTask().state(TaskState.COMPLETED).buildAndStore(taskService);
     task3 = createTask().state(TaskState.COMPLETED).buildAndStore(taskService);
     task4 = createTask().state(TaskState.COMPLETED).buildAndStore(taskService);
+
+    historyService = new SimpleHistoryServiceImpl();
+    historyService.initialize(taskanaEngine);
   }
 
   @WithAccessId(user = "admin")
   @Test
   void should_CreateDeleteHistoryEvent_When_TaskIsDeleted() throws Exception {
+
     historyService.deleteHistoryEventsByTaskIds(List.of(task4.getId()));
 
     taskService.deleteTask(task4.getId());

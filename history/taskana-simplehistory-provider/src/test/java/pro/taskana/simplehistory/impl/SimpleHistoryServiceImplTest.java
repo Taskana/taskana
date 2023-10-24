@@ -19,6 +19,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.simplehistory.impl.task.TaskHistoryEventMapper;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQueryMapper;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryEventMapper;
@@ -40,12 +41,11 @@ class SimpleHistoryServiceImplTest {
   @Mock private WorkbasketHistoryEventMapper workbasketHistoryEventMapperMock;
 
   @Mock private WorkbasketHistoryQueryMapper workbasketHistoryQueryMapperMock;
-
-  @Mock private TaskanaHistoryEngineImpl taskanaHistoryEngineMock;
-
   @Mock private TaskanaConfiguration taskanaConfiguration;
 
   @Mock private TaskanaEngine taskanaEngine;
+
+  @Mock private InternalTaskanaEngine internalTaskanaEngine;
 
   @Mock private SqlSessionManager sqlSessionManagerMock;
 
@@ -58,9 +58,7 @@ class SimpleHistoryServiceImplTest {
             "wbKey1", "taskId1", "type1", "wbKey2", "someUserId", "someDetails");
 
     cutSpy.create(expectedWb);
-    verify(taskanaHistoryEngineMock, times(1)).openConnection();
     verify(taskHistoryEventMapperMock, times(1)).insert(expectedWb);
-    verify(taskanaHistoryEngineMock, times(1)).returnConnection();
     assertThat(expectedWb.getCreated()).isNotNull();
   }
 
@@ -71,9 +69,7 @@ class SimpleHistoryServiceImplTest {
             "wbKey1", WorkbasketHistoryEventType.CREATED.getName(), "someUserId", "someDetails");
 
     cutSpy.create(expectedEvent);
-    verify(taskanaHistoryEngineMock, times(1)).openConnection();
     verify(workbasketHistoryEventMapperMock, times(1)).insert(expectedEvent);
-    verify(taskanaHistoryEngineMock, times(1)).returnConnection();
     assertThat(expectedEvent.getCreated()).isNotNull();
   }
 
@@ -84,20 +80,21 @@ class SimpleHistoryServiceImplTest {
         AbstractAccTest.createTaskHistoryEvent(
             "wbKey1", "taskId1", "type1", "wbKey2", "someUserId", "someDetails"));
 
-    when(taskanaHistoryEngineMock.getConfiguration()).thenReturn(taskanaConfiguration);
     when(taskanaConfiguration.isAddAdditionalUserInfo()).thenReturn(false);
 
-    when(taskanaHistoryEngineMock.getSqlSession()).thenReturn(sqlSessionMock);
+    when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSessionMock);
     when(sqlSessionMock.selectList(any(), any())).thenReturn(new ArrayList<>(returnList));
 
+    when(internalTaskanaEngine.getEngine()).thenReturn(taskanaEngine);
+    when(taskanaEngine.getConfiguration()).thenReturn(taskanaConfiguration);
     final List<TaskHistoryEvent> result =
         cutSpy.createTaskHistoryQuery().taskIdIn("taskId1").list();
 
-    verify(taskanaHistoryEngineMock, times(1)).openConnection();
-    verify(taskanaHistoryEngineMock, times(1)).getSqlSession();
+    verify(internalTaskanaEngine, times(1)).openConnection();
+    verify(internalTaskanaEngine, times(1)).getSqlSession();
     verify(sqlSessionMock, times(1)).selectList(any(), any());
 
-    verify(taskanaHistoryEngineMock, times(1)).returnConnection();
+    verify(internalTaskanaEngine, times(1)).returnConnection();
     assertThat(result).hasSize(returnList.size());
     assertThat(result.get(0).getWorkbasketKey()).isEqualTo(returnList.get(0).getWorkbasketKey());
   }
@@ -108,16 +105,15 @@ class SimpleHistoryServiceImplTest {
     returnList.add(
         AbstractAccTest.createWorkbasketHistoryEvent(
             "wbKey1", WorkbasketHistoryEventType.CREATED.getName(), "someUserId", "someDetails"));
-    when(taskanaHistoryEngineMock.getSqlSession()).thenReturn(sqlSessionMock);
     when(sqlSessionMock.selectList(any(), any())).thenReturn(new ArrayList<>(returnList));
-
+    when(internalTaskanaEngine.getSqlSession()).thenReturn(sqlSessionMock);
     final List<WorkbasketHistoryEvent> result =
         cutSpy.createWorkbasketHistoryQuery().keyIn("wbKey1").list();
 
-    verify(taskanaHistoryEngineMock, times(1)).openConnection();
-    verify(taskanaHistoryEngineMock, times(1)).getSqlSession();
+    verify(internalTaskanaEngine, times(1)).openConnection();
+    verify(internalTaskanaEngine, times(1)).getSqlSession();
     verify(sqlSessionMock, times(1)).selectList(any(), any());
-    verify(taskanaHistoryEngineMock, times(1)).returnConnection();
+    verify(internalTaskanaEngine, times(1)).returnConnection();
     assertThat(result).hasSize(returnList.size());
     assertThat(result.get(0).getKey()).isEqualTo(returnList.get(0).getKey());
   }

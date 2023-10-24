@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEvent;
 import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEventType;
@@ -24,7 +25,7 @@ import pro.taskana.spi.history.api.events.workbasket.WorkbasketHistoryEventType;
 @ExtendWith(MockitoExtension.class)
 class WorkbasketHistoryQueryImplTest {
 
-  @Mock private TaskanaHistoryEngineImpl taskanaHistoryEngineMock;
+  @Mock private InternalTaskanaEngine internalTaskanaEngineMock;
 
   private WorkbasketHistoryQueryImpl historyQueryImpl;
 
@@ -32,7 +33,7 @@ class WorkbasketHistoryQueryImplTest {
 
   @BeforeEach
   void setup() {
-    historyQueryImpl = new WorkbasketHistoryQueryImpl(taskanaHistoryEngineMock);
+    historyQueryImpl = new WorkbasketHistoryQueryImpl(internalTaskanaEngineMock);
   }
 
   @Test
@@ -47,9 +48,9 @@ class WorkbasketHistoryQueryImplTest {
             null));
     TimeInterval interval = new TimeInterval(Instant.now().minusNanos(1000), Instant.now());
 
-    doNothing().when(taskanaHistoryEngineMock).openConnection();
-    doNothing().when(taskanaHistoryEngineMock).returnConnection();
-    when(taskanaHistoryEngineMock.getSqlSession()).thenReturn(sqlSessionMock);
+    doNothing().when(internalTaskanaEngineMock).openConnection();
+    doNothing().when(internalTaskanaEngineMock).returnConnection();
+    when(internalTaskanaEngineMock.getSqlSession()).thenReturn(sqlSessionMock);
     when(sqlSessionMock.selectList(any(), any())).thenReturn(new ArrayList<>(returnList));
 
     List<WorkbasketHistoryEvent> result =
