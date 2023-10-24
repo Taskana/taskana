@@ -1,14 +1,18 @@
 package pro.taskana.simplehistory.impl;
 
+import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.List;
+import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
+import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryEventMapper;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryQuery;
 import pro.taskana.simplehistory.impl.task.TaskHistoryEventMapper;
@@ -43,61 +47,75 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
           taskanaEngine.getConfiguration().getSchemaName());
     }
 
-    this.taskHistoryEventMapper =
-        this.taskanaHistoryEngine.getSqlSession().getMapper(TaskHistoryEventMapper.class);
-    this.workbasketHistoryEventMapper =
-        this.taskanaHistoryEngine.getSqlSession().getMapper(WorkbasketHistoryEventMapper.class);
-    this.classificationHistoryEventMapper =
-        this.taskanaHistoryEngine.getSqlSession().getMapper(ClassificationHistoryEventMapper.class);
-    this.userMapper = taskanaHistoryEngine.getSqlSession().getMapper(UserMapper.class);
+    Field sessionManager = null;
+    try {
+      sessionManager = TaskanaEngineImpl.class.getDeclaredField("sessionManager");
+      sessionManager.setAccessible(true);
+    } catch (NoSuchFieldException e) {
+      throw new SystemException("SQL Session could not be retrieved. Aborting Startup");
+    }
+    try {
+      SqlSession sqlSession = (SqlSession) sessionManager.get(taskanaEngine);
+      if (!sqlSession
+          .getConfiguration()
+          .getMapperRegistry()
+          .hasMapper(TaskHistoryEventMapper.class)) {
+        sqlSession.getConfiguration().addMapper(TaskHistoryEventMapper.class);
+      }
+      if (!sqlSession
+          .getConfiguration()
+          .getMapperRegistry()
+          .hasMapper(WorkbasketHistoryEventMapper.class)) {
+
+        sqlSession.getConfiguration().addMapper(WorkbasketHistoryEventMapper.class);
+      }
+      if (!sqlSession
+          .getConfiguration()
+          .getMapperRegistry()
+          .hasMapper(ClassificationHistoryEventMapper.class)) {
+
+        sqlSession.getConfiguration().addMapper(ClassificationHistoryEventMapper.class);
+      }
+
+      this.taskHistoryEventMapper = sqlSession.getMapper(TaskHistoryEventMapper.class);
+      this.workbasketHistoryEventMapper = sqlSession.getMapper(WorkbasketHistoryEventMapper.class);
+      this.classificationHistoryEventMapper =
+          sqlSession.getMapper(ClassificationHistoryEventMapper.class);
+      this.userMapper = sqlSession.getMapper(UserMapper.class);
+    } catch (IllegalAccessException e) {
+      throw new SystemException(
+          "TASKANA engine of Session Manager could not be retrieved. Aborting Startup");
+    }
   }
 
   @Override
   public void create(TaskHistoryEvent event) {
-    try {
-      taskanaHistoryEngine.openConnection();
-      if (event.getCreated() == null) {
-        Instant now = Instant.now();
-        event.setCreated(now);
-      }
-      taskHistoryEventMapper.insert(event);
-    } catch (SQLException e) {
-      LOGGER.error("Error while inserting task history event into database", e);
-    } finally {
-      taskanaHistoryEngine.returnConnection();
+
+    if (event.getCreated() == null) {
+      Instant now = Instant.now();
+      event.setCreated(now);
     }
+    taskHistoryEventMapper.insert(event);
   }
 
   @Override
   public void create(WorkbasketHistoryEvent event) {
-    try {
-      taskanaHistoryEngine.openConnection();
-      if (event.getCreated() == null) {
-        Instant now = Instant.now();
-        event.setCreated(now);
-      }
-      workbasketHistoryEventMapper.insert(event);
-    } catch (SQLException e) {
-      LOGGER.error("Error while inserting workbasket history event into database", e);
-    } finally {
-      taskanaHistoryEngine.returnConnection();
+
+    if (event.getCreated() == null) {
+      Instant now = Instant.now();
+      event.setCreated(now);
     }
+    workbasketHistoryEventMapper.insert(event);
   }
 
   @Override
   public void create(ClassificationHistoryEvent event) {
-    try {
-      taskanaHistoryEngine.openConnection();
-      if (event.getCreated() == null) {
-        Instant now = Instant.now();
-        event.setCreated(now);
-      }
-      classificationHistoryEventMapper.insert(event);
-    } catch (SQLException e) {
-      LOGGER.error("Error while inserting classification history event into database", e);
-    } finally {
-      taskanaHistoryEngine.returnConnection();
+
+    if (event.getCreated() == null) {
+      Instant now = Instant.now();
+      event.setCreated(now);
     }
+    classificationHistoryEventMapper.insert(event);
   }
 
   @Override

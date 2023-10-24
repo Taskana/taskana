@@ -55,7 +55,6 @@ public class TaskanaHistoryEngineImpl implements TaskanaHistoryEngine {
   protected TaskanaHistoryEngineImpl(TaskanaEngine taskanaEngine) {
     this.taskanaConfiguration = taskanaEngine.getConfiguration();
     this.taskanaEngine = taskanaEngine;
-
     createTransactionFactory(taskanaConfiguration.isUseManagedTransactions());
     sessionManager = createSqlSessionManager();
   }

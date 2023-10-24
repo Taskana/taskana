@@ -1,7 +1,6 @@
 package pro.taskana.simplehistory.rest;
 
 import java.beans.ConstructorProperties;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.function.BiConsumer;
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -35,19 +33,17 @@ import pro.taskana.spi.history.api.exceptions.TaskanaHistoryEventNotFoundExcepti
 @RestController
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class TaskHistoryEventController {
-
   private final SimpleHistoryServiceImpl simpleHistoryService;
   private final TaskHistoryEventRepresentationModelAssembler assembler;
 
   @Autowired
   public TaskHistoryEventController(
-      TaskanaConfiguration taskanaConfiguration,
+      TaskanaEngine taskanaEngine,
       SimpleHistoryServiceImpl simpleHistoryServiceImpl,
-      TaskHistoryEventRepresentationModelAssembler assembler)
-      throws SQLException {
+      TaskHistoryEventRepresentationModelAssembler assembler) {
 
     this.simpleHistoryService = simpleHistoryServiceImpl;
-    this.simpleHistoryService.initialize(TaskanaEngine.buildTaskanaEngine(taskanaConfiguration));
+    this.simpleHistoryService.initialize(taskanaEngine);
     this.assembler = assembler;
   }
 

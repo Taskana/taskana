@@ -11,6 +11,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.internal.SpringTaskanaEngine;
 import pro.taskana.common.internal.configuration.DbSchemaCreator;
 import pro.taskana.sampledata.SampleDataGenerator;
 
@@ -44,7 +45,7 @@ public class ExampleRestConfiguration {
   @DependsOn("generateSampleData")
   public TaskanaEngine getTaskanaEngine(TaskanaConfiguration taskanaConfiguration)
       throws SQLException {
-    return TaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
+    return SpringTaskanaEngine.buildTaskanaEngine(taskanaConfiguration);
   }
 
   // only required to let the adapter example connect to the same database
