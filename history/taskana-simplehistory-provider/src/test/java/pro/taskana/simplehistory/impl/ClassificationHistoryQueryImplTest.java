@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEvent;
 import pro.taskana.spi.history.api.events.classification.ClassificationHistoryEventType;
@@ -24,13 +25,13 @@ class ClassificationHistoryQueryImplTest {
 
   private ClassificationHistoryQueryImpl historyQueryImpl;
 
-  @Mock private TaskanaHistoryEngineImpl taskanaHistoryEngineMock;
+  @Mock private InternalTaskanaEngine internalTaskanaEngineMock;
 
   @Mock private SqlSession sqlSessionMock;
 
   @BeforeEach
   void setup() {
-    historyQueryImpl = new ClassificationHistoryQueryImpl(taskanaHistoryEngineMock);
+    historyQueryImpl = new ClassificationHistoryQueryImpl(internalTaskanaEngineMock);
   }
 
   @Test
@@ -40,9 +41,9 @@ class ClassificationHistoryQueryImplTest {
         createHistoryEvent(
             ClassificationHistoryEventType.CREATED.getName(), "admin", "someDetails"));
 
-    doNothing().when(taskanaHistoryEngineMock).openConnection();
-    doNothing().when(taskanaHistoryEngineMock).returnConnection();
-    when(taskanaHistoryEngineMock.getSqlSession()).thenReturn(sqlSessionMock);
+    doNothing().when(internalTaskanaEngineMock).openConnection();
+    doNothing().when(internalTaskanaEngineMock).returnConnection();
+    when(internalTaskanaEngineMock.getSqlSession()).thenReturn(sqlSessionMock);
     when(sqlSessionMock.selectList(any(), any())).thenReturn(new ArrayList<>(returnList));
 
     List<ClassificationHistoryEvent> result =

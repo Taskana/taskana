@@ -2,6 +2,7 @@ package pro.taskana.common.api;
 
 import java.sql.SQLException;
 import java.util.function.Supplier;
+import org.apache.ibatis.transaction.TransactionFactory;
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -93,7 +94,7 @@ public interface TaskanaEngine {
    */
   @SuppressWarnings("checkstyle:JavadocMethod")
   static TaskanaEngine buildTaskanaEngine(TaskanaConfiguration configuration) throws SQLException {
-    return buildTaskanaEngine(configuration, ConnectionManagementMode.PARTICIPATE);
+    return buildTaskanaEngine(configuration, ConnectionManagementMode.PARTICIPATE, null);
   }
 
   /**
@@ -108,7 +109,26 @@ public interface TaskanaEngine {
   static TaskanaEngine buildTaskanaEngine(
       TaskanaConfiguration configuration, ConnectionManagementMode connectionManagementMode)
       throws SQLException {
-    return TaskanaEngineImpl.createTaskanaEngine(configuration, connectionManagementMode);
+    return buildTaskanaEngine(configuration, connectionManagementMode, null);
+  }
+
+  /**
+   * Builds an {@linkplain TaskanaEngine} based on {@linkplain TaskanaConfiguration},
+   * SqlConnectionMode and TransactionFactory.
+   *
+   * @param configuration complete taskanaConfig to build the engine
+   * @param connectionManagementMode connectionMode for the SqlSession
+   * @param transactionFactory the TransactionFactory
+   * @return a {@linkplain TaskanaEngineImpl}
+   * @throws SQLException when the db schema could not be initialized
+   */
+  static TaskanaEngine buildTaskanaEngine(
+      TaskanaConfiguration configuration,
+      ConnectionManagementMode connectionManagementMode,
+      TransactionFactory transactionFactory)
+      throws SQLException {
+    return TaskanaEngineImpl.createTaskanaEngine(
+        configuration, connectionManagementMode, transactionFactory);
   }
 
   /**

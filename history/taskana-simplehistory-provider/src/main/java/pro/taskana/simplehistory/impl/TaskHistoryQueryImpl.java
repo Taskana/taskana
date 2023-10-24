@@ -2,7 +2,6 @@ package pro.taskana.simplehistory.impl;
 
 import static pro.taskana.common.api.BaseQuery.toLowerCopy;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.ibatis.session.RowBounds;
@@ -10,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.common.internal.InternalTaskanaEngine;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQuery;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQueryColumnName;
 import pro.taskana.spi.history.api.events.task.TaskHistoryCustomField;
@@ -30,7 +30,7 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   private static final String SQL_EXCEPTION_MESSAGE =
       "Method openConnection() could not open a connection to the database.";
 
-  private final TaskanaHistoryEngineImpl taskanaHistoryEngine;
+  private final InternalTaskanaEngine internalTaskanaEngine;
   private final List<String> orderBy;
   private final List<String> orderColumns;
   private boolean joinWithUserInfo;
@@ -83,11 +83,12 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   private String[] custom3Like;
   private String[] custom4Like;
 
-  public TaskHistoryQueryImpl(TaskanaHistoryEngineImpl taskanaHistoryEngine) {
-    this.taskanaHistoryEngine = taskanaHistoryEngine;
+  public TaskHistoryQueryImpl(InternalTaskanaEngine internalTaskanaEngine) {
+    this.internalTaskanaEngine = internalTaskanaEngine;
     this.orderBy = new ArrayList<>();
     this.orderColumns = new ArrayList<>();
-    this.joinWithUserInfo = taskanaHistoryEngine.getConfiguration().isAddAdditionalUserInfo();
+    this.joinWithUserInfo =
+        internalTaskanaEngine.getEngine().getConfiguration().isAddAdditionalUserInfo();
   }
 
   public String[] getIdIn() {
@@ -631,14 +632,11 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   public List<TaskHistoryEvent> list() {
     List<TaskHistoryEvent> result = new ArrayList<>();
     try {
-      taskanaHistoryEngine.openConnection();
-      result = taskanaHistoryEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
-      return result;
-    } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      internalTaskanaEngine.openConnection();
+      result = internalTaskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this);
       return result;
     } finally {
-      taskanaHistoryEngine.returnConnection();
+      internalTaskanaEngine.returnConnection();
     }
   }
 
@@ -646,15 +644,12 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   public List<TaskHistoryEvent> list(int offset, int limit) {
     List<TaskHistoryEvent> result = new ArrayList<>();
     try {
-      taskanaHistoryEngine.openConnection();
+      internalTaskanaEngine.openConnection();
       RowBounds rowBounds = new RowBounds(offset, limit);
-      result = taskanaHistoryEngine.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
-      return result;
-    } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      result = internalTaskanaEngine.getSqlSession().selectList(LINK_TO_MAPPER, this, rowBounds);
       return result;
     } finally {
-      taskanaHistoryEngine.returnConnection();
+      internalTaskanaEngine.returnConnection();
     }
   }
 
@@ -672,15 +667,12 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
     }
 
     try {
-      taskanaHistoryEngine.openConnection();
-      result = taskanaHistoryEngine.getSqlSession().selectList(LINK_TO_VALUE_MAPPER, this);
-      return result;
-    } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
+      internalTaskanaEngine.openConnection();
+      result = internalTaskanaEngine.getSqlSession().selectList(LINK_TO_VALUE_MAPPER, this);
       return result;
     } finally {
       this.orderColumns.remove(orderColumns.size() - 1);
-      taskanaHistoryEngine.returnConnection();
+      internalTaskanaEngine.returnConnection();
     }
   }
 
@@ -688,16 +680,13 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   public TaskHistoryEvent single() {
     TaskHistoryEvent result = null;
     try {
-      taskanaHistoryEngine.openConnection();
-      result = taskanaHistoryEngine.getSqlSession().selectOne(LINK_TO_MAPPER, this);
+      internalTaskanaEngine.openConnection();
+      result = internalTaskanaEngine.getSqlSession().selectOne(LINK_TO_MAPPER, this);
 
       return result;
 
-    } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
-      return result;
     } finally {
-      taskanaHistoryEngine.returnConnection();
+      internalTaskanaEngine.returnConnection();
     }
   }
 
@@ -705,14 +694,11 @@ public class TaskHistoryQueryImpl implements TaskHistoryQuery {
   public long count() {
     Long rowCount;
     try {
-      taskanaHistoryEngine.openConnection();
-      rowCount = taskanaHistoryEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
+      internalTaskanaEngine.openConnection();
+      rowCount = internalTaskanaEngine.getSqlSession().selectOne(LINK_TO_COUNTER, this);
       return (rowCount == null) ? 0L : rowCount;
-    } catch (SQLException e) {
-      LOGGER.error(SQL_EXCEPTION_MESSAGE, e.getCause());
-      return -1;
     } finally {
-      taskanaHistoryEngine.returnConnection();
+      internalTaskanaEngine.returnConnection();
     }
   }
 

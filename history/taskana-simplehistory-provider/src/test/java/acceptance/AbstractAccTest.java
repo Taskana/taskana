@@ -19,7 +19,6 @@ import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.common.test.config.DataSourceGenerator;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.simplehistory.impl.SimpleHistoryServiceImpl;
-import pro.taskana.simplehistory.impl.TaskanaHistoryEngineImpl;
 import pro.taskana.simplehistory.impl.classification.ClassificationHistoryEventMapper;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQueryMapper;
 import pro.taskana.simplehistory.impl.workbasket.WorkbasketHistoryEventMapper;
@@ -33,7 +32,6 @@ import pro.taskana.task.internal.models.ObjectReferenceImpl;
 public abstract class AbstractAccTest {
 
   protected static TaskanaConfiguration taskanaConfiguration;
-  protected static TaskanaHistoryEngineImpl taskanaHistoryEngine;
   protected static TaskanaEngine taskanaEngine;
   protected static SimpleHistoryServiceImpl historyService;
 
@@ -116,7 +114,6 @@ public abstract class AbstractAccTest {
     taskanaConfiguration = configuration;
     taskanaEngine =
         TaskanaEngine.buildTaskanaEngine(taskanaConfiguration, ConnectionManagementMode.AUTOCOMMIT);
-    taskanaHistoryEngine = TaskanaHistoryEngineImpl.createTaskanaEngine(taskanaEngine);
     taskService = taskanaEngine.getTaskService();
     historyService = new SimpleHistoryServiceImpl();
     historyService.initialize(taskanaEngine);
@@ -129,10 +126,10 @@ public abstract class AbstractAccTest {
   protected TaskHistoryQueryMapper getHistoryQueryMapper()
       throws NoSuchFieldException, IllegalAccessException {
 
-    Field sessionManagerField = TaskanaHistoryEngineImpl.class.getDeclaredField("sessionManager");
+    Field sessionManagerField = TaskanaEngineImpl.class.getDeclaredField("sessionManager");
     sessionManagerField.setAccessible(true);
     SqlSessionManager sqlSessionManager =
-        (SqlSessionManager) sessionManagerField.get(taskanaHistoryEngine);
+        (SqlSessionManager) sessionManagerField.get(taskanaEngine);
 
     return sqlSessionManager.getMapper(TaskHistoryQueryMapper.class);
   }
@@ -160,32 +157,32 @@ public abstract class AbstractAccTest {
 
   protected static WorkbasketHistoryEventMapper getWorkbasketHistoryEventMapper() {
     try {
-      Field sessionManager = TaskanaHistoryEngineImpl.class.getDeclaredField("sessionManager");
+      Field sessionManager = TaskanaEngineImpl.class.getDeclaredField("sessionManager");
       sessionManager.setAccessible(true);
-      SqlSessionManager manager = (SqlSessionManager) sessionManager.get(taskanaHistoryEngine);
+      SqlSessionManager manager = (SqlSessionManager) sessionManager.get(taskanaEngine);
       return manager.getMapper(WorkbasketHistoryEventMapper.class);
     } catch (Exception e) {
       throw new JUnitException(
           String.format(
               "Could not extract %s from %s",
-              WorkbasketHistoryEventMapper.class, TaskanaHistoryEngineImpl.class));
+              WorkbasketHistoryEventMapper.class, TaskanaEngineImpl.class));
     }
   }
 
   protected static ClassificationHistoryEventMapper getClassificationHistoryEventMapper() {
     try {
-      Field sessionManager = TaskanaHistoryEngineImpl.class.getDeclaredField("sessionManager");
+      Field sessionManager = TaskanaEngineImpl.class.getDeclaredField("sessionManager");
 
       sessionManager.setAccessible(true);
 
-      SqlSessionManager manager = (SqlSessionManager) sessionManager.get(taskanaHistoryEngine);
+      SqlSessionManager manager = (SqlSessionManager) sessionManager.get(taskanaEngine);
       return manager.getMapper(ClassificationHistoryEventMapper.class);
 
     } catch (Exception e) {
       throw new JUnitException(
           String.format(
               "Could not extract %s from %s",
-              ClassificationHistoryEventMapper.class, TaskanaHistoryEngineImpl.class));
+              ClassificationHistoryEventMapper.class, TaskanaEngineImpl.class));
     }
   }
 
