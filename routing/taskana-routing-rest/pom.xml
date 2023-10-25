@@ -31,20 +31,21 @@
       <artifactId>dmn-xlsx-converter</artifactId>
       <version>${version.dmn-xlsx-converter}</version>
     </dependency>
+
     <dependency>
       <groupId>jakarta.xml.bind</groupId>
       <artifactId>jakarta.xml.bind-api</artifactId>
       <version>${version.jakarta.xml.bind-api}</version>
     </dependency>
     <dependency>
-      <groupId>org.glassfish.jaxb</groupId>
+      <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-core</artifactId>
-      <version>${version.glassfish-jaxb-core}</version>
+      <version>${version.jaxb-core}</version>
     </dependency>
     <dependency>
-      <groupId>org.glassfish.jaxb</groupId>
-      <artifactId>jaxb-runtime</artifactId>
-      <version>${version.glassfish-jaxb-runtime}</version>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>${version.jaxb-impl}</version>
     </dependency>
     <dependency>
       <groupId>jakarta.activation</groupId>
