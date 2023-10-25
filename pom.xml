@@ -96,10 +96,16 @@
     <version.aspectj>1.9.20.1</version.aspectj>
 
     <!-- Excel to DMN converter dependencies -->
-    <version.dmn-xlsx-converter>0.3.0</version.dmn-xlsx-converter>
+    <!-- If there is new version of org.camunda.bpm.extension.dmn:dmn-xlsx-converter that is
+     |   compatible with jakarta then you need to enter this version here, remove the
+     |   submodule dmn-xlsx-converter under routing and you can also delete the property version.docx4j
+    -->
+    <version.dmn-xlsx-converter>0.4.0-taskana-patch</version.dmn-xlsx-converter>
+    <!-- when docx4j version is upgraded, the version from dmn-xlsx-converter needs to be increased too -->
+    <version.docx4j>11.4.9</version.docx4j>
     <version.jakarta.xml.bind-api>4.0.1</version.jakarta.xml.bind-api>
-    <version.glassfish-jaxb-core>4.0.3</version.glassfish-jaxb-core>
-    <version.glassfish-jaxb-runtime>4.0.3</version.glassfish-jaxb-runtime>
+    <version.jaxb-core>4.0.4</version.jaxb-core>
+    <version.jaxb-impl>4.0.4</version.jaxb-impl>
     <version.jakarta.activation>2.1.2</version.jakarta.activation>
 
     <!-- database driver versions -->
@@ -119,6 +125,11 @@
     </sonar.coverage.jacoco.xmlReportPaths>
     <sonar.sources>src/main/java</sonar.sources>
     <sonar.tests>src/test/java</sonar.tests>
+    <sonar.exclusions>
+      org/camunda/bpm/dmn/**/*,
+      **/example/**/*,
+      **/*Example*
+    </sonar.exclusions>
   </properties>
 
   <modules>
@@ -260,6 +271,13 @@
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>${version.jacoco}</version>
+        <configuration>
+          <excludes>
+            <exclude>org/camunda/bpm/dmn/**/*</exclude>
+            <exclude>**/example/**/*</exclude>
+            <exclude>**/*Example*</exclude>
+          </excludes>
+        </configuration>
         <executions>
           <execution>
             <id>prepare-agent</id>
@@ -352,6 +370,7 @@
           <failOnViolation>true</failOnViolation>
           <violationSeverity>warning</violationSeverity>
           <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <excludes>**/org/camunda/bpm/dmn/**/*</excludes>
         </configuration>
         <executions>
           <execution>

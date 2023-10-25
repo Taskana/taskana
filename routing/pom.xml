@@ -17,6 +17,7 @@
   </parent>
 
   <modules>
+    <module>dmn-xlsx-converter</module>
     <module>taskana-spi-routing-dmn-router</module>
     <module>taskana-routing-rest</module>
   </modules>
