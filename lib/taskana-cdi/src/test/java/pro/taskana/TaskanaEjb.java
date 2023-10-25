@@ -11,11 +11,27 @@ import pro.taskana.workbasket.api.WorkbasketService;
 @Stateless
 public class TaskanaEjb {
 
-  @Inject private TaskService taskService;
+  private final TaskService taskService;
 
-  @Inject private ClassificationService classificationService;
+  private final ClassificationService classificationService;
 
-  @Inject private WorkbasketService workbasketService;
+  private final WorkbasketService workbasketService;
+
+  public TaskanaEjb() {
+    this.taskService = null;
+    this.classificationService = null;
+    this.workbasketService = null;
+  }
+
+  @Inject
+  public TaskanaEjb(
+      TaskService taskService,
+      ClassificationService classificationService,
+      WorkbasketService workbasketService) {
+    this.taskService = taskService;
+    this.classificationService = classificationService;
+    this.workbasketService = workbasketService;
+  }
 
   public TaskService getTaskService() {
     return taskService;

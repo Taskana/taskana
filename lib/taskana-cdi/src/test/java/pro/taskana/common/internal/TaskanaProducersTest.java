@@ -49,14 +49,15 @@ public class TaskanaProducersTest {
     File[] libs =
         Maven.resolver()
             .loadPomFromFile("pom.xml")
-            .importRuntimeAndTestDependencies()
+            .importCompileAndRuntimeDependencies()
             .resolve()
             .withTransitivity()
             .asFile();
     deployment.addAsLibraries(libs);
 
     JavaArchive ejbModule = ShrinkWrap.create(JavaArchive.class, "taskana.jar");
-    ejbModule.addClasses(TaskanaProducers.class, TaskanaEjb.class);
+    ejbModule.addClasses(
+        TaskanaProducers.class, TaskanaEjb.class, TaskanaCdiStartupException.class);
     ejbModule.addAsResource("taskana.properties");
     deployment.addAsModule(ejbModule);
 

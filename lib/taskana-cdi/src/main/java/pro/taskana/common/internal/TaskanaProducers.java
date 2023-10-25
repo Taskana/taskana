@@ -2,6 +2,8 @@ package pro.taskana.common.internal;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.Startup;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import java.io.IOException;
@@ -30,9 +32,30 @@ public class TaskanaProducers {
 
   private static final String TASKANA_PROPERTIES = "taskana.properties";
 
-  @Inject private TaskanaEngine taskanaEngine;
-
+  // initalized during post construct
   private TaskanaConfiguration taskanaConfiguration;
+
+  private final TaskanaEngine taskanaEngine;
+
+  public TaskanaProducers() {
+    this.taskanaEngine = null;
+  }
+
+  @Inject
+  public TaskanaProducers(TaskanaEngine taskanaEngine) {
+    this.taskanaEngine = taskanaEngine;
+  }
+
+  /**
+   * The parameter `@Observes Startup` makes sure that the dependency injection framework calls this
+   * method on system startup. And to do that, it needs to call `@PostConstruct start()` first.
+   *
+   * @param startup just the startup event
+   */
+  @SuppressWarnings("unused")
+  private void forceEagerInitialization(@Observes Startup startup) {
+    LOGGER.info("startup={}", startup);
+  }
 
   @PostConstruct
   public void init() {
@@ -57,7 +80,7 @@ public class TaskanaProducers {
               .initTaskanaProperties()
               .build();
     } catch (NamingException | SQLException | IOException e) {
-      LOGGER.error("Could not start Taskana: ", e);
+      throw new TaskanaCdiStartupException(e);
     }
   }
 
