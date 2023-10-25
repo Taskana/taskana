@@ -57,8 +57,7 @@ public class TaskanaWildflyWithHistoryLoggerEnabledTest extends AbstractAccTest 
     File[] files =
         Maven.resolver()
             .loadPomFromFile("pom.xml")
-            .importRuntimeDependencies()
-            .addDependency(historyLoggerDependency)
+            .importCompileAndRuntimeDependencies()
             .resolve()
             .withTransitivity()
             .asFile();

@@ -65,24 +65,21 @@
 
     <!-- spring dependencies -->
     <version.jakarta.annotation-api>2.1.1</version.jakarta.annotation-api>
-    <version.spring.core>3.0.0</version.spring.core>
+    <version.spring.plugin.core>3.0.0</version.spring.plugin.core>
     <version.spring.boot>3.1.5</version.spring.boot>
-    <version.spring.mybatis>2.1.1</version.spring.mybatis>
+    <version.spring.mybatis>3.0.2</version.spring.mybatis>
 
     <!-- wildfly dependencies -->
-    <version.wildfly>25.0.1.Final</version.wildfly>
+    <version.wildfly>27.0.1.Final</version.wildfly>
 
     <!-- camunda dependencies -->
     <version.camunda.dmn>7.20.0</version.camunda.dmn>
 
     <!-- java ee dependencies -->
-    <version.thorntail>2.7.0.Final</version.thorntail>
     <version.jakartaee-api>10.0.0</version.jakartaee-api>
-    <version.jakarta.enterprise.cdi-api>4.0.1</version.jakarta.enterprise.cdi-api>
-    <version.jakarta.inject-api>2.0.1</version.jakarta.inject-api>
     <version.jakarta.servlet>6.0.0</version.jakarta.servlet>
-    <version.arquillian>1.5.0.Final</version.arquillian>
-    <version.arquillian.managed.wildfly>3.0.1.Final</version.arquillian.managed.wildfly>
+    <version.arquillian>1.7.1.Final</version.arquillian>
+    <version.arquillian.managed.wildfly>5.0.1.Final</version.arquillian.managed.wildfly>
 
     <!-- test dependencies -->
     <version.assertj>3.24.2</version.assertj>
@@ -93,7 +90,6 @@
     <version.slf4j-test>3.0.1</version.slf4j-test>
     <version.auto-restdocs>2.0.11</version.auto-restdocs>
     <version.testcontainers>1.19.1</version.testcontainers>
-    <version.mockito-inline>5.2.0</version.mockito-inline>
 
     <!-- AspectJ dependencies -->
     <version.aspectj-maven-plugin>1.14.0</version.aspectj-maven-plugin>
@@ -101,9 +97,9 @@
 
     <!-- Excel to DMN converter dependencies -->
     <version.dmn-xlsx-converter>0.3.0</version.dmn-xlsx-converter>
-    <version.jakarta.xml.bind-api>2.3.3</version.jakarta.xml.bind-api>
-    <version.jaxb-core>2.3.0.1</version.jaxb-core>
-    <version.jaxb-impl>2.3.8</version.jaxb-impl>
+    <version.jakarta.xml.bind-api>4.0.1</version.jakarta.xml.bind-api>
+    <version.glassfish-jaxb-core>4.0.3</version.glassfish-jaxb-core>
+    <version.glassfish-jaxb-runtime>4.0.3</version.glassfish-jaxb-runtime>
     <version.jakarta.activation>2.1.2</version.jakarta.activation>
 
     <!-- database driver versions -->
@@ -128,9 +124,12 @@
   <modules>
     <module>common</module>
     <module>lib</module>
-    <module>rest</module>
-    <!-- History is an optional module. -->
+    <!--
+      History is an optional module but used in taskana-rest-spring-example-wildfly
+      because of that it must be build before the rest module
+    -->
     <module>history</module>
+    <module>rest</module>
     <module>ci/taskana-sonar-test-coverage</module>
     <module>routing</module>
   </modules>

@@ -37,14 +37,14 @@
       <version>${version.jakarta.xml.bind-api}</version>
     </dependency>
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
+      <groupId>org.glassfish.jaxb</groupId>
       <artifactId>jaxb-core</artifactId>
-      <version>${version.jaxb-core}</version>
+      <version>${version.glassfish-jaxb-core}</version>
     </dependency>
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <version>${version.jaxb-impl}</version>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>${version.glassfish-jaxb-runtime}</version>
     </dependency>
     <dependency>
       <groupId>jakarta.activation</groupId>
@@ -105,7 +105,7 @@
     <dependency>
       <groupId>org.springframework.plugin</groupId>
       <artifactId>spring-plugin-core</artifactId>
-      <version>${version.spring.core}</version>
+      <version>${version.spring.plugin.core}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
