@@ -55,14 +55,13 @@ public class TaskanaWildflyWithSimpleHistoryEnabledTest extends AbstractAccTest 
             DEPENDENCY_VERSION,
             PackagingType.JAR,
             null);
-
     MavenDependency simpleHistoryDependency =
         new MavenDependencyImpl(simpleHistoryCoordinate, ScopeType.TEST, false);
 
     File[] files =
         Maven.resolver()
             .loadPomFromFile("pom.xml")
-            .importRuntimeDependencies()
+            .importCompileAndRuntimeDependencies()
             .addDependency(simpleHistoryDependency)
             .resolve()
             .withTransitivity()

@@ -18,7 +18,7 @@
     <dependencies>
       <dependency>
         <groupId>org.wildfly.bom</groupId>
-        <artifactId>wildfly-jakartaee8</artifactId>
+        <artifactId>wildfly-ee</artifactId>
         <version>${version.wildfly}</version>
         <scope>import</scope>
         <type>pom</type>
@@ -35,33 +35,14 @@
   <dependencies>
     <dependency>
       <groupId>pro.taskana</groupId>
-      <artifactId>taskana-common-logging</artifactId>
+      <artifactId>taskana-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>jakarta.platform</groupId>
       <artifactId>jakarta.jakartaee-api</artifactId>
       <version>${version.jakartaee-api}</version>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.enterprise</groupId>
-      <artifactId>jakarta.enterprise.cdi-api</artifactId>
-      <version>${version.jakarta.enterprise.cdi-api}</version>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.annotation</groupId>
-      <artifactId>jakarta.annotation-api</artifactId>
-      <version>${version.jakarta.annotation-api}</version>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.inject</groupId>
-      <artifactId>jakarta.inject-api</artifactId>
-      <version>${version.jakarta.inject-api}</version>
-    </dependency>
-    <dependency>
-      <groupId>pro.taskana</groupId>
-      <artifactId>taskana-core</artifactId>
-      <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <!-- TEST dependencies -->
@@ -119,7 +100,7 @@
     <dependency>
       <groupId>org.wildfly.arquillian</groupId>
       <artifactId>wildfly-arquillian-container-managed</artifactId>
-      <version>3.0.1.Final</version>
+      <version>${version.arquillian.managed.wildfly}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -195,6 +176,26 @@
               </resources>
             </configuration>
           </execution>
+          <execution>
+            <id>copy-wildfly-config-xml</id>
+            <phase>process-test-classes</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>
+                ${project.build.directory}/wildfly-${version.wildfly}/standalone/configuration
+              </outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/test/resources</directory>
+                  <includes>
+                    <include>int-test-standalone.xml</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>
@@ -203,7 +204,7 @@
   <repositories>
     <repository>
       <id>jboss</id>
-      <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+      <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
     </repository>
   </repositories>
 </project>

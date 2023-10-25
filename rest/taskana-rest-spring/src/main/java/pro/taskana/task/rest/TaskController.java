@@ -600,7 +600,7 @@ public class TaskController {
     if (!taskRepresentationModel.getAttachments().stream()
         .filter(att -> Objects.nonNull(att.getTaskId()))
         .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
-        .collect(Collectors.toList())
+        .toList()
         .isEmpty()) {
       throw new InvalidArgumentException(
           "An attachments' taskId must be empty or equal to the id of the task it belongs to");

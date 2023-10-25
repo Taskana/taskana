@@ -50,7 +50,7 @@
     <dependency>
       <groupId>org.springframework.plugin</groupId>
       <artifactId>spring-plugin-core</artifactId>
-      <version>${version.spring.core}</version>
+      <version>${version.spring.plugin.core}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.ldap</groupId>

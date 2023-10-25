@@ -51,7 +51,7 @@ public class TaskanaWildflyTest extends AbstractAccTest {
     File[] files =
         Maven.resolver()
             .loadPomFromFile("pom.xml")
-            .importRuntimeDependencies()
+            .importCompileAndRuntimeDependencies()
             .resolve()
             .withTransitivity()
             .asFile();

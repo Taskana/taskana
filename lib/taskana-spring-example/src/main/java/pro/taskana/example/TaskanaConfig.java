@@ -96,8 +96,8 @@ public class TaskanaConfig {
   }
 
   @Bean
-  public ExampleBootstrap exampleBootstrap() {
-    return new ExampleBootstrap();
+  public ExampleBootstrap exampleBootstrap(TaskService taskService, TaskanaEngine taskanaEngine) {
+    return new ExampleBootstrap(taskService, taskanaEngine);
   }
 
   @Profile("inmemorydb")

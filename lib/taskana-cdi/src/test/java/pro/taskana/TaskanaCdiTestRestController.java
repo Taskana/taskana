@@ -1,6 +1,5 @@
 package pro.taskana;
 
-import jakarta.ejb.EJB;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -24,9 +23,21 @@ public class TaskanaCdiTestRestController {
   private static final String CDIDOMAIN = "CDIDOMAIN";
   private static final String CLASSIFICATION_TYPE = "T1";
 
-  @EJB private TaskanaEjb taskanaEjb;
+  private final TaskanaEjb taskanaEjb;
 
-  @Inject private ClassificationService classificationService;
+  private final ClassificationService classificationService;
+
+  public TaskanaCdiTestRestController() {
+    this.taskanaEjb = null;
+    this.classificationService = null;
+  }
+
+  @Inject
+  public TaskanaCdiTestRestController(
+      TaskanaEjb taskanaEjb, ClassificationService classificationService) {
+    this.taskanaEjb = taskanaEjb;
+    this.classificationService = classificationService;
+  }
 
   @GET
   public Response startTask() throws Exception {

@@ -19,7 +19,7 @@
     <dependencies>
       <dependency>
         <groupId>org.wildfly.bom</groupId>
-        <artifactId>wildfly-jakartaee8</artifactId>
+        <artifactId>wildfly-ee</artifactId>
         <version>${version.wildfly}</version>
         <scope>import</scope>
         <type>pom</type>
@@ -62,7 +62,7 @@
     <dependency>
       <groupId>org.springframework.plugin</groupId>
       <artifactId>spring-plugin-core</artifactId>
-      <version>${version.spring.core}</version>
+      <version>${version.spring.plugin.core}</version>
     </dependency>
     <dependency>
       <groupId>jakarta.servlet</groupId>
@@ -219,6 +219,26 @@
             </configuration>
           </execution>
           <execution>
+            <id>copy-wildfly-config-xml</id>
+            <phase>process-test-classes</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>
+                ${project.build.directory}/wildfly-${version.wildfly}/standalone/configuration
+              </outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/test/resources</directory>
+                  <includes>
+                    <include>int-test-standalone.xml</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
             <id>copy-documentation-to-static-folder</id>
             <phase>prepare-package</phase>
             <goals>
@@ -245,7 +265,7 @@
   <repositories>
     <repository>
       <id>jboss</id>
-      <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+      <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
     </repository>
   </repositories>
 </project>
