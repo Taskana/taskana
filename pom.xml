@@ -105,7 +105,7 @@
 
     <!-- database driver versions -->
     <version.db2>11.5.6.0</version.db2>
-    <version.oracle>23.2.0.0</version.oracle>
+    <version.oracle>23.3.0.23.09</version.oracle>
 
     <!-- sonar settings -->
     <sonar.projectKey>${env.SONAR_PROJECT_KEY}</sonar.projectKey>
