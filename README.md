@@ -10,7 +10,7 @@ TASKANA - The open source task management library
 
 TASKANA is a task management component open source library. It can be embedded into your application
 or be operated standalone if appropriate. Beside the basic task management functionalities, 
-TASKANA adds workbaskets and classifications to control and monitor a large amount of tasks within 
+TASKANA adds workbaskets and classifications to control and monitor a large amount of Tasks within 
 a larger organization. 
 
 * Web Site: http://taskana.pro/
@@ -33,17 +33,17 @@ _We're not aware of all installations of our Open Source project. However, we lo
 # Table of Contents
 
 * ✨ [Overview](#Overview)
-    * [Tasks](#tasks)
+    * [Tasks](#Tasks)
     * [Workbasket](#workbasket)
     * [Classification](#classification)
     * [Routing](#routing)
     * [Prioritization](#prioritization)
 * [Components](#components)
-    * [TASKANA Lib](#taskana-lib)
-    * [TASKANA REST API](#taskana-rest-api)
-    * [TASKANA workplace](#taskana-workplace)
-    * [TASKANA admin](#taskana-admin)
-    * [TASKANA monitor](#taskana-monitor)
+    * [TASKANA Lib](#Taskana-lib)
+    * [TASKANA REST API](#Taskana-rest-api)
+    * [TASKANA workplace](#Taskana-workplace)
+    * [TASKANA admin](#Taskana-admin)
+    * [TASKANA monitor](#Taskana-monitor)
 * 🚀 [Getting Started](#getting-started)
     * [Requirements](#requirements)
     * [Wrapper Application](#wrapper-application)
@@ -58,40 +58,40 @@ _We're not aware of all installations of our Open Source project. However, we lo
 
 ## TASKS
 
-Tasks are the main entity of TASKANA. Each task has its describing attributes like priority and due 
+Tasks are the main entity of TASKANA. Each Task has its describing attributes like priority and due 
 date.
 
-Furthermore each task has a state.
+Furthermore each Task has a state.
 
-And a task holds a reference to the system and business object, it is associated with. This is 
+And a Task holds a reference to the system and business object, it is associated with. This is 
 important since  is meant to be a standalone component.
 
-All tasks are placed in a WORKBASKET to control and direct the handling of the tasks.
+All Tasks are placed in a Workbasket to control and direct the handling of the Tasks.
 
 ![Tasklifecycle](docs/images/tasklifecycle.png)
 
 ## WORKBASKETS
 
-Workbaskets are the main structure to distribute the tasks to the available users. There are 
+Workbaskets are the main structure to distribute the Tasks to the available users. There are 
 personal, group/team and topic Workbaskets.
 
-Workbaskets indicate the responsibility for a task. The concepts of Workbaskets allow to 
-differentiate between the permissions or the skills required to complete a tasks and the 
-determination who should complete the tasks. This can diverge a lot in a larger organization.
+Workbaskets indicate the responsibility for a Task. The concepts of Workbaskets allow to 
+differentiate between the permissions or the skills required to complete a Tasks and the 
+determination who should complete the Tasks. This can diverge a lot in a larger organization.
 
 ![Workbaskets](docs/images/workbaskets.png)
 
 ## CLASSIFICATIONS
 
-Classifications allow to identify the type of a task. The task derives some major attributes from 
-the classification, such as the service level and the priority.
+Classifications allow to identify the type of a Task. The Task derives some major attributes from 
+the Classification, such as the service level and the priority.
 
 Classifications can be configured by a responsible business administrator to control the handling 
-of the tasks.
+of the Tasks.
 
 ## Routing
 
-It offers various routing and distribution functions to assign incoming tasks to the correct 
+It offers various routing and distribution functions to assign incoming Tasks to the correct 
 Workbaskets, or to redistribute them between Workbaskets.
 
 ![Routing](docs/images/routing.png)
@@ -99,7 +99,7 @@ Workbaskets, or to redistribute them between Workbaskets.
 ## Prioritization
 
 The dynamic prioritization functions in  allow you to control the processing sequence of 
-tasks at any time. This ensures that the most important tasks are always addressed first.
+Tasks at any time. This ensures that the most important Tasks are always addressed first.
 
 ![Prioritization](docs/images/prio.png)
 
@@ -110,17 +110,17 @@ tasks at any time. This ensures that the most important tasks are always address
 It splits up into five components:
 
 * TASKANA Lib
-  * The Java library providing the task management functions
+  * The Java library providing the Task management functions
 * TASKANA REST API
   * REST API to allow remote access to the TASKANA system.
 * TASKANA workplace
-  * Angular based web application to work on the tasks
-  * Sample tasklist application you can use if appropriate
+  * Angular based web application to work on the Tasks
+  * Sample Tasklist application you can use if appropriate
 * TASKANA admin
   * Angular based web application to configure the system
-  * Supports workbaskets and classifications
+  * Supports Workbaskets and Classifications
 * TASKANA monitor
-  * Angular based web application to monitor the status of the entire task pool
+  * Angular based web application to monitor the status of the entire Task pool
   * Provides views and statistics about the conformance with defined services levels
   * Shows the workload of your organization and the individual teams
 
