@@ -20,8 +20,8 @@ env:
   ARTIFACTS_CYPRESS_TESTS_PATH: web/cypress
   ARTIFACTS_TASKANA_JARS_NAME: taskana-jars
   ARTIFACTS_TASKANA_JARS_PATH: ~/.m2/repository/pro/taskana
-  ARTIFACTS_TASKANA_CAMUNDA_JARS_NAME: taskana-jars
-  ARTIFACTS_TASKANA_CAMUNDA_JARS_PATH: ~/m2/repository/org/camunda/bpm/extension/dmn/dmn-xlsx-converter
+  ARTIFACTS_TASKANA_CAMUNDA_JARS_NAME: taskana-camunda-jars
+  ARTIFACTS_TASKANA_CAMUNDA_JARS_PATH: ~/.m2/repository/org/camunda/bpm/extension/dmn/dmn-xlsx-converter
   ARTIFACTS_TASKANA_WEB_NAME: taskana-web
   ARTIFACTS_TASKANA_WEB_PATH: web/dist
   ARTIFACTS_JACOCO_REPORTS_NAME: jacoco-reports
