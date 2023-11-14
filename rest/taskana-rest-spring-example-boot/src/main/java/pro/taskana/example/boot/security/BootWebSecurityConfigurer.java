@@ -13,6 +13,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.config.ldap.LdapPasswordComparisonAuthenticationManagerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -88,6 +89,7 @@ public class BootWebSecurityConfigurer {
     } else {
       addLoginPageConfiguration(http);
     }
+    http.requestCache(RequestCacheConfigurer::disable);
     return http.build();
   }
 
@@ -123,7 +125,12 @@ public class BootWebSecurityConfigurer {
             authorizeHttpRequests -> authorizeHttpRequests.anyRequest().fullyAuthenticated())
         .formLogin(
             formLogin ->
-                formLogin.loginPage("/login").failureUrl("/login?error").defaultSuccessUrl("/"))
+                formLogin
+                    .loginPage("/login")
+                    .failureUrl("/login?error")
+                    .defaultSuccessUrl("/index.html")
+                    .permitAll()
+        )
         .logout(
             logout ->
                 logout
@@ -131,7 +138,9 @@ public class BootWebSecurityConfigurer {
                     .clearAuthentication(true)
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                     .logoutSuccessUrl("/login?logout")
-                    .deleteCookies("JSESSIONID"));
+                    .deleteCookies("JSESSIONID")
+                    .permitAll()
+        );
   }
 
   protected JaasApiIntegrationFilter jaasApiIntegrationFilter() {

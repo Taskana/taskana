@@ -68,7 +68,7 @@ public class SpringSecurityToJaasFilter extends GenericFilterBean {
     if (authentication.isEmpty() || !authentication.get().isAuthenticated()) {
       return Optional.empty();
     }
-    // TODO replace with Subject.current() when migrating to newer Version then 17
+    // TODO replace with Subject.current() when migrating to newer Version than 17
     return Optional.of(Subject.getSubject(AccessController.getContext()));
   }
 
