@@ -96,12 +96,6 @@
     <version.aspectj>1.9.20.1</version.aspectj>
 
     <!-- Excel to DMN converter dependencies -->
-    <!-- If there is new version of org.camunda.bpm.extension.dmn:dmn-xlsx-converter that is
-     |   compatible with jakarta then you need to enter this version here, remove the
-     |   submodule dmn-xlsx-converter under routing and you can also delete the property version.docx4j
-    -->
-    <version.dmn-xlsx-converter>0.4.0-taskana-patch</version.dmn-xlsx-converter>
-    <!-- when docx4j version is upgraded, the version from dmn-xlsx-converter needs to be increased too -->
     <version.docx4j>11.4.9</version.docx4j>
     <version.jakarta.xml.bind-api>4.0.1</version.jakarta.xml.bind-api>
     <version.jaxb-core>4.0.4</version.jaxb-core>

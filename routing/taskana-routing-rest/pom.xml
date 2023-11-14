@@ -27,9 +27,9 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.camunda.bpm.extension.dmn</groupId>
+      <groupId>pro.taskana.camunda.bpm.extension.dmn</groupId>
       <artifactId>dmn-xlsx-converter</artifactId>
-      <version>${version.dmn-xlsx-converter}</version>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>

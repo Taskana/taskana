@@ -20,8 +20,6 @@ env:
   ARTIFACTS_CYPRESS_TESTS_PATH: web/cypress
   ARTIFACTS_TASKANA_JARS_NAME: taskana-jars
   ARTIFACTS_TASKANA_JARS_PATH: ~/.m2/repository/pro/taskana
-  ARTIFACTS_TASKANA_CAMUNDA_JARS_NAME: taskana-camunda-jars
-  ARTIFACTS_TASKANA_CAMUNDA_JARS_PATH: ~/.m2/repository/org/camunda/bpm/extension/dmn/dmn-xlsx-converter
   ARTIFACTS_TASKANA_WEB_NAME: taskana-web
   ARTIFACTS_TASKANA_WEB_PATH: web/dist
   ARTIFACTS_JACOCO_REPORTS_NAME: jacoco-reports
@@ -68,16 +66,8 @@ jobs:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
           if-no-files-found: error
-      - name: Upload taskana camunda extension artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ env.ARTIFACTS_TASKANA_CAMUNDA_JARS_NAME }}
-          path: ${{ env.ARTIFACTS_TASKANA_CAMUNDA_JARS_PATH }}
-          if-no-files-found: error
       - name: Remove taskana artifacts from cache
         run: rm -rf ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
-      - name: Remove taskana camunda extension artifact from cache
-        run: rm -rf ${{ env.ARTIFACTS_TASKANA_CAMUNDA_JARS_PATH }}
       - name: Cancel workflow
         if: failure()
         uses: andymckay/cancel-action@0.3
@@ -217,11 +207,6 @@ jobs:
         with:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
-      - name: Download taskana camunda artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ env.ARTIFACTS_TASKANA_CAMUNDA_JARS_NAME }}
-          path: ${{ env.ARTIFACTS_TASKANA_CAMUNDA_JARS_PATH }}
       - name: Change versions to match tag
         run: ci/change_version.sh -m .
         # Theoretically this step below not necessary because we reuse the cache from the 'compile_frontend' job.
@@ -331,11 +316,6 @@ jobs:
         with:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
-      - name: Download taskana camunda artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ env.ARTIFACTS_TASKANA_CAMUNDA_JARS_NAME }}
-          path: ${{ env.ARTIFACTS_TASKANA_CAMUNDA_JARS_PATH }}
       - name: Change versions to match tag
         run: |
           ci/change_version.sh -m .
@@ -393,11 +373,6 @@ jobs:
         with:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
-      - name: Download taskana camunda artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ env.ARTIFACTS_TASKANA_CAMUNDA_JARS_NAME }}
-          path: ${{ env.ARTIFACTS_TASKANA_CAMUNDA_JARS_PATH }}
       - name: Download taskana-web dist artifact
         uses: actions/download-artifact@v3
         with:
@@ -461,11 +436,6 @@ jobs:
         with:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
-      - name: Download taskana camunda artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ env.ARTIFACTS_TASKANA_CAMUNDA_JARS_NAME }}
-          path: ${{ env.ARTIFACTS_TASKANA_CAMUNDA_JARS_PATH }}
       - name: Download taskana-web dist artifact
         uses: actions/download-artifact@v3
         with:
