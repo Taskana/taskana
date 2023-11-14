@@ -67,7 +67,7 @@ jobs:
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
           if-no-files-found: error
       - name: Remove taskana artifacts from cache
-        run: rm -rf ~/.m2/repository/pro/taskana
+        run: rm -rf ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
       - name: Cancel workflow
         if: failure()
         uses: andymckay/cancel-action@0.3
