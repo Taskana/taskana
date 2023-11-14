@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 /** The view controller. */
 @Controller
-public class ViewController {
+public class TaskanaRedirectToIndexHtmlController {
 
   @GetMapping(path = {"", "taskana/**"})
   public String index() {
-    return "forward:/index.html";
+    return "redirect:/index.html";
   }
 }

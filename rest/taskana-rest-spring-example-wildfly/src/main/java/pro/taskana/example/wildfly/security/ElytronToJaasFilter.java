@@ -56,7 +56,7 @@ public class ElytronToJaasFilter extends GenericFilterBean {
 
   @SuppressWarnings("removal")
   private Subject obtainSubject() {
-    // TODO replace with Subject.current() when migrating to newer Version then 17
+    // TODO replace with Subject.current() when migrating to newer Version than 17
     Subject subject = Subject.getSubject(java.security.AccessController.getContext());
     if (logger.isDebugEnabled()) {
       logger.debug("Current JAAS subject: " + subject);
