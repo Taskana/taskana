@@ -10,7 +10,7 @@
   <parent>
     <groupId>pro.taskana</groupId>
     <artifactId>taskana-lib-parent</artifactId>
-    <version>6.1.1-SNAPSHOT</version>
+    <version>8.0.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -40,9 +40,9 @@
       <version>${version.spring.mybatis}</version>
     </dependency>
     <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>javax.annotation-api</artifactId>
-      <version>${version.javax.annotation-api}</version>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+      <version>${version.jakarta.annotation-api}</version>
     </dependency>
 
     <!-- test dependencies -->
@@ -64,6 +64,7 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <version>${version.assertj}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

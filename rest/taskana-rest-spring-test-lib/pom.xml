@@ -11,7 +11,7 @@
   <parent>
     <groupId>pro.taskana</groupId>
     <artifactId>taskana-rest-parent</artifactId>
-    <version>6.1.1-SNAPSHOT</version>
+    <version>8.0.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -32,9 +32,9 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>${version.javax.servlet}</version>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>${version.jakarta.servlet}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

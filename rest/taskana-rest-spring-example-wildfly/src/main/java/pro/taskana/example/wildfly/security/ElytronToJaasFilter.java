@@ -1,14 +1,13 @@
 package pro.taskana.example.wildfly.security;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.security.AccessController;
 import java.util.List;
 import javax.security.auth.Subject;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
@@ -55,8 +54,10 @@ public class ElytronToJaasFilter extends GenericFilterBean {
     }
   }
 
+  @SuppressWarnings("removal")
   private Subject obtainSubject() {
-    Subject subject = Subject.getSubject(AccessController.getContext());
+    // TODO replace with Subject.current() when migrating to newer Version than 17
+    Subject subject = Subject.getSubject(java.security.AccessController.getContext());
     if (logger.isDebugEnabled()) {
       logger.debug("Current JAAS subject: " + subject);
     }

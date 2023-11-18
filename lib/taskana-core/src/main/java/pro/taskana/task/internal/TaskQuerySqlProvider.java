@@ -70,9 +70,11 @@ public class TaskQuerySqlProvider {
         + "ORDER BY <foreach item='item' collection='orderByOuter' separator=',' >${item}</foreach>"
         + "</if> "
         + "<if test='selectAndClaim == true'> "
-        + "FETCH FIRST ROW ONLY FOR UPDATE"
+        + "FETCH FIRST ROW ONLY FOR UPDATE "
         + "</if>"
-        + "<if test=\"_databaseId == 'db2'\">WITH RS USE AND KEEP UPDATE LOCKS </if>"
+        + "<if test=\"_databaseId == 'db2' and selectAndClaim \">WITH RS USE "
+        + "AND KEEP UPDATE LOCKS </if>"
+        + "<if test=\"_databaseId == 'db2' and !selectAndClaim \">WITH UR </if>"
         + CLOSING_SCRIPT_TAG;
   }
 
@@ -126,7 +128,8 @@ public class TaskQuerySqlProvider {
         + "s.ACCESS_ID IN "
         + "(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
         + "and "
-        + "s.WORKBASKET_ID = X.WORKBASKET_ID AND s.perm_read = 1 fetch first 1 rows only"
+        + "s.WORKBASKET_ID = X.WORKBASKET_ID AND s.perm_read = 1 AND s.perm_readtasks = 1"
+        + " fetch first 1 rows only"
         + "</if>"
         + "<if test='accessIdIn == null'> "
         + "VALUES(1)"
@@ -269,7 +272,8 @@ public class TaskQuerySqlProvider {
         + "WHERE s.ACCESS_ID IN "
         + "(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
         + "and "
-        + "s.WORKBASKET_ID = X.WORKBASKET_ID AND s.perm_read = 1 fetch first 1 rows only "
+        + "s.WORKBASKET_ID = X.WORKBASKET_ID AND s.perm_read = 1 AND s.perm_readtasks = 1"
+        + " fetch first 1 rows only "
         + "</if> "
         + "<if test='accessIdIn == null'>"
         + "VALUES(1)"
@@ -385,16 +389,18 @@ public class TaskQuerySqlProvider {
         + "FROM ("
         + "<choose>"
         + "<when test=\"_databaseId == 'db2' || _databaseId == 'oracle'\">"
-        + "SELECT WORKBASKET_ID as WID, MAX(PERM_READ) as MAX_READ "
+        + "SELECT WORKBASKET_ID as WID, MAX(PERM_READ) as MAX_READ, "
+        + "MAX(PERM_READTASKS) as MAX_READTASKS "
         + "</when>"
         + "<otherwise>"
-        + "SELECT WORKBASKET_ID as WID, MAX(PERM_READ::int) as MAX_READ "
+        + "SELECT WORKBASKET_ID as WID, MAX(PERM_READ::int) as MAX_READ, "
+        + "MAX(PERM_READTASKS::int) as MAX_READTASKS "
         + "</otherwise>"
         + "</choose>"
         + "FROM WORKBASKET_ACCESS_LIST s where ACCESS_ID IN "
         + "(<foreach item='item' collection='accessIdIn' separator=',' >#{item}</foreach>) "
         + "GROUP by WORKBASKET_ID) f "
-        + "WHERE MAX_READ = 1) "
+        + "WHERE MAX_READ = 1 AND MAX_READTASKS = 1) "
         + "</if>";
   }
 
@@ -429,9 +435,7 @@ public class TaskQuerySqlProvider {
   }
 
   private static String openOuterClauseForGroupByPorOrSor() {
-    return "<if test=\"groupByPor or groupBySor != null\"> "
-        + "SELECT * FROM ("
-        + "</if> ";
+    return "<if test=\"groupByPor or groupBySor != null\"> " + "SELECT * FROM (" + "</if> ";
   }
 
   private static String closeOuterClauseForGroupByPor() {

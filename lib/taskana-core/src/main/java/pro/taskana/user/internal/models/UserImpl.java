@@ -8,6 +8,7 @@ import pro.taskana.user.api.models.User;
 public class UserImpl implements User {
   private String id;
   private Set<String> groups = Collections.emptySet();
+  private Set<String> permissions = Collections.emptySet();
   private String firstName;
   private String lastName;
   private String fullName;
@@ -27,6 +28,7 @@ public class UserImpl implements User {
   protected UserImpl(UserImpl copyFrom) {
     this.id = copyFrom.id;
     this.groups = copyFrom.groups;
+    this.permissions = copyFrom.permissions;
     this.firstName = copyFrom.firstName;
     this.lastName = copyFrom.lastName;
     this.fullName = copyFrom.fullName;
@@ -60,6 +62,16 @@ public class UserImpl implements User {
   @Override
   public void setGroups(Set<String> groups) {
     this.groups = groups;
+  }
+
+  @Override
+  public Set<String> getPermissions() {
+    return permissions;
+  }
+
+  @Override
+  public void setPermissions(Set<String> permissions) {
+    this.permissions = permissions;
   }
 
   @Override
@@ -201,6 +213,7 @@ public class UserImpl implements User {
     return Objects.hash(
         id,
         groups,
+        permissions,
         firstName,
         lastName,
         fullName,
@@ -230,6 +243,7 @@ public class UserImpl implements User {
     UserImpl other = (UserImpl) obj;
     return Objects.equals(id, other.id)
         && Objects.equals(groups, other.groups)
+        && Objects.equals(permissions, other.permissions)
         && Objects.equals(firstName, other.firstName)
         && Objects.equals(lastName, other.lastName)
         && Objects.equals(fullName, other.fullName)
@@ -251,6 +265,8 @@ public class UserImpl implements User {
         + id
         + ", groups="
         + groups
+        + ", permissions="
+        + permissions
         + ", firstName="
         + firstName
         + ", lastName="

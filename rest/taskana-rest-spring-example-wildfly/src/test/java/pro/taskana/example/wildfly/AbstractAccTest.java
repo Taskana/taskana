@@ -22,7 +22,7 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 @TaskanaSpringBootTest
 public class AbstractAccTest {
 
-  protected static final String DEPENDENCY_VERSION = "6.1.1-SNAPSHOT";
+  protected static final String DEPENDENCY_VERSION = "8.0.1-SNAPSHOT";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccTest.class);
 
@@ -77,7 +77,7 @@ public class AbstractAccTest {
   protected String parseServerLog() throws Exception {
 
     // TO-DO: make log4j log into rollingFile from log4j.xml
-    File file = new File("target/wildfly-15.0.1.Final/standalone/log/server.log");
+    File file = new File("target/wildfly-27.0.1.Final/standalone/log/server.log");
 
     BufferedReader br = new BufferedReader(new FileReader(file));
 

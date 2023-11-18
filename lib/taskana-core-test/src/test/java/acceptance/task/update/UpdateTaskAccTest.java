@@ -38,21 +38,26 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.internal.util.Pair;
+import pro.taskana.common.internal.util.Triplet;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskService;
+import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
 import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.internal.models.TaskImpl;
+import pro.taskana.testapi.DefaultTestEntities;
 import pro.taskana.testapi.TaskanaConfigurationModifier;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.testapi.builder.ObjectReferenceBuilder;
 import pro.taskana.testapi.builder.TaskBuilder;
+import pro.taskana.testapi.builder.UserBuilder;
 import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
+import pro.taskana.user.api.UserService;
 import pro.taskana.workbasket.api.WorkbasketPermission;
 import pro.taskana.workbasket.api.WorkbasketService;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
@@ -61,12 +66,17 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 @TaskanaIntegrationTest
 public class UpdateTaskAccTest {
   @TaskanaInject TaskService taskService;
+  @TaskanaInject UserService userService;
+
   @TaskanaInject ClassificationService classificationService;
   @TaskanaInject WorkbasketService workbasketService;
 
   ClassificationSummary defaultClassificationSummary;
   WorkbasketSummary defaultWorkbasketSummary;
   ObjectReference defaultObjectReference;
+  WorkbasketSummary wbWithoutEditTasks;
+  WorkbasketSummary wbWithoutReadTasks;
+  WorkbasketSummary wbWithoutRead;
 
   @WithAccessId(user = "businessadmin")
   @BeforeAll
@@ -76,12 +86,44 @@ public class UpdateTaskAccTest {
             .serviceLevel("P1D")
             .buildAndStoreAsSummary(classificationService);
     defaultWorkbasketSummary = defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
+    wbWithoutEditTasks = defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
+    wbWithoutReadTasks = defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
+    wbWithoutRead = defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
 
     WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
         .workbasketId(defaultWorkbasketSummary.getId())
         .accessId("user-1-2")
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.EDITTASKS)
+        .permission(WorkbasketPermission.APPEND)
+        .buildAndStore(workbasketService);
+
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(wbWithoutEditTasks.getId())
+        .accessId("user-1-2")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.APPEND)
+        .buildAndStore(workbasketService);
+
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(wbWithoutReadTasks.getId())
+        .accessId("user-1-2")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.EDITTASKS)
+        .permission(WorkbasketPermission.APPEND)
+        .buildAndStore(workbasketService);
+
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(wbWithoutRead.getId())
+        .accessId("user-1-2")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.EDITTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
 
@@ -244,7 +286,8 @@ public class UpdateTaskAccTest {
         catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
     assertThat(e.getCurrentUserId()).isEqualTo("user-taskrouter");
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());
-    assertThat(e.getRequiredPermissions()).containsExactly(WorkbasketPermission.READ);
+    assertThat(e.getRequiredPermissions())
+        .containsExactlyInAnyOrder(WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
   }
 
   @WithAccessId(user = "user-1-2")
@@ -443,6 +486,42 @@ public class UpdateTaskAccTest {
   }
 
   @WithAccessId(user = "user-1-2")
+  @TestFactory
+  Stream<DynamicTest> should_UpdateNoTasksWithPor_When_UserHasMissingPermission() throws Exception {
+    List<Pair<String, WorkbasketSummary>> list =
+        List.of(
+            Pair.of("With Missing Read Permission", wbWithoutRead),
+            Pair.of("With Missing ReadTasks Permission", wbWithoutReadTasks),
+            Pair.of("With Missing EditTasks Permission", wbWithoutEditTasks));
+    ThrowingConsumer<Pair<String, WorkbasketSummary>> testUpdateTask =
+        t -> {
+          ObjectReference objectReference =
+              ObjectReferenceBuilder.newObjectReference()
+                  .company("00")
+                  .system("PASystem")
+                  .systemInstance("00")
+                  .type("VNR")
+                  .value("22334455")
+                  .build();
+          TaskBuilder.newTask()
+              .classificationSummary(defaultClassificationSummary)
+              .workbasketSummary(t.getRight())
+              .primaryObjRef(objectReference)
+              .buildAndStore(taskService, "admin");
+          Map<TaskCustomField, String> customProperties = new HashMap<>();
+          customProperties.put(CUSTOM_7, "This is modifiedValue 7");
+          customProperties.put(CUSTOM_14, null);
+          customProperties.put(CUSTOM_3, "This is modifiedValue 3");
+          customProperties.put(CUSTOM_16, "This is modifiedValue 16");
+
+          List<String> taskIds = taskService.updateTasks(objectReference, customProperties);
+
+          assertThat(taskIds).isEmpty();
+        };
+    return DynamicTest.stream(list.iterator(), Pair::getLeft, testUpdateTask);
+  }
+
+  @WithAccessId(user = "user-1-2")
   @Test
   void should_UpdateTasks_When_MatchingPrimaryObjectReferenceWasChanged() throws Exception {
     ObjectReference objectReference =
@@ -520,6 +599,36 @@ public class UpdateTaskAccTest {
   }
 
   @WithAccessId(user = "user-1-2")
+  @TestFactory
+  Stream<DynamicTest> should_UpdateNoTasksWithTaskId_When_UserHasMissingPermission()
+      throws Exception {
+    List<Pair<String, WorkbasketSummary>> list =
+        List.of(
+            Pair.of("With Missing Read Permission", wbWithoutRead),
+            Pair.of("With Missing ReadTasks Permission", wbWithoutReadTasks),
+            Pair.of("With Missing EditTasks Permission", wbWithoutEditTasks));
+    ThrowingConsumer<Pair<String, WorkbasketSummary>> testUpdateTask =
+        t -> {
+          Task task =
+              TaskBuilder.newTask()
+                  .classificationSummary(defaultClassificationSummary)
+                  .workbasketSummary(t.getRight())
+                  .primaryObjRef(defaultObjectReference)
+                  .buildAndStore(taskService, "admin");
+          Map<TaskCustomField, String> customProperties = new HashMap<>();
+          customProperties.put(CUSTOM_7, "This is modifiedValue 7");
+          customProperties.put(CUSTOM_14, null);
+          customProperties.put(CUSTOM_3, "This is modifiedValue 3");
+          customProperties.put(CUSTOM_16, "This is modifiedValue 16");
+
+          List<String> taskIds = taskService.updateTasks(List.of(task.getId()), customProperties);
+
+          assertThat(taskIds).isEmpty();
+        };
+    return DynamicTest.stream(list.iterator(), Pair::getLeft, testUpdateTask);
+  }
+
+  @WithAccessId(user = "user-1-2")
   @Test
   void should_UpdateCallbackInfo() throws Exception {
     Task task =
@@ -556,6 +665,51 @@ public class UpdateTaskAccTest {
     assertThat(retrievedUpdatedTask).extracting(TaskSummary::getReceived).isEqualTo(retrievedTime);
   }
 
+  @WithAccessId(user = "user-1-2")
+  @TestFactory
+  Stream<DynamicTest> should_ThrowException_When_MissingOneOfThePermissions() throws Exception {
+    List<Triplet<String, WorkbasketSummary, WorkbasketPermission>> list =
+        List.of(
+            Triplet.of("With Missing Read Permission", wbWithoutRead, WorkbasketPermission.READ),
+            Triplet.of(
+                "With Missing ReadTasks Permission",
+                wbWithoutReadTasks,
+                WorkbasketPermission.READTASKS),
+            Triplet.of(
+                "With Missing EditTasks Permission",
+                wbWithoutEditTasks,
+                WorkbasketPermission.EDITTASKS));
+    ThrowingConsumer<Triplet<String, WorkbasketSummary, WorkbasketPermission>> testUpdateTask =
+        t -> {
+          String anyUserName = "TestUser28";
+          Task task =
+              TaskBuilder.newTask()
+                  .classificationSummary(defaultClassificationSummary)
+                  .workbasketSummary(t.getMiddle())
+                  .primaryObjRef(DefaultTestEntities.defaultTestObjectReference().build())
+                  .state(TaskState.READY)
+                  .owner(anyUserName)
+                  .buildAndStore(taskService, "admin");
+
+          task.setNote("Test Note");
+          ThrowingCallable call = () -> taskService.updateTask(task);
+
+          NotAuthorizedOnWorkbasketException e =
+              catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+
+          if (t.getRight() != WorkbasketPermission.EDITTASKS) {
+            assertThat(e.getRequiredPermissions())
+                .containsExactlyInAnyOrder(
+                    WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
+          } else {
+            assertThat(e.getRequiredPermissions()).containsExactly(WorkbasketPermission.EDITTASKS);
+          }
+          assertThat(e.getCurrentUserId()).isEqualTo("user-1-2");
+          assertThat(e.getWorkbasketId()).isEqualTo(t.getMiddle().getId());
+        };
+    return DynamicTest.stream(list.iterator(), Triplet::getLeft, testUpdateTask);
+  }
+
   private ObjectReferenceImpl createObjectReference(
       String company, String system, String systemInstance, String type, String value) {
     ObjectReferenceImpl objectReference = new ObjectReferenceImpl();
@@ -569,12 +723,30 @@ public class UpdateTaskAccTest {
 
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
-  class WithEnforceServiceLevelDisabled implements TaskanaConfigurationModifier {
+  class WithEnforceServiceLevelDisabledAndAdditionalUserInfoEnabled
+      implements TaskanaConfigurationModifier {
     @TaskanaInject TaskService taskService;
 
     @Override
     public TaskanaConfiguration.Builder modify(TaskanaConfiguration.Builder builder) {
-      return builder.enforceServiceLevel(false);
+      return builder.addAdditionalUserInfo(true).enforceServiceLevel(false);
+    }
+
+    @WithAccessId(user = "businessadmin")
+    @BeforeAll
+    void setup() throws Exception {
+      UserBuilder.newUser()
+          .id("user-1-2")
+          .firstName("Max")
+          .lastName("Mustermann")
+          .longName("Max Mustermann")
+          .buildAndStore(userService, "businessadmin");
+      UserBuilder.newUser()
+          .id("user-1-1")
+          .firstName("Ella")
+          .lastName("Mustermann")
+          .longName("Ella Mustermann")
+          .buildAndStore(userService, "businessadmin");
     }
 
     @WithAccessId(user = "user-1-2")
@@ -595,6 +767,43 @@ public class UpdateTaskAccTest {
 
       assertThat(updatedTask.getPlanned()).isEqualTo(planned);
       assertThat(updatedTask.getDue()).isEqualTo(due);
+    }
+
+    @WithAccessId(user = "user-1-2")
+    @Test
+    void should_SetOwnerLongName_When_NotChangingOwner() throws Exception {
+      Task task =
+          TaskBuilder.newTask()
+              .owner("user-1-2")
+              .classificationSummary(defaultClassificationSummary)
+              .workbasketSummary(defaultWorkbasketSummary)
+              .primaryObjRef(defaultObjectReference)
+              .buildAndStore(taskService);
+
+      task.setNote("New Note");
+      Task updatedTask = taskService.updateTask(task);
+
+      assertThat(updatedTask.getNote()).isEqualTo("New Note");
+      assertThat(updatedTask.getOwner()).isEqualTo("user-1-2");
+      assertThat(updatedTask.getOwnerLongName()).isEqualTo("Max Mustermann");
+    }
+
+    @WithAccessId(user = "user-1-2")
+    @Test
+    void should_SetOwnerLongName_When_ChangingOwner() throws Exception {
+      Task task =
+          TaskBuilder.newTask()
+              .owner("user-1-2")
+              .classificationSummary(defaultClassificationSummary)
+              .workbasketSummary(defaultWorkbasketSummary)
+              .primaryObjRef(defaultObjectReference)
+              .buildAndStore(taskService);
+
+      task.setOwner("user-1-1");
+      Task updatedTask = taskService.updateTask(task);
+
+      assertThat(updatedTask.getOwner()).isEqualTo("user-1-1");
+      assertThat(updatedTask.getOwnerLongName()).isEqualTo("Ella Mustermann");
     }
   }
 }

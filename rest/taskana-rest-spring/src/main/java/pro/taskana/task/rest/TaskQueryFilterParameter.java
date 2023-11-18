@@ -3,7 +3,9 @@ package pro.taskana.task.rest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.beans.ConstructorProperties;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.KeyDomain;
@@ -740,6 +742,13 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("owner-not-like")
   private final String[] ownerNotLike;
+
+  /**
+   * Filter by tasks that have no owner. The parameter should exactly be "owner-is-null" without
+   * being followed by "=..."
+   */
+  @JsonProperty("owner-is-null")
+  private final String ownerNull;
   // endregion
   // region primaryObjectReference
   /**
@@ -1259,6 +1268,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     "owner-not",
     "owner-like",
     "owner-not-like",
+    "owner-is-null",
     "por",
     "por-company",
     "por-company-not",
@@ -1415,6 +1425,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
       String[] ownerNotIn,
       String[] ownerLike,
       String[] ownerNotLike,
+      String ownerNull,
       ObjectReference[] primaryObjectReferenceIn,
       String[] porCompanyIn,
       String[] porCompanyNotIn,
@@ -1570,6 +1581,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     this.ownerNotIn = ownerNotIn;
     this.ownerLike = ownerLike;
     this.ownerNotLike = ownerNotLike;
+    this.ownerNull = ownerNull;
     this.primaryObjectReferenceIn = primaryObjectReferenceIn;
     this.porCompanyIn = porCompanyIn;
     this.porCompanyNotIn = porCompanyNotIn;
@@ -1845,7 +1857,8 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
         .map(this::wrapElementsInLikeStatement)
         .ifPresent(query::parentBusinessProcessIdNotLike);
 
-    Optional.ofNullable(ownerIn).ifPresent(query::ownerIn);
+    String[] ownerInIncludingNull = addNullToOwnerIn();
+    Optional.ofNullable(ownerInIncludingNull).ifPresent(query::ownerIn);
     Optional.ofNullable(ownerNotIn).ifPresent(query::ownerNotIn);
     Optional.ofNullable(ownerLike)
         .map(this::wrapElementsInLikeStatement)
@@ -2183,5 +2196,17 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
       throw new InvalidArgumentException(
           "provided value of the property 'without-attachment' must be 'true'");
     }
+  }
+
+  private String[] addNullToOwnerIn() {
+    if (this.ownerNull == null) {
+      return this.ownerIn;
+    }
+    if (this.ownerIn == null) {
+      return new String[]{null};
+    }
+    List<String> ownerInAsList = new ArrayList<>(Arrays.asList(this.ownerIn));
+    ownerInAsList.add(null);
+    return ownerInAsList.toArray(new String[ownerInAsList.size()]);
   }
 }

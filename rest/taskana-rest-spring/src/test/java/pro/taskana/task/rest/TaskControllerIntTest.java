@@ -26,6 +26,8 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.function.ThrowingConsumer;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -35,13 +37,16 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.testcontainers.shaded.com.google.common.collect.Lists;
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
+import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.rest.test.RestHelper;
 import pro.taskana.rest.test.TaskanaSpringBootTest;
 import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.TaskState;
+import pro.taskana.task.rest.models.AttachmentRepresentationModel;
 import pro.taskana.task.rest.models.IsReadRepresentationModel;
 import pro.taskana.task.rest.models.ObjectReferenceRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
@@ -59,16 +64,12 @@ class TaskControllerIntTest {
   @Autowired TaskanaConfiguration taskanaConfiguration;
   private static final ParameterizedTypeReference<TaskSummaryPagedRepresentationModel>
       TASK_SUMMARY_PAGE_MODEL_TYPE = new ParameterizedTypeReference<>() {};
-
   private static final ParameterizedTypeReference<TaskSummaryCollectionRepresentationModel>
       TASK_SUMMARY_COLLECTION_MODEL_TYPE = new ParameterizedTypeReference<>() {};
-
   private static final ParameterizedTypeReference<TaskRepresentationModel> TASK_MODEL_TYPE =
       ParameterizedTypeReference.forType(TaskRepresentationModel.class);
-
   private final RestHelper restHelper;
   private final DataSource dataSource;
-
   private final String schemaName;
 
   @Autowired
@@ -134,6 +135,31 @@ class TaskControllerIntTest {
     taskRepresentationModel.setWorkbasketSummary(workbasketSummary);
     taskRepresentationModel.setPrimaryObjRef(objectReference);
     return taskRepresentationModel;
+  }
+
+  private ObjectReferenceRepresentationModel getObjectReferenceResourceSample() {
+    ObjectReferenceRepresentationModel objectReference = new ObjectReferenceRepresentationModel();
+    objectReference.setCompany("MyCompany1");
+    objectReference.setSystem("MySystem1");
+    objectReference.setSystemInstance("MyInstance1");
+    objectReference.setType("MyType1");
+    objectReference.setValue("00000001");
+    return objectReference;
+  }
+
+  private AttachmentRepresentationModel getAttachmentResourceSample() {
+    AttachmentRepresentationModel attachmentRepresentationModel =
+            new AttachmentRepresentationModel();
+    attachmentRepresentationModel.setAttachmentId("A11010");
+    attachmentRepresentationModel.setObjectReference(getObjectReferenceResourceSample());
+    ClassificationSummaryRepresentationModel classificationSummaryRepresentationModel =
+            new ClassificationSummaryRepresentationModel();
+    classificationSummaryRepresentationModel
+            .setClassificationId("CLI:100000000000000000000000000000000004");
+    classificationSummaryRepresentationModel.setKey("L11010");
+    attachmentRepresentationModel
+            .setClassificationSummary(classificationSummaryRepresentationModel);
+    return attachmentRepresentationModel;
   }
 
   private ObjectReferenceRepresentationModel getSampleSecondaryObjectReference(String suffix) {
@@ -1165,6 +1191,46 @@ class TaskControllerIntTest {
                   + "&sort-by=POR_VALUE&order=DESCENDING");
     }
 
+    @ParameterizedTest
+    @CsvSource({
+      "owner=user-1-1, 10",
+      "owner-is-null, 65",
+      "owner-is-null&owner=user-1-1, 75",
+      "state=READY&owner-is-null&owner=user-1-1, 56",
+    })
+    void should_ReturnTasksWithVariousOwnerParameters_When_GettingTasks(
+        String queryParams, int expectedSize) {
+      String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + "?" + queryParams;
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+      ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+      assertThat(response.getBody()).isNotNull();
+      assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+      assertThat((response.getBody()).getContent()).hasSize(expectedSize);
+    }
+
+    @TestFactory
+    Stream<DynamicTest> should_ThrowException_When_OwnerIsNullParamNotStrict() {
+      List<Pair<String, String>> list =
+          List.of(
+              Pair.of("When owner-is-null=", "?owner-is-null="),
+              Pair.of("When owner-is-null=anyValue", "?owner-is-null=anyValue1,anyValue2"));
+      ThrowingConsumer<Pair<String, String>> testOwnerIsNull =
+          t -> {
+            String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + t.getRight();
+            HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+            assertThatThrownBy(
+                    () ->
+                        TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE))
+                .isInstanceOf(HttpStatusCodeException.class)
+                .hasMessageContaining(
+                    "It is prohibited to use the param owner-is-null with values.");
+          };
+      return DynamicTest.stream(list.iterator(), Pair::getLeft, testOwnerIsNull);
+    }
+
     @Test
     void should_GetAllTasks_For_GettingLastTaskSummaryPageSortedByPorValue() {
       String url =
@@ -1476,6 +1542,27 @@ class TaskControllerIntTest {
     }
 
     @Test
+    void should_CreateTaskWithError_When_SpecifyingAttachmentWrong() {
+      TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
+      AttachmentRepresentationModel attachmentRepresentationModel = getAttachmentResourceSample();
+      attachmentRepresentationModel.setTaskId(taskRepresentationModel.getTaskId() + "wrongId");
+      taskRepresentationModel.setAttachments(Lists.newArrayList(attachmentRepresentationModel));
+
+      String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
+      HttpEntity<TaskRepresentationModel> auth =
+              new HttpEntity<>(
+                      taskRepresentationModel, RestHelper.generateHeadersForUser("teamlead-1"));
+
+      ThrowingCallable httpCall =
+              () -> TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+
+      assertThatThrownBy(httpCall)
+              .extracting(HttpStatusCodeException.class::cast)
+              .extracting(HttpStatusCodeException::getStatusCode)
+              .isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
     void should_CreateAndDeleteTaskWithSecondaryObjectReferences_When_SpecifyingObjectReferences() {
       TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
       ObjectReferenceRepresentationModel obj0 = getSampleSecondaryObjectReference("0");
@@ -1562,7 +1649,7 @@ class TaskControllerIntTest {
 
     /**
      * TSK-926: If Planned and Due Date is provided to create a task and not matching to service
-     * level throw an exception One is calculated by other other date +- service level.
+     * level throw an exception One is calculated by other date +- service level.
      */
     @Test
     void should_ThrowException_When_CreatingTaskWithPlannedAndDueDateNotMatchingServiceLevel() {
@@ -1697,6 +1784,36 @@ class TaskControllerIntTest {
       assertThat(originalTask).isNotNull();
       assertThat(updatedTask).isNotNull();
       assertThat(originalTask.getModified()).isBefore(updatedTask.getModified());
+    }
+
+    @Test
+    void should_ThrowError_When_UpdatingTaskWithBadAttachment() {
+      String url =
+              restHelper.toUrl(RestEndpoints.URL_TASKS_ID,
+                      "TKI:100000000000000000000000000000000000");
+      HttpEntity<Object> httpEntityWithoutBody =
+              new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+      ResponseEntity<TaskRepresentationModel> responseGet =
+              TEMPLATE.exchange(url, HttpMethod.GET, httpEntityWithoutBody, TASK_MODEL_TYPE);
+
+      final TaskRepresentationModel originalTask = responseGet.getBody();
+
+      AttachmentRepresentationModel attachmentRepresentationModel = getAttachmentResourceSample();
+      attachmentRepresentationModel.setTaskId(originalTask.getTaskId() + "wrongId");
+      originalTask.setAttachments(Lists.newArrayList(attachmentRepresentationModel));
+
+
+      HttpEntity<TaskRepresentationModel> httpEntity =
+              new HttpEntity<>(originalTask, RestHelper.generateHeadersForUser("teamlead-1"));
+
+      ThrowingCallable httpCall =
+              () -> TEMPLATE.exchange(url, HttpMethod.PUT, httpEntity, TASK_MODEL_TYPE);
+
+      assertThatThrownBy(httpCall)
+              .extracting(HttpStatusCodeException.class::cast)
+              .extracting(HttpStatusCodeException::getStatusCode)
+              .isEqualTo(HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -2227,6 +2344,70 @@ class TaskControllerIntTest {
       assertThat(cancelClaimedtaskRepresentationModel.getOwner()).isNull();
       assertThat(cancelClaimedtaskRepresentationModel.getClaimed()).isNull();
       assertThat(cancelClaimedtaskRepresentationModel.getState()).isEqualTo(TaskState.READY);
+    }
+
+    @Test
+    void should_KeepOwnerAndOwnerLongName_When_CancelClaimWithKeepOwner() {
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000000");
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+
+      // retrieve task from Rest Api
+      ResponseEntity<TaskRepresentationModel> getTaskResponse =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+      assertThat(getTaskResponse.getBody()).isNotNull();
+      TaskRepresentationModel taskRepresentationModel = getTaskResponse.getBody();
+      assertThat(taskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
+      assertThat(taskRepresentationModel.getOwner()).isEqualTo("user-1-1");
+
+      // cancel claim
+      String url2 =
+          restHelper.toUrl(
+              RestEndpoints.URL_TASKS_ID_CLAIM + "?keepOwner=true",
+              "TKI:000000000000000000000000000000000000");
+      ResponseEntity<TaskRepresentationModel> cancelClaimResponse =
+          TEMPLATE.exchange(url2, HttpMethod.DELETE, auth, TASK_MODEL_TYPE);
+
+      assertThat(cancelClaimResponse.getBody()).isNotNull();
+      assertThat(cancelClaimResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+      TaskRepresentationModel cancelClaimedtaskRepresentationModel = cancelClaimResponse.getBody();
+      assertThat(cancelClaimedtaskRepresentationModel.getClaimed()).isNull();
+      assertThat(cancelClaimedtaskRepresentationModel.getState()).isEqualTo(TaskState.READY);
+      assertThat(cancelClaimedtaskRepresentationModel.getOwner()).isEqualTo("user-1-1");
+      assertThat(cancelClaimedtaskRepresentationModel.getOwnerLongName())
+          .isEqualTo("Mustermann, Max - (user-1-1)");
+    }
+
+    @Test
+    void should_KeepOwnerAndOwnerLongName_When_ForceCancelClaimWithKeepOwner() {
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000001");
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
+
+      // retrieve task from Rest Api
+      ResponseEntity<TaskRepresentationModel> getTaskResponse =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+      assertThat(getTaskResponse.getBody()).isNotNull();
+      TaskRepresentationModel taskRepresentationModel = getTaskResponse.getBody();
+      assertThat(taskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
+      assertThat(taskRepresentationModel.getOwner()).isEqualTo("user-1-1");
+
+      // cancel claim
+      String url2 =
+          restHelper.toUrl(
+              RestEndpoints.URL_TASKS_ID_CLAIM_FORCE + "?keepOwner=true",
+              "TKI:000000000000000000000000000000000001");
+      ResponseEntity<TaskRepresentationModel> cancelClaimResponse =
+          TEMPLATE.exchange(url2, HttpMethod.DELETE, auth, TASK_MODEL_TYPE);
+
+      assertThat(cancelClaimResponse.getBody()).isNotNull();
+      assertThat(cancelClaimResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+      TaskRepresentationModel cancelClaimedtaskRepresentationModel = cancelClaimResponse.getBody();
+      assertThat(cancelClaimedtaskRepresentationModel.getClaimed()).isNull();
+      assertThat(cancelClaimedtaskRepresentationModel.getState()).isEqualTo(TaskState.READY);
+      assertThat(cancelClaimedtaskRepresentationModel.getOwner()).isEqualTo("user-1-1");
+      assertThat(cancelClaimedtaskRepresentationModel.getOwnerLongName())
+          .isEqualTo("Mustermann, Max - (user-1-1)");
     }
 
     @Test

@@ -11,7 +11,7 @@
   <parent>
     <groupId>pro.taskana</groupId>
     <artifactId>taskana-routing-parent</artifactId>
-    <version>6.1.1-SNAPSHOT</version>
+    <version>8.0.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -27,29 +27,30 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.camunda.bpm.extension.dmn</groupId>
+      <groupId>pro.taskana.camunda.bpm.extension.dmn</groupId>
       <artifactId>dmn-xlsx-converter</artifactId>
-      <version>${version.dmn-xlsx-converter}</version>
+      <version>${project.version}</version>
     </dependency>
+
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <version>${version.jaxb}</version>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>${version.jakarta.xml.bind-api}</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-core</artifactId>
-      <version>${version.jaxb}</version>
+      <version>${version.jaxb-core}</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
-      <version>${version.jaxb}</version>
+      <version>${version.jaxb-impl}</version>
     </dependency>
     <dependency>
-      <groupId>javax.activation</groupId>
-      <artifactId>activation</artifactId>
-      <version>${version.javax.activation}</version>
+      <groupId>jakarta.activation</groupId>
+      <artifactId>jakarta.activation-api</artifactId>
+      <version>${version.jakarta.activation}</version>
     </dependency>
 
     <!-- test dependencies -->
@@ -79,6 +80,7 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <version>${version.assertj}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -104,7 +106,7 @@
     <dependency>
       <groupId>org.springframework.plugin</groupId>
       <artifactId>spring-plugin-core</artifactId>
-      <version>${version.spring.core}</version>
+      <version>${version.spring.plugin.core}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -191,11 +193,7 @@
               <doclet>capital.scalable.restdocs.jsondoclet.ExtractDocumentationAsJsonDoclet</doclet>
               <docletArtifact>
                 <groupId>capital.scalable</groupId>
-                <!--
-                    currently the jdk9+ version of this doclet has a very bad bug.
-                    see: https://github.com/ScaCap/spring-auto-restdocs/issues/412
-                -->
-                <artifactId>spring-auto-restdocs-json-doclet</artifactId>
+                <artifactId>spring-auto-restdocs-json-doclet-jdk9</artifactId>
                 <version>${version.auto-restdocs}</version>
               </docletArtifact>
               <destDir>generated-javadoc-json</destDir>

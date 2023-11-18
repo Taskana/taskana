@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e # fail fast
 set -x
-BASE_URL=https://taskana.mybluemix.net/taskana
+BASE_URL=https://taskana.azurewebsites.net/taskana
 
 test 200 -eq "$(curl -sw "%{http_code}" -o /dev/null "$BASE_URL/docs/rest/rest-api.html")"
 test 200 -eq "$(curl -sw "%{http_code}" -o /dev/null "$BASE_URL/docs/rest/simplehistory-rest-api.html")"

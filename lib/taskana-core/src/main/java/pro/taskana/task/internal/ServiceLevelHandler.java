@@ -303,7 +303,8 @@ class ServiceLevelHandler {
 
   private Instant calculateDue(Instant planned, Duration duration) {
     Instant dueExclusive = workingTimeCalculator.addWorkingTime(planned, duration);
-    if (!planned.equals(dueExclusive)) {
+    if (taskanaEngine.getEngine().getConfiguration().isUseWorkingTimeCalculation()
+        && !planned.equals(dueExclusive)) {
       // Calculation is exclusive, but we want due date to be inclusive. Hence, we subtract a
       // millisecond
       // If planned and dueExclusive are the same values, we don't want due to be before planned.
@@ -320,7 +321,11 @@ class ServiceLevelHandler {
       return due;
     } else {
       // due is inclusive, but calculation happens exclusive.
-      return workingTimeCalculator.subtractWorkingTime(due.plusMillis(1), duration);
+      Instant normalize =
+          taskanaEngine.getEngine().getConfiguration().isUseWorkingTimeCalculation()
+              ? due.plusMillis(1)
+              : due;
+      return workingTimeCalculator.subtractWorkingTime(normalize, duration);
     }
   }
 
@@ -328,9 +333,13 @@ class ServiceLevelHandler {
     // plusMillis since due is inclusive, but calculation happens exclusive.
     // minusMillis since we calculated a due date
     // Without that some edge case fail (e.g. due is exactly the start of weekend)
-    return workingTimeCalculator
-        .subtractWorkingTime(due.plusMillis(1), Duration.ZERO)
-        .minusMillis(1);
+    if (taskanaEngine.getEngine().getConfiguration().isUseWorkingTimeCalculation()) {
+      return workingTimeCalculator
+          .subtractWorkingTime(due.plusMillis(1), Duration.ZERO)
+          .minusMillis(1);
+    }
+
+    return workingTimeCalculator.subtractWorkingTime(due, Duration.ZERO);
   }
 
   private Instant normalizePlanned(Instant instant) {
@@ -625,9 +634,9 @@ class ServiceLevelHandler {
     }
     // TODO Do we need to compare Key and Id or could we simply compare ClassificationSummary only?
     final boolean isClassificationKeyChanged =
-        Objects.equals(newTaskImpl.getClassificationKey(), oldTaskImpl.getClassificationKey());
+        !Objects.equals(newTaskImpl.getClassificationKey(), oldTaskImpl.getClassificationKey());
     final boolean isClassificationIdChanged =
-        Objects.equals(newTaskImpl.getClassificationId(), oldTaskImpl.getClassificationId());
+        !Objects.equals(newTaskImpl.getClassificationId(), oldTaskImpl.getClassificationId());
 
     final boolean isManualPriorityChanged =
         newTaskImpl.getManualPriority() != oldTaskImpl.getManualPriority();

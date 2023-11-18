@@ -54,6 +54,10 @@ public class WorkbasketSummaryRepresentationModelAssembler
     repModel.setCustom2(workbasketSummary.getCustomField(WorkbasketCustomField.CUSTOM_2));
     repModel.setCustom3(workbasketSummary.getCustomField(WorkbasketCustomField.CUSTOM_3));
     repModel.setCustom4(workbasketSummary.getCustomField(WorkbasketCustomField.CUSTOM_4));
+    repModel.setCustom5(workbasketSummary.getCustomField(WorkbasketCustomField.CUSTOM_5));
+    repModel.setCustom6(workbasketSummary.getCustomField(WorkbasketCustomField.CUSTOM_6));
+    repModel.setCustom7(workbasketSummary.getCustomField(WorkbasketCustomField.CUSTOM_7));
+    repModel.setCustom8(workbasketSummary.getCustomField(WorkbasketCustomField.CUSTOM_8));
     repModel.setOrgLevel1(workbasketSummary.getOrgLevel1());
     repModel.setOrgLevel2(workbasketSummary.getOrgLevel2());
     repModel.setOrgLevel3(workbasketSummary.getOrgLevel3());
@@ -75,6 +79,10 @@ public class WorkbasketSummaryRepresentationModelAssembler
     workbasket.setCustom2(repModel.getCustom2());
     workbasket.setCustom3(repModel.getCustom3());
     workbasket.setCustom4(repModel.getCustom4());
+    workbasket.setCustom5(repModel.getCustom5());
+    workbasket.setCustom6(repModel.getCustom6());
+    workbasket.setCustom7(repModel.getCustom7());
+    workbasket.setCustom8(repModel.getCustom8());
     workbasket.setOrgLevel1(repModel.getOrgLevel1());
     workbasket.setOrgLevel2(repModel.getOrgLevel2());
     workbasket.setOrgLevel3(repModel.getOrgLevel3());

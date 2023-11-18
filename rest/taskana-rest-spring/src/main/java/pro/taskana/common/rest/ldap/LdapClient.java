@@ -2,6 +2,7 @@ package pro.taskana.common.rest.ldap;
 
 import static java.util.function.Predicate.not;
 
+import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,7 +13,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.PostConstruct;
 import javax.naming.directory.SearchControls;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +31,7 @@ import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 import pro.taskana.user.api.models.User;
 import pro.taskana.user.internal.models.UserImpl;
@@ -92,7 +93,7 @@ public class LdapClient {
 
     LOGGER.debug(
         "entry to searchUsersByNameOrAccessIdInUserRoleGroups(nameOrAccessId = {}).",
-        nameOrAccessId);
+        LogSanitizer.stripLineBreakingChars(nameOrAccessId));
 
     isInitOrFail();
     testMinSearchForLength(nameOrAccessId);
@@ -261,11 +262,12 @@ public class LdapClient {
     andFilter.and(orFilter);
 
     String[] userAttributesToReturn = {getUserIdAttribute(), getGroupNameAttribute()};
-
-    LOGGER.debug(
-        "Using filter '{}' for LDAP query with group search base {}.",
-        andFilter,
-        getGroupSearchBase());
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "Using filter '{}' for LDAP query with group search base {}.",
+          andFilter,
+          getGroupSearchBase());
+    }
 
     return ldapTemplate.search(
         getGroupSearchBase(),
@@ -411,6 +413,10 @@ public class LdapClient {
     return LdapSettings.TASKANA_LDAP_USER_MEMBER_OF_GROUP_ATTRIBUTE.getValueFromEnv(env);
   }
 
+  public String getUserPermissionsAttribute() {
+    return LdapSettings.TASKANA_LDAP_USER_PERMISSIONS_ATTRIBUTE.getValueFromEnv(env);
+  }
+
   public String getGroupSearchBase() {
     return LdapSettings.TASKANA_LDAP_GROUP_SEARCH_BASE.getValueFromEnv(env);
   }
@@ -536,6 +542,7 @@ public class LdapClient {
     return new String[] {
       getUserIdAttribute(),
       getUserMemberOfGroupAttribute(),
+      getUserPermissionsAttribute(),
       getUserFirstnameAttribute(),
       getUserLastnameAttribute(),
       getUserFullnameAttribute(),
@@ -628,6 +635,20 @@ public class LdapClient {
     return groups;
   }
 
+  private Set<String> getPermissionIdsFromContext(final DirContextOperations context) {
+    String[] permissionAttributes = context.getStringAttributes(getUserPermissionsAttribute());
+    Set<String> permissions =
+        permissionAttributes != null ? Set.of(permissionAttributes) : Collections.emptySet();
+    if (useLowerCaseForAccessIds) {
+      permissions =
+          permissions.stream()
+              .filter(Objects::nonNull)
+              .map(String::toLowerCase)
+              .collect(Collectors.toSet());
+    }
+    return permissions;
+  }
+
   /** Context Mapper for user entries. */
   class GroupContextMapper extends AbstractContextMapper<AccessIdRepresentationModel> {
 
@@ -648,6 +669,7 @@ public class LdapClient {
       final User user = new UserImpl();
       user.setId(getUserIdFromContext(context));
       user.setGroups(getGroupIdsFromContext(context));
+      user.setPermissions(getPermissionIdsFromContext(context));
       user.setFirstName(context.getStringAttribute(getUserFirstnameAttribute()));
       user.setLastName(context.getStringAttribute(getUserLastnameAttribute()));
       user.setFullName(context.getStringAttribute(getUserFullnameAttribute()));

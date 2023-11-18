@@ -49,7 +49,9 @@ public class CurrentUserContextImpl implements CurrentUserContext {
   }
 
   @Override
+  @SuppressWarnings("removal")
   public List<String> getGroupIds() {
+    // TODO replace with Subject.current() when migrating to newer Version than 17
     Subject subject = Subject.getSubject(AccessController.getContext());
     LOGGER.trace("Subject of caller: {}", subject);
     if (subject != null) {
@@ -125,7 +127,9 @@ public class CurrentUserContextImpl implements CurrentUserContext {
     return null;
   }
 
+  @SuppressWarnings("removal")
   private String getUserIdFromJaasSubject() {
+    // TODO replace with Subject.current() when migrating to newer Version than 17
     Subject subject = Subject.getSubject(AccessController.getContext());
     LOGGER.trace("Subject of caller: {}", subject);
     if (subject != null) {

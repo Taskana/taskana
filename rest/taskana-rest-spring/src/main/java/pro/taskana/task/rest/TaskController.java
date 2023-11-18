@@ -2,14 +2,15 @@ package pro.taskana.task.rest;
 
 import static java.util.function.Predicate.not;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.beans.ConstructorProperties;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pro.taskana.classification.api.exceptions.ClassificationNotFoundException;
 import pro.taskana.common.api.BaseQuery.SortDirection;
@@ -105,6 +107,16 @@ public class TaskController {
           AttachmentPersistenceException,
           ObjectReferencePersistenceException,
           NotAuthorizedOnWorkbasketException {
+
+    if (!taskRepresentationModel.getAttachments().stream()
+        .filter(att -> Objects.nonNull(att.getTaskId()))
+        .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
+        .collect(Collectors.toList())
+        .isEmpty()) {
+      throw new InvalidArgumentException(
+          "An attachments' taskId must be empty or equal to the id of the task it belongs to");
+    }
+
     Task fromResource = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
     Task createdTask = taskService.createTask(fromResource);
 
@@ -278,6 +290,7 @@ public class TaskController {
    * before.
    *
    * @param taskId the Id of the requested Task.
+   * @param keepOwner flag whether or not to keep the owner despite the cancel claim
    * @return the unclaimed Task.
    * @throws TaskNotFoundException if the requested Task does not exist.
    * @throws InvalidTaskStateException if the Task is already in an end state.
@@ -288,12 +301,13 @@ public class TaskController {
    */
   @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskRepresentationModel> cancelClaimTask(@PathVariable String taskId)
+  public ResponseEntity<TaskRepresentationModel> cancelClaimTask(
+      @PathVariable String taskId, @RequestParam(defaultValue = "false") boolean keepOwner)
       throws TaskNotFoundException,
           InvalidTaskStateException,
           InvalidOwnerException,
           NotAuthorizedOnWorkbasketException {
-    Task updatedTask = taskService.cancelClaim(taskId);
+    Task updatedTask = taskService.cancelClaim(taskId, keepOwner);
 
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }
@@ -302,6 +316,7 @@ public class TaskController {
    * This endpoint force cancels the claim of an existing Task.
    *
    * @param taskId the Id of the requested Task.
+   * @param keepOwner flag whether or not to keep the owner despite the cancel claim
    * @return the unclaimed Task.
    * @throws TaskNotFoundException if the requested Task does not exist.
    * @throws InvalidTaskStateException if the Task is already in an end state.
@@ -312,12 +327,13 @@ public class TaskController {
    */
   @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM_FORCE)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskRepresentationModel> forceCancelClaimTask(@PathVariable String taskId)
+  public ResponseEntity<TaskRepresentationModel> forceCancelClaimTask(
+      @PathVariable String taskId, @RequestParam(defaultValue = "false") boolean keepOwner)
       throws TaskNotFoundException,
           InvalidTaskStateException,
           InvalidOwnerException,
           NotAuthorizedOnWorkbasketException {
-    Task updatedTask = taskService.forceCancelClaim(taskId);
+    Task updatedTask = taskService.forceCancelClaim(taskId, keepOwner);
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
   }
 
@@ -580,6 +596,16 @@ public class TaskController {
                   + "object in the payload which should be updated. ID=('%s')",
               taskId, taskRepresentationModel.getTaskId()));
     }
+
+    if (!taskRepresentationModel.getAttachments().stream()
+        .filter(att -> Objects.nonNull(att.getTaskId()))
+        .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
+        .toList()
+        .isEmpty()) {
+      throw new InvalidArgumentException(
+          "An attachments' taskId must be empty or equal to the id of the task it belongs to");
+    }
+
     Task task = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
     task = taskService.updateTask(task);
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(task));

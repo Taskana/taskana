@@ -15,6 +15,7 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.simplehistory.impl.TaskHistoryQueryImpl;
 import pro.taskana.simplehistory.impl.task.TaskHistoryQueryMapper;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
+import pro.taskana.spi.history.api.events.task.TaskHistoryEventType;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 
 @ExtendWith(JaasExtension.class)
@@ -47,7 +48,8 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
     listEvents =
         taskHistoryQueryMapper.queryHistoryEvents(
             (TaskHistoryQueryImpl) historyService.createTaskHistoryQuery().taskIdIn(taskid));
-    assertThat(listEvents).isEmpty();
+    assertThat(listEvents).hasSize(1);
+    assertThat(listEvents.get(0).getEventType()).isEqualTo(TaskHistoryEventType.DELETED.getName());
   }
 
   @Test
@@ -87,7 +89,9 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
         taskHistoryQueryMapper.queryHistoryEvents(
             (TaskHistoryQueryImpl)
                 historyService.createTaskHistoryQuery().taskIdIn(taskId_1, taskId_2));
-    assertThat(listEvents).isEmpty();
+    assertThat(listEvents).hasSize(2);
+    assertThat(listEvents.get(0).getEventType()).isEqualTo(TaskHistoryEventType.DELETED.getName());
+    assertThat(listEvents.get(1).getEventType()).isEqualTo(TaskHistoryEventType.DELETED.getName());
   }
 
   @Test
@@ -119,7 +123,7 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
     listEvents =
         taskHistoryQueryMapper.queryHistoryEvents(
             (TaskHistoryQueryImpl) historyService.createTaskHistoryQuery().taskIdIn(taskId));
-    assertThat(listEvents).hasSize(2);
+    assertThat(listEvents).hasSize(3);
   }
 
   @Test
@@ -152,7 +156,7 @@ class DeleteHistoryEventsOnTaskDeletionAccTest extends AbstractAccTest {
         taskHistoryQueryMapper.queryHistoryEvents(
             (TaskHistoryQueryImpl)
                 historyService.createTaskHistoryQuery().taskIdIn(taskId_1, taskId_2));
-    assertThat(listEvents).hasSize(2);
+    assertThat(listEvents).hasSize(4);
   }
 
   private void createTaskanaEngineWithNewConfig(boolean deleteHistoryOnTaskDeletionEnabled)

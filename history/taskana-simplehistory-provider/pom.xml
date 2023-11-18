@@ -11,7 +11,7 @@
   <parent>
     <groupId>pro.taskana.history</groupId>
     <artifactId>taskana-history-parent</artifactId>
-    <version>6.1.1-SNAPSHOT</version>
+    <version>8.0.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -66,7 +66,7 @@
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-inline</artifactId>
+      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -91,7 +91,12 @@
       <version>${version.oracle}</version>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>pro.taskana</groupId>
+      <artifactId>taskana-test-api</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

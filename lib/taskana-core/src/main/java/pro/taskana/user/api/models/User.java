@@ -35,6 +35,20 @@ public interface User {
   void setGroups(Set<String> groups);
 
   /**
+   * Returns the permissions of the User.
+   *
+   * @return permissions
+   */
+  Set<String> getPermissions();
+
+  /**
+   * Sets the permissions of the User.
+   *
+   * @param permissions the permissions of the User
+   */
+  void setPermissions(Set<String> permissions);
+
+  /**
    * Returns the first name of the User.
    *
    * @return firstName

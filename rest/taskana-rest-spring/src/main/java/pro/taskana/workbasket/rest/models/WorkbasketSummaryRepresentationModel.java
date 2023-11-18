@@ -33,6 +33,14 @@ public class WorkbasketSummaryRepresentationModel
   protected String custom3;
   /** A custom property with name "4". */
   protected String custom4;
+  /** A custom property with name "5". */
+  protected String custom5;
+  /** A custom property with name "6". */
+  protected String custom6;
+  /** A custom property with name "7". */
+  protected String custom7;
+  /** A custom property with name "8". */
+  protected String custom8;
   /**
    * The first Org Level (the top one).
    *
@@ -136,6 +144,38 @@ public class WorkbasketSummaryRepresentationModel
 
   public void setCustom4(String custom4) {
     this.custom4 = custom4;
+  }
+
+  public String getCustom5() {
+    return custom5;
+  }
+
+  public void setCustom5(String custom5) {
+    this.custom5 = custom5;
+  }
+
+  public String getCustom6() {
+    return custom6;
+  }
+
+  public void setCustom6(String custom6) {
+    this.custom6 = custom6;
+  }
+
+  public String getCustom7() {
+    return custom7;
+  }
+
+  public void setCustom7(String custom7) {
+    this.custom7 = custom7;
+  }
+
+  public String getCustom8() {
+    return custom8;
+  }
+
+  public void setCustom8(String custom8) {
+    this.custom8 = custom8;
   }
 
   public String getOrgLevel1() {

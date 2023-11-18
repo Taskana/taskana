@@ -11,7 +11,7 @@
   <parent>
     <groupId>pro.taskana</groupId>
     <artifactId>taskana-rest-parent</artifactId>
-    <version>6.1.1-SNAPSHOT</version>
+    <version>8.0.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -50,7 +50,7 @@
     <dependency>
       <groupId>org.springframework.plugin</groupId>
       <artifactId>spring-plugin-core</artifactId>
-      <version>${version.spring.core}</version>
+      <version>${version.spring.plugin.core}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.ldap</groupId>
@@ -87,6 +87,7 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <version>${version.assertj}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

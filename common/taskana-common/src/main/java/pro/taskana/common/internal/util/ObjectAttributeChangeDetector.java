@@ -40,7 +40,8 @@ public class ObjectAttributeChangeDetector {
 
     // this has to be checked after we deal with List data types, because
     // we want to allow different implementations of the List interface to work as well.
-    if (!oldObject.getClass().equals(newObject.getClass())) {
+    if (!oldObject.getClass().equals(newObject.getClass())
+        && !oldObject.getClass().isAssignableFrom(newObject.getClass())) {
       throw new SystemException(
           String.format(
               "The classes differ between the oldObject(%s) and newObject(%s). "

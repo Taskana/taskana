@@ -55,6 +55,7 @@ class RequestReviewAccTest {
         .workbasketId(defaultWorkbasketSummary.getId())
         .accessId("user-1-1")
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
 
@@ -172,7 +173,8 @@ class RequestReviewAccTest {
 
     NotAuthorizedOnWorkbasketException e =
         catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
-    assertThat(e.getRequiredPermissions()).containsExactly(WorkbasketPermission.READ);
+    assertThat(e.getRequiredPermissions())
+        .containsExactly(WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-2");
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());
     assertThat(e.getDomain()).isNull();

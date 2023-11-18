@@ -61,6 +61,8 @@ public class RequestReviewWithAfterSpiAccTest {
         .workbasketId(defaultWorkbasketSummary.getId())
         .accessId("user-1-1")
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.EDITTASKS)
         .permission(WorkbasketPermission.APPEND)
         .permission(WorkbasketPermission.TRANSFER)
         .buildAndStore(workbasketService);
@@ -69,6 +71,8 @@ public class RequestReviewWithAfterSpiAccTest {
         .workbasketId(newWorkbasket.getId())
         .accessId("user-1-1")
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.EDITTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService);
 
@@ -264,9 +268,9 @@ public class RequestReviewWithAfterSpiAccTest {
 
       assertThatThrownBy(call)
           .isInstanceOf(SystemException.class)
-          .getCause() // unwrap the "wrap" within "call"
+          .cause() // unwrap the "wrap" within "call"
           .hasMessage("service provider '%s' threw an exception", ExceptionThrower.class.getName())
-          .getCause() // unwrap the "wrap" from the service provider manager
+          .cause() // unwrap the "wrap" from the service provider manager
           .hasMessage("I AM THE EXCEPTION THROWER (*_*)");
 
       Task persistentTask = taskService.getTask(task.getId());

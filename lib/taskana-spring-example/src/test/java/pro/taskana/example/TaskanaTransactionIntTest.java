@@ -9,7 +9,10 @@ import java.util.List;
 import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.ClassOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestClassOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,6 +50,8 @@ import pro.taskana.workbasket.internal.models.WorkbasketImpl;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"inmemorydb", "dev"})
 @Import({TransactionalJobsConfiguration.class})
+@TestClassOrder(ClassOrderer.OrderAnnotation.class)
+@Order(2)
 class TaskanaTransactionIntTest {
 
   private static final String INTERNAL_SERVER_ERROR_MESSAGE = "Internal Server Error";
@@ -59,6 +64,7 @@ class TaskanaTransactionIntTest {
 
   @BeforeEach
   void before() {
+
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     jdbcTemplate.execute("DELETE FROM TASK");
     jdbcTemplate.execute("DELETE FROM WORKBASKET");

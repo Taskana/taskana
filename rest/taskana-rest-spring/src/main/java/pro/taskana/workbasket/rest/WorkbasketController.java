@@ -1,10 +1,10 @@
 package pro.taskana.workbasket.rest;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -415,6 +415,10 @@ public class WorkbasketController {
     CUSTOM_2((query, sort) -> query.orderByCustomAttribute(WorkbasketCustomField.CUSTOM_2, sort)),
     CUSTOM_3((query, sort) -> query.orderByCustomAttribute(WorkbasketCustomField.CUSTOM_3, sort)),
     CUSTOM_4((query, sort) -> query.orderByCustomAttribute(WorkbasketCustomField.CUSTOM_4, sort)),
+    CUSTOM_5((query, sort) -> query.orderByCustomAttribute(WorkbasketCustomField.CUSTOM_5, sort)),
+    CUSTOM_6((query, sort) -> query.orderByCustomAttribute(WorkbasketCustomField.CUSTOM_6, sort)),
+    CUSTOM_7((query, sort) -> query.orderByCustomAttribute(WorkbasketCustomField.CUSTOM_7, sort)),
+    CUSTOM_8((query, sort) -> query.orderByCustomAttribute(WorkbasketCustomField.CUSTOM_8, sort)),
     DOMAIN(WorkbasketQuery::orderByDomain),
     ORG_LEVEL_1(WorkbasketQuery::orderByOrgLevel1),
     ORG_LEVEL_2(WorkbasketQuery::orderByOrgLevel2),

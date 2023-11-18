@@ -1,13 +1,13 @@
 package pro.taskana.rest.test;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import java.io.IOException;
 import java.security.AccessController;
 import java.util.Optional;
 import javax.security.auth.Subject;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -59,6 +59,7 @@ public class SpringSecurityToJaasFilter extends GenericFilterBean {
    *
    * @return the Subject to run.
    */
+  @SuppressWarnings("removal")
   protected Optional<Subject> obtainSubject() {
     Optional<Authentication> authentication = getCurrentAuthentication();
     if (logger.isDebugEnabled()) {
@@ -67,7 +68,7 @@ public class SpringSecurityToJaasFilter extends GenericFilterBean {
     if (authentication.isEmpty() || !authentication.get().isAuthenticated()) {
       return Optional.empty();
     }
-
+    // TODO replace with Subject.current() when migrating to newer Version than 17
     return Optional.of(Subject.getSubject(AccessController.getContext()));
   }
 

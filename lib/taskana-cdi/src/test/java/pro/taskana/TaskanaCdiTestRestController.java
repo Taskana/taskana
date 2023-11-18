@@ -1,13 +1,12 @@
 package pro.taskana;
 
-import javax.ejb.EJB;
-import javax.inject.Inject;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Response;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.taskana.classification.api.ClassificationService;
@@ -24,9 +23,21 @@ public class TaskanaCdiTestRestController {
   private static final String CDIDOMAIN = "CDIDOMAIN";
   private static final String CLASSIFICATION_TYPE = "T1";
 
-  @EJB private TaskanaEjb taskanaEjb;
+  private final TaskanaEjb taskanaEjb;
 
-  @Inject private ClassificationService classificationService;
+  private final ClassificationService classificationService;
+
+  public TaskanaCdiTestRestController() {
+    this.taskanaEjb = null;
+    this.classificationService = null;
+  }
+
+  @Inject
+  public TaskanaCdiTestRestController(
+      TaskanaEjb taskanaEjb, ClassificationService classificationService) {
+    this.taskanaEjb = taskanaEjb;
+    this.classificationService = classificationService;
+  }
 
   @GET
   public Response startTask() throws Exception {

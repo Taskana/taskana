@@ -5,6 +5,10 @@ import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_1;
 import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_2;
 import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_3;
 import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_4;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_5;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_6;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_7;
+import static pro.taskana.workbasket.api.WorkbasketCustomField.CUSTOM_8;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +47,10 @@ class WorkbasketSummaryRepresentationModelAssemblerTest {
     workbasketSummary.setCustom2("custom2");
     workbasketSummary.setCustom3("custom3");
     workbasketSummary.setCustom4("custom4");
+    workbasketSummary.setCustom5("custom5");
+    workbasketSummary.setCustom6("custom6");
+    workbasketSummary.setCustom7("custom7");
+    workbasketSummary.setCustom8("custom8");
     workbasketSummary.setOrgLevel1("Org1");
     workbasketSummary.setOrgLevel2("Org2");
     workbasketSummary.setOrgLevel3("Org3");
@@ -64,6 +72,10 @@ class WorkbasketSummaryRepresentationModelAssemblerTest {
     repModel.setCustom2("Custom2");
     repModel.setCustom3("Custom3");
     repModel.setCustom4("Custom4");
+    repModel.setCustom5("Custom5");
+    repModel.setCustom6("Custom6");
+    repModel.setCustom7("Custom7");
+    repModel.setCustom8("Custom8");
     repModel.setDescription("Test Ressource");
     repModel.setDomain("DOMAIN_A");
     repModel.setKey("1");
@@ -91,6 +103,10 @@ class WorkbasketSummaryRepresentationModelAssemblerTest {
     workbasketSummary.setCustom2("custom2");
     workbasketSummary.setCustom3("custom3");
     workbasketSummary.setCustom4("custom4");
+    workbasketSummary.setCustom5("custom5");
+    workbasketSummary.setCustom6("custom6");
+    workbasketSummary.setCustom7("custom7");
+    workbasketSummary.setCustom8("custom8");
     workbasketSummary.setOrgLevel1("Org1");
     workbasketSummary.setOrgLevel2("Org2");
     workbasketSummary.setOrgLevel3("Org3");
@@ -120,6 +136,10 @@ class WorkbasketSummaryRepresentationModelAssemblerTest {
     assertThat(summary.getCustomField(CUSTOM_2)).isEqualTo(repModel.getCustom2());
     assertThat(summary.getCustomField(CUSTOM_3)).isEqualTo(repModel.getCustom3());
     assertThat(summary.getCustomField(CUSTOM_4)).isEqualTo(repModel.getCustom4());
+    assertThat(summary.getCustomField(CUSTOM_5)).isEqualTo(repModel.getCustom5());
+    assertThat(summary.getCustomField(CUSTOM_6)).isEqualTo(repModel.getCustom6());
+    assertThat(summary.getCustomField(CUSTOM_7)).isEqualTo(repModel.getCustom7());
+    assertThat(summary.getCustomField(CUSTOM_8)).isEqualTo(repModel.getCustom8());
     assertThat(summary.getOrgLevel1()).isEqualTo(repModel.getOrgLevel1());
     assertThat(summary.getOrgLevel2()).isEqualTo(repModel.getOrgLevel2());
     assertThat(summary.getOrgLevel3()).isEqualTo(repModel.getOrgLevel3());

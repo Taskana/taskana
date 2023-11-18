@@ -2,8 +2,8 @@ package pro.taskana.example.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import jakarta.annotation.PostConstruct;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -19,7 +19,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
   private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
     "classpath:/META-INF/resources/", "classpath:/resources/",
-    "classpath:/static/", "classpath:/public/"
+    "classpath:/static/", "classpath:/public/", "classpath:/templates/"
   };
 
   private final ObjectMapper objectMapper;

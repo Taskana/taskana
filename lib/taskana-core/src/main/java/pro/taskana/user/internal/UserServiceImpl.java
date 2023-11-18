@@ -16,6 +16,7 @@ import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.internal.InternalTaskanaEngine;
+import pro.taskana.common.internal.util.LogSanitizer;
 import pro.taskana.user.api.UserService;
 import pro.taskana.user.api.exceptions.UserAlreadyExistException;
 import pro.taskana.user.api.exceptions.UserNotFoundException;
@@ -103,7 +104,9 @@ public class UserServiceImpl implements UserService {
     ((UserImpl) userToCreate).setDomains(determineDomains(userToCreate));
 
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Method createUser() created User '{}'.", userToCreate);
+      LOGGER.debug(
+          "Method createUser() created User '{}'.",
+          LogSanitizer.stripLineBreakingChars(userToCreate));
     }
     return userToCreate;
   }
@@ -119,15 +122,24 @@ public class UserServiceImpl implements UserService {
 
     internalTaskanaEngine.executeInDatabaseConnection(() -> userMapper.update(userToUpdate));
     internalTaskanaEngine.executeInDatabaseConnection(
-        () -> userMapper.deleteGroups(userToUpdate.getId()));
+        () -> {
+          userMapper.deleteGroups(userToUpdate.getId());
+          userMapper.deletePermissions(userToUpdate.getId());
+        });
     if (userToUpdate.getGroups() != null && !userToUpdate.getGroups().isEmpty()) {
       internalTaskanaEngine.executeInDatabaseConnection(
           () -> userMapper.insertGroups(userToUpdate));
     }
+    if (userToUpdate.getPermissions() != null && !userToUpdate.getPermissions().isEmpty()) {
+      internalTaskanaEngine.executeInDatabaseConnection(
+          () -> userMapper.insertPermissions(userToUpdate));
+    }
     ((UserImpl) userToUpdate).setDomains(determineDomains(userToUpdate));
 
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Method updateUser() updated User '{}'.", userToUpdate);
+      LOGGER.debug(
+          "Method updateUser() updated User '{}'.",
+          LogSanitizer.stripLineBreakingChars(userToUpdate));
     }
 
     return userToUpdate;
@@ -145,6 +157,7 @@ public class UserServiceImpl implements UserService {
         () -> {
           userMapper.delete(id);
           userMapper.deleteGroups(id);
+          userMapper.deletePermissions(id);
         });
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Method deleteUser() deleted User with id '{}'.", id);
@@ -153,6 +166,7 @@ public class UserServiceImpl implements UserService {
 
   private Set<String> determineDomains(User user) {
     Set<String> accessIds = new HashSet<>(user.getGroups());
+    accessIds.addAll(user.getPermissions());
     accessIds.add(user.getId());
     if (minimalWorkbasketPermissions != null && !minimalWorkbasketPermissions.isEmpty()) {
       // since WorkbasketService#accessIdsHavePermissions requires some role permissions we have to
@@ -180,6 +194,9 @@ public class UserServiceImpl implements UserService {
       userMapper.insert(userToCreate);
       if (userToCreate.getGroups() != null && !userToCreate.getGroups().isEmpty()) {
         userMapper.insertGroups(userToCreate);
+      }
+      if (userToCreate.getPermissions() != null && !userToCreate.getPermissions().isEmpty()) {
+        userMapper.insertPermissions(userToCreate);
       }
     } catch (PersistenceException e) {
       throw new UserAlreadyExistException(userToCreate.getId(), e);
@@ -209,6 +226,8 @@ public class UserServiceImpl implements UserService {
       user.setId(user.getId().toLowerCase());
       user.setGroups(
           user.getGroups().stream().map((String::toLowerCase)).collect(Collectors.toSet()));
+      user.setPermissions(
+          user.getPermissions().stream().map((String::toLowerCase)).collect(Collectors.toSet()));
     }
   }
 
@@ -230,6 +249,8 @@ public class UserServiceImpl implements UserService {
       newUser.setId(newUser.getId().toLowerCase());
       newUser.setGroups(
           newUser.getGroups().stream().map((String::toLowerCase)).collect(Collectors.toSet()));
+      newUser.setPermissions(
+          newUser.getPermissions().stream().map((String::toLowerCase)).collect(Collectors.toSet()));
     }
   }
 }

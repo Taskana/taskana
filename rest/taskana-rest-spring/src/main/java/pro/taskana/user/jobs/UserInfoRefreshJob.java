@@ -1,10 +1,12 @@
 package pro.taskana.user.jobs;
 
 import java.sql.PreparedStatement;
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.ScheduledJob;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -42,6 +44,10 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
     refreshUserPostprocessorManager = new RefreshUserPostprocessorManager();
   }
 
+  public static Duration getLockExpirationPeriod(TaskanaConfiguration taskanaConfiguration) {
+    return taskanaConfiguration.getUserRefreshJobLockExpirationPeriod();
+  }
+
   @Override
   protected String getType() {
     return UserInfoRefreshJob.class.getName();
@@ -62,7 +68,7 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
               .map(refreshUserPostprocessorManager::processUserAfterRefresh)
               .collect(Collectors.toList());
       addExistingConfigurationDataToUsers(usersAfterProcessing);
-      clearExistingUsersAndGroups();
+      clearExistingUsersAndGroupsAndPermissions();
       insertNewUsers(usersAfterProcessing);
 
       LOGGER.info("Job to refresh all user info has finished.");
@@ -72,18 +78,18 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
     }
   }
 
-  private void clearExistingUsersAndGroups() {
+  private void clearExistingUsersAndGroupsAndPermissions() {
 
     sqlConnectionRunner.runWithConnection(
         connection -> {
           if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Trying to delete all users and groups");
+            LOGGER.debug("Trying to delete all users, groups and permissions");
           }
-          String sql = "DELETE FROM USER_INFO; DELETE FROM GROUP_INFO";
+          String sql = "DELETE FROM USER_INFO; DELETE FROM GROUP_INFO; DELETE FROM PERMISSION_INFO";
           PreparedStatement statement = connection.prepareStatement(sql);
           statement.execute();
           if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Successfully deleted all users and groups");
+            LOGGER.debug("Successfully deleted all users, groups and permissions");
           }
 
           if (!connection.getAutoCommit()) {

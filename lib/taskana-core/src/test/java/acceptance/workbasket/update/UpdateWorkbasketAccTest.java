@@ -45,6 +45,10 @@ class UpdateWorkbasketAccTest extends AbstractAccTest {
     workbasket.setCustomField(WorkbasketCustomField.CUSTOM_2, "new custom 2");
     workbasket.setCustomField(WorkbasketCustomField.CUSTOM_3, "new custom 3");
     workbasket.setCustomField(WorkbasketCustomField.CUSTOM_4, "new custom 4");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_5, "new custom 5");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_6, "new custom 6");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_7, "new custom 7");
+    workbasket.setCustomField(WorkbasketCustomField.CUSTOM_8, "new custom 8");
     workbasket.setDescription("new description");
     workbasketService.updateWorkbasket(workbasket);
 

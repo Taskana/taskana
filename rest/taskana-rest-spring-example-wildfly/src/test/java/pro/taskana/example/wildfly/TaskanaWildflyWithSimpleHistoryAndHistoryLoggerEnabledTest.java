@@ -73,7 +73,7 @@ public class TaskanaWildflyWithSimpleHistoryAndHistoryLoggerEnabledTest extends 
     File[] files =
         Maven.resolver()
             .loadPomFromFile("pom.xml")
-            .importRuntimeDependencies()
+            .importCompileAndRuntimeDependencies()
             .addDependency(simpleHistoryDependency)
             .addDependency(historyLoggerDependency)
             .resolve()

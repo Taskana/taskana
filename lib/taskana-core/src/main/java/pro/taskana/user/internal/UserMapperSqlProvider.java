@@ -42,6 +42,13 @@ public class UserMapperSqlProvider {
         + CLOSING_SCRIPT_TAG;
   }
 
+  public static String findPermissionsById() {
+    return OPENING_SCRIPT_TAG
+        + "SELECT PERMISSION_ID FROM PERMISSION_INFO WHERE USER_ID = #{id} "
+        + DB2_WITH_UR
+        + CLOSING_SCRIPT_TAG;
+  }
+
   public static String insert() {
     return "INSERT INTO USER_INFO ( " + USER_INFO_COLUMNS + ") VALUES(" + USER_INFO_VALUES + ")";
   }
@@ -65,6 +72,26 @@ public class UserMapperSqlProvider {
         + CLOSING_SCRIPT_TAG;
   }
 
+  public static String insertPermissions() {
+    return OPENING_SCRIPT_TAG
+        + "INSERT INTO PERMISSION_INFO (USER_ID, PERMISSION_ID) VALUES "
+        + "<foreach item='permission' collection='permissions' "
+        + "open='(' separator='),(' close=')'>"
+        + "#{id}, #{permission}"
+        + "</foreach> "
+        + CLOSING_SCRIPT_TAG;
+  }
+
+  public static String insertPermissionsOracle() {
+    return OPENING_SCRIPT_TAG
+        + "INSERT ALL "
+        + "<foreach item='permission' collection='permissions' separator='\n'>"
+        + "INTO PERMISSION_INFO (USER_ID, PERMISSION_ID) VALUES ( #{id}, #{permission} )"
+        + "</foreach> "
+        + "SELECT 1 FROM DUAL"
+        + CLOSING_SCRIPT_TAG;
+  }
+
   public static String update() {
     return "UPDATE USER_INFO "
         + "SET FIRST_NAME = #{firstName}, "
@@ -81,5 +108,9 @@ public class UserMapperSqlProvider {
 
   public static String deleteGroups() {
     return "DELETE FROM GROUP_INFO WHERE USER_ID = #{id} ";
+  }
+
+  public static String deletePermissions() {
+    return "DELETE FROM PERMISSION_INFO WHERE USER_ID = #{id} ";
   }
 }

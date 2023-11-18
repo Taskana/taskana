@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  JAVA_VERSION: 11
+  JAVA_VERSION: 17
   NODE_VERSION: 16.14.2
 
   ARTIFACTS_CYPRESS_TESTS_NAME: cypress-tests
@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Git checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v3
         with:
@@ -67,7 +67,7 @@ jobs:
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
           if-no-files-found: error
       - name: Remove taskana artifacts from cache
-        run: rm -rf ~/.m2/repository/pro/taskana
+        run: rm -rf ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
       - name: Cancel workflow
         if: failure()
         uses: andymckay/cancel-action@0.3
@@ -77,14 +77,14 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Git checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v3
         with:
           distribution: adopt
           java-version: ${{ env.JAVA_VERSION }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3.6.0
+        uses: actions/setup-node@v4.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
@@ -132,9 +132,9 @@ jobs:
     needs: [ compile_frontend ]
     steps:
       - name: Git checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3.6.0
+        uses: actions/setup-node@v4.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
@@ -174,14 +174,14 @@ jobs:
     needs: [ compile_frontend, compile_backend ]
     steps:
       - name: Git checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v3
         with:
           distribution: adopt
           java-version: ${{ env.JAVA_VERSION }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3.6.0
+        uses: actions/setup-node@v4.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache web dependencies
@@ -298,7 +298,7 @@ jobs:
             database: POSTGRES
     steps:
       - name: Git checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v3
         with:
@@ -348,7 +348,7 @@ jobs:
       GPG_TTY: $(tty)
     steps:
       - name: Git checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # necessary for push back
           # NOTE @v2 uses the token as an auth http header. Set it to
@@ -418,7 +418,7 @@ jobs:
     needs: [ test_frontend, test_e2e, test_backend ]
     steps:
       - name: Git checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v3
         with:
@@ -455,10 +455,14 @@ jobs:
         with:
           creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
       - name: Deploy to Microsoft Azure
-        uses: Azure/webapps-deploy@v2
+        uses: Azure/webapps-deploy@v3
         with:
           app-name: taskana
           package: rest/taskana-rest-spring-example-boot/target/taskana-rest-spring-example-boot.jar
+      - name: Wait for Azure for 60 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '60s'
       - name: Smoke test documentation
         run: ci/verify_docs_alive.sh
       - name: Cancel workflow
@@ -473,7 +477,7 @@ jobs:
     needs: [ test_frontend, test_e2e, test_backend ]
     steps:
       - name: Git checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up JDK ${{ env.JAVA_VERSION }}

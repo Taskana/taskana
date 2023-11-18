@@ -64,6 +64,94 @@ class UserControllerIntTest {
   }
 
   @Test
+  void should_ReturnCurrentUser() {
+    String url = restHelper.toUrl(RestEndpoints.URL_USERS) + "?current-user";
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+    ResponseEntity<UserCollectionRepresentationModel> response =
+            TEMPLATE.exchange(
+                    url,
+                    HttpMethod.GET,
+                    auth,
+                    ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(1);
+    assertThat(response.getBody().getContent()).extracting("userId").containsExactly("teamlead-1");
+  }
+
+  @Test
+  void should_ReturnExceptionCurrentUserWithBadValue() {
+    String url = restHelper.toUrl(RestEndpoints.URL_USERS) + "?current-user=asd";
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+    ThrowingCallable httpCall =
+            () -> TEMPLATE.exchange(
+                    url,
+                    HttpMethod.GET,
+                    auth,
+                    ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
+    assertThatThrownBy(httpCall)
+            .isInstanceOf(HttpStatusCodeException.class)
+            .extracting(HttpStatusCodeException.class::cast)
+            .extracting(HttpStatusCodeException::getStatusCode)
+            .isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  void should_ReturnExceptionCurrentUserWithEmptyValue() {
+    String url = restHelper.toUrl(RestEndpoints.URL_USERS) + "?current-user=";
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+    ThrowingCallable httpCall =
+            () -> TEMPLATE.exchange(
+                    url,
+                    HttpMethod.GET,
+                    auth,
+                    ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
+    assertThatThrownBy(httpCall)
+            .isInstanceOf(HttpStatusCodeException.class)
+            .extracting(HttpStatusCodeException.class::cast)
+            .extracting(HttpStatusCodeException::getStatusCode)
+            .isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  void should_ReturnOnlyCurrentUserWhileUsingUserIds() {
+    String url = restHelper.toUrl(RestEndpoints.URL_USERS) + "?current-user&user-id=teamlead-1";
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+    ResponseEntity<UserCollectionRepresentationModel> response =
+            TEMPLATE.exchange(
+                    url,
+                    HttpMethod.GET,
+                    auth,
+                    ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().getContent()).hasSize(1);
+    assertThat(response.getBody().getContent()).extracting("userId").containsExactly("teamlead-1");
+  }
+
+  @Test
+  void should_ReturnExistingUsersAndCurrentUser() throws Exception {
+    String url = restHelper.toUrl(RestEndpoints.URL_USERS)
+            + "?user-id=user-1-1&user-id=USER-1-2&current-user";
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+    ResponseEntity<UserCollectionRepresentationModel> responseEntity =
+            TEMPLATE.exchange(
+                    url,
+                    HttpMethod.GET,
+                    auth,
+                    ParameterizedTypeReference.forType(UserCollectionRepresentationModel.class));
+    UserCollectionRepresentationModel response = responseEntity.getBody();
+    assertThat(response).isNotNull();
+    assertThat(response.getContent()).hasSize(3);
+    assertThat(response.getContent())
+            .extracting("userId")
+            .containsExactlyInAnyOrder("user-1-1", "user-1-2", "teamlead-1");
+  }
+
+  @Test
   void should_ReturnExistingUsers_When_ParameterContainsDuplicateAndInvalidIds() throws Exception {
     // also testing different query parameter format
     String url =
@@ -96,6 +184,7 @@ class UserControllerIntTest {
     UserRepresentationModel newUser = new UserRepresentationModel();
     newUser.setUserId("12345");
     newUser.setGroups(Set.of("group1", "group2"));
+    newUser.setPermissions(Set.of("perm1", "perm2"));
     newUser.setFirstName("Hans");
     newUser.setLastName("Georg");
     newUser.setFullName("Georg, Hans");

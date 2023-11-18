@@ -46,6 +46,7 @@ import pro.taskana.task.api.models.Task;
 import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
+import pro.taskana.testapi.builder.TaskBuilder;
 import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
 import pro.taskana.workbasket.api.WorkbasketPermission;
@@ -134,6 +135,7 @@ class UpdateClassificationAccTest {
         .accessId(currentUserContext.getUserid())
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService, "businessadmin");
 
@@ -156,6 +158,7 @@ class UpdateClassificationAccTest {
         .accessId(currentUserContext.getUserid())
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
         .permission(WorkbasketPermission.APPEND)
         .buildAndStore(workbasketService, "businessadmin");
     ClassificationSummary classificationSummaryWithSpecifiedServiceLevel =
@@ -182,6 +185,50 @@ class UpdateClassificationAccTest {
   @TestInstance(Lifecycle.PER_CLASS)
   @Nested
   class UpdatePriorityAndServiceLevelTest {
+
+    @WithAccessId(user = "businessadmin")
+    @Test
+    void should_ChangeDueDate_When_ServiceLevelOfClassificationHasChanged() throws Exception {
+      Classification classification =
+          defaultTestClassification()
+              .priority(1)
+              .serviceLevel("P1D")
+              .buildAndStore(classificationService);
+      WorkbasketSummary workbasketSummary =
+          defaultTestWorkbasket().buildAndStoreAsSummary(workbasketService);
+      WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+          .workbasketId(workbasketSummary.getId())
+          .accessId(currentUserContext.getUserid())
+          .permission(WorkbasketPermission.OPEN)
+          .permission(WorkbasketPermission.READ)
+          .permission(WorkbasketPermission.READTASKS)
+          .permission(WorkbasketPermission.APPEND)
+          .buildAndStore(workbasketService, "businessadmin");
+
+      Task task = new TaskBuilder()
+          .classificationSummary(classification.asSummary())
+          .workbasketSummary(workbasketSummary)
+          .primaryObjRef(defaultTestObjectReference().build())
+          .planned(Instant.parse("2021-04-27T15:34:00.000Z"))
+          .due(null)
+          .buildAndStore(taskService);
+
+      classificationService.updateClassification(classification);
+      runAssociatedJobs();
+      // read again the task from DB
+      task = taskService.getTask(task.getId());
+      assertThat(task.getClassificationSummary().getServiceLevel()).isEqualTo("P1D");
+      assertThat(task.getDue()).isAfterOrEqualTo("2021-04-28T15:33:59.999Z");
+
+      classification.setServiceLevel("P3D");
+      classificationService.updateClassification(classification);
+      runAssociatedJobs();
+
+      // read again the task from DB
+      task = taskService.getTask(task.getId());
+      assertThat(task.getClassificationSummary().getServiceLevel()).isEqualTo("P3D");
+      assertThat(task.getDue()).isEqualTo("2021-04-30T15:33:59.999Z");
+    }
 
     @WithAccessId(user = "businessadmin")
     @Test

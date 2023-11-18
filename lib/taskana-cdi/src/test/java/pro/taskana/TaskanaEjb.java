@@ -1,7 +1,7 @@
 package pro.taskana;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import pro.taskana.classification.api.ClassificationService;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.models.Task;
@@ -11,11 +11,27 @@ import pro.taskana.workbasket.api.WorkbasketService;
 @Stateless
 public class TaskanaEjb {
 
-  @Inject private TaskService taskService;
+  private final TaskService taskService;
 
-  @Inject private ClassificationService classificationService;
+  private final ClassificationService classificationService;
 
-  @Inject private WorkbasketService workbasketService;
+  private final WorkbasketService workbasketService;
+
+  public TaskanaEjb() {
+    this.taskService = null;
+    this.classificationService = null;
+    this.workbasketService = null;
+  }
+
+  @Inject
+  public TaskanaEjb(
+      TaskService taskService,
+      ClassificationService classificationService,
+      WorkbasketService workbasketService) {
+    this.taskService = taskService;
+    this.classificationService = classificationService;
+    this.workbasketService = workbasketService;
+  }
 
   public TaskService getTaskService() {
     return taskService;

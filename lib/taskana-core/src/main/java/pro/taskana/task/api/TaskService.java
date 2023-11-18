@@ -221,6 +221,44 @@ public interface TaskService {
           InvalidTaskStateException;
 
   /**
+   * Cancel the claim of an existing {@linkplain Task} if it was claimed by the current user before.
+   *
+   * @param taskId the {@linkplain Task#getId() id} of the {@linkplain Task} which should be
+   *     unclaimed
+   * @param keepOwner If set to true, will keep the {@linkplain Task#getOwner()} and {@linkplain
+   *     Task#getOwnerLongName()}
+   * @return the unclaimed {@linkplain Task}
+   * @throws TaskNotFoundException if the {@linkplain Task} with taskId was not found
+   * @throws InvalidTaskStateException if the {@linkplain Task} is already in one of the {@linkplain
+   *     TaskState#END_STATES}
+   * @throws InvalidOwnerException if the {@linkplain Task} is claimed by another user
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
+   *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
+   */
+  Task cancelClaim(String taskId, boolean keepOwner)
+      throws TaskNotFoundException,
+          InvalidOwnerException,
+          NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException;
+
+  /**
+   * Cancel the claim of an existing {@linkplain Task} even if it was claimed by another user.
+   *
+   * @param taskId the {@linkplain Task#getId() id} of the {@linkplain Task} which should be
+   *     unclaimed
+   * @param keepOwner If set to true, will keep the {@linkplain Task#getOwner()} and {@linkplain
+   *     Task#getOwnerLongName()}
+   * @return the unclaimed {@linkplain Task}
+   * @throws TaskNotFoundException if the {@linkplain Task} with taskId was not found
+   * @throws InvalidTaskStateException if the {@linkplain Task} is already in one of the {@linkplain
+   *     TaskState#END_STATES}
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
+   *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
+   */
+  Task forceCancelClaim(String taskId, boolean keepOwner)
+      throws TaskNotFoundException, NotAuthorizedOnWorkbasketException, InvalidTaskStateException;
+
+  /**
    * Cancel the claim of an existing {@linkplain Task} even if it was claimed by another user.
    *
    * @param taskId the {@linkplain Task#getId() id} of the {@linkplain Task} which should be
@@ -233,9 +271,7 @@ public interface TaskService {
    *     WorkbasketPermission#READ} for the {@linkplain Workbasket} the {@linkplain Task} is in
    */
   Task forceCancelClaim(String taskId)
-      throws TaskNotFoundException,
-          NotAuthorizedOnWorkbasketException,
-          InvalidTaskStateException;
+      throws TaskNotFoundException, NotAuthorizedOnWorkbasketException, InvalidTaskStateException;
 
   /**
    * Request review for an existing {@linkplain Task} that is in {@linkplain TaskState#CLAIMED}.
@@ -643,7 +679,8 @@ public interface TaskService {
 
   /**
    * Updates specified {@linkplain TaskCustomField TaskCustomFields} of {@linkplain Task Tasks}
-   * associated with the given {@linkplain Task#getPrimaryObjRef() primaryObjRef}.
+   * associated with the given {@linkplain Task#getPrimaryObjRef() primaryObjRef}. Tasks in
+   * Workbaskets without EDITTASKS permission will be ignored and not updated.
    *
    * @param selectionCriteria the {@linkplain Task#getPrimaryObjRef() primaryObjRef} of the
    *     searched-for {@linkplain Task Tasks}.

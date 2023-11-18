@@ -62,6 +62,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.platform.commons.support.AnnotationSupport;
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.common.api.TaskanaEngine;
+import pro.taskana.common.api.WorkingTimeCalculator;
 import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.common.api.exceptions.TaskanaRuntimeException;
@@ -71,7 +72,6 @@ import pro.taskana.common.internal.TaskanaEngineImpl;
 import pro.taskana.common.internal.jobs.JobScheduler;
 import pro.taskana.common.internal.logging.LoggingAspect;
 import pro.taskana.common.internal.workingtime.HolidaySchedule;
-import pro.taskana.common.internal.workingtime.WorkingTimeCalculatorImpl;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 
 /**
@@ -437,7 +437,7 @@ class ArchitectureTest {
         .that()
         .areNotAssignableFrom(ArchitectureTest.class)
         .and()
-        .areNotAssignableTo(WorkingTimeCalculatorImpl.class)
+        .areNotAssignableTo(WorkingTimeCalculator.class)
         .and()
         .areNotAssignableTo(TaskanaEngineImpl.class)
         .and()

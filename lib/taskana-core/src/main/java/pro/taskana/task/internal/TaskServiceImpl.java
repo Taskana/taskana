@@ -46,6 +46,7 @@ import pro.taskana.spi.history.api.events.task.TaskClaimCancelledEvent;
 import pro.taskana.spi.history.api.events.task.TaskClaimedEvent;
 import pro.taskana.spi.history.api.events.task.TaskCompletedEvent;
 import pro.taskana.spi.history.api.events.task.TaskCreatedEvent;
+import pro.taskana.spi.history.api.events.task.TaskDeletedEvent;
 import pro.taskana.spi.history.api.events.task.TaskRequestChangesEvent;
 import pro.taskana.spi.history.api.events.task.TaskRequestReviewEvent;
 import pro.taskana.spi.history.api.events.task.TaskTerminatedEvent;
@@ -58,6 +59,7 @@ import pro.taskana.spi.task.internal.BeforeRequestChangesManager;
 import pro.taskana.spi.task.internal.BeforeRequestReviewManager;
 import pro.taskana.spi.task.internal.CreateTaskPreprocessorManager;
 import pro.taskana.spi.task.internal.ReviewRequiredManager;
+import pro.taskana.spi.task.internal.TaskEndstatePreprocessorManager;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCommentQuery;
 import pro.taskana.task.api.TaskCustomField;
@@ -123,6 +125,7 @@ public class TaskServiceImpl implements TaskService {
   private final AfterRequestReviewManager afterRequestReviewManager;
   private final BeforeRequestChangesManager beforeRequestChangesManager;
   private final AfterRequestChangesManager afterRequestChangesManager;
+  private final TaskEndstatePreprocessorManager taskEndstatePreprocessorManager;
 
   public TaskServiceImpl(
       InternalTaskanaEngine taskanaEngine,
@@ -146,6 +149,7 @@ public class TaskServiceImpl implements TaskService {
     this.afterRequestReviewManager = taskanaEngine.getAfterRequestReviewManager();
     this.beforeRequestChangesManager = taskanaEngine.getBeforeRequestChangesManager();
     this.afterRequestChangesManager = taskanaEngine.getAfterRequestChangesManager();
+    this.taskEndstatePreprocessorManager = taskanaEngine.getTaskEndstatePreprocessorManager();
     this.taskTransferrer = new TaskTransferrer(taskanaEngine, taskMapper, this);
     this.taskCommentService =
         new TaskCommentServiceImpl(taskanaEngine, taskCommentMapper, userMapper, this);
@@ -179,14 +183,33 @@ public class TaskServiceImpl implements TaskService {
           InvalidOwnerException,
           NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
-    return this.cancelClaim(taskId, false);
+    return this.cancelClaim(taskId, false, false);
   }
 
   @Override
   public Task forceCancelClaim(String taskId)
       throws TaskNotFoundException, InvalidTaskStateException, NotAuthorizedOnWorkbasketException {
     try {
-      return this.cancelClaim(taskId, true);
+      return this.cancelClaim(taskId, true, false);
+    } catch (InvalidOwnerException e) {
+      throw new SystemException("this should not have happened. You've discovered a new bug!", e);
+    }
+  }
+
+  @Override
+  public Task cancelClaim(String taskId, boolean keepOwner)
+      throws TaskNotFoundException,
+          InvalidOwnerException,
+          NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException {
+    return this.cancelClaim(taskId, false, keepOwner);
+  }
+
+  @Override
+  public Task forceCancelClaim(String taskId, boolean keepOwner)
+      throws TaskNotFoundException, InvalidTaskStateException, NotAuthorizedOnWorkbasketException {
+    try {
+      return this.cancelClaim(taskId, true, keepOwner);
     } catch (InvalidOwnerException e) {
       throw new SystemException("this should not have happened. You've discovered a new bug!", e);
     }
@@ -381,12 +404,14 @@ public class TaskServiceImpl implements TaskService {
         WorkbasketQueryImpl query = (WorkbasketQueryImpl) workbasketService.createWorkbasketQuery();
         query.setUsedToAugmentTasks(true);
         String workbasketId = resultTask.getWorkbasketSummary().getId();
-        List<WorkbasketSummary> workbaskets = query.idIn(workbasketId).list();
+        List<WorkbasketSummary> workbaskets =
+            query.idIn(workbasketId).callerHasPermissions(WorkbasketPermission.READTASKS).list();
         if (workbaskets.isEmpty()) {
           throw new NotAuthorizedOnWorkbasketException(
               taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
               workbasketId,
-              WorkbasketPermission.READ);
+              WorkbasketPermission.READ,
+              WorkbasketPermission.READTASKS);
         } else {
           resultTask.setWorkbasketSummary(workbaskets.get(0));
         }
@@ -542,6 +567,12 @@ public class TaskServiceImpl implements TaskService {
       TaskImpl oldTaskImpl = (TaskImpl) getTask(newTaskImpl.getId());
 
       checkConcurrencyAndSetModified(newTaskImpl, oldTaskImpl);
+      if (!checkEditTasksPerm(oldTaskImpl)) {
+        throw new NotAuthorizedOnWorkbasketException(
+            taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+            oldTaskImpl.getWorkbasketSummary().getId(),
+            WorkbasketPermission.EDITTASKS);
+      }
 
       attachmentHandler.insertAndDeleteAttachmentsOnTaskUpdate(newTaskImpl, oldTaskImpl);
       objectReferenceHandler.insertAndDeleteObjectReferencesOnTaskUpdate(newTaskImpl, oldTaskImpl);
@@ -622,11 +653,18 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public Optional<Task> selectAndClaim(TaskQuery taskQuery) {
+  public Optional<Task> selectAndClaim(TaskQuery taskQuery)
+      throws NotAuthorizedOnWorkbasketException {
     ((TaskQueryImpl) taskQuery).selectAndClaimEquals(true);
-    return taskanaEngine.executeInDatabaseConnection(
-        () ->
-            Optional.ofNullable(taskQuery.single()).map(TaskSummary::getId).map(wrap(this::claim)));
+    try {
+      return taskanaEngine.executeInDatabaseConnection(
+          () ->
+              Optional.ofNullable(taskQuery.single())
+                  .map(TaskSummary::getId)
+                  .map(wrap(this::claim)));
+    } catch (Exception e) {
+      return Optional.empty();
+    }
   }
 
   @Override
@@ -667,6 +705,9 @@ public class TaskServiceImpl implements TaskService {
                 .isDeleteHistoryEventsOnTaskDeletionEnabled()) {
           historyEventManager.deleteEvents(taskIds);
         }
+        if (historyEventManager.isEnabled()) {
+          taskIds.forEach(this::createTaskDeletedEvent);
+        }        
       }
       return bulkLog;
     } finally {
@@ -702,9 +743,17 @@ public class TaskServiceImpl implements TaskService {
       // use query in order to find only those tasks that are visible to the current user
       List<TaskSummary> taskSummaries = getTasksToChange(selectionCriteria);
 
+      List<TaskSummary> tasksWithPermissions = new ArrayList<>();
+      for (TaskSummary taskSummary : taskSummaries) {
+        if (checkEditTasksPerm(taskSummary)) {
+          tasksWithPermissions.add(taskSummary);
+        }
+      }
+
       List<String> changedTasks = new ArrayList<>();
-      if (!taskSummaries.isEmpty()) {
-        changedTasks = taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
+      if (!tasksWithPermissions.isEmpty()) {
+        changedTasks =
+            tasksWithPermissions.stream().map(TaskSummary::getId).collect(Collectors.toList());
         taskMapper.updateTasks(changedTasks, updated, fieldSelector);
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug("updateTasks() updated the following tasks: {} ", changedTasks);
@@ -736,9 +785,17 @@ public class TaskServiceImpl implements TaskService {
       // use query in order to find only those tasks that are visible to the current user
       List<TaskSummary> taskSummaries = getTasksToChange(taskIds);
 
+      List<TaskSummary> tasksWithPermissions = new ArrayList<>();
+      for (TaskSummary taskSummary : taskSummaries) {
+        if (checkEditTasksPerm(taskSummary)) {
+          tasksWithPermissions.add(taskSummary);
+        }
+      }
+
       List<String> changedTasks = new ArrayList<>();
-      if (!taskSummaries.isEmpty()) {
-        changedTasks = taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
+      if (!tasksWithPermissions.isEmpty()) {
+        changedTasks =
+            tasksWithPermissions.stream().map(TaskSummary::getId).collect(Collectors.toList());
         taskMapper.updateTasks(changedTasks, updatedTask, fieldSelector);
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug("updateTasks() updated the following tasks: {} ", changedTasks);
@@ -889,12 +946,35 @@ public class TaskServiceImpl implements TaskService {
   public Task cancelTask(String taskId)
       throws TaskNotFoundException, NotAuthorizedOnWorkbasketException, InvalidTaskStateException {
 
-    Task cancelledTask;
+    TaskImpl cancelledTask;
 
     try {
       taskanaEngine.openConnection();
-      cancelledTask = terminateCancelCommonActions(taskId, TaskState.CANCELLED);
+      if (taskId == null || taskId.isEmpty()) {
+        throw new TaskNotFoundException(taskId);
+      }
+      cancelledTask = (TaskImpl) getTask(taskId);
+      TaskState state = cancelledTask.getState();
+      if (state.isEndState()) {
+        throw new InvalidTaskStateException(
+            taskId,
+            state,
+            TaskState.READY,
+            TaskState.CLAIMED,
+            TaskState.READY_FOR_REVIEW,
+            TaskState.IN_REVIEW);
+      }
 
+      terminateCancelCommonActions(cancelledTask, TaskState.CANCELLED);
+      cancelledTask =
+          (TaskImpl) taskEndstatePreprocessorManager.processTaskBeforeEndstate(cancelledTask);
+      taskMapper.update(cancelledTask);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            "Task '{}' cancelled by user '{}'.",
+            taskId,
+            taskanaEngine.getEngine().getCurrentUserContext().getUserid());
+      }
       if (historyEventManager.isEnabled()) {
         historyEventManager.createEvent(
             new TaskCancelledEvent(
@@ -918,12 +998,35 @@ public class TaskServiceImpl implements TaskService {
 
     taskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN);
 
-    Task terminatedTask;
+    TaskImpl terminatedTask;
 
     try {
       taskanaEngine.openConnection();
-      terminatedTask = terminateCancelCommonActions(taskId, TaskState.TERMINATED);
+      if (taskId == null || taskId.isEmpty()) {
+        throw new TaskNotFoundException(taskId);
+      }
+      terminatedTask = (TaskImpl) getTask(taskId);
+      TaskState state = terminatedTask.getState();
+      if (state.isEndState()) {
+        throw new InvalidTaskStateException(
+            taskId,
+            state,
+            TaskState.READY,
+            TaskState.CLAIMED,
+            TaskState.READY_FOR_REVIEW,
+            TaskState.IN_REVIEW);
+      }
 
+      terminateCancelCommonActions(terminatedTask, TaskState.TERMINATED);
+      terminatedTask =
+          (TaskImpl) taskEndstatePreprocessorManager.processTaskBeforeEndstate(terminatedTask);
+      taskMapper.update(terminatedTask);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            "Task '{}' cancelled by user '{}'.",
+            taskId,
+            taskanaEngine.getEngine().getCurrentUserContext().getUserid());
+      }
       if (historyEventManager.isEnabled()) {
         historyEventManager.createEvent(
             new TaskTerminatedEvent(
@@ -1225,35 +1328,11 @@ public class TaskServiceImpl implements TaskService {
     newTaskImpl.setModified(Instant.now());
   }
 
-  private TaskImpl terminateCancelCommonActions(String taskId, TaskState targetState)
-      throws TaskNotFoundException, NotAuthorizedOnWorkbasketException, InvalidTaskStateException {
-    if (taskId == null || taskId.isEmpty()) {
-      throw new TaskNotFoundException(taskId);
-    }
-    TaskImpl task = (TaskImpl) getTask(taskId);
-    TaskState state = task.getState();
-    if (state.isEndState()) {
-      throw new InvalidTaskStateException(
-          taskId,
-          state,
-          TaskState.READY,
-          TaskState.CLAIMED,
-          TaskState.READY_FOR_REVIEW,
-          TaskState.IN_REVIEW);
-    }
-
+  private static void terminateCancelCommonActions(TaskImpl task, TaskState targetState) {
     Instant now = Instant.now();
     task.setModified(now);
     task.setCompleted(now);
     task.setState(targetState);
-    taskMapper.update(task);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug(
-          "Task '{}' cancelled by user '{}'.",
-          taskId,
-          taskanaEngine.getEngine().getCurrentUserContext().getUserid());
-    }
-    return task;
   }
 
   private Task claim(String taskId, boolean forceClaim)
@@ -1420,8 +1499,12 @@ public class TaskServiceImpl implements TaskService {
     }
   }
 
-  private static void cancelClaimActionsOnTask(TaskSummaryImpl task, Instant now) {
-    task.setOwner(null);
+  private static void cancelClaimActionsOnTask(
+      TaskSummaryImpl task, Instant now, boolean keepOwner) {
+    if (!keepOwner) {
+      task.setOwner(null);
+      task.setOwnerLongName(null);
+    }
     task.setModified(now);
     task.setClaimed(null);
     task.setRead(true);
@@ -1440,7 +1523,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void checkPreconditionsForClaimTask(TaskSummary task, boolean forced)
-      throws InvalidOwnerException, InvalidTaskStateException {
+      throws InvalidOwnerException, InvalidTaskStateException, NotAuthorizedOnWorkbasketException {
     TaskState state = task.getState();
     if (state.isEndState()) {
       throw new InvalidTaskStateException(
@@ -1452,6 +1535,12 @@ public class TaskServiceImpl implements TaskService {
         && (state == TaskState.CLAIMED || state == TaskState.IN_REVIEW)
         && !task.getOwner().equals(userId)) {
       throw new InvalidOwnerException(userId, task.getId());
+    }
+    if (!checkEditTasksPerm(task)) {
+      throw new NotAuthorizedOnWorkbasketException(
+          taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+          task.getWorkbasketSummary().getId(),
+          WorkbasketPermission.EDITTASKS);
     }
   }
 
@@ -1471,7 +1560,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void checkPreconditionsForCompleteTask(TaskSummary task)
-      throws InvalidOwnerException, InvalidTaskStateException {
+      throws InvalidOwnerException, InvalidTaskStateException, NotAuthorizedOnWorkbasketException {
     if (taskIsNotClaimed(task)) {
       throw new InvalidTaskStateException(
           task.getId(), task.getState(), TaskState.CLAIMED, TaskState.IN_REVIEW);
@@ -1484,9 +1573,15 @@ public class TaskServiceImpl implements TaskService {
       throw new InvalidOwnerException(
           taskanaEngine.getEngine().getCurrentUserContext().getUserid(), task.getId());
     }
+    if (!checkEditTasksPerm(task)) {
+      throw new NotAuthorizedOnWorkbasketException(
+          taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+          task.getWorkbasketSummary().getId(),
+          WorkbasketPermission.EDITTASKS);
+    }
   }
 
-  private Task cancelClaim(String taskId, boolean forceUnclaim)
+  private Task cancelClaim(String taskId, boolean forceUnclaim, boolean keepOwner)
       throws TaskNotFoundException,
           InvalidOwnerException,
           NotAuthorizedOnWorkbasketException,
@@ -1496,10 +1591,15 @@ public class TaskServiceImpl implements TaskService {
     try {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
-
       TaskImpl oldTask = duplicateTaskExactly(task);
 
       TaskState state = task.getState();
+      if (!checkEditTasksPerm(task)) {
+        throw new NotAuthorizedOnWorkbasketException(
+            taskanaEngine.getEngine().getCurrentUserContext().getUserid(),
+            task.getWorkbasketSummary().getId(),
+            WorkbasketPermission.EDITTASKS);
+      }
       if (state.isEndState()) {
         throw new InvalidTaskStateException(
             taskId, state, EnumUtil.allValuesExceptFor(TaskState.END_STATES));
@@ -1510,7 +1610,7 @@ public class TaskServiceImpl implements TaskService {
         throw new InvalidOwnerException(userId, taskId);
       }
       Instant now = Instant.now();
-      cancelClaimActionsOnTask(task, now);
+      cancelClaimActionsOnTask(task, now, keepOwner);
       taskMapper.update(task);
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Task '{}' unclaimed by user '{}'.", taskId, userId);
@@ -1560,6 +1660,7 @@ public class TaskServiceImpl implements TaskService {
 
       Instant now = Instant.now();
       completeActionsOnTask(task, userId, now);
+      task = (TaskImpl) taskEndstatePreprocessorManager.processTaskBeforeEndstate(task);
       taskMapper.update(task);
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Task '{}' completed by user '{}'.", taskId, userId);
@@ -1610,6 +1711,10 @@ public class TaskServiceImpl implements TaskService {
               .getConfiguration()
               .isDeleteHistoryEventsOnTaskDeletionEnabled()) {
         historyEventManager.deleteEvents(Collections.singletonList(taskId));
+      }
+
+      if (historyEventManager.isEnabled()) {
+        createTaskDeletedEvent(taskId);
       }
 
       if (LOGGER.isDebugEnabled()) {
@@ -2110,6 +2215,12 @@ public class TaskServiceImpl implements TaskService {
       throw new InvalidTaskStateException(
           oldTaskImpl.getId(), oldTaskImpl.getState(), TaskState.READY, TaskState.READY_FOR_REVIEW);
     }
+    if (isOwnerChanged && taskanaEngine.getEngine().getConfiguration().isAddAdditionalUserInfo()) {
+      User user = userMapper.findById(newTaskImpl.getOwner());
+      if (user != null) {
+        newTaskImpl.setOwnerLongName(user.getLongName());
+      }
+    }
   }
 
   private void updateClassificationSummary(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
@@ -2138,6 +2249,15 @@ public class TaskServiceImpl implements TaskService {
                     taskanaEngine.getEngine().getCurrentUserContext().getUserid())));
   }
 
+  private void createTaskDeletedEvent(String taskId) {
+    historyEventManager.createEvent(
+        new TaskDeletedEvent(
+            IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT),
+            newTask().asSummary(),
+            taskId,
+            taskanaEngine.getEngine().getCurrentUserContext().getUserid()));
+  }
+
   private TaskImpl duplicateTaskExactly(TaskImpl task) {
     TaskImpl oldTask = task.copy();
     oldTask.setId(task.getId());
@@ -2145,5 +2265,13 @@ public class TaskServiceImpl implements TaskService {
     oldTask.setAttachments(task.getAttachments());
     oldTask.setSecondaryObjectReferences(task.getSecondaryObjectReferences());
     return oldTask;
+  }
+
+  private boolean checkEditTasksPerm(TaskSummary task) {
+    WorkbasketQueryImpl query = (WorkbasketQueryImpl) workbasketService.createWorkbasketQuery();
+    String workbasketId = task.getWorkbasketSummary().getId();
+    WorkbasketSummary workbasket =
+        query.idIn(workbasketId).callerHasPermissions(WorkbasketPermission.EDITTASKS).single();
+    return workbasket != null;
   }
 }

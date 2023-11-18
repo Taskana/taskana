@@ -215,6 +215,7 @@ class LdapClientTest {
               {"taskana.ldap.userSearchFilterName", "objectclass"},
               {"taskana.ldap.groupsOfUser", "memberUid"},
               {"taskana.ldap.groupNameAttribute", "cn"},
+              {"taskana.ldap.userPermissionsAttribute", "permission"},
               {"taskana.ldap.groupSearchFilterValue", "groupOfUniqueNames"},
               {"taskana.ldap.groupSearchFilterName", "objectclass"},
               {"taskana.ldap.groupSearchBase", "ou=groups"},
@@ -230,7 +231,7 @@ class LdapClientTest {
               {"taskana.ldap.userOrglevel1Attribute", "orgLevel1"},
               {"taskana.ldap.userOrglevel2Attribute", "orgLevel2"},
               {"taskana.ldap.userOrglevel3Attribute", "orgLevel3"},
-              {"taskana.ldap.userOrglevel4Attribute", "orgLevel4"},
+              {"taskana.ldap.userOrglevel4Attribute", "orgLevel4"}
             })
         .forEach(
             strings ->

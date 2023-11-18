@@ -115,7 +115,7 @@ class TaskanaConfigurationTest {
       assertThat(configuration.getLogHistoryLoggerName()).isNull();
       // job configuration
       assertThat(configuration.isJobSchedulerEnabled()).isTrue();
-      assertThat(configuration.getJobSchedulerInitialStartDelay()).isEqualTo(100);
+      assertThat(configuration.getJobSchedulerInitialStartDelay()).isEqualTo(0);
       assertThat(configuration.getJobSchedulerPeriod()).isEqualTo(5);
       assertThat(configuration.getJobSchedulerPeriodTimeUnit()).isEqualTo(TimeUnit.MINUTES);
       assertThat(configuration.getMaxNumberOfJobRetries()).isEqualTo(3);
@@ -251,6 +251,7 @@ class TaskanaConfigurationTest {
       Map<String, List<String>> expectedClassificationCategories =
           Map.of("TYPE_A", List.of("CATEGORY_A"), "TYPE_B", List.of("CATEGORY_B"));
       // working time configuration
+      boolean expectedUseDetailedWorkingTimeCalculation = false;
       Map<DayOfWeek, Set<LocalTimeInterval>> expectedWorkingTimeSchedule =
           Map.of(DayOfWeek.MONDAY, Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.NOON)));
       ZoneId expectedWorkingTimeScheduleTimeZone = ZoneId.ofOffset("UTC", ZoneOffset.ofHours(4));
@@ -269,21 +270,27 @@ class TaskanaConfigurationTest {
       int expectedJobBatchSize = 50;
       Instant expectedJobFirstJun = Instant.MIN;
       Duration expectedJobRunEvery = Duration.ofDays(2);
+      Duration expectedJobLockExpirationPeriod = Duration.ofDays(2);
       boolean expectedTaskCleanupJobEnabled = false;
       Duration expectedTaskCleanupJobMinimumAge = Duration.ofDays(1);
       boolean expectedTaskCleanupJobAllCompletedSameParentBusiness = false;
+      Duration expectedTaskCleanupJobLockExpirationPeriod = Duration.ofDays(2);
       boolean expectedWorkbasketCleanupJobEnabled = false;
+      Duration expectedWorkbasketCleanupJobLockExpirationPeriod = Duration.ofDays(2);
       boolean expectedSimpleHistoryCleanupJobEnabled = true;
       int expectedSimpleHistoryCleanupJobBatchSize = 16;
       Duration expectedSimpleHistoryCleanupJobMinimumAge = Duration.ofHours(3);
       boolean expectedSimpleHistoryCleanupJobAllCompletedSameParentBusiness = false;
+      Duration expectedSimpleHistoryCleanupJobLockExpirationPeriod = Duration.ofDays(2);
       boolean expectedTaskUpdatePriorityJobEnabled = true;
       int expectedPriorityJobBatchSize = 49;
       Instant expectedPriorityJobFirstRun = Instant.MIN.plus(1, ChronoUnit.DAYS);
       Duration expectedTaskUpdatePriorityJobRunEvery = Duration.ofMinutes(17);
+      Duration expectedTaskUpdatePriorityJobLockExpirationPeriod = Duration.ofDays(2);
       boolean expectedUserInfoRefreshJobEnabled = true;
       Instant expectedUserRefreshJobFirstRun = Instant.MIN.plus(2, ChronoUnit.DAYS);
       Duration expectedUserRefreshJobRunEvery = Duration.ofDays(5);
+      Duration expectedUserRefreshJobLockExpirationPeriod = Duration.ofDays(2);
       Set<String> expectedJobSchedulerCustomJobs = Set.of("Job_A", "Job_B");
       // user configuration
       boolean expectedAddAdditionalUserInfo = true;
@@ -308,6 +315,7 @@ class TaskanaConfigurationTest {
               .classificationTypes(expectedClassificationTypes)
               .classificationCategoriesByType(expectedClassificationCategories)
               // working time configuration
+              .useWorkingTimeCalculation(expectedUseDetailedWorkingTimeCalculation)
               .workingTimeSchedule(expectedWorkingTimeSchedule)
               .workingTimeScheduleTimeZone(expectedWorkingTimeScheduleTimeZone)
               .customHolidays(expectedCustomHolidays)
@@ -327,23 +335,32 @@ class TaskanaConfigurationTest {
               .jobBatchSize(expectedJobBatchSize)
               .jobFirstRun(expectedJobFirstJun)
               .jobRunEvery(expectedJobRunEvery)
+              .jobLockExpirationPeriod(expectedJobLockExpirationPeriod)
               .taskCleanupJobEnabled(expectedTaskCleanupJobEnabled)
               .taskCleanupJobMinimumAge(expectedTaskCleanupJobMinimumAge)
               .taskCleanupJobAllCompletedSameParentBusiness(
                   expectedTaskCleanupJobAllCompletedSameParentBusiness)
+              .taskCleanupJobLockExpirationPeriod(expectedTaskCleanupJobLockExpirationPeriod)
               .workbasketCleanupJobEnabled(expectedWorkbasketCleanupJobEnabled)
+              .workbasketCleanupJobLockExpirationPeriod(
+                  expectedWorkbasketCleanupJobLockExpirationPeriod)
               .simpleHistoryCleanupJobEnabled(expectedSimpleHistoryCleanupJobEnabled)
               .simpleHistoryCleanupJobBatchSize(expectedSimpleHistoryCleanupJobBatchSize)
               .simpleHistoryCleanupJobMinimumAge(expectedSimpleHistoryCleanupJobMinimumAge)
               .simpleHistoryCleanupJobAllCompletedSameParentBusiness(
                   expectedSimpleHistoryCleanupJobAllCompletedSameParentBusiness)
+              .simpleHistoryCleanupJobLockExpirationPeriod(
+                  expectedSimpleHistoryCleanupJobLockExpirationPeriod)
               .taskUpdatePriorityJobEnabled(expectedTaskUpdatePriorityJobEnabled)
               .taskUpdatePriorityJobBatchSize(expectedPriorityJobBatchSize)
               .taskUpdatePriorityJobFirstRun(expectedPriorityJobFirstRun)
               .taskUpdatePriorityJobRunEvery(expectedTaskUpdatePriorityJobRunEvery)
+              .taskUpdatePriorityJobLockExpirationPeriod(
+                  expectedTaskUpdatePriorityJobLockExpirationPeriod)
               .userInfoRefreshJobEnabled(expectedUserInfoRefreshJobEnabled)
               .userRefreshJobFirstRun(expectedUserRefreshJobFirstRun)
               .userRefreshJobRunEvery(expectedUserRefreshJobRunEvery)
+              .userRefreshJobLockExpirationPeriod(expectedUserRefreshJobLockExpirationPeriod)
               .customJobs(expectedJobSchedulerCustomJobs)
               // user configuration
               .addAdditionalUserInfo(expectedAddAdditionalUserInfo)
@@ -368,6 +385,8 @@ class TaskanaConfigurationTest {
       assertThat(configuration.getClassificationCategoriesByType())
           .isEqualTo(expectedClassificationCategories);
       // working time configuration
+      assertThat(configuration.isUseWorkingTimeCalculation())
+          .isEqualTo(expectedUseDetailedWorkingTimeCalculation);
       assertThat(configuration.getWorkingTimeSchedule()).isEqualTo(expectedWorkingTimeSchedule);
       assertThat(configuration.getWorkingTimeScheduleTimeZone())
           .isEqualTo(expectedWorkingTimeScheduleTimeZone);
@@ -442,6 +461,7 @@ class TaskanaConfigurationTest {
               .classificationCategoriesByType(
                   Map.of("typeA", List.of("categoryA"), "typeB", List.of("categoryB")))
               // working time configuration
+              .useWorkingTimeCalculation(false)
               .workingTimeSchedule(
                   Map.of(
                       DayOfWeek.MONDAY,
@@ -462,21 +482,27 @@ class TaskanaConfigurationTest {
               .jobBatchSize(50)
               .jobFirstRun(Instant.MIN)
               .jobRunEvery(Duration.ofDays(2))
+              .jobLockExpirationPeriod(Duration.ofDays(2))
               .taskCleanupJobEnabled(false)
               .taskCleanupJobMinimumAge(Duration.ofDays(1))
               .taskCleanupJobAllCompletedSameParentBusiness(false)
+              .taskCleanupJobLockExpirationPeriod(Duration.ofDays(6))
               .workbasketCleanupJobEnabled(false)
+              .workbasketCleanupJobLockExpirationPeriod(Duration.ofDays(7))
               .simpleHistoryCleanupJobEnabled(true)
               .simpleHistoryCleanupJobBatchSize(16)
               .simpleHistoryCleanupJobMinimumAge(Duration.ofHours(3))
               .simpleHistoryCleanupJobAllCompletedSameParentBusiness(false)
+              .simpleHistoryCleanupJobLockExpirationPeriod(Duration.ofDays(9))
               .taskUpdatePriorityJobEnabled(true)
               .taskUpdatePriorityJobBatchSize(49)
               .taskUpdatePriorityJobFirstRun(Instant.MIN.plus(1, ChronoUnit.DAYS))
               .taskUpdatePriorityJobRunEvery(Duration.ofMinutes(17))
+              .taskUpdatePriorityJobLockExpirationPeriod(Duration.ofDays(10))
               .userInfoRefreshJobEnabled(true)
               .userRefreshJobFirstRun(Instant.MIN.plus(2, ChronoUnit.DAYS))
               .userRefreshJobRunEvery(Duration.ofDays(5))
+              .userRefreshJobLockExpirationPeriod(Duration.ofDays(8))
               .customJobs(Set.of("Job_A", "Job_B"))
               // user configuration
               .addAdditionalUserInfo(true)

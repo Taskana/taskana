@@ -1,9 +1,9 @@
 package pro.taskana.user.rest.models;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
-import javax.validation.constraints.NotNull;
 import org.springframework.hateoas.RepresentationModel;
 import pro.taskana.user.api.models.User;
 
@@ -14,6 +14,8 @@ public class UserRepresentationModel extends RepresentationModel<UserRepresentat
   @NotNull private String userId;
   /** The groups of the User. */
   private Set<String> groups;
+  /** The permissions of the User. */
+  private Set<String> permissions;
   /**
    * The domains of the User.
    *
@@ -60,6 +62,14 @@ public class UserRepresentationModel extends RepresentationModel<UserRepresentat
 
   public void setGroups(Set<String> groups) {
     this.groups = groups;
+  }
+
+  public Set<String> getPermissions() {
+    return permissions;
+  }
+
+  public void setPermissions(Set<String> permissions) {
+    this.permissions = permissions;
   }
 
   public String getFirstName() {
@@ -172,6 +182,7 @@ public class UserRepresentationModel extends RepresentationModel<UserRepresentat
         super.hashCode(),
         userId,
         groups,
+        permissions,
         domains,
         firstName,
         lastName,
@@ -201,6 +212,7 @@ public class UserRepresentationModel extends RepresentationModel<UserRepresentat
     UserRepresentationModel other = (UserRepresentationModel) obj;
     return Objects.equals(userId, other.userId)
         && Objects.equals(groups, other.groups)
+        && Objects.equals(permissions, other.permissions)
         && Objects.equals(domains, other.domains)
         && Objects.equals(firstName, other.firstName)
         && Objects.equals(lastName, other.lastName)

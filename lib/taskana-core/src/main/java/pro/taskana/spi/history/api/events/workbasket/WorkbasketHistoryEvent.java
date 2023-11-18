@@ -23,6 +23,10 @@ public class WorkbasketHistoryEvent {
   protected String custom2;
   protected String custom3;
   protected String custom4;
+  protected String custom5;
+  protected String custom6;
+  protected String custom7;
+  protected String custom8;
   protected String orgLevel1;
   protected String orgLevel2;
   protected String orgLevel3;
@@ -45,6 +49,10 @@ public class WorkbasketHistoryEvent {
     custom2 = workbasket.getCustomField(WorkbasketCustomField.CUSTOM_2);
     custom3 = workbasket.getCustomField(WorkbasketCustomField.CUSTOM_3);
     custom4 = workbasket.getCustomField(WorkbasketCustomField.CUSTOM_4);
+    custom5 = workbasket.getCustomField(WorkbasketCustomField.CUSTOM_5);
+    custom6 = workbasket.getCustomField(WorkbasketCustomField.CUSTOM_6);
+    custom7 = workbasket.getCustomField(WorkbasketCustomField.CUSTOM_7);
+    custom8 = workbasket.getCustomField(WorkbasketCustomField.CUSTOM_8);
     orgLevel1 = workbasket.getOrgLevel1();
     orgLevel2 = workbasket.getOrgLevel2();
     orgLevel3 = workbasket.getOrgLevel3();
@@ -65,6 +73,18 @@ public class WorkbasketHistoryEvent {
       case CUSTOM_4:
         custom4 = value;
         break;
+      case CUSTOM_5:
+        custom5 = value;
+        break;
+      case CUSTOM_6:
+        custom6 = value;
+        break;
+      case CUSTOM_7:
+        custom7 = value;
+        break;
+      case CUSTOM_8:
+        custom8 = value;
+        break;
       default:
         throw new SystemException("Unknown customField '" + customField + "'");
     }
@@ -80,6 +100,14 @@ public class WorkbasketHistoryEvent {
         return custom3;
       case CUSTOM_4:
         return custom4;
+      case CUSTOM_5:
+        return custom5;
+      case CUSTOM_6:
+        return custom6;
+      case CUSTOM_7:
+        return custom7;
+      case CUSTOM_8:
+        return custom8;
       default:
         throw new SystemException("Unknown customField '" + customField + "'");
     }
@@ -213,6 +241,10 @@ public class WorkbasketHistoryEvent {
         custom2,
         custom3,
         custom4,
+        custom5,
+        custom6,
+        custom7,
+        custom8,
         getOrgLevel1(),
         getOrgLevel2(),
         getOrgLevel3(),
@@ -242,6 +274,10 @@ public class WorkbasketHistoryEvent {
         && Objects.equals(custom2, other.custom2)
         && Objects.equals(custom3, other.custom3)
         && Objects.equals(custom4, other.custom4)
+        && Objects.equals(custom5, other.custom5)
+        && Objects.equals(custom6, other.custom6)
+        && Objects.equals(custom7, other.custom7)
+        && Objects.equals(custom8, other.custom8)
         && Objects.equals(getOrgLevel1(), other.getOrgLevel1())
         && Objects.equals(getOrgLevel2(), other.getOrgLevel2())
         && Objects.equals(getOrgLevel3(), other.getOrgLevel3())
@@ -277,6 +313,14 @@ public class WorkbasketHistoryEvent {
         + custom3
         + ", custom4="
         + custom4
+        + ", custom5="
+        + custom5
+        + ", custom6="
+        + custom6
+        + ", custom7="
+        + custom7
+        + ", custom8="
+        + custom8
         + ", orgLevel1="
         + orgLevel1
         + ", orgLevel2="

@@ -16,7 +16,7 @@ Release Notes:
 - [ ] After integration of the pull request, I verified our [bluemix test environment](http://taskana.mybluemix.net/taskana) is not broken
 
 ### Verified by the reviewer:
-- [ ] Commit message format → (Closes) #<Issue Number>: Your commit message. i.e. Closes #2271: Your commit message.
+- [ ] Commit message format → (Closes) #&lt;Issue Number&gt;: Your commit message.
 - [ ] Submitter's update to [documentation](https://taskana.atlassian.net/wiki/spaces/TAS/overview) is sufficient
 - [ ] SonarCloud analysis meets our standards
 - [ ] Update of the [current release notes](https://taskana.atlassian.net/wiki/spaces/TAS/pages/1281392672/Current+Release+Notes+Taskana) reflects changes
