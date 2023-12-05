@@ -507,7 +507,7 @@ class TaskanaConfigurationTest {
               // user configuration
               .addAdditionalUserInfo(true)
               .minimalPermissionsToAssignDomains(Set.of(WorkbasketPermission.CUSTOM_2))
-              //database configuration
+              // database configuration
               .useSpecificDb2Taskquery(false)
               .build();
 
@@ -1042,6 +1042,24 @@ class TaskanaConfigurationTest {
           .containsExactlyInAnyOrderEntriesOf(
               Map.ofEntries(
                   Map.entry("TYPE_A", List.of("A", "B")), Map.entry("TYPE_B", List.of("C", "D"))));
+    }
+
+    @Test
+    void should_OrderClassificationCategoriesByTypeOrder() {
+      TaskanaConfiguration configuration =
+          new Builder(TestContainerExtension.createDataSourceForH2(), false, "TASKANA")
+              .classificationTypes(List.of("type_a", "type_c", "type_b"))
+              .classificationCategoriesByType(
+                  Map.ofEntries(
+                      Map.entry("type_a", Collections.emptyList()),
+                      Map.entry("type_b", Collections.emptyList()),
+                      Map.entry("type_c", Collections.emptyList())))
+              .build();
+
+      List<String> expectedKeysOrder = Arrays.asList("TYPE_A", "TYPE_C", "TYPE_B");
+      List<String> actualKeysOrder =
+          new ArrayList<>(configuration.getClassificationCategoriesByType().keySet());
+      assertThat(actualKeysOrder).containsExactlyElementsOf(expectedKeysOrder);
     }
 
     @Test
