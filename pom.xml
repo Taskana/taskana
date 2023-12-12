@@ -92,7 +92,7 @@
     <version.testcontainers>1.19.2</version.testcontainers>
 
     <!-- AspectJ dependencies -->
-    <version.aspectj-maven-plugin>1.14.0</version.aspectj-maven-plugin>
+    <version.aspectj-maven-plugin>1.15.0</version.aspectj-maven-plugin>
     <version.aspectj>1.9.20.1</version.aspectj>
 
     <!-- Excel to DMN converter dependencies -->
