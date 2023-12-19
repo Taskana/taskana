@@ -199,7 +199,8 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
 
   @Override
   public boolean equals(Object o) {
-    return (o instanceof ComparableVersion) && items.equals(((ComparableVersion) o).items);
+    return (o instanceof ComparableVersion comparableVersion)
+        && items.equals(comparableVersion.items);
   }
 
   @Override

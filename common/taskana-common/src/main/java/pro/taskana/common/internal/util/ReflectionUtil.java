@@ -42,8 +42,8 @@ public class ReflectionUtil {
   }
 
   public static Class<?> getRawClass(Type type) {
-    if (type instanceof ParameterizedType) {
-      return getRawClass(((ParameterizedType) type).getRawType());
+    if (type instanceof ParameterizedType parameterizedType) {
+      return getRawClass(parameterizedType.getRawType());
     }
     return (Class<?>) type;
   }
