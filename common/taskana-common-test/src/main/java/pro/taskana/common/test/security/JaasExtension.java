@@ -111,7 +111,7 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
         newChildrenForDynamicContainer = Collections.singleton((DynamicNode) factoryResult);
       } else if (factoryResult instanceof Stream) {
         Stream<DynamicNode> nodes = (Stream<DynamicNode>) factoryResult;
-        newChildrenForDynamicContainer = nodes.collect(Collectors.toList());
+        newChildrenForDynamicContainer = nodes.toList();
       } else if (factoryResult instanceof Iterable) {
         newChildrenForDynamicContainer = (Iterable<DynamicNode>) factoryResult;
       } else if (factoryResult instanceof Iterator) {
@@ -142,8 +142,11 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
       Store store = getMethodLevelStore(extensionContext);
       return (T)
           Stream.of(annotation.value())
-              .peek(a -> store.put(ACCESS_IDS_STORE_KEY, a))
-              .map(wrapTestsInDynamicContainer);
+              .map(
+                  a -> {
+                    store.put(ACCESS_IDS_STORE_KEY, a);
+                    return wrapTestsInDynamicContainer.apply(a);
+                  });
     }
 
     return extractAccessIdAndPerformInvocation(invocation, invocationContext.getExecutable());
@@ -207,8 +210,11 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
         AnnotationSupport.findRepeatableAnnotations(context.getElement(), WithAccessId.class);
     Store store = getMethodLevelStore(context);
     return accessIds.stream()
-        .peek(a -> store.put(ACCESS_IDS_STORE_KEY, a))
-        .map(JaasExtensionInvocationContext::new);
+        .map(
+            a -> {
+              store.put(ACCESS_IDS_STORE_KEY, a);
+              return new JaasExtensionInvocationContext(a);
+            });
   }
 
   // endregion
@@ -259,7 +265,7 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
       return Stream.concat(
               Stream.of(withAccessId.user()).map(UserPrincipal::new),
               Arrays.stream(withAccessId.groups()).map(GroupPrincipal::new))
-          .collect(Collectors.toList());
+          .toList();
     }
     return Collections.emptyList();
   }

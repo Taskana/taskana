@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.security.auth.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +60,7 @@ public class CurrentUserContextImpl implements CurrentUserContext {
           .map(Principal::getName)
           .filter(Objects::nonNull)
           .map(this::convertAccessId)
-          .collect(Collectors.toList());
+          .toList();
     }
     LOGGER.trace("No groupIds found in subject!");
     return Collections.emptyList();

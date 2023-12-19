@@ -504,8 +504,8 @@ public class ClassificationServiceImpl implements ClassificationService {
   }
 
   private boolean isH2OrPostgresIntegrityConstraintViolation(PersistenceException e) {
-    return e.getCause() instanceof SQLException
-        && ((SQLException) e.getCause()).getSQLState().equals("23503");
+    return e.getCause() instanceof SQLException sqlException
+        && sqlException.getSQLState().equals("23503");
   }
 
   /**

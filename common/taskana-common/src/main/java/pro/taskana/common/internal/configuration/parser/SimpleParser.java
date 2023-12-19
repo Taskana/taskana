@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.internal.util.ReflectionUtil;
 
@@ -43,6 +42,6 @@ public class SimpleParser<T> implements PropertyParser<T> {
     return Arrays.stream(str.split(Pattern.quote(separator)))
         .filter(not(String::isEmpty))
         .map(String::trim)
-        .collect(Collectors.toList());
+        .toList();
   }
 }

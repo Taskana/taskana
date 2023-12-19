@@ -13,7 +13,6 @@ import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.sql.DataSource;
 import org.apache.ibatis.jdbc.RuntimeSqlException;
@@ -78,9 +77,7 @@ public class SampleDataGenerator {
   private List<String> parseScripts(Stream<String> scripts) {
     try (Connection connection = dataSource.getConnection()) {
       DB db = DB.getDB(connection);
-      return scripts
-          .map(script -> SqlReplacer.getScriptAsSql(db, now, script))
-          .collect(Collectors.toList());
+      return scripts.map(script -> SqlReplacer.getScriptAsSql(db, now, script)).toList();
     } catch (SQLException e) {
       throw new RuntimeSqlException("Connection to database failed.", e);
     }
