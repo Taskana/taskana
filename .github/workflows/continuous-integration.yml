@@ -61,7 +61,7 @@ jobs:
           ./mvnw -B dependency:go-offline
           ./mvnw -B test -Dtest=GibtEsNet -Dsurefire.failIfNoSpecifiedTests=false
       - name: Upload taskana artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
@@ -115,7 +115,7 @@ jobs:
       - name: Build maven artifact
         run: ./mvnw -B install -pl :taskana-web -am
       - name: Upload taskana-web dist artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ARTIFACTS_TASKANA_WEB_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_WEB_PATH }}
@@ -203,7 +203,7 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
       - name: Download taskana artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
@@ -215,7 +215,7 @@ jobs:
         run: ./mvnw -B dependency:go-offline -pl :taskana-rest-spring-example-boot -am
         if: steps.maven-cache.outputs.cache-hit != 'true'
       - name: Download taskana-web dist artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.ARTIFACTS_TASKANA_WEB_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_WEB_PATH }}
@@ -228,7 +228,7 @@ jobs:
           npx wait-port -t 30000 localhost:8080 && yarn run e2e-standalone --spec "cypress/integration/monitor/**"
       - name: Upload Cypress tests
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ARTIFACTS_CYPRESS_TESTS_NAME }}
           path: ${{ env.ARTIFACTS_CYPRESS_TESTS_PATH }}
@@ -311,7 +311,7 @@ jobs:
           key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}
       - name: Download taskana artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
@@ -328,9 +328,9 @@ jobs:
           DB: ${{ matrix.database }}
       - name: Upload JaCoCo Report
         if: matrix.database == 'H2'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.ARTIFACTS_JACOCO_REPORTS_NAME }}
+          name: ${{ env.ARTIFACTS_JACOCO_REPORTS_NAME }}-${{ matrix.module }}
           path: ${{ env.ARTIFACTS_JACOCO_REPORTS_PATH }}
           if-no-files-found: ignore
       - name: Cancel workflow
@@ -368,12 +368,12 @@ jobs:
           key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}
       - name: Download taskana artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
       - name: Download taskana-web dist artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.ARTIFACTS_TASKANA_WEB_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_WEB_PATH }}
@@ -431,12 +431,12 @@ jobs:
           key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}
       - name: Download taskana artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.ARTIFACTS_TASKANA_JARS_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
       - name: Download taskana-web dist artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.ARTIFACTS_TASKANA_WEB_NAME }}
           path: ${{ env.ARTIFACTS_TASKANA_WEB_PATH }}
@@ -498,9 +498,10 @@ jobs:
           key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}
       - name: Download JaCoCo reports
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: ${{ env.ARTIFACTS_JACOCO_REPORTS_NAME }}
+          pattern: ${{ env.ARTIFACTS_JACOCO_REPORTS_NAME }}-*
+          merge-multiple: true
       - name: Install taskana
         run: ./mvnw -B install -DskipTests -Dcheckstyle.skip -Dasciidoctor.skip -Dmaven.javadoc.skip
       - name: Upload SonarQube analysis
