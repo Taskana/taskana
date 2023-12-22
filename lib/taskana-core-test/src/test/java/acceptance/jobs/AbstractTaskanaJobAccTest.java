@@ -31,6 +31,7 @@ import pro.taskana.testapi.TaskanaConfigurationModifier;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.testapi.security.WithAccessId;
+import pro.taskana.workbasket.internal.jobs.WorkbasketCleanupJob;
 
 @TaskanaIntegrationTest
 class AbstractTaskanaJobAccTest {
@@ -49,6 +50,7 @@ class AbstractTaskanaJobAccTest {
     jobMapper.deleteMultiple(TaskCleanupJob.class.getName());
     jobMapper.deleteMultiple(TaskRefreshJob.class.getName());
     jobMapper.deleteMultiple(ClassificationChangedJob.class.getName());
+    jobMapper.deleteMultiple(WorkbasketCleanupJob.class.getName());
   }
 
   @WithAccessId(user = "admin")
@@ -105,30 +107,34 @@ class AbstractTaskanaJobAccTest {
     assertThat(jobsToRun).doesNotContainAnyElementsOf(taskCleanupJobs);
   }
 
-  @Nested
-  @TestInstance(Lifecycle.PER_CLASS)
-  class CleanCompletedTasks implements TaskanaConfigurationModifier {
-    @TaskanaInject TaskanaEngine taskanaEngine;
+  @WithAccessId(user = "admin")
+  @Test
+  void should_DeleteOldWorkbasketCleanupJobs_When_InitializingSchedule() throws Exception {
 
-    @TaskanaInject JobMapper jobMapper;
-
-    @Override
-    public Builder modify(Builder builder) {
-      return builder
-          .taskCleanupJobEnabled(true)
-          .jobRunEvery(Duration.ofMillis(1))
-          .jobFirstRun(Instant.now().plus(5, ChronoUnit.MINUTES));
+    for (int i = 0; i < 10; i++) {
+      ScheduledJob job = new ScheduledJob();
+      job.setType(WorkbasketCleanupJob.class.getName());
+      taskanaEngine.getJobService().createJob(job);
+      job.setType(TaskRefreshJob.class.getName());
+      taskanaEngine.getJobService().createJob(job);
+      job.setType(ClassificationChangedJob.class.getName());
+      taskanaEngine.getJobService().createJob(job);
     }
+    List<ScheduledJob> jobsToRun = jobMapper.findJobsToRun(Instant.now());
 
-    @WithAccessId(user = "admin")
-    @Test
-    void should_FindNoJobsToRunUntilFirstRunIsReached_When_CleanupScheduleIsInitialized()
-        throws Exception {
-      AbstractTaskanaJob.initializeSchedule(taskanaEngine, TaskCleanupJob.class);
+    assertThat(jobsToRun).hasSize(30);
 
-      List<ScheduledJob> nextJobs = jobMapper.findJobsToRun(Instant.now());
-      assertThat(nextJobs).isEmpty();
-    }
+    List<ScheduledJob> workbasketCleanupJobs =
+        jobsToRun.stream()
+            .filter(
+                scheduledJob -> scheduledJob.getType().equals(WorkbasketCleanupJob.class.getName()))
+            .toList();
+
+    AbstractTaskanaJob.initializeSchedule(taskanaEngine, WorkbasketCleanupJob.class);
+
+    jobsToRun = jobMapper.findJobsToRun(Instant.now());
+
+    assertThat(jobsToRun).doesNotContainAnyElementsOf(workbasketCleanupJobs);
   }
 
   @Test
@@ -171,5 +177,31 @@ class AbstractTaskanaJobAccTest {
 
     @Override
     protected void execute() throws TaskanaException {}
+  }
+
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  class CleanCompletedTasks implements TaskanaConfigurationModifier {
+    @TaskanaInject TaskanaEngine taskanaEngine;
+
+    @TaskanaInject JobMapper jobMapper;
+
+    @Override
+    public Builder modify(Builder builder) {
+      return builder
+          .taskCleanupJobEnabled(true)
+          .jobRunEvery(Duration.ofMillis(1))
+          .jobFirstRun(Instant.now().plus(5, ChronoUnit.MINUTES));
+    }
+
+    @WithAccessId(user = "admin")
+    @Test
+    void should_FindNoJobsToRunUntilFirstRunIsReached_When_CleanupScheduleIsInitialized()
+        throws Exception {
+      AbstractTaskanaJob.initializeSchedule(taskanaEngine, TaskCleanupJob.class);
+
+      List<ScheduledJob> nextJobs = jobMapper.findJobsToRun(Instant.now());
+      assertThat(nextJobs).isEmpty();
+    }
   }
 }
