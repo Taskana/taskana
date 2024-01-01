@@ -2966,7 +2966,8 @@ class TaskQueryImplAccTest {
                   taskService.createTaskQuery().workbasketIdIn(wb.getId()).withoutAttachment();
               query = addAttachmentFilter.apply(query);
 
-              assertThatThrownBy(query::list)
+              TaskQuery finalQuery = query;
+              assertThatThrownBy(() -> finalQuery.list())
                   .isInstanceOf(IllegalArgumentException.class)
                   .hasMessageContaining(
                       "The param \"withoutAttachment\" can only be used "

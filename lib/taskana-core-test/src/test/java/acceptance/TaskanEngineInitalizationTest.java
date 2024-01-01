@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.OptionalInt;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -56,7 +57,7 @@ public class TaskanEngineInitalizationTest {
 
       assertThat(priorityServiceManager.isEnabled()).isTrue();
       assertThat(serviceProviders)
-          .asList()
+          .asInstanceOf(InstanceOfAssertFactories.LIST)
           .hasOnlyElementsOfType(MyPriorityServiceProvider.class)
           .extracting(MyPriorityServiceProvider.class::cast)
           .extracting(sp -> sp.taskanaEngine)
