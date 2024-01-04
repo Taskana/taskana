@@ -8,12 +8,16 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 import pro.taskana.TaskanaConfiguration;
 import pro.taskana.TaskanaConfiguration.Builder;
 import pro.taskana.classification.internal.jobs.ClassificationChangedJob;
@@ -25,6 +29,8 @@ import pro.taskana.common.internal.JobMapper;
 import pro.taskana.common.internal.jobs.AbstractTaskanaJob;
 import pro.taskana.common.internal.jobs.JobRunner;
 import pro.taskana.common.internal.transaction.TaskanaTransactionProvider;
+import pro.taskana.common.internal.util.Pair;
+import pro.taskana.simplehistory.impl.jobs.HistoryCleanupJob;
 import pro.taskana.task.internal.jobs.TaskCleanupJob;
 import pro.taskana.task.internal.jobs.TaskRefreshJob;
 import pro.taskana.testapi.TaskanaConfigurationModifier;
@@ -49,6 +55,7 @@ class AbstractTaskanaJobAccTest {
     jobMapper.deleteMultiple(TaskCleanupJob.class.getName());
     jobMapper.deleteMultiple(TaskRefreshJob.class.getName());
     jobMapper.deleteMultiple(ClassificationChangedJob.class.getName());
+    jobMapper.deleteMultiple(HistoryCleanupJob.class.getName());
   }
 
   @WithAccessId(user = "admin")
@@ -75,36 +82,6 @@ class AbstractTaskanaJobAccTest {
     assertThat(jobsToRun).extracting(ScheduledJob::getDue).containsExactly(firstDue.plus(runEvery));
   }
 
-  @WithAccessId(user = "admin")
-  @Test
-  void should_DeleteOldTaskCleanupJobs_When_InitializingSchedule() {
-
-    for (int i = 0; i < 10; i++) {
-      ScheduledJob job = new ScheduledJob();
-      job.setType(TaskCleanupJob.class.getName());
-      taskanaEngine.getJobService().createJob(job);
-      job.setType(TaskRefreshJob.class.getName());
-      taskanaEngine.getJobService().createJob(job);
-      job.setType(ClassificationChangedJob.class.getName());
-      taskanaEngine.getJobService().createJob(job);
-    }
-
-    List<ScheduledJob> jobsToRun = jobMapper.findJobsToRun(Instant.now());
-
-    assertThat(jobsToRun).hasSize(30);
-
-    List<ScheduledJob> taskCleanupJobs =
-        jobsToRun.stream()
-            .filter(scheduledJob -> scheduledJob.getType().equals(TaskCleanupJob.class.getName()))
-            .collect(Collectors.toList());
-
-    AbstractTaskanaJob.initializeSchedule(taskanaEngine, TaskCleanupJob.class);
-
-    jobsToRun = jobMapper.findJobsToRun(Instant.now());
-
-    assertThat(jobsToRun).doesNotContainAnyElementsOf(taskCleanupJobs);
-  }
-
   @Nested
   @TestInstance(Lifecycle.PER_CLASS)
   class CleanCompletedTasks implements TaskanaConfigurationModifier {
@@ -129,6 +106,43 @@ class AbstractTaskanaJobAccTest {
       List<ScheduledJob> nextJobs = jobMapper.findJobsToRun(Instant.now());
       assertThat(nextJobs).isEmpty();
     }
+  }
+
+  @WithAccessId(user = "admin")
+  @TestFactory
+  Stream<DynamicTest> should_DeleteOldCleanupJobs_When_InitializingSchedule() throws Exception {
+    List<Pair<String, Class<?>>> testCases =
+        List.of(
+            Pair.of("Delete Old Task Cleanup Jobs", TaskCleanupJob.class),
+            Pair.of("Delete Old History Cleanup Jobs", HistoryCleanupJob.class));
+    ThrowingConsumer<Pair<String, Class<?>>> test =
+        t -> {
+          for (int i = 0; i < 10; i++) {
+            ScheduledJob job = new ScheduledJob();
+            job.setType(t.getRight().getName());
+            taskanaEngine.getJobService().createJob(job);
+            job.setType(TaskRefreshJob.class.getName());
+            taskanaEngine.getJobService().createJob(job);
+            job.setType(ClassificationChangedJob.class.getName());
+            taskanaEngine.getJobService().createJob(job);
+          }
+
+          List<ScheduledJob> jobsToRun = jobMapper.findJobsToRun(Instant.now());
+
+          List<ScheduledJob> cleanupJobs =
+              jobsToRun.stream()
+                  .filter(scheduledJob -> scheduledJob.getType().equals(t.getRight().getName()))
+                  .collect(Collectors.toList());
+
+          AbstractTaskanaJob.initializeSchedule(taskanaEngine, t.getRight());
+
+          jobsToRun = jobMapper.findJobsToRun(Instant.now());
+
+          assertThat(jobsToRun).doesNotContainAnyElementsOf(cleanupJobs);
+          cleanupJobs();
+        };
+
+    return DynamicTest.stream(testCases.iterator(), Pair::getLeft, test);
   }
 
   @Test
