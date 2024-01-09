@@ -8,6 +8,7 @@ import static pro.taskana.testapi.util.ServiceProviderExtractor.extractServicePr
 import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -266,7 +267,7 @@ class ServiceProviderExtractorTest {
 
       assertThat(extractServiceProviders).containsOnlyKeys(CreateTaskPreprocessor.class);
       assertThat(extractServiceProviders.get(CreateTaskPreprocessor.class))
-          .asList()
+          .asInstanceOf(InstanceOfAssertFactories.LIST)
           .hasExactlyElementsOfTypes(DummyTaskPreprocessor1.class);
     }
 
@@ -283,7 +284,7 @@ class ServiceProviderExtractorTest {
 
       assertThat(extractServiceProviders).containsOnlyKeys(CreateTaskPreprocessor.class);
       assertThat(extractServiceProviders.get(CreateTaskPreprocessor.class))
-          .asList()
+          .asInstanceOf(InstanceOfAssertFactories.LIST)
           .hasExactlyElementsOfTypes(DummyTaskPreprocessor1.class, DummyTaskPreprocessor2.class);
     }
 
