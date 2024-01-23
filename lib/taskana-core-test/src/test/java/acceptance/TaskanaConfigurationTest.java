@@ -958,10 +958,12 @@ class TaskanaConfigurationTest {
       assertThatThrownBy(call)
           .isInstanceOf(InvalidArgumentException.class)
           .hasMessageContaining(
-              "Parameter classificationCategoriesByType "
-                  + "(taskana.classification.categories.<KEY>) "
-                  + "contains invalid Classification Types."
-                  + " configured: [VALID] detected: [DOES_NOT_EXIST]");
+              "Parameter classificationCategoriesByType"
+                  + " (taskana.classification.categories.<KEY>) is configured incorrectly. Please"
+                  + " check whether all specified Classification Types exist. Additionally, check"
+                  + " whether the correct separator is used in the property"
+                  + " taskana.classification.types ."
+          );
     }
 
     @Test
