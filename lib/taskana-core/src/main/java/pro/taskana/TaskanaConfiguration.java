@@ -1055,7 +1055,6 @@ public class TaskanaConfiguration {
       this.enforceServiceLevel = enforceServiceLevel;
       return this;
     }
-
     // endregion
 
     // region authentication configuration
@@ -1447,12 +1446,11 @@ public class TaskanaConfiguration {
       if (!new HashSet<>(classificationTypes)
           .containsAll(classificationCategoriesByType.keySet())) {
         throw new InvalidArgumentException(
-            String.format(
                 "Parameter classificationCategoriesByType (taskana.classification.categories.<KEY>)"
-                    + " contains invalid Classification Types. "
-                    + "configured: %s "
-                    + "detected: %s",
-                classificationTypes, classificationCategoriesByType.keySet()));
+                    + " is configured incorrectly. Please check whether all specified"
+                    + " Classification Types exist. Additionally, check whether the correct"
+                    + " separator is used in the property taskana.classification.types ."
+                );
       }
 
       if (!classificationCategoriesByType.keySet().containsAll(classificationTypes)) {
