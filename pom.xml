@@ -388,7 +388,7 @@
         </dependencies>
         <configuration>
           <complianceLevel>${java.version}</complianceLevel>
-          <source>11</source>
+          <source>17</source>
           <target>8</target>
           <showWeaveInfo>false</showWeaveInfo>
           <verbose>true</verbose>
