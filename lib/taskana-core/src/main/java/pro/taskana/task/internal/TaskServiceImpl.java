@@ -1040,6 +1040,19 @@ public class TaskServiceImpl implements TaskService {
     }
     return terminatedTask;
   }
+  
+  @Override
+  public Task rerouteTask(String taskId) throws NotAuthorizedOnWorkbasketException,
+      TaskNotFoundException,
+      WorkbasketNotFoundException,
+      InvalidTaskStateException {
+    return taskTransferrer.rerouteTask(taskId);
+  }
+
+  @Override
+  public BulkOperationResults<String, TaskanaException> rerouteTasks(List<String> taskIds) {
+    return taskTransferrer.rerouteTasks(taskIds);
+  }
 
   public List<String> findTasksIdsAffectedByClassificationChange(String classificationId) {
     // tasks directly affected
