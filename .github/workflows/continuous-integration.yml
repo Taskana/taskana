@@ -70,7 +70,7 @@ jobs:
         run: rm -rf ${{ env.ARTIFACTS_TASKANA_JARS_PATH }}
       - name: Cancel workflow
         if: failure()
-        uses: andymckay/cancel-action@0.3
+        uses: andymckay/cancel-action@0.4
 
   compile_frontend:
     name: Compile taskana-web
@@ -124,7 +124,7 @@ jobs:
         run: rm -rf ~/.m2/repository/pro/taskana
       - name: Cancel workflow
         if: failure()
-        uses: andymckay/cancel-action@0.3
+        uses: andymckay/cancel-action@0.4
 
   test_frontend:
     runs-on: ubuntu-20.04
@@ -166,7 +166,7 @@ jobs:
         run: yarn run test -- --coverageReporters text-summary
       - name: Cancel workflow
         if: failure()
-        uses: andymckay/cancel-action@0.3
+        uses: andymckay/cancel-action@0.4
 
   test_e2e:
     runs-on: ubuntu-20.04
@@ -234,7 +234,7 @@ jobs:
           path: ${{ env.ARTIFACTS_CYPRESS_TESTS_PATH }}
       - name: Cancel workflow
         if: failure()
-        uses: andymckay/cancel-action@0.3
+        uses: andymckay/cancel-action@0.4
 
   test_backend:
     runs-on: ubuntu-20.04
@@ -335,7 +335,7 @@ jobs:
           if-no-files-found: ignore
       - name: Cancel workflow
         if: failure()
-        uses: andymckay/cancel-action@0.3
+        uses: andymckay/cancel-action@0.4
 
   release_artifacts:
     runs-on: ubuntu-22.04
@@ -409,7 +409,7 @@ jobs:
           GH_USERNAME: ${{ secrets.GH_USERNAME }}
       - name: Cancel workflow
         if: failure()
-        uses: andymckay/cancel-action@0.3
+        uses: andymckay/cancel-action@0.4
 
   deploy_to_azure:
     runs-on: ubuntu-20.04
@@ -467,7 +467,7 @@ jobs:
         run: ci/verify_docs_alive.sh
       - name: Cancel workflow
         if: failure()
-        uses: andymckay/cancel-action@0.3
+        uses: andymckay/cancel-action@0.4
 
   upload_to_sonar:
     runs-on: ubuntu-20.04
@@ -512,4 +512,4 @@ jobs:
           SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
       - name: Cancel workflow
         if: failure()
-        uses: andymckay/cancel-action@0.3
+        uses: andymckay/cancel-action@0.4
