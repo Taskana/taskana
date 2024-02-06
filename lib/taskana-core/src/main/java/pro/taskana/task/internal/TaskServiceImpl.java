@@ -475,6 +475,27 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
+  public Task transferWithOwner(
+      String taskId, String destinationWorkbasketId, String owner, boolean setTransferFlag)
+      throws TaskNotFoundException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException {
+    return taskTransferrer.transferWithOwner(
+        taskId, destinationWorkbasketId, owner, setTransferFlag);
+  }
+
+  @Override
+  public Task transferWithOwner(
+      String taskId, String workbasketKey, String domain, String owner, boolean setTransferFlag)
+      throws TaskNotFoundException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException {
+    return taskTransferrer.transferWithOwner(taskId, workbasketKey, domain, owner, setTransferFlag);
+  }
+
+  @Override
   public Task setTaskRead(String taskId, boolean isRead)
       throws TaskNotFoundException, NotAuthorizedOnWorkbasketException {
     TaskImpl task;
@@ -629,6 +650,30 @@ public class TaskServiceImpl implements TaskService {
           NotAuthorizedOnWorkbasketException {
     return taskTransferrer.transfer(
         taskIds, destinationWorkbasketKey, destinationWorkbasketDomain, setTransferFlag);
+  }
+
+  @Override
+  public BulkOperationResults<String, TaskanaException> transferTasksWithOwner(
+      String destinationWorkbasketId, List<String> taskIds, String owner, boolean setTransferFlag)
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException {
+    return taskTransferrer.transferWithOwner(
+        taskIds, destinationWorkbasketId, owner, setTransferFlag);
+  }
+
+  @Override
+  public BulkOperationResults<String, TaskanaException> transferTasksWithOwner(
+      String destinationWorkbasketKey,
+      String destinationWorkbasketDomain,
+      List<String> taskIds,
+      String owner,
+      boolean setTransferFlag)
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException {
+    return taskTransferrer.transferWithOwner(
+        taskIds, destinationWorkbasketKey, destinationWorkbasketDomain, owner, setTransferFlag);
   }
 
   @Override
