@@ -86,11 +86,8 @@ public class TaskRepresentationModelAssembler
     repModel.setGroupByCount(task.getGroupByCount());
     repModel.setAttachments(
         task.getAttachments().stream().map(attachmentAssembler::toModel).toList());
-            .collect(Collectors.toList()));
-            .toList());
     repModel.setCustomAttributes(
         task.getCustomAttributeMap().entrySet().stream().map(CustomAttribute::of).toList());
-            .collect(Collectors.toList()));
     repModel.setCallbackInfo(
         task.getCallbackInfo().entrySet().stream().map(CustomAttribute::of).toList());
     repModel.setCustom1(task.getCustomField(TaskCustomField.CUSTOM_1));
@@ -186,7 +183,6 @@ public class TaskRepresentationModelAssembler
     task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_8, repModel.getCustomInt8());
     task.setAttachments(
         repModel.getAttachments().stream().map(attachmentAssembler::toEntityModel).toList());
-            .collect(Collectors.toList()));
     task.setSecondaryObjectReferences(
         repModel.getSecondaryObjectReferences().stream()
             .map(objectReferenceAssembler::toEntity)

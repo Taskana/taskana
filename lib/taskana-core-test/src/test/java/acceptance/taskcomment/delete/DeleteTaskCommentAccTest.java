@@ -15,7 +15,6 @@ import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
-import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.NotAuthorizedOnTaskCommentException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
@@ -172,7 +171,7 @@ class DeleteTaskCommentAccTest {
   void should_FailToDeleteTaskComment_When_CommentIdDoesNotExist() throws Exception {
 
     ThrowingCallable call = () -> taskService.deleteTaskComment("non existing task comment id");
-    TaskCommentNotFoundException e = catchThrowableOfType(call, TaskCommentNotFoundException.class);
+    TaskCommentNotFoundException e = catchThrowableOfType(TaskCommentNotFoundException.class, call);
     assertThat(e.getTaskCommentId()).isEqualTo("non existing task comment id");
   }
 }

@@ -85,7 +85,6 @@ public class TaskSummaryRepresentationModelAssembler
     repModel.setGroupByCount(taskSummary.getGroupByCount());
     repModel.setAttachmentSummaries(
         taskSummary.getAttachmentSummaries().stream().map(attachmentAssembler::toModel).toList());
-            .collect(Collectors.toList()));
     repModel.setCustom1(taskSummary.getCustomField(TaskCustomField.CUSTOM_1));
     repModel.setCustom2(taskSummary.getCustomField(TaskCustomField.CUSTOM_2));
     repModel.setCustom3(taskSummary.getCustomField(TaskCustomField.CUSTOM_3));

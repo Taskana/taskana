@@ -15,7 +15,9 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import javax.sql.DataSource;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -53,6 +55,7 @@ import pro.taskana.task.rest.models.TaskRepresentationModel.CustomAttribute;
 import pro.taskana.task.rest.models.TaskSummaryCollectionRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryPagedRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryRepresentationModel;
+import pro.taskana.task.rest.models.TransferTaskRepresentationModel;
 import pro.taskana.task.rest.routing.IntegrationTestTaskRouter;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
@@ -64,6 +67,8 @@ class TaskControllerIntTest {
       TASK_SUMMARY_PAGE_MODEL_TYPE = new ParameterizedTypeReference<>() {};
   private static final ParameterizedTypeReference<TaskSummaryCollectionRepresentationModel>
       TASK_SUMMARY_COLLECTION_MODEL_TYPE = new ParameterizedTypeReference<>() {};
+  private static final ParameterizedTypeReference<Map<String, Object>>
+      BULK_RESULT_TASKS_MODEL_TYPE = new ParameterizedTypeReference<>() {};
   private static final ParameterizedTypeReference<TaskRepresentationModel> TASK_MODEL_TYPE =
       ParameterizedTypeReference.forType(TaskRepresentationModel.class);
   private final RestHelper restHelper;
@@ -1382,9 +1387,7 @@ class TaskControllerIntTest {
 
     @Test
     void should_GetAllTasksWithComments_When_FilteringByHasCommentsIsSetToTrue() {
-      String url =
-          restHelper.toUrl(RestEndpoints.URL_TASKS)
-              + "?has-comments=true";
+      String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + "?has-comments=true";
       HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
       ResponseEntity<TaskSummaryPagedRepresentationModel> response =
@@ -1393,7 +1396,8 @@ class TaskControllerIntTest {
       assertThat(response.getBody()).isNotNull();
       assertThat(response.getBody().getContent())
           .extracting(TaskSummaryRepresentationModel::getTaskId)
-          .containsExactlyInAnyOrder("TKI:000000000000000000000000000000000000",
+          .containsExactlyInAnyOrder(
+              "TKI:000000000000000000000000000000000000",
               "TKI:000000000000000000000000000000000001",
               "TKI:000000000000000000000000000000000002",
               "TKI:000000000000000000000000000000000004",
@@ -1404,9 +1408,7 @@ class TaskControllerIntTest {
 
     @Test
     void should_GetAllTasksWithoutComments_When_FilteringByHasCommentsIsSetToFalse() {
-      String url =
-          restHelper.toUrl(RestEndpoints.URL_TASKS)
-              + "?has-comments=false";
+      String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + "?has-comments=false";
       HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
       ResponseEntity<TaskSummaryPagedRepresentationModel> response =
@@ -1415,7 +1417,8 @@ class TaskControllerIntTest {
       assertThat(response.getBody()).isNotNull();
       assertThat(response.getBody().getContent())
           .extracting(TaskSummaryRepresentationModel::getTaskId)
-          .doesNotContain("TKI:000000000000000000000000000000000000",
+          .doesNotContain(
+              "TKI:000000000000000000000000000000000000",
               "TKI:000000000000000000000000000000000001",
               "TKI:000000000000000000000000000000000002",
               "TKI:000000000000000000000000000000000004",
@@ -1998,33 +2001,36 @@ class TaskControllerIntTest {
   @TestInstance(Lifecycle.PER_CLASS)
   class TransferTasks {
     @TestFactory
-    Stream<DynamicTest> should_SetTransferFlagDependentOnRequestBody_When_TransferringTask() {
-      Iterator<Boolean> iterator = Arrays.asList(true, false).iterator();
+    Stream<DynamicTest> should_SetTransferFlagAndOwnerDependentOnBody_When_TransferringTask() {
+      Iterator<Pair<Boolean, String>> iterator =
+          Arrays.asList(Pair.of(false, "user-1-1"), Pair.of(true, "user-1-1")).iterator();
       String url =
           restHelper.toUrl(
               RestEndpoints.URL_TASKS_ID_TRANSFER_WORKBASKET_ID,
               "TKI:000000000000000000000000000000000003",
               "WBI:100000000000000000000000000000000006");
 
-      ThrowingConsumer<Boolean> test =
-          setTransferFlag -> {
-            HttpEntity<String> auth =
+      ThrowingConsumer<Pair<Boolean, String>> test =
+          pair -> {
+            HttpEntity<Object> auth =
                 new HttpEntity<>(
-                    setTransferFlag.toString(), RestHelper.generateHeadersForUser("admin"));
+                    new TransferTaskRepresentationModel(pair.getLeft(), pair.getRight(), null),
+                    RestHelper.generateHeadersForUser("admin"));
             ResponseEntity<TaskRepresentationModel> response =
                 TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
 
             assertThat(response.getBody()).isNotNull();
             assertThat(response.getBody().getWorkbasketSummary().getWorkbasketId())
                 .isEqualTo("WBI:100000000000000000000000000000000006");
-            assertThat(response.getBody().isTransferred()).isEqualTo(setTransferFlag);
+            assertThat(response.getBody().isTransferred()).isEqualTo(pair.getLeft());
+            assertThat(response.getBody().getOwner()).isEqualTo(pair.getRight());
           };
 
       return DynamicTest.stream(iterator, c -> "for setTransferFlag: " + c, test);
     }
 
     @Test
-    void should_SetTransferFlagToTrue_When_TransferringWithoutRequestBody() {
+    void should_SetTransferFlagToTrueAndOwnerToNull_When_TransferringWithoutRequestBody() {
       String url =
           restHelper.toUrl(
               RestEndpoints.URL_TASKS_ID_TRANSFER_WORKBASKET_ID,
@@ -2039,6 +2045,53 @@ class TaskControllerIntTest {
       assertThat(response.getBody().getWorkbasketSummary().getWorkbasketId())
           .isEqualTo("WBI:100000000000000000000000000000000006");
       assertThat(response.getBody().isTransferred()).isTrue();
+      assertThat(response.getBody().getOwner()).isNull();
+    }
+
+    @TestFactory
+    Stream<DynamicTest> should_ReturnFailedTasks_When_TransferringTasks() {
+
+      Iterator<Pair<Boolean, String>> iterator =
+          Arrays.asList(Pair.of(true, "user-1-1"), Pair.of(false, "user-1-2")).iterator();
+      String url =
+          restHelper.toUrl(
+              RestEndpoints.URL_TRANSFER_WORKBASKET_ID, "WBI:100000000000000000000000000000000006");
+
+      List<String> taskIds =
+          Arrays.asList(
+              "TKI:000000000000000000000000000000000003",
+              "TKI:000000000000000000000000000000000004",
+              "TKI:000000000000000000000000000000000039");
+
+      ThrowingConsumer<Pair<Boolean, String>> test =
+          pair -> {
+            HttpEntity<Object> auth =
+                new HttpEntity<>(
+                    new TransferTaskRepresentationModel(pair.getLeft(), pair.getRight(), taskIds),
+                    RestHelper.generateHeadersForUser("admin"));
+            ResponseEntity<Map<String, Object>> response =
+                TEMPLATE.exchange(url, HttpMethod.POST, auth, BULK_RESULT_TASKS_MODEL_TYPE);
+
+            assertThat(response.getBody()).isNotNull();
+            Map<String, LinkedHashMap> failedTasks =
+                (Map<String, LinkedHashMap>) response.getBody().get("tasksWithErrors");
+            assertThat(failedTasks).hasSize(1);
+            assertThat(failedTasks).containsKey("TKI:000000000000000000000000000000000039");
+            String errorName =
+                (String) failedTasks.get("TKI:000000000000000000000000000000000039").get("key");
+            assertThat(errorName).isEqualTo("TASK_INVALID_STATE");
+            LinkedHashMap messageVariables =
+                (LinkedHashMap)
+                    failedTasks
+                        .get("TKI:000000000000000000000000000000000039")
+                        .get("messageVariables");
+            assertThat((List) messageVariables.get("requiredTaskStates"))
+                .containsExactly("READY", "CLAIMED", "READY_FOR_REVIEW", "IN_REVIEW");
+            assertThat(messageVariables).containsEntry("taskState", "COMPLETED");
+            assertThat(messageVariables)
+                .containsEntry("taskId", "TKI:000000000000000000000000000000000039");
+          };
+      return DynamicTest.stream(iterator, c -> "for setTransferFlag and owner: " + c, test);
     }
   }
 
