@@ -3,8 +3,10 @@ package pro.taskana.task.rest;
 import static java.util.function.Predicate.not;
 
 import java.beans.ConstructorProperties;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -29,6 +31,7 @@ import pro.taskana.classification.api.exceptions.ClassificationNotFoundException
 import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.BulkOperationResults;
 import pro.taskana.common.api.exceptions.ConcurrencyException;
+import pro.taskana.common.api.exceptions.ErrorCode;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.common.api.exceptions.TaskanaException;
@@ -49,12 +52,15 @@ import pro.taskana.task.api.exceptions.TaskAlreadyExistException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskSummary;
+import pro.taskana.task.rest.assembler.BulkOperationResultsRepresentationModelAssembler;
 import pro.taskana.task.rest.assembler.TaskRepresentationModelAssembler;
 import pro.taskana.task.rest.assembler.TaskSummaryRepresentationModelAssembler;
+import pro.taskana.task.rest.models.BulkOperationResultsRepresentationModel;
 import pro.taskana.task.rest.models.IsReadRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryCollectionRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryPagedRepresentationModel;
+import pro.taskana.task.rest.models.TransferTaskRepresentationModel;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
@@ -66,15 +72,21 @@ public class TaskController {
   private final TaskService taskService;
   private final TaskRepresentationModelAssembler taskRepresentationModelAssembler;
   private final TaskSummaryRepresentationModelAssembler taskSummaryRepresentationModelAssembler;
+  private final BulkOperationResultsRepresentationModelAssembler
+      bulkOperationResultsRepresentationModelAssembler;
 
   @Autowired
   TaskController(
       TaskService taskService,
       TaskRepresentationModelAssembler taskRepresentationModelAssembler,
-      TaskSummaryRepresentationModelAssembler taskSummaryRepresentationModelAssembler) {
+      TaskSummaryRepresentationModelAssembler taskSummaryRepresentationModelAssembler,
+      BulkOperationResultsRepresentationModelAssembler
+          bulkOperationResultsRepresentationModelAssembler) {
     this.taskService = taskService;
     this.taskRepresentationModelAssembler = taskRepresentationModelAssembler;
     this.taskSummaryRepresentationModelAssembler = taskSummaryRepresentationModelAssembler;
+    this.bulkOperationResultsRepresentationModelAssembler =
+        bulkOperationResultsRepresentationModelAssembler;
   }
 
   // region CREATE
@@ -531,7 +543,8 @@ public class TaskController {
    * @title Transfer a Task to another Workbasket
    * @param taskId the Id of the Task which should be transferred
    * @param workbasketId the Id of the destination Workbasket
-   * @param setTransferFlag sets the tansfer flag of the task (default: true)
+   * @param transferTaskRepresentationModel sets the transfer flag of the Task (default: true) and
+   *     owner of the task
    * @return the successfully transferred Task.
    * @throws TaskNotFoundException if the requested Task does not exist
    * @throws WorkbasketNotFoundException if the requested Workbasket does not exist
@@ -544,15 +557,72 @@ public class TaskController {
   public ResponseEntity<TaskRepresentationModel> transferTask(
       @PathVariable String taskId,
       @PathVariable String workbasketId,
-      @RequestBody(required = false) Boolean setTransferFlag)
+      @RequestBody(required = false)
+          TransferTaskRepresentationModel transferTaskRepresentationModel)
       throws TaskNotFoundException,
           WorkbasketNotFoundException,
           NotAuthorizedOnWorkbasketException,
           InvalidTaskStateException {
-    Task updatedTask =
-        taskService.transfer(taskId, workbasketId, setTransferFlag == null || setTransferFlag);
+    Task updatedTask;
+    if (transferTaskRepresentationModel == null) {
+      updatedTask = taskService.transfer(taskId, workbasketId);
+    } else {
+      updatedTask =
+          taskService.transferWithOwner(
+              taskId,
+              workbasketId,
+              transferTaskRepresentationModel.getOwner(),
+              transferTaskRepresentationModel.getSetTransferFlag());
+    }
 
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
+  }
+
+  /**
+   * This endpoint transfers a list of Tasks listed in the body to a given Workbasket, if possible.
+   * Tasks that can be transfered without throwing an exception get transferred independent of other
+   * Tasks. If the transfer of a Task throws an exception, then the Task will remain in the old
+   * Workbasket.
+   *
+   * @title Transfer Tasks to another Workbasket
+   * @param workbasketId the Id of the destination Workbasket
+   * @param transferTaskRepresentationModel JSON formatted request body containing the TaskIds,
+   *     owner and setTransferFlag of tasks to be transferred; owner and setTransferFlag are
+   *     optional, while the TaskIds are mandatory
+   * @return the successfully transferred Task.
+   * @throws WorkbasketNotFoundException if the requested Workbasket does not exist
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no authorization to transfer
+   *     the Task
+   */
+  @PostMapping(path = RestEndpoints.URL_TRANSFER_WORKBASKET_ID)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<BulkOperationResultsRepresentationModel> transferTasks(
+      @PathVariable String workbasketId,
+      @RequestBody TransferTaskRepresentationModel transferTaskRepresentationModel)
+      throws NotAuthorizedOnWorkbasketException, WorkbasketNotFoundException {
+    List<String> taskIds = transferTaskRepresentationModel.getTaskIds();
+    BulkOperationResults<String, TaskanaException> result =
+        taskService.transferTasksWithOwner(
+            workbasketId,
+            taskIds,
+            transferTaskRepresentationModel.getOwner(),
+            transferTaskRepresentationModel.getSetTransferFlag());
+
+    Set<String> failedIds = new HashSet<>(result.getFailedIds());
+    List<String> successfullyTransferredTaskIds =
+        taskIds.stream().filter(not(failedIds::contains)).toList();
+
+    Map<String, ErrorCode> newErrorMap = new HashMap<>();
+
+    for (Map.Entry<String, TaskanaException> entry : result.getErrorMap().entrySet()) {
+      newErrorMap.put(entry.getKey(), entry.getValue().getErrorCode());
+    }
+
+    BulkOperationResultsRepresentationModel repModel =
+        bulkOperationResultsRepresentationModelAssembler.toModel(result);
+    repModel.setSuccessfullyTransferredTaskIds(successfullyTransferredTaskIds);
+
+    return ResponseEntity.ok(repModel);
   }
 
   /**

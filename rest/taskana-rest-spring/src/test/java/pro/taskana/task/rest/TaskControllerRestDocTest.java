@@ -5,6 +5,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import pro.taskana.task.internal.models.ObjectReferenceImpl;
 import pro.taskana.task.rest.assembler.TaskRepresentationModelAssembler;
 import pro.taskana.task.rest.models.IsReadRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
+import pro.taskana.task.rest.models.TransferTaskRepresentationModel;
 import pro.taskana.testapi.security.JaasExtension;
 import pro.taskana.testapi.security.WithAccessId;
 
@@ -221,12 +223,15 @@ class TaskControllerRestDocTest extends BaseRestDocTest {
 
   @Test
   void transferTaskDocTest() throws Exception {
+    TransferTaskRepresentationModel transferTaskRepresentationModel =
+        new TransferTaskRepresentationModel(true, "user-1-1", null);
     mockMvc
         .perform(
             post(
-                RestEndpoints.URL_TASKS_ID_TRANSFER_WORKBASKET_ID,
-                "TKI:000000000000000000000000000000000004",
-                "WBI:100000000000000000000000000000000001"))
+                    RestEndpoints.URL_TASKS_ID_TRANSFER_WORKBASKET_ID,
+                    "TKI:000000000000000000000000000000000004",
+                    "WBI:100000000000000000000000000000000001")
+                .content(objectMapper.writeValueAsString(transferTaskRepresentationModel)))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 
@@ -242,6 +247,22 @@ class TaskControllerRestDocTest extends BaseRestDocTest {
         .perform(
             put(RestEndpoints.URL_TASKS_ID, task.getId())
                 .content(objectMapper.writeValueAsString(repModel)))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
+  void transferTasksDocTest() throws Exception {
+    List<String> taskIds =
+        List.of(
+            "TKI:000000000000000000000000000000000000", "TKI:000000000000000000000000000000000001");
+    TransferTaskRepresentationModel transferTaskRepresentationModel =
+        new TransferTaskRepresentationModel(true, "user-1-1", taskIds);
+    mockMvc
+        .perform(
+            post(
+                    RestEndpoints.URL_TRANSFER_WORKBASKET_ID,
+                    "WBI:100000000000000000000000000000000001")
+                .content(objectMapper.writeValueAsString(transferTaskRepresentationModel)))
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 }
