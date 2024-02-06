@@ -60,7 +60,7 @@ final class TaskTransferrer {
           InvalidTaskStateException {
     WorkbasketSummary destinationWorkbasket =
         workbasketService.getWorkbasket(destinationWorkbasketId).asSummary();
-    return transferSingleTask(taskId, destinationWorkbasket, setTransferFlag);
+    return transferSingleTask(taskId, destinationWorkbasket, null, setTransferFlag);
   }
 
   Task transfer(
@@ -74,7 +74,7 @@ final class TaskTransferrer {
           InvalidTaskStateException {
     WorkbasketSummary destinationWorkbasket =
         workbasketService.getWorkbasket(destinationWorkbasketKey, destinationDomain).asSummary();
-    return transferSingleTask(taskId, destinationWorkbasket, setTransferFlag);
+    return transferSingleTask(taskId, destinationWorkbasket, null, setTransferFlag);
   }
 
   BulkOperationResults<String, TaskanaException> transfer(
@@ -86,7 +86,7 @@ final class TaskTransferrer {
         workbasketService.getWorkbasket(destinationWorkbasketId).asSummary();
     checkDestinationWorkbasket(destinationWorkbasket);
 
-    return transferMultipleTasks(taskIds, destinationWorkbasket, setTransferFlag);
+    return transferMultipleTasks(taskIds, destinationWorkbasket, null, setTransferFlag);
   }
 
   BulkOperationResults<String, TaskanaException> transfer(
@@ -101,11 +101,65 @@ final class TaskTransferrer {
         workbasketService.getWorkbasket(destinationWorkbasketKey, destinationDomain).asSummary();
     checkDestinationWorkbasket(destinationWorkbasket);
 
-    return transferMultipleTasks(taskIds, destinationWorkbasket, setTransferFlag);
+    return transferMultipleTasks(taskIds, destinationWorkbasket, null, setTransferFlag);
+  }
+
+  BulkOperationResults<String, TaskanaException> transferWithOwner(
+      List<String> taskIds, String destinationWorkbasketId, String owner, boolean setTransferFlag)
+      throws WorkbasketNotFoundException,
+          InvalidArgumentException,
+          NotAuthorizedOnWorkbasketException {
+    WorkbasketSummary destinationWorkbasket =
+        workbasketService.getWorkbasket(destinationWorkbasketId).asSummary();
+    checkDestinationWorkbasket(destinationWorkbasket);
+
+    return transferMultipleTasks(taskIds, destinationWorkbasket, owner, setTransferFlag);
+  }
+
+  BulkOperationResults<String, TaskanaException> transferWithOwner(
+      List<String> taskIds,
+      String destinationWorkbasketKey,
+      String destinationDomain,
+      String owner,
+      boolean setTransferFlag)
+      throws WorkbasketNotFoundException,
+          InvalidArgumentException,
+          NotAuthorizedOnWorkbasketException {
+    WorkbasketSummary destinationWorkbasket =
+        workbasketService.getWorkbasket(destinationWorkbasketKey, destinationDomain).asSummary();
+    checkDestinationWorkbasket(destinationWorkbasket);
+
+    return transferMultipleTasks(taskIds, destinationWorkbasket, owner, setTransferFlag);
+  }
+
+  Task transferWithOwner(
+      String taskId, String destinationWorkbasketId, String owner, boolean setTransferFlag)
+      throws TaskNotFoundException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException {
+    WorkbasketSummary destinationWorkbasket =
+        workbasketService.getWorkbasket(destinationWorkbasketId).asSummary();
+    return transferSingleTask(taskId, destinationWorkbasket, owner, setTransferFlag);
+  }
+
+  Task transferWithOwner(
+      String taskId,
+      String destinationWorkbasketKey,
+      String destinationDomain,
+      String owner,
+      boolean setTransferFlag)
+      throws TaskNotFoundException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException,
+          InvalidTaskStateException {
+    WorkbasketSummary destinationWorkbasket =
+        workbasketService.getWorkbasket(destinationWorkbasketKey, destinationDomain).asSummary();
+    return transferSingleTask(taskId, destinationWorkbasket, owner, setTransferFlag);
   }
 
   private Task transferSingleTask(
-      String taskId, WorkbasketSummary destinationWorkbasket, boolean setTransferFlag)
+      String taskId, WorkbasketSummary destinationWorkbasket, String owner, boolean setTransferFlag)
       throws TaskNotFoundException,
           WorkbasketNotFoundException,
           NotAuthorizedOnWorkbasketException,
@@ -120,7 +174,7 @@ final class TaskTransferrer {
       WorkbasketSummary originWorkbasket = task.getWorkbasketSummary();
       checkPreconditionsForTransferTask(task, destinationWorkbasket, originWorkbasket);
 
-      applyTransferValuesForTask(task, destinationWorkbasket, setTransferFlag);
+      applyTransferValuesForTask(task, destinationWorkbasket, owner, setTransferFlag);
       taskMapper.update(task);
       if (historyEventManager.isEnabled()) {
         createTransferredEvent(
@@ -136,6 +190,7 @@ final class TaskTransferrer {
   private BulkOperationResults<String, TaskanaException> transferMultipleTasks(
       List<String> taskToBeTransferred,
       WorkbasketSummary destinationWorkbasket,
+      String owner,
       boolean setTransferFlag)
       throws InvalidArgumentException {
     if (taskToBeTransferred == null || taskToBeTransferred.isEmpty()) {
@@ -154,7 +209,7 @@ final class TaskTransferrer {
                   () -> taskService.createTaskQuery().idIn(taskIds.toArray(new String[0])).list());
       taskSummaries =
           filterOutTasksWhichDoNotMatchTransferCriteria(taskIds, taskSummaries, bulkLog);
-      updateTransferableTasks(taskSummaries, destinationWorkbasket, setTransferFlag);
+      updateTransferableTasks(taskSummaries, destinationWorkbasket, owner, setTransferFlag);
 
       return bulkLog;
     } finally {
@@ -254,6 +309,7 @@ final class TaskTransferrer {
   private void updateTransferableTasks(
       List<TaskSummary> taskSummaries,
       WorkbasketSummary destinationWorkbasket,
+      String owner,
       boolean setTransferFlag) {
     Map<TaskState, List<TaskSummary>> summariesByState = groupTasksByState(taskSummaries);
     for (Map.Entry<TaskState, List<TaskSummary>> entry : summariesByState.entrySet()) {
@@ -262,7 +318,7 @@ final class TaskTransferrer {
       if (!taskSummariesWithSameGoalState.isEmpty()) {
         TaskImpl updateObject = new TaskImpl();
         updateObject.setState(goalState);
-        applyTransferValuesForTask(updateObject, destinationWorkbasket, setTransferFlag);
+        applyTransferValuesForTask(updateObject, destinationWorkbasket, owner, setTransferFlag);
         taskMapper.updateTransfered(
             taskSummariesWithSameGoalState.stream()
                 .map(TaskSummary::getId)
@@ -275,7 +331,8 @@ final class TaskTransferrer {
                 TaskSummaryImpl newSummary = (TaskSummaryImpl) oldSummary.copy();
                 newSummary.setId(oldSummary.getId());
                 newSummary.setExternalId(oldSummary.getExternalId());
-                applyTransferValuesForTask(newSummary, destinationWorkbasket, setTransferFlag);
+                applyTransferValuesForTask(
+                    newSummary, destinationWorkbasket, owner, setTransferFlag);
 
                 createTransferredEvent(
                     oldSummary,
@@ -289,11 +346,11 @@ final class TaskTransferrer {
   }
 
   private void applyTransferValuesForTask(
-      TaskSummaryImpl task, WorkbasketSummary workbasket, boolean setTransferFlag) {
+      TaskSummaryImpl task, WorkbasketSummary workbasket, String owner, boolean setTransferFlag) {
     task.setRead(false);
     task.setTransferred(setTransferFlag);
     task.setState(getStateAfterTransfer(task));
-    task.setOwner(null);
+    task.setOwner(owner);
     task.setWorkbasketSummary(workbasket);
     task.setDomain(workbasket.getDomain());
     task.setModified(Instant.now());
