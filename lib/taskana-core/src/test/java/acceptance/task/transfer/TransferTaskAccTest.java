@@ -435,4 +435,140 @@ class TransferTaskAccTest extends AbstractAccTest {
 
     assertThat(transferredTasks).extracting(TaskSummary::isTransferred).containsOnly(false);
   }
+
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
+  @Test
+  void should_BulkTransferOnlyValidTasksAndSetOwner_When_SomeTasksToTransferCauseExceptions()
+      throws Exception {
+    final Workbasket wb =
+        taskanaEngine
+            .getWorkbasketService()
+            .getWorkbasket("WBI:100000000000000000000000000000000009");
+    final Instant before = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    List<String> taskIdList =
+        Arrays.asList(
+            "TKI:000000000000000000000000000000000007", // working
+            "TKI:000000000000000000000000000000000041", // NotAuthorized READ
+            "TKI:000000000000000000000000000000000041", // NotAuthorized READ
+            "TKI:200000000000000000000000000000000008", // NotAuthorized TRANSFER
+            "", // InvalidArgument
+            null, // InvalidArgument
+            "TKI:000000000000000000000000000000000099", // not existing
+            "TKI:100000000000000000000000000000000006"); // already completed
+
+    BulkOperationResults<String, TaskanaException> results =
+        taskService.transferTasksWithOwner(
+            "WBI:100000000000000000000000000000000009", taskIdList, "teamlead-1");
+
+    // check for exceptions in bulk
+    assertThat(results.containsErrors()).isTrue();
+    assertThat(results.getErrorMap().values()).hasSize(6);
+    assertThat(results.getErrorForId("TKI:000000000000000000000000000000000041").getClass())
+        .isEqualTo(NotAuthorizedOnWorkbasketException.class);
+    assertThat(results.getErrorForId("TKI:200000000000000000000000000000000008").getClass())
+        .isEqualTo(NotAuthorizedOnWorkbasketException.class);
+    assertThat(results.getErrorForId("TKI:000000000000000000000000000000000099").getClass())
+        .isEqualTo(TaskNotFoundException.class);
+    assertThat(results.getErrorForId("TKI:100000000000000000000000000000000006").getClass())
+        .isEqualTo(InvalidTaskStateException.class);
+    assertThat(results.getErrorForId("").getClass()).isEqualTo(TaskNotFoundException.class);
+    assertThat(results.getErrorForId(null).getClass()).isEqualTo(TaskNotFoundException.class);
+
+    // verify valid requests
+    Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000007");
+    assertThat(transferredTask).isNotNull();
+    assertThat(transferredTask.isTransferred()).isTrue();
+    assertThat(transferredTask.isRead()).isFalse();
+    assertThat(transferredTask.getState()).isEqualTo(TaskState.READY);
+    assertThat(transferredTask.getWorkbasketKey()).isEqualTo(wb.getKey());
+    assertThat(transferredTask.getDomain()).isEqualTo(wb.getDomain());
+    assertThat(transferredTask.getModified().isBefore(before)).isFalse();
+    assertThat(transferredTask.getOwner()).isEqualTo("teamlead-1");
+  }
+
+  @WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
+  @Test
+  void should_BulkTransferTasksAndSetOwner_When_WorkbasketKeyAndDomainIsProvided()
+      throws Exception {
+    final Instant before = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    List<String> taskIdList =
+        List.of(
+            "TKI:000000000000000000000000000000000008", "TKI:000000000000000000000000000000000009");
+
+    BulkOperationResults<String, TaskanaException> results =
+        taskService.transferTasksWithOwner("GPK_B_KSC_1", "DOMAIN_B", taskIdList, "teamlead-1");
+    assertThat(results.containsErrors()).isFalse();
+
+    final Workbasket wb =
+        taskanaEngine.getWorkbasketService().getWorkbasket("GPK_B_KSC_1", "DOMAIN_B");
+    Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000008");
+    assertThat(transferredTask).isNotNull();
+    assertThat(transferredTask.isTransferred()).isTrue();
+    assertThat(transferredTask.isRead()).isFalse();
+    assertThat(transferredTask.getState()).isEqualTo(TaskState.READY);
+    assertThat(transferredTask.getWorkbasketKey()).isEqualTo(wb.getKey());
+    assertThat(transferredTask.getDomain()).isEqualTo(wb.getDomain());
+    assertThat(transferredTask.getModified().isBefore(before)).isFalse();
+    assertThat(transferredTask.getOwner()).isEqualTo("teamlead-1");
+    transferredTask = taskService.getTask("TKI:000000000000000000000000000000000009");
+    assertThat(transferredTask).isNotNull();
+    assertThat(transferredTask.isTransferred()).isTrue();
+    assertThat(transferredTask.isRead()).isFalse();
+    assertThat(transferredTask.getState()).isEqualTo(TaskState.READY);
+    assertThat(transferredTask.getWorkbasketKey()).isEqualTo(wb.getKey());
+    assertThat(transferredTask.getDomain()).isEqualTo(wb.getDomain());
+    assertThat(transferredTask.getModified().isBefore(before)).isFalse();
+    assertThat(transferredTask.getOwner()).isEqualTo("teamlead-1");
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_NotSetTheTransferFlagWithinBulkTransferWithOwner_When_WorkbasketIdGiven()
+      throws Exception {
+    taskService.transferTasksWithOwner(
+        "WBI:100000000000000000000000000000000006",
+        List.of(
+            "TKI:000000000000000000000000000000000010",
+            "TKI:000000000000000000000000000000000011",
+            "TKI:000000000000000000000000000000000012"),
+        "user-1-1",
+        false);
+
+    List<TaskSummary> transferredTasks =
+        taskService
+            .createTaskQuery()
+            .idIn(
+                "TKI:000000000000000000000000000000000010",
+                "TKI:000000000000000000000000000000000011",
+                "TKI:000000000000000000000000000000000012")
+            .list();
+
+    assertThat(transferredTasks).extracting(TaskSummary::isTransferred).containsOnly(false);
+  }
+
+  @WithAccessId(user = "admin")
+  @Test
+  void should_NotSetTheTransferFlagWithinBulkTransferWithOwner_When_WorkbasketKeyAndDomainGiven()
+      throws Exception {
+    taskService.transferTasksWithOwner(
+        "USER-1-1",
+        "DOMAIN_A",
+        List.of(
+            "TKI:000000000000000000000000000000000013",
+            "TKI:000000000000000000000000000000000014",
+            "TKI:000000000000000000000000000000000015"),
+        "user-1-1",
+        false);
+
+    List<TaskSummary> transferredTasks =
+        taskService
+            .createTaskQuery()
+            .idIn(
+                "TKI:000000000000000000000000000000000013",
+                "TKI:000000000000000000000000000000000014",
+                "TKI:000000000000000000000000000000000015")
+            .list();
+
+    assertThat(transferredTasks).extracting(TaskSummary::isTransferred).containsOnly(false);
+  }
 }

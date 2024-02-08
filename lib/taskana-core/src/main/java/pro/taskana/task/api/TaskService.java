@@ -640,6 +640,100 @@ public interface TaskService {
           NotAuthorizedOnWorkbasketException;
 
   /**
+   * Transfers a List of {@linkplain Task Tasks} to another {@linkplain Workbasket} and set owner to
+   * {@param owner} while always setting {@linkplain Task#isTransferred isTransferred} to true.
+   *
+   * @see #transferTasksWithOwner(String, List, String, boolean)
+   */
+  @SuppressWarnings("checkstyle:JavadocMethod")
+  default BulkOperationResults<String, TaskanaException> transferTasksWithOwner(
+      String destinationWorkbasketId, List<String> taskIds, String owner)
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException {
+    return transferTasksWithOwner(destinationWorkbasketId, taskIds, owner, true);
+  }
+
+  /**
+   * Transfers a List of {@linkplain Task Tasks} to another {@linkplain Workbasket} and set the
+   * owner.
+   *
+   * <p>The transfer resets {@linkplain Task#isRead() isRead} and sets {@linkplain
+   * Task#isTransferred() isTransferred} if setTransferFlag is true. Exceptions will be thrown if
+   * the caller got no {@linkplain WorkbasketPermission} on the target or if the target {@linkplain
+   * Workbasket} doesn't exist. Other Exceptions will be stored and returned in the end.
+   *
+   * @param destinationWorkbasketId {@linkplain Workbasket#getId() id} of the target {@linkplain
+   *     Workbasket}
+   * @param taskIds List of source {@linkplain Task Tasks} which will be moved
+   * @param owner the new owner of the transferred tasks
+   * @param setTransferFlag controls whether to set {@linkplain Task#isTransferred() isTransferred}
+   *     or not
+   * @return Bulkresult with {@linkplain Task#getId() ids} and Error for each failed transactions
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
+   *     WorkbasketPermission#READ} for the source {@linkplain Workbasket} or no {@linkplain
+   *     WorkbasketPermission#TRANSFER} for the target {@linkplain Workbasket}
+   * @throws InvalidArgumentException if the method parameters are empty or NULL
+   * @throws WorkbasketNotFoundException if the target {@linkplain Workbasket} can't be found
+   */
+  BulkOperationResults<String, TaskanaException> transferTasksWithOwner(
+      String destinationWorkbasketId, List<String> taskIds, String owner, boolean setTransferFlag)
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException;
+
+  /**
+   * Transfers a List of {@linkplain Task Tasks} to another {@linkplain Workbasket} and set owner
+   * while always setting {@linkplain Task#isTransferred() isTransferred} to true.
+   *
+   * @see #transferTasksWithOwner(String, String, List, String, boolean)
+   */
+  @SuppressWarnings("checkstyle:JavadocMethod")
+  default BulkOperationResults<String, TaskanaException> transferTasksWithOwner(
+      String destinationWorkbasketKey,
+      String destinationWorkbasketDomain,
+      List<String> taskIds,
+      String owner)
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException {
+    return transferTasksWithOwner(
+        destinationWorkbasketKey, destinationWorkbasketDomain, taskIds, owner, true);
+  }
+
+  /**
+   * Transfers a List of {@linkplain Task Tasks} to another {@linkplain Workbasket} and set owner.
+   *
+   * <p>The transfer resets {@linkplain Task#isRead() isRead} and sets {@linkplain
+   * Task#isTransferred() isTransferred} if setTransferFlag is true. Exceptions will be thrown if
+   * the caller got no {@linkplain WorkbasketPermission} on the target {@linkplain Workbasket} or if
+   * it doesn't exist. Other Exceptions will be stored and returned in the end.
+   *
+   * @param destinationWorkbasketKey target {@linkplain Workbasket#getKey() key}
+   * @param destinationWorkbasketDomain target {@linkplain Workbasket#getDomain() domain}
+   * @param taskIds List of {@linkplain Task#getId() ids} of source {@linkplain Task Tasks} which
+   *     will be moved
+   * @param owner the new owner of the transferred tasks
+   * @param setTransferFlag controls whether to set {@linkplain Task#isTransferred() isTransferred}
+   *     or not
+   * @return BulkResult with {@linkplain Task#getId() ids} and Error for each failed transactions
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no {@linkplain
+   *     WorkbasketPermission#READ} for the source {@linkplain Workbasket} or no {@linkplain
+   *     WorkbasketPermission#TRANSFER} for the target {@linkplain Workbasket}
+   * @throws InvalidArgumentException if the method parameters are empty or NULL
+   * @throws WorkbasketNotFoundException if the target {@linkplain Workbasket} can't be found
+   */
+  BulkOperationResults<String, TaskanaException> transferTasksWithOwner(
+      String destinationWorkbasketKey,
+      String destinationWorkbasketDomain,
+      List<String> taskIds,
+      String owner,
+      boolean setTransferFlag)
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException;
+
+  /**
    * Update a {@linkplain Task}.
    *
    * @param task the {@linkplain Task} to be updated

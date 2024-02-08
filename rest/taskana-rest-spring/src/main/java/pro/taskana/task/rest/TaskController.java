@@ -55,6 +55,7 @@ import pro.taskana.task.rest.models.IsReadRepresentationModel;
 import pro.taskana.task.rest.models.TaskRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryCollectionRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryPagedRepresentationModel;
+import pro.taskana.task.rest.models.TransferTaskRepresentationModel;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 import pro.taskana.workbasket.api.exceptions.WorkbasketNotFoundException;
 
@@ -553,6 +554,54 @@ public class TaskController {
         taskService.transfer(taskId, workbasketId, setTransferFlag == null || setTransferFlag);
 
     return ResponseEntity.ok(taskRepresentationModelAssembler.toModel(updatedTask));
+  }
+
+  /**
+   * This endpoint transfers a list of Tasks listed in the body to a given Workbasket, if possible.
+   *
+   * @title Transfer Tasks to another Workbasket
+   * @param workbasketId the Id of the destination Workbasket
+   * @param transferTaskRepresentationModel the TaskIds, owner and setTransferFlag of tasks to be
+   *     transferred
+   * @return the successfully transferred Task.
+   * @throws WorkbasketNotFoundException if the requested Workbasket does not exist
+   * @throws NotAuthorizedOnWorkbasketException if the current user has no authorization to transfer
+   *     the Task.
+   */
+  @PostMapping(path = RestEndpoints.URL_TRANSFER_WORKBASKET_ID)
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseEntity<TaskSummaryCollectionRepresentationModel> transferTasks(
+      @PathVariable String workbasketId,
+      @RequestBody TransferTaskRepresentationModel transferTaskRepresentationModel)
+      throws NotAuthorizedOnWorkbasketException, WorkbasketNotFoundException {
+    List<String> taskIds = transferTaskRepresentationModel.getTaskIds();
+    BulkOperationResults<String, TaskanaException> result;
+    if (transferTaskRepresentationModel.getOwner() == null) {
+      result =
+          taskService.transferTasks(
+              workbasketId, taskIds, transferTaskRepresentationModel.getSetTransferFlag());
+    } else {
+      result =
+          taskService.transferTasksWithOwner(
+              workbasketId,
+              taskIds,
+              transferTaskRepresentationModel.getOwner(),
+              transferTaskRepresentationModel.getSetTransferFlag());
+    }
+
+    Set<String> failedIds = new HashSet<>(result.getFailedIds());
+    List<String> successfullyTransferredTaskIds =
+        taskIds.stream().filter(not(failedIds::contains)).toList();
+
+    List<TaskSummary> successfullyTransferredTaskSummaries =
+        taskService
+            .createTaskQuery()
+            .idIn(successfullyTransferredTaskIds.toArray(new String[0]))
+            .list();
+
+    return ResponseEntity.ok(
+        taskSummaryRepresentationModelAssembler.toTaskanaCollectionModel(
+            successfullyTransferredTaskSummaries));
   }
 
   /**

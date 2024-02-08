@@ -54,6 +54,7 @@ import pro.taskana.task.rest.models.TaskRepresentationModel.CustomAttribute;
 import pro.taskana.task.rest.models.TaskSummaryCollectionRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryPagedRepresentationModel;
 import pro.taskana.task.rest.models.TaskSummaryRepresentationModel;
+import pro.taskana.task.rest.models.TransferTaskRepresentationModel;
 import pro.taskana.task.rest.routing.IntegrationTestTaskRouter;
 import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 
@@ -2004,6 +2005,45 @@ class TaskControllerIntTest {
       assertThat(response.getBody().getWorkbasketSummary().getWorkbasketId())
           .isEqualTo("WBI:100000000000000000000000000000000006");
       assertThat(response.getBody().isTransferred()).isTrue();
+    }
+
+    @TestFactory
+    Stream<DynamicTest>
+        should_SetTransferFlagAndOwnerDependentOnRequestBody_When_TransferringTasks() {
+
+      Iterator<Pair<Boolean, String>> iterator =
+          Arrays.asList(Pair.of(true, "user-1-1"), Pair.of(false, "user-1-2")).iterator();
+      String url =
+          restHelper.toUrl(
+              RestEndpoints.URL_TRANSFER_WORKBASKET_ID, "WBI:100000000000000000000000000000000006");
+
+      List<String> taskIds =
+          Arrays.asList(
+              "TKI:000000000000000000000000000000000003",
+              "TKI:000000000000000000000000000000000004",
+              "TKI:000000000000000000000000000000000005");
+
+      ThrowingConsumer<Pair<Boolean, String>> test =
+          pair -> {
+            HttpEntity<Object> auth =
+                new HttpEntity<>(
+                    new TransferTaskRepresentationModel(pair.getLeft(), pair.getRight(), taskIds),
+                    RestHelper.generateHeadersForUser("admin"));
+            ResponseEntity<TaskSummaryCollectionRepresentationModel> response =
+                TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_SUMMARY_COLLECTION_MODEL_TYPE);
+
+            assertThat(response.getBody()).isNotNull();
+            assertThat((response.getBody()).getLink(IanaLinkRelations.SELF)).isNotNull();
+            assertThat(response.getBody().getContent()).hasSize(3);
+            for (TaskSummaryRepresentationModel representationModel :
+                response.getBody().getContent()) {
+              assertThat(representationModel.getWorkbasketSummary().getWorkbasketId())
+                  .isEqualTo("WBI:100000000000000000000000000000000006");
+              assertThat(representationModel.isTransferred()).isEqualTo(pair.getLeft());
+              assertThat(representationModel.getOwner()).isEqualTo(pair.getRight());
+            }
+          };
+      return DynamicTest.stream(iterator, c -> "for setTransferFlag and owner: " + c, test);
     }
   }
 

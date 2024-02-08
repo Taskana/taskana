@@ -632,6 +632,30 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
+  public BulkOperationResults<String, TaskanaException> transferTasksWithOwner(
+      String destinationWorkbasketId, List<String> taskIds, String owner, boolean setTransferFlag)
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException {
+    return taskTransferrer.transferTasksWithOwner(
+        taskIds, destinationWorkbasketId, owner, setTransferFlag);
+  }
+
+  @Override
+  public BulkOperationResults<String, TaskanaException> transferTasksWithOwner(
+      String destinationWorkbasketKey,
+      String destinationWorkbasketDomain,
+      List<String> taskIds,
+      String owner,
+      boolean setTransferFlag)
+      throws InvalidArgumentException,
+          WorkbasketNotFoundException,
+          NotAuthorizedOnWorkbasketException {
+    return taskTransferrer.transferTasksWithOwner(
+        taskIds, destinationWorkbasketKey, destinationWorkbasketDomain, owner, setTransferFlag);
+  }
+
+  @Override
   public void deleteTask(String taskId)
       throws TaskNotFoundException,
           NotAuthorizedException,
