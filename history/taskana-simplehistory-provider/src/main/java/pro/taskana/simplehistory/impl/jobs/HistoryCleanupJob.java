@@ -72,7 +72,8 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
               .eventTypeIn(
                   TaskHistoryEventType.COMPLETED.getName(),
                   TaskHistoryEventType.CANCELLED.getName(),
-                  TaskHistoryEventType.TERMINATED.getName())
+                  TaskHistoryEventType.TERMINATED.getName(),
+                  TaskHistoryEventType.DELETED.getName())
               .list();
 
       Set<String> taskIdsToDeleteHistoryEventsFor;
