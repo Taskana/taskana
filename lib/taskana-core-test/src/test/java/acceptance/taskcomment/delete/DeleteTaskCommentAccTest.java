@@ -83,7 +83,7 @@ class DeleteTaskCommentAccTest {
     taskService.deleteTaskComment(comment1.getId());
 
     List<TaskComment> taskCommentsAfterDeletion = taskService.getTaskComments(task1.getId());
-    assertThat(taskCommentsAfterDeletion).hasSize(0);
+    assertThat(taskCommentsAfterDeletion).isEmpty();
   }
 
   @WithAccessId(user = "user-1-2", groups = "user-1-1")
@@ -129,7 +129,7 @@ class DeleteTaskCommentAccTest {
         });
     List<TaskComment> taskCommentsAfterDeletionWithAdmin =
         taskService.getTaskComments(task1.getId());
-    assertThat(taskCommentsAfterDeletionWithAdmin).hasSize(0);
+    assertThat(taskCommentsAfterDeletionWithAdmin).isEmpty();
   }
 
   @WithAccessId(user = "admin")
@@ -146,7 +146,7 @@ class DeleteTaskCommentAccTest {
     taskService.deleteTaskComment(comment1.getId());
 
     List<TaskComment> taskCommentsAfterDeletion = taskService.getTaskComments(task1.getId());
-    assertThat(taskCommentsAfterDeletion).hasSize(0);
+    assertThat(taskCommentsAfterDeletion).isEmpty();
   }
 
   @WithAccessId(user = "user-1-1")
