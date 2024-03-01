@@ -41,7 +41,7 @@ export class AccessIdsService {
   ): Observable<WorkbasketAccessItemsRepresentation> {
     return this.httpClient.get<WorkbasketAccessItemsRepresentation>(
       encodeURI(
-        `${environment.taskanaRestUrl}/v1/workbasket-access-items/${asUrlQueryString({
+        `${environment.taskanaRestUrl}/v1/workbasket-access-items${asUrlQueryString({
           ...filterParameter,
           ...sortParameter,
           ...pagingParameter
