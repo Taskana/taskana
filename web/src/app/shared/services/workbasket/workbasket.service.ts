@@ -42,7 +42,7 @@ export class WorkbasketService {
     return this.domainService.getSelectedDomain().pipe(
       mergeMap((domain) => {
         this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryRepresentation>(
-          `${environment.taskanaRestUrl}/v1/workbaskets/${asUrlQueryString({
+          `${environment.taskanaRestUrl}/v1/workbaskets${asUrlQueryString({
             ...filterParameter,
             ...sortParameter,
             ...pagingParameter
@@ -112,7 +112,7 @@ export class WorkbasketService {
     pagingParameter?: QueryPagingParameter
   ): Observable<WorkbasketDistributionTargets> {
     return this.httpClient.get<WorkbasketDistributionTargets>(
-      `${url}/${asUrlQueryString({
+      `${url}${asUrlQueryString({
         ...filterParameter,
         ...sortParameter,
         ...pagingParameter
