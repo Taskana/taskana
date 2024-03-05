@@ -451,7 +451,7 @@ jobs:
       - name: Verify Example Application contains documentation
         run: ci/verify_docs_jar.sh
       - name: Login to Microsoft Azure
-        uses: Azure/login@v1
+        uses: Azure/login@v2
         with:
           creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
       - name: Deploy to Microsoft Azure
