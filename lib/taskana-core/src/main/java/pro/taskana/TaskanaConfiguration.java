@@ -136,6 +136,7 @@ public class TaskanaConfiguration {
 
   // region custom configuration
   private final Map<String, String> properties;
+
   // endregion
 
   private TaskanaConfiguration(Builder builder) {
@@ -238,7 +239,7 @@ public class TaskanaConfiguration {
   public List<String> getAllClassificationCategories() {
     return this.classificationCategoriesByType.values().stream()
         .flatMap(Collection::stream)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   public List<String> getClassificationCategoriesByType(String type) {
@@ -723,11 +724,13 @@ public class TaskanaConfiguration {
 
     @TaskanaProperty("taskana.servicelevel.validation.enforce")
     private boolean enforceServiceLevel = true;
+
     // endregion
 
     // region authentication configuration
     @TaskanaProperty("taskana.roles")
     private Map<TaskanaRole, Set<String>> roleMap = new EnumMap<>(TaskanaRole.class);
+
     // endregion
 
     // region classification configuration
@@ -736,6 +739,7 @@ public class TaskanaConfiguration {
 
     @TaskanaProperty("taskana.classification.categories")
     private Map<String, List<String>> classificationCategoriesByType = new HashMap<>();
+
     // endregion
 
     // region working time configuration
@@ -758,6 +762,7 @@ public class TaskanaConfiguration {
 
     @TaskanaProperty("taskana.workingTime.holidays.german.corpus-christi.enabled")
     private boolean germanPublicHolidaysCorpusChristiEnabled = false;
+
     // endregion
 
     // region history configuration
@@ -766,6 +771,7 @@ public class TaskanaConfiguration {
 
     @TaskanaProperty("taskana.history.logger.name")
     private String logHistoryLoggerName = null; // default value will be set in the logger class.
+
     // endregion
 
     // region job configuration
@@ -858,6 +864,7 @@ public class TaskanaConfiguration {
 
     @TaskanaProperty("taskana.jobs.customJobs")
     private Set<String> customJobs = new HashSet<>();
+
     // endregion
 
     // region user configuration
@@ -866,15 +873,18 @@ public class TaskanaConfiguration {
 
     @TaskanaProperty("taskana.user.minimalPermissionsToAssignDomains")
     private Set<WorkbasketPermission> minimalPermissionsToAssignDomains = new HashSet<>();
+
     // endregion
 
     // region database configuration
     @TaskanaProperty("taskana.feature.useSpecificDb2Taskquery")
     private boolean useSpecificDb2Taskquery = true;
+
     // endregion
 
     // region custom configuration
     private Map<String, String> properties = Collections.emptyMap();
+
     // endregion
 
     public Builder(DataSource dataSource, boolean useManagedTransactions, String schemaName) {
@@ -1055,6 +1065,7 @@ public class TaskanaConfiguration {
       this.enforceServiceLevel = enforceServiceLevel;
       return this;
     }
+
     // endregion
 
     // region authentication configuration
@@ -1353,18 +1364,15 @@ public class TaskanaConfiguration {
     }
 
     private void adjustConfiguration() {
-      domains = domains.stream().map(String::toUpperCase).collect(Collectors.toList());
-      classificationTypes =
-          classificationTypes.stream().map(String::toUpperCase).collect(Collectors.toList());
+      domains = domains.stream().map(String::toUpperCase).toList();
+      classificationTypes = classificationTypes.stream().map(String::toUpperCase).toList();
       classificationCategoriesByType =
           classificationCategoriesByType.entrySet().stream()
               .map(
                   e ->
                       Map.entry(
                           e.getKey().toUpperCase(),
-                          e.getValue().stream()
-                              .map(String::toUpperCase)
-                              .collect(Collectors.toList())))
+                          e.getValue().stream().map(String::toUpperCase).toList()))
               .sorted(Comparator.comparingInt(e -> classificationTypes.indexOf(e.getKey())))
               .collect(
                   Collectors.toMap(
@@ -1446,11 +1454,10 @@ public class TaskanaConfiguration {
       if (!new HashSet<>(classificationTypes)
           .containsAll(classificationCategoriesByType.keySet())) {
         throw new InvalidArgumentException(
-                "Parameter classificationCategoriesByType (taskana.classification.categories.<KEY>)"
-                    + " is configured incorrectly. Please check whether all specified"
-                    + " Classification Types exist. Additionally, check whether the correct"
-                    + " separator is used in the property taskana.classification.types ."
-                );
+            "Parameter classificationCategoriesByType (taskana.classification.categories.<KEY>)"
+                + " is configured incorrectly. Please check whether all specified"
+                + " Classification Types exist. Additionally, check whether the correct"
+                + " separator is used in the property taskana.classification.types .");
       }
 
       if (!classificationCategoriesByType.keySet().containsAll(classificationTypes)) {
