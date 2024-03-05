@@ -52,7 +52,7 @@ export class AccessIdsService {
 
   removeAccessItemsPermissions(accessId: string) {
     return this.httpClient.delete<WorkbasketAccessItemsRepresentation>(
-      `${environment.taskanaRestUrl}/v1/workbasket-access-items/?access-id=${accessId}`
+      `${environment.taskanaRestUrl}/v1/workbasket-access-items?access-id=${accessId}`
     );
   }
 }

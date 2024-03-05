@@ -23,7 +23,7 @@ export class ClassificationsService {
   ) {}
 
   get url(): string {
-    return this.startupService.getTaskanaRestUrl() + '/v1/classifications/';
+    return this.startupService.getTaskanaRestUrl() + '/v1/classifications';
   }
 
   // GET
@@ -39,7 +39,7 @@ export class ClassificationsService {
 
   // GET
   getClassification(id: string): Observable<Classification> {
-    return this.httpClient.get<Classification>(`${this.url}${id}`);
+    return this.httpClient.get<Classification>(`${this.url}/${id}`);
   }
 
   // POST
@@ -49,11 +49,11 @@ export class ClassificationsService {
 
   // PUT
   putClassification(classification: Classification): Observable<Classification> {
-    return this.httpClient.put<Classification>(`${this.url}${classification.classificationId}`, classification);
+    return this.httpClient.put<Classification>(`${this.url}/${classification.classificationId}`, classification);
   }
 
   // DELETE
   deleteClassification(id: string): Observable<string> {
-    return this.httpClient.delete<string>(`${this.url}${id}`);
+    return this.httpClient.delete<string>(`${this.url}/${id}`);
   }
 }

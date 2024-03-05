@@ -19,7 +19,7 @@ export class TaskProcessingComponent implements OnInit, OnDestroy {
   routeSubscription: Subscription;
 
   regex = /\${(.*?)}/g;
-  address = 'https://bing.com/';
+  address = 'https://bing.com';
   link: SafeResourceUrl;
 
   task: Task = null;
@@ -59,7 +59,7 @@ export class TaskProcessingComponent implements OnInit, OnDestroy {
     const classification = await this.classificationService
       .getClassification(this.task.classificationSummary.classificationId)
       .toPromise();
-    this.address = this.extractUrl(classification.applicationEntryPoint) || `${this.address}/?q=${this.task.name}`;
+    this.address = this.extractUrl(classification.applicationEntryPoint) || `${this.address}?q=${this.task.name}`;
     this.link = this.sanitizer.bypassSecurityTrustResourceUrl(this.address);
     this.getWorkbaskets();
     this.requestInProgressService.setRequestInProgress(false);
