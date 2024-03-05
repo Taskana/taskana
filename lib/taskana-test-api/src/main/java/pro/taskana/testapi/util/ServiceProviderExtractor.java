@@ -82,7 +82,7 @@ public class ServiceProviderExtractor {
       List<Class<?>> serviceProviders, Map<Class<?>, Object> enclosingTestInstancesByClass) {
     return serviceProviders.stream()
         .map(clz -> instantiateClass(clz, enclosingTestInstancesByClass))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   private static Object instantiateClass(
