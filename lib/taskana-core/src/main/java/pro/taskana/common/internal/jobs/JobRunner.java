@@ -3,7 +3,6 @@ package pro.taskana.common.internal.jobs;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.taskana.common.api.ScheduledJob;
@@ -34,8 +33,7 @@ public class JobRunner {
 
   private List<ScheduledJob> findAndLockJobsToRun() {
     return TaskanaTransactionProvider.executeInTransactionIfPossible(
-        txProvider,
-        () -> jobService.findJobsToRun().stream().map(this::lockJob).collect(Collectors.toList()));
+        txProvider, () -> jobService.findJobsToRun().stream().map(this::lockJob).toList());
   }
 
   private void runJobTransactionally(ScheduledJob scheduledJob) {

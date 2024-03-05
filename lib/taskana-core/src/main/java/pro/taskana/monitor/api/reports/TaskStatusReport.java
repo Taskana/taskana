@@ -1,7 +1,6 @@
 package pro.taskana.monitor.api.reports;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
 import pro.taskana.monitor.api.reports.header.ColumnHeader;
@@ -25,7 +24,7 @@ public class TaskStatusReport extends Report<TaskQueryItem, TaskStatusColumnHead
     super(
         (filter != null ? filter.stream() : Stream.of(TaskState.values()))
             .map(TaskStatusColumnHeader::new)
-            .collect(Collectors.toList()),
+            .toList(),
         new String[] {"DOMAINS"});
   }
 

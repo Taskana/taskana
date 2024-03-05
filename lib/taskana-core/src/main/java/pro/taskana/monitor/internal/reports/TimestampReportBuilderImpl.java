@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.NotAuthorizedException;
@@ -71,7 +70,7 @@ public class TimestampReportBuilderImpl
               // That's why "the loop" is done outside mybatis.
               .map(this::getTasksCountForStatusGroupedByOrgLevel)
               .flatMap(Collection::stream)
-              .collect(Collectors.toList());
+              .toList();
 
       report.addItems(
           items,

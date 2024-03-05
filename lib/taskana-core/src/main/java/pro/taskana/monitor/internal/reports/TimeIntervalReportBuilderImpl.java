@@ -5,7 +5,6 @@ import static pro.taskana.common.api.BaseQuery.toLowerCopy;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.WorkingTimeCalculator;
@@ -619,7 +618,7 @@ abstract class TimeIntervalReportBuilderImpl<
                     s.getSubKey(),
                     Collections.min(instance.convertWorkingDaysToDays(s.getLowerAgeLimit())),
                     Collections.max(instance.convertWorkingDaysToDays(s.getUpperAgeLimit()))))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   private boolean subKeyIsSet(List<SelectedItem> selectedItems) {

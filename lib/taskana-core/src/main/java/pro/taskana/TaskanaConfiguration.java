@@ -238,7 +238,7 @@ public class TaskanaConfiguration {
   public List<String> getAllClassificationCategories() {
     return this.classificationCategoriesByType.values().stream()
         .flatMap(Collection::stream)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   public List<String> getClassificationCategoriesByType(String type) {
@@ -1353,18 +1353,15 @@ public class TaskanaConfiguration {
     }
 
     private void adjustConfiguration() {
-      domains = domains.stream().map(String::toUpperCase).collect(Collectors.toList());
-      classificationTypes =
-          classificationTypes.stream().map(String::toUpperCase).collect(Collectors.toList());
+      domains = domains.stream().map(String::toUpperCase).toList();
+      classificationTypes = classificationTypes.stream().map(String::toUpperCase).toList();
       classificationCategoriesByType =
           classificationCategoriesByType.entrySet().stream()
               .map(
                   e ->
                       Map.entry(
                           e.getKey().toUpperCase(),
-                          e.getValue().stream()
-                              .map(String::toUpperCase)
-                              .collect(Collectors.toList())))
+                          e.getValue().stream().map(String::toUpperCase).toList()))
               .sorted(Comparator.comparingInt(e -> classificationTypes.indexOf(e.getKey())))
               .collect(
                   Collectors.toMap(

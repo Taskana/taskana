@@ -3,7 +3,6 @@ package pro.taskana.user.jobs;
 import java.sql.PreparedStatement;
 import java.time.Duration;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.taskana.TaskanaConfiguration;
@@ -64,9 +63,7 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
 
       List<User> users = ldapClient.searchUsersInUserRole();
       List<User> usersAfterProcessing =
-          users.stream()
-              .map(refreshUserPostprocessorManager::processUserAfterRefresh)
-              .collect(Collectors.toList());
+          users.stream().map(refreshUserPostprocessorManager::processUserAfterRefresh).toList();
       addExistingConfigurationDataToUsers(usersAfterProcessing);
       clearExistingUsersAndGroupsAndPermissions();
       insertNewUsers(usersAfterProcessing);
