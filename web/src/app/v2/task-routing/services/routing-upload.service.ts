@@ -9,7 +9,7 @@ export class RoutingUploadService {
   constructor(private httpClient: HttpClient, private startupService: StartupService) {}
 
   get url(): string {
-    return this.startupService.getTaskanaRestUrl() + '/v1/routing-rules/default/';
+    return this.startupService.getTaskanaRestUrl() + '/v1/routing-rules/default';
   }
 
   uploadRoutingRules(file: File) {
