@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -313,7 +312,7 @@ public class WorkbasketController {
     List<WorkbasketAccessItem> wbAccessItems =
         workbasketAccessItemRepModels.getContent().stream()
             .map(workbasketAccessItemRepresentationModelAssembler::toEntityModel)
-            .collect(Collectors.toList());
+            .toList();
     workbasketService.setWorkbasketAccessItems(workbasketId, wbAccessItems);
     List<WorkbasketAccessItem> updatedWbAccessItems =
         workbasketService.getWorkbasketAccessItems(workbasketId);
