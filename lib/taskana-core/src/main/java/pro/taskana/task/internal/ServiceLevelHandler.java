@@ -71,9 +71,7 @@ class ServiceLevelHandler {
     }
     if (priorityChanged) {
       List<MinimalTaskSummary> tasksWithoutManualPriority =
-          tasks.stream()
-              .filter(not(MinimalTaskSummary::isManualPriorityActive))
-              .collect(Collectors.toList());
+          tasks.stream().filter(not(MinimalTaskSummary::isManualPriorityActive)).toList();
       updateTaskPriorityOnClassificationUpdate(
           tasksWithoutManualPriority, attachments, allInvolvedClassifications);
     }
@@ -214,7 +212,7 @@ class ServiceLevelHandler {
                         t.getTaskId(),
                         determinePriorityForATask(
                             t, classificationIdToPriorityMap, taskIdToClassificationIdsMap)))
-            .collect(Collectors.toList());
+            .toList();
     return taskIdPriorities.stream()
         .collect(
             groupingBy(
@@ -425,8 +423,7 @@ class ServiceLevelHandler {
     referenceTask.setPlanned(durationHolder.getPlanned());
     referenceTask.setModified(Instant.now());
     referenceTask.setDue(calculateDue(referenceTask.getPlanned(), durationHolder.getDuration()));
-    List<String> taskIdsToUpdate =
-        taskDurationList.stream().map(TaskDuration::getTaskId).collect(Collectors.toList());
+    List<String> taskIdsToUpdate = taskDurationList.stream().map(TaskDuration::getTaskId).toList();
     Pair<List<MinimalTaskSummary>, BulkLog> existingAndAuthorizedTasks =
         taskServiceImpl.getMinimalTaskSummaries(taskIdsToUpdate);
     bulkLog.addAllErrors(existingAndAuthorizedTasks.getRight());
@@ -565,9 +562,7 @@ class ServiceLevelHandler {
   private List<AttachmentSummaryImpl> getAttachmentSummaries(
       List<MinimalTaskSummary> existingTasksAuthorizedFor) {
     List<String> existingTaskIdsAuthorizedFor =
-        existingTasksAuthorizedFor.stream()
-            .map(MinimalTaskSummary::getTaskId)
-            .collect(Collectors.toList());
+        existingTasksAuthorizedFor.stream().map(MinimalTaskSummary::getTaskId).toList();
 
     return existingTaskIdsAuthorizedFor.isEmpty()
         ? new ArrayList<>()
