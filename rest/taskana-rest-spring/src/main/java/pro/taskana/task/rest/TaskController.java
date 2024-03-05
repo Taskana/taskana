@@ -10,7 +10,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -111,7 +110,7 @@ public class TaskController {
     if (!taskRepresentationModel.getAttachments().stream()
         .filter(att -> Objects.nonNull(att.getTaskId()))
         .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
-        .collect(Collectors.toList())
+        .toList()
         .isEmpty()) {
       throw new InvalidArgumentException(
           "An attachments' taskId must be empty or equal to the id of the task it belongs to");
@@ -715,17 +714,14 @@ public class TaskController {
 
     List<TaskSummary> taskSummaries = query.list();
 
-    List<String> taskIdsToDelete =
-        taskSummaries.stream().map(TaskSummary::getId).collect(Collectors.toList());
+    List<String> taskIdsToDelete = taskSummaries.stream().map(TaskSummary::getId).toList();
 
     BulkOperationResults<String, TaskanaException> result =
         taskService.deleteTasks(taskIdsToDelete);
 
     Set<String> failedIds = new HashSet<>(result.getFailedIds());
     List<TaskSummary> successfullyDeletedTaskSummaries =
-        taskSummaries.stream()
-            .filter(not(summary -> failedIds.contains(summary.getId())))
-            .collect(Collectors.toList());
+        taskSummaries.stream().filter(not(summary -> failedIds.contains(summary.getId()))).toList();
 
     return ResponseEntity.ok(
         taskSummaryRepresentationModelAssembler.toTaskanaCollectionModel(
