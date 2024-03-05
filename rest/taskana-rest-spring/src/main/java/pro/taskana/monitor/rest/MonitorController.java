@@ -3,7 +3,6 @@ package pro.taskana.monitor.rest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.HttpStatus;
@@ -122,7 +121,7 @@ public class MonitorController {
       List<PriorityColumnHeader> priorityColumnHeaders =
           Arrays.stream(columnHeaders)
               .map(priorityColumnHeaderRepresentationModelAssembler::toEntityModel)
-              .collect(Collectors.toList());
+              .toList();
       builder.withColumnHeaders(priorityColumnHeaders);
     }
 
