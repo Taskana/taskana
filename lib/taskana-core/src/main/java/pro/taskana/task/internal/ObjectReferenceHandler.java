@@ -56,9 +56,7 @@ public class ObjectReferenceHandler {
   void insertAndDeleteObjectReferencesOnTaskUpdate(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
       throws ObjectReferencePersistenceException, InvalidArgumentException {
     List<ObjectReference> newObjectReferences =
-        newTaskImpl.getSecondaryObjectReferences().stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+        newTaskImpl.getSecondaryObjectReferences().stream().filter(Objects::nonNull).toList();
     newTaskImpl.setSecondaryObjectReferences(newObjectReferences);
 
     for (ObjectReference objectReference : newObjectReferences) {
@@ -81,7 +79,7 @@ public class ObjectReferenceHandler {
     List<ObjectReference> newObjectReferences =
         newTaskImpl.getSecondaryObjectReferences().stream()
             .filter(not(o -> oldObjectReferencesIds.contains(o.getId())))
-            .collect(Collectors.toList());
+            .toList();
 
     for (ObjectReference objectReference : newObjectReferences) {
       insertNewObjectReferenceOnTaskUpdate(newTaskImpl, objectReference);
@@ -115,8 +113,7 @@ public class ObjectReferenceHandler {
     final List<ObjectReference> newObjectReferences = newTaskImpl.getSecondaryObjectReferences();
     List<String> newObjectReferencesIds = new ArrayList<>();
     if (newObjectReferences != null && !newObjectReferences.isEmpty()) {
-      newObjectReferencesIds =
-          newObjectReferences.stream().map(ObjectReference::getId).collect(Collectors.toList());
+      newObjectReferencesIds = newObjectReferences.stream().map(ObjectReference::getId).toList();
     }
     List<ObjectReference> oldObjectReferences = oldTaskImpl.getSecondaryObjectReferences();
     if (oldObjectReferences != null && !oldObjectReferences.isEmpty()) {
