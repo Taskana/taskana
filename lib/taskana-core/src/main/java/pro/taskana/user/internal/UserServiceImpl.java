@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
 
     users.forEach(user -> user.setDomains(determineDomains(user)));
 
-    return users.stream().map(User.class::cast).collect(Collectors.toList());
+    return users.stream().map(User.class::cast).toList();
   }
 
   @Override
