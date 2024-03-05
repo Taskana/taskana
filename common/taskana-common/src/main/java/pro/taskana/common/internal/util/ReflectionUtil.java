@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ReflectionUtil {
 
@@ -38,7 +37,7 @@ public class ReflectionUtil {
       fields.addAll(Arrays.asList(currentClass.getDeclaredFields()));
       currentClass = currentClass.getSuperclass();
     }
-    return fields.stream().filter(not(Field::isSynthetic)).collect(Collectors.toList());
+    return fields.stream().filter(not(Field::isSynthetic)).toList();
   }
 
   public static Class<?> getRawClass(Type type) {

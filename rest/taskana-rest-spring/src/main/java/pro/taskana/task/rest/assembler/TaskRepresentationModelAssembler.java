@@ -79,22 +79,16 @@ public class TaskRepresentationModelAssembler
     repModel.setSecondaryObjectReferences(
         task.getSecondaryObjectReferences().stream()
             .map(objectReferenceAssembler::toModel)
-            .collect(Collectors.toList()));
+            .toList());
     repModel.setRead(task.isRead());
     repModel.setTransferred(task.isTransferred());
     repModel.setGroupByCount(task.getGroupByCount());
     repModel.setAttachments(
-        task.getAttachments().stream()
-            .map(attachmentAssembler::toModel)
-            .collect(Collectors.toList()));
+        task.getAttachments().stream().map(attachmentAssembler::toModel).toList());
     repModel.setCustomAttributes(
-        task.getCustomAttributeMap().entrySet().stream()
-            .map(CustomAttribute::of)
-            .collect(Collectors.toList()));
+        task.getCustomAttributeMap().entrySet().stream().map(CustomAttribute::of).toList());
     repModel.setCallbackInfo(
-        task.getCallbackInfo().entrySet().stream()
-            .map(CustomAttribute::of)
-            .collect(Collectors.toList()));
+        task.getCallbackInfo().entrySet().stream().map(CustomAttribute::of).toList());
     repModel.setCustom1(task.getCustomField(TaskCustomField.CUSTOM_1));
     repModel.setCustom2(task.getCustomField(TaskCustomField.CUSTOM_2));
     repModel.setCustom3(task.getCustomField(TaskCustomField.CUSTOM_3));
@@ -186,13 +180,11 @@ public class TaskRepresentationModelAssembler
     task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_7, repModel.getCustomInt7());
     task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_8, repModel.getCustomInt8());
     task.setAttachments(
-        repModel.getAttachments().stream()
-            .map(attachmentAssembler::toEntityModel)
-            .collect(Collectors.toList()));
+        repModel.getAttachments().stream().map(attachmentAssembler::toEntityModel).toList());
     task.setSecondaryObjectReferences(
         repModel.getSecondaryObjectReferences().stream()
             .map(objectReferenceAssembler::toEntity)
-            .collect(Collectors.toList()));
+            .toList());
     task.setCustomAttributeMap(
         repModel.getCustomAttributes().stream()
             .collect(Collectors.toMap(CustomAttribute::getKey, CustomAttribute::getValue)));

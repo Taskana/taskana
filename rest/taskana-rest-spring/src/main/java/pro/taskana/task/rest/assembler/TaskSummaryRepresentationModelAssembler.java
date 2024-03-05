@@ -2,7 +2,6 @@ package pro.taskana.task.rest.assembler;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -79,14 +78,12 @@ public class TaskSummaryRepresentationModelAssembler
     repModel.setSecondaryObjectReferences(
         taskSummary.getSecondaryObjectReferences().stream()
             .map(objectReferenceAssembler::toModel)
-            .collect(Collectors.toList()));
+            .toList());
     repModel.setRead(taskSummary.isRead());
     repModel.setTransferred(taskSummary.isTransferred());
     repModel.setGroupByCount(taskSummary.getGroupByCount());
     repModel.setAttachmentSummaries(
-        taskSummary.getAttachmentSummaries().stream()
-            .map(attachmentAssembler::toModel)
-            .collect(Collectors.toList()));
+        taskSummary.getAttachmentSummaries().stream().map(attachmentAssembler::toModel).toList());
     repModel.setCustom1(taskSummary.getCustomField(TaskCustomField.CUSTOM_1));
     repModel.setCustom2(taskSummary.getCustomField(TaskCustomField.CUSTOM_2));
     repModel.setCustom3(taskSummary.getCustomField(TaskCustomField.CUSTOM_3));
@@ -146,14 +143,14 @@ public class TaskSummaryRepresentationModelAssembler
     taskSummary.setSecondaryObjectReferences(
         repModel.getSecondaryObjectReferences().stream()
             .map(objectReferenceAssembler::toEntity)
-            .collect(Collectors.toList()));
+            .toList());
     taskSummary.setRead(repModel.isRead());
     taskSummary.setTransferred(repModel.isTransferred());
     taskSummary.setGroupByCount(repModel.getGroupByCount());
     taskSummary.setAttachmentSummaries(
         repModel.getAttachmentSummaries().stream()
             .map(attachmentAssembler::toEntityModel)
-            .collect(Collectors.toList()));
+            .toList());
     taskSummary.setCustom1(repModel.getCustom1());
     taskSummary.setCustom2(repModel.getCustom2());
     taskSummary.setCustom3(repModel.getCustom3());

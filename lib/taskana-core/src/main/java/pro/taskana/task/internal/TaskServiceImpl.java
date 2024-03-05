@@ -707,7 +707,7 @@ public class TaskServiceImpl implements TaskService {
         }
         if (historyEventManager.isEnabled()) {
           taskIds.forEach(this::createTaskDeletedEvent);
-        }        
+        }
       }
       return bulkLog;
     } finally {

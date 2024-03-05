@@ -7,7 +7,6 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.json.JSONObject;
 import pro.taskana.common.api.exceptions.SystemException;
 
@@ -56,7 +55,7 @@ public class ObjectAttributeChangeDetector {
             .map(wrap(field -> Triplet.of(field, field.get(oldObject), field.get(newObject))))
             .filter(not(t -> Objects.equals(t.getMiddle(), t.getRight())))
             .map(t -> generateChangedAttribute(t.getLeft(), t.getMiddle(), t.getRight()))
-            .collect(Collectors.toList());
+            .toList();
 
     JSONObject changes = new JSONObject();
     changes.put("changes", changedAttributes);
