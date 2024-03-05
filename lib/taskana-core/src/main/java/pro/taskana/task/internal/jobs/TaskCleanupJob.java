@@ -8,7 +8,6 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.taskana.TaskanaConfiguration;
@@ -108,7 +107,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
               .filter(not(entry -> entry.getKey().isEmpty()))
               .filter(not(entry -> entry.getValue().equals(countParentTask.get(entry.getKey()))))
               .map(Map.Entry::getKey)
-              .collect(Collectors.toList());
+              .toList();
 
       tasksToDelete =
           tasksToDelete.stream()
@@ -116,7 +115,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
                   taskSummary ->
                       !taskIdsNotAllCompletedSameParentBusiness.contains(
                           taskSummary.getParentBusinessProcessId()))
-              .collect(Collectors.toList());
+              .toList();
     }
 
     return tasksToDelete;
@@ -138,8 +137,7 @@ public class TaskCleanupJob extends AbstractTaskanaJob {
   private int deleteTasks(List<TaskSummary> tasksToBeDeleted)
       throws InvalidArgumentException, NotAuthorizedException {
 
-    List<String> tasksIdsToBeDeleted =
-        tasksToBeDeleted.stream().map(TaskSummary::getId).collect(Collectors.toList());
+    List<String> tasksIdsToBeDeleted = tasksToBeDeleted.stream().map(TaskSummary::getId).toList();
     BulkOperationResults<String, TaskanaException> results =
         taskanaEngineImpl.getTaskService().deleteTasks(tasksIdsToBeDeleted);
     if (LOGGER.isDebugEnabled()) {
