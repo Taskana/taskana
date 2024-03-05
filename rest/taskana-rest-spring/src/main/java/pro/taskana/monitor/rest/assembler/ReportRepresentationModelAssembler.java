@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
@@ -185,7 +186,7 @@ public class ReportRepresentationModelAssembler {
             .sorted(Comparator.comparing(e -> e.getKey().toLowerCase()))
             .map(i -> transformRow(i, new String[report.getRowDesc().length], 0))
             .flatMap(Collection::stream)
-            .toList();
+            .collect(Collectors.toList());
 
     List<RowRepresentationModel> sumRow =
         transformRow(report.getSumRow(), new String[report.getRowDesc().length], 0);
