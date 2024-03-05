@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.TypeMismatchException;
@@ -220,13 +219,13 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
               Arrays.stream(targetType.getEnumConstants())
                   .map(Enum.class::cast)
                   .map(Enum::name)
-                  .collect(Collectors.toList());
+                  .toList();
           Set<String> enumConstantSet = new HashSet<>(enumConstants);
 
           return getRejectedValues(typeMismatchException)
               .filter(not(enumConstantSet::contains))
               .map(value -> new MalformedQueryParameter(queryParameter, value, enumConstants))
-              .collect(Collectors.toList());
+              .toList();
         }
       }
     }
