@@ -588,7 +588,7 @@ public class LdapClient {
         .filter(not(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER_NAME::equals))
         .filter(not(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER_TYPE::equals))
         .filter(p -> p.getValueFromEnv(env) == null)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   void testMinSearchForLength(final String name) throws InvalidArgumentException {
