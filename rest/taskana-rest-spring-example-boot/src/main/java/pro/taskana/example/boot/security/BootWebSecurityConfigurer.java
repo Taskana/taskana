@@ -75,7 +75,11 @@ public class BootWebSecurityConfigurer {
     if (enableCsrf) {
       CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
       csrfTokenRepository.setCookiePath("/");
-      http.csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository));
+      http.csrf(
+              csrf ->
+                  csrf.csrfTokenRepository(csrfTokenRepository)
+                      .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
+          .addFilterAfter(new CsrfCookieFilter(), SpringSecurityToJaasFilter.class);
     } else {
       http.csrf(AbstractHttpConfigurer::disable).httpBasic(Customizer.withDefaults());
     }
