@@ -752,7 +752,8 @@ public class TaskServiceImpl implements TaskService {
 
       List<String> changedTasks = new ArrayList<>();
       if (!tasksWithPermissions.isEmpty()) {
-        changedTasks = tasksWithPermissions.stream().map(TaskSummary::getId).toList();
+        changedTasks =
+            tasksWithPermissions.stream().map(TaskSummary::getId).collect(Collectors.toList());
         taskMapper.updateTasks(changedTasks, updated, fieldSelector);
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug("updateTasks() updated the following tasks: {} ", changedTasks);
@@ -793,7 +794,8 @@ public class TaskServiceImpl implements TaskService {
 
       List<String> changedTasks = new ArrayList<>();
       if (!tasksWithPermissions.isEmpty()) {
-        changedTasks = tasksWithPermissions.stream().map(TaskSummary::getId).toList();
+        changedTasks =
+            tasksWithPermissions.stream().map(TaskSummary::getId).collect(Collectors.toList());
         taskMapper.updateTasks(changedTasks, updatedTask, fieldSelector);
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug("updateTasks() updated the following tasks: {} ", changedTasks);
@@ -1049,13 +1051,15 @@ public class TaskServiceImpl implements TaskService {
 
     // tasks indirectly affected via attachments
     List<Pair<String, Instant>> affectedPairs =
-        tasksAffectedDirectly.stream().map(t -> Pair.of(t.getId(), t.getPlanned())).toList();
+        tasksAffectedDirectly.stream()
+            .map(t -> Pair.of(t.getId(), t.getPlanned()))
+            .collect(Collectors.toList());
     // tasks indirectly affected via attachments
     List<Pair<String, Instant>> taskIdsAndPlannedFromAttachments =
         attachmentMapper.findTaskIdsAndPlannedAffectedByClassificationChange(classificationId);
 
     List<String> taskIdsFromAttachments =
-        taskIdsAndPlannedFromAttachments.stream().map(Pair::getLeft).toList();
+        taskIdsAndPlannedFromAttachments.stream().map(Pair::getLeft).collect(Collectors.toList());
     List<Pair<String, Instant>> filteredTaskIdsAndPlannedFromAttachments =
         taskIdsFromAttachments.isEmpty()
             ? new ArrayList<>()
@@ -1067,7 +1071,7 @@ public class TaskServiceImpl implements TaskService {
             .sorted(Comparator.comparing(Pair::getRight))
             .distinct()
             .map(Pair::getLeft)
-            .toList();
+            .collect(Collectors.toList());
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
@@ -1139,7 +1143,9 @@ public class TaskServiceImpl implements TaskService {
               .map(Pair::getLeft)
               .collect(Collectors.toSet());
       List<MinimalTaskSummary> tasksAuthorizedFor =
-          existingTasks.stream().filter(not(t -> taskIdsToRemove.contains(t.getTaskId()))).toList();
+          existingTasks.stream()
+              .filter(not(t -> taskIdsToRemove.contains(t.getTaskId())))
+              .collect(Collectors.toList());
       return Pair.of(tasksAuthorizedFor, bulkLog);
     }
   }
