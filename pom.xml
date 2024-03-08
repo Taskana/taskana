@@ -97,7 +97,7 @@
 
     <!-- Excel to DMN converter dependencies -->
     <version.docx4j>11.4.11</version.docx4j>
-    <version.jakarta.xml.bind-api>4.0.1</version.jakarta.xml.bind-api>
+    <version.jakarta.xml.bind-api>4.0.2</version.jakarta.xml.bind-api>
     <version.jaxb-core>4.0.4</version.jaxb-core>
     <version.jaxb-impl>4.0.4</version.jaxb-impl>
     <version.jakarta.activation>2.1.3</version.jakarta.activation>
