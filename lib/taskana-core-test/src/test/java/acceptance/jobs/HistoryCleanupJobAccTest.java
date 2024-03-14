@@ -65,10 +65,8 @@ class HistoryCleanupJobAccTest {
   void should_NotCleanHistoryEventsUntilDate_When_MinimumAgeNotReached() throws Exception {
     TaskHistoryEvent eventToBeCleaned =
         createTaskHistoryEvent(
-            "wbKey1",
             "taskId1",
             TaskHistoryEventType.CREATED.getName(),
-            "wbKey2",
             "someUserId",
             "someDetails",
             Instant.now().minus(20, ChronoUnit.DAYS),
@@ -76,10 +74,8 @@ class HistoryCleanupJobAccTest {
     historyService.create(eventToBeCleaned);
     TaskHistoryEvent eventToBeCleaned2 =
         createTaskHistoryEvent(
-            "wbKey1",
             "taskId1",
             TaskHistoryEventType.COMPLETED.getName(),
-            "wbKey2",
             "someUserId",
             "someDetails",
             Instant.now().minus(5, ChronoUnit.DAYS),
@@ -93,10 +89,8 @@ class HistoryCleanupJobAccTest {
   }
 
   private TaskHistoryEvent createTaskHistoryEvent(
-      String workbasketKey,
       String taskId,
       String type,
-      String previousWorkbasketId,
       String userid,
       String details,
       Instant created,
@@ -105,10 +99,8 @@ class HistoryCleanupJobAccTest {
     historyEvent.setId(IdGenerator.generateWithPrefix(IdGenerator.ID_PREFIX_TASK_HISTORY_EVENT));
     historyEvent.setUserId(userid);
     historyEvent.setDetails(details);
-    historyEvent.setWorkbasketKey(workbasketKey);
     historyEvent.setTaskId(taskId);
     historyEvent.setEventType(type);
-    historyEvent.setOldValue(previousWorkbasketId);
     historyEvent.setCreated(created);
     historyEvent.setParentBusinessProcessId(parentBusinessProcessId);
     return historyEvent;
@@ -140,10 +132,8 @@ class HistoryCleanupJobAccTest {
 
       TaskHistoryEvent eventToBeCleaned =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId1",
               TaskHistoryEventType.CREATED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(20, ChronoUnit.DAYS),
@@ -151,10 +141,8 @@ class HistoryCleanupJobAccTest {
       historyService.create(eventToBeCleaned);
       TaskHistoryEvent eventToBeCleaned2 =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId1",
               TaskHistoryEventType.COMPLETED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(20, ChronoUnit.DAYS),
@@ -162,10 +150,8 @@ class HistoryCleanupJobAccTest {
       historyService.create(eventToBeCleaned2);
       TaskHistoryEvent eventToBeCleaned3 =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId2",
               TaskHistoryEventType.CREATED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(20, ChronoUnit.DAYS),
@@ -173,16 +159,31 @@ class HistoryCleanupJobAccTest {
       historyService.create(eventToBeCleaned3);
       TaskHistoryEvent eventToBeCleaned4 =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId2",
               TaskHistoryEventType.CANCELLED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(20, ChronoUnit.DAYS),
               "sameParentId");
       historyService.create(eventToBeCleaned4);
-
+      TaskHistoryEvent eventToBeCleaned5 =
+          createTaskHistoryEvent(
+              "taskId3",
+              TaskHistoryEventType.CREATED.getName(),
+              "someUserId",
+              "someDetails",
+              Instant.now().minus(20, ChronoUnit.DAYS),
+              "sameParentId");
+      historyService.create(eventToBeCleaned5);
+      TaskHistoryEvent eventToBeCleaned6 =
+          createTaskHistoryEvent(
+              "taskId3",
+              TaskHistoryEventType.DELETED.getName(),
+              "someUserId",
+              "someDetails",
+              Instant.now().minus(20, ChronoUnit.DAYS),
+              "sameParentId");
+      historyService.create(eventToBeCleaned6);
       HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
       job.run();
 
@@ -193,13 +194,10 @@ class HistoryCleanupJobAccTest {
     @WithAccessId(user = "admin")
     void should_NotCleanHistoryEvents_When_SameParentBusinessTrueAndActiveTaskInParentBusiness()
         throws Exception {
-
       TaskHistoryEvent eventToBeCleaned =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId1",
               TaskHistoryEventType.CREATED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(20, ChronoUnit.DAYS),
@@ -207,10 +205,8 @@ class HistoryCleanupJobAccTest {
       historyService.create(eventToBeCleaned);
       TaskHistoryEvent eventToBeCleaned2 =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId1",
               TaskHistoryEventType.COMPLETED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(20, ChronoUnit.DAYS),
@@ -218,10 +214,8 @@ class HistoryCleanupJobAccTest {
       historyService.create(eventToBeCleaned2);
       TaskHistoryEvent eventToBeCleaned3 =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId2",
               TaskHistoryEventType.CREATED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(1, ChronoUnit.DAYS),
@@ -241,10 +235,8 @@ class HistoryCleanupJobAccTest {
             throws Exception {
       TaskHistoryEvent eventToBeCleaned =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId1",
               TaskHistoryEventType.CREATED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(20, ChronoUnit.DAYS),
@@ -252,10 +244,8 @@ class HistoryCleanupJobAccTest {
       historyService.create(eventToBeCleaned);
       TaskHistoryEvent eventToBeCleaned2 =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId1",
               TaskHistoryEventType.COMPLETED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(20, ChronoUnit.DAYS),
@@ -263,10 +253,8 @@ class HistoryCleanupJobAccTest {
       historyService.create(eventToBeCleaned2);
       TaskHistoryEvent eventToBeCleaned3 =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId2",
               TaskHistoryEventType.CREATED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(3, ChronoUnit.DAYS),
@@ -274,10 +262,8 @@ class HistoryCleanupJobAccTest {
       historyService.create(eventToBeCleaned3);
       TaskHistoryEvent eventToBeCleaned4 =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId2",
               TaskHistoryEventType.CANCELLED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(5, ChronoUnit.DAYS),
@@ -296,10 +282,8 @@ class HistoryCleanupJobAccTest {
         throws Exception {
       TaskHistoryEvent toBeIgnored1 =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId1",
               TaskHistoryEventType.CANCELLED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(20, ChronoUnit.DAYS),
@@ -307,10 +291,8 @@ class HistoryCleanupJobAccTest {
       historyService.create(toBeIgnored1);
       TaskHistoryEvent toBeIgnored2 =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId2",
               TaskHistoryEventType.COMPLETED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(20, ChronoUnit.DAYS),
@@ -318,10 +300,8 @@ class HistoryCleanupJobAccTest {
       historyService.create(toBeIgnored2);
       TaskHistoryEvent toBeIgnored3 =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId3",
               TaskHistoryEventType.TERMINATED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(20, ChronoUnit.DAYS),
@@ -355,10 +335,10 @@ class HistoryCleanupJobAccTest {
                     .map(
                         pair ->
                             createTaskHistoryEvent(
-                                "wbKey1",
+                                
                                 pair.getLeft(),
                                 pair.getRight().getName(),
-                                "wbKey2",
+                                
                                 "someUserId",
                                 "someDetails",
                                 Instant.now().minus(20, ChronoUnit.DAYS),
@@ -406,49 +386,58 @@ class HistoryCleanupJobAccTest {
     void should_CleanHistoryEventsUntilDate_When_SameParentBusinessFalse() throws Exception {
       TaskHistoryEvent eventToBeCleaned =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId1",
               TaskHistoryEventType.CREATED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(20, ChronoUnit.DAYS),
-              "sameParentId");
+              "someParentId1");
       historyService.create(eventToBeCleaned);
       TaskHistoryEvent eventToBeCleaned2 =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId1",
               TaskHistoryEventType.COMPLETED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(20, ChronoUnit.DAYS),
-              "sameParentId");
+              "someParentId1");
       historyService.create(eventToBeCleaned2);
       TaskHistoryEvent eventToBeCleaned3 =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId2",
               TaskHistoryEventType.CREATED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(20, ChronoUnit.DAYS),
-              "sameParentId");
+              "someParentId2");
       historyService.create(eventToBeCleaned3);
       TaskHistoryEvent eventToBeCleaned4 =
           createTaskHistoryEvent(
-              "wbKey1",
               "taskId2",
               TaskHistoryEventType.TERMINATED.getName(),
-              "wbKey2",
               "someUserId",
               "someDetails",
               Instant.now().minus(5, ChronoUnit.DAYS),
-              "sameParentId");
+              "someParentId2");
       historyService.create(eventToBeCleaned4);
-
+      TaskHistoryEvent eventToBeCleaned5 =
+          createTaskHistoryEvent(
+              "taskId3",
+              TaskHistoryEventType.CREATED.getName(),
+              "someUserId",
+              "someDetails",
+              Instant.now().minus(20, ChronoUnit.DAYS),
+              "someParentId3");
+      historyService.create(eventToBeCleaned5);
+      TaskHistoryEvent eventToBeCleaned6 =
+          createTaskHistoryEvent(
+              "taskId3",
+              TaskHistoryEventType.DELETED.getName(),
+              "someUserId",
+              "someDetails",
+              Instant.now().minus(20, ChronoUnit.DAYS),
+              "someParentId3");
+      historyService.create(eventToBeCleaned6);
       HistoryCleanupJob job = new HistoryCleanupJob(taskanaEngine, null, null);
       job.run();
 
