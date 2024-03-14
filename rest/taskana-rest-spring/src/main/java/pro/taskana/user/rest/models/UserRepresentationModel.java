@@ -13,9 +13,9 @@ public class UserRepresentationModel extends RepresentationModel<UserRepresentat
   /** Unique Id. */
   @NotNull private String userId;
   /** The groups of the User. */
-  private Set<String> groups;
+  private Set<String> groups = Collections.emptySet();
   /** The permissions of the User. */
-  private Set<String> permissions;
+  private Set<String> permissions = Collections.emptySet();
   /**
    * The domains of the User.
    *
