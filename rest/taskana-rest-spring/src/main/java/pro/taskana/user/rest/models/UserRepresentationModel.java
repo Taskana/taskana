@@ -12,9 +12,9 @@ public class UserRepresentationModel extends RepresentationModel<UserRepresentat
   @Schema(name = "userId", description = "Unique Id.")
   @NotNull private String userId;
   @Schema(name = "groups", description = "The groups of the User.")
-  private Set<String> groups;
+  private Set<String> groups = Collections.emptySet();
   @Schema(name = "permissions", description = "The permissions of the User.")
-  private Set<String> permissions;
+  private Set<String> permissions = Collections.emptySet();
   private Set<String> domains = Collections.emptySet();
   @Schema(name = "firstName", description = "The first name of the User.")
   private String firstName;
