@@ -57,7 +57,7 @@
     <version.maven.asciidoctor>3.0.0</version.maven.asciidoctor>
     <version.maven.clean>3.2.0</version.maven.clean>
     <version.maven.dependency>3.6.1</version.maven.dependency>
-    <version.maven.sonar>3.10.0.2594</version.maven.sonar>
+    <version.maven.sonar>3.11.0.3922</version.maven.sonar>
 
     <!-- release dependencies -->
     <version.maven.gpg>3.2.0</version.maven.gpg>
