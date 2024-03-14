@@ -85,7 +85,8 @@ class UserControllerIntTest {
     HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
-            () -> TEMPLATE.exchange(
+            () ->
+                TEMPLATE.exchange(
                     url,
                     HttpMethod.GET,
                     auth,
@@ -103,7 +104,8 @@ class UserControllerIntTest {
     HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ThrowingCallable httpCall =
-            () -> TEMPLATE.exchange(
+            () ->
+                TEMPLATE.exchange(
                     url,
                     HttpMethod.GET,
                     auth,
@@ -180,7 +182,7 @@ class UserControllerIntTest {
   }
 
   @Test
-  void should_CreateValidUser_When_CallingCreateEndpoint() throws Exception {
+  void should_CreateValidUser_When_CallingCreateEndpointWithAllAttributes() throws Exception {
     UserRepresentationModel newUser = new UserRepresentationModel();
     newUser.setUserId("12345");
     newUser.setGroups(Set.of("group1", "group2"));
@@ -191,6 +193,13 @@ class UserControllerIntTest {
     newUser.setLongName("Georg, Hans - (12345)");
     newUser.setEmail("hans.georg@web.com");
     newUser.setMobilePhone("017325862");
+    newUser.setPhone("017325862");
+    newUser.setDomains(Set.of("domain1", "domain2"));
+    newUser.setData("data");
+    newUser.setOrgLevel4("orgLevel4");
+    newUser.setOrgLevel3("orgLevel3");
+    newUser.setOrgLevel2("orgLevel2");
+    newUser.setOrgLevel1("orgLevel1");
 
     String url = restHelper.toUrl(RestEndpoints.URL_USERS);
     HttpEntity<?> auth = new HttpEntity<>(newUser, RestHelper.generateHeadersForUser("teamlead-1"));
@@ -213,7 +222,66 @@ class UserControllerIntTest {
             HttpMethod.GET,
             auth,
             ParameterizedTypeReference.forType(UserRepresentationModel.class));
-    assertThat(responseEntity.getBody()).isNotNull().isEqualTo(newUser);
+    assertThat(responseEntity.getBody()).isNotNull();
+    assertThat(responseEntity.getBody().getUserId().equals("12345"));
+    assertThat(responseEntity.getBody().getFirstName().equals("Hans"));
+    assertThat(responseEntity.getBody().getLastName().equals("Georg"));
+    assertThat(responseEntity.getBody().getFullName().equals("Georg, Hans"));
+    assertThat(responseEntity.getBody().getLongName().equals("Georg, Hans - (12345)"));
+    assertThat(responseEntity.getBody().getEmail().equals("hans.georg@web.com"));
+    assertThat(responseEntity.getBody().getMobilePhone().equals("017325862"));
+    assertThat(responseEntity.getBody().getPhone().equals("017325862"));
+    assertThat(responseEntity.getBody().getData().equals("data"));
+    assertThat(responseEntity.getBody().getOrgLevel4().equals("orgLevel4"));
+    assertThat(responseEntity.getBody().getOrgLevel3().equals("orgLevel3"));
+    assertThat(responseEntity.getBody().getOrgLevel2().equals("orgLevel2"));
+    assertThat(responseEntity.getBody().getOrgLevel1().equals("orgLevel1"));
+    assertThat(responseEntity.getBody().getPermissions().equals(Set.of("group1", "group2")));
+    assertThat(responseEntity.getBody().getGroups().equals(Set.of("perm1", "perm2")));
+    assertThat(responseEntity.getBody().getDomains().equals(Set.of("domain1", "domain2")));
+  }
+
+  @Test
+  void should_CreateValidUser_When_CallingCreateEndpointWithoutGroupsPermissionsDomains()
+      throws Exception {
+    UserRepresentationModel newUser = new UserRepresentationModel();
+    newUser.setUserId("123456");
+    newUser.setFirstName("Hans");
+    newUser.setLastName("Georg");
+    newUser.setFullName("Georg, Hans");
+    newUser.setLongName("Georg, Hans - (12345)");
+    newUser.setEmail("hans.georg@web.com");
+    newUser.setMobilePhone("017325862");
+
+    String url = restHelper.toUrl(RestEndpoints.URL_USERS);
+    HttpEntity<?> auth = new HttpEntity<>(newUser, RestHelper.generateHeadersForUser("teamlead-1"));
+
+    ResponseEntity<UserRepresentationModel> responseEntity =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.POST,
+            auth,
+            ParameterizedTypeReference.forType(UserRepresentationModel.class));
+    assertThat(responseEntity).isNotNull();
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+    url = restHelper.toUrl(RestEndpoints.URL_USERS_ID, "123456");
+    auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+    responseEntity =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(UserRepresentationModel.class));
+    assertThat(responseEntity.getBody()).isNotNull();
+    assertThat(responseEntity.getBody().getUserId().equals("123456"));
+    assertThat(responseEntity.getBody().getFirstName().equals("Hans"));
+    assertThat(responseEntity.getBody().getLastName().equals("Georg"));
+    assertThat(responseEntity.getBody().getFullName().equals("Georg, Hans"));
+    assertThat(responseEntity.getBody().getLongName().equals("Georg, Hans - (123456)"));
+    assertThat(responseEntity.getBody().getEmail().equals("hans.georg@web.com"));
+    assertThat(responseEntity.getBody().getMobilePhone().equals("017325862"));
   }
 
   @Test
