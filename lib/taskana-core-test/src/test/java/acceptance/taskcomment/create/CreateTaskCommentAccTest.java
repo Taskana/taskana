@@ -78,19 +78,37 @@ class CreateTaskCommentAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_CreateTaskComment_For_TaskThatAlreadyHasComments() throws Exception {
-    TaskComment taskCommentToCreate = taskService.newTaskComment(taskWithComments.getId());
+  void should_CreateTaskCommentAndUpdateNumberOfComments_For_TaskThatAlreadyHasComments()
+      throws Exception {
+    Task task =
+        TaskBuilder.newTask()
+            .classificationSummary(defaultClassification.asSummary())
+            .workbasketSummary(defaultWorkbasket.asSummary())
+            .primaryObjRef(DefaultTestEntities.defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+    comment1 =
+        TaskCommentBuilder.newTaskComment()
+            .taskId(task.getId())
+            .textField("Text1")
+            .created(Instant.now())
+            .modified(Instant.now())
+            .buildAndStore(taskService);
+    comment2 =
+        TaskCommentBuilder.newTaskComment()
+            .taskId(task.getId())
+            .textField("Text1")
+            .created(Instant.now())
+            .modified(Instant.now())
+            .buildAndStore(taskService);
+    TaskComment taskCommentToCreate = taskService.newTaskComment(task.getId());
     taskCommentToCreate.setTextField("Some text");
     taskService.createTaskComment(taskCommentToCreate);
 
     List<TaskComment> taskCommentsAfterInsert =
-        taskService.getTaskComments(taskWithComments.getId());
+        taskService.getTaskComments(task.getId());
     assertThat(taskCommentsAfterInsert)
         .containsExactlyInAnyOrder(comment1, comment2, taskCommentToCreate);
-
-    // Deleting the comment so that the comments remain the same in different tests inside this
-    // class
-    taskService.deleteTaskComment(taskCommentToCreate.getId());
+    assertThat(taskService.getTask(task.getId()).getNumberOfComments()).isEqualTo(3);
   }
 
   @WithAccessId(user = "user-1-2")
@@ -111,20 +129,43 @@ class CreateTaskCommentAccTest {
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_CreateTaskComment_When_CopyingAnotherComment() throws Exception {
+  void should_CreateTaskCommentAndUpdateNumberOfComments_When_CopyingAnotherComment()
+      throws Exception {
+    Task task =
+        TaskBuilder.newTask()
+          .classificationSummary(defaultClassification.asSummary())
+          .workbasketSummary(defaultWorkbasket.asSummary())
+          .primaryObjRef(DefaultTestEntities.defaultTestObjectReference().build())
+          .buildAndStore(taskService);
+    comment1 =
+        TaskCommentBuilder.newTaskComment()
+            .taskId(task.getId())
+            .textField("Text1")
+            .created(Instant.now())
+            .modified(Instant.now())
+            .buildAndStore(taskService);
+    comment2 =
+        TaskCommentBuilder.newTaskComment()
+            .taskId(task.getId())
+            .textField("Text1")
+            .created(Instant.now())
+            .modified(Instant.now())
+            .buildAndStore(taskService);
     TaskComment taskCommentToCreate = comment1.copy();
 
     taskService.createTaskComment(taskCommentToCreate);
 
     List<TaskComment> taskCommentsAfterInsert =
-        taskService.getTaskComments(taskWithComments.getId());
+        taskService.getTaskComments(task.getId());
     assertThat(taskCommentsAfterInsert)
         .containsExactlyInAnyOrder(comment1, comment2, taskCommentToCreate);
+    assertThat(taskService.getTask(task.getId()).getNumberOfComments()).isEqualTo(3);
   }
 
   @WithAccessId(user = "user-1-1")
   @Test
-  void should_FailToCreateTaskComment_When_TaskIdIsNullOrNonExisting() throws Exception {
+  void should_FailToCreateTaskCommentAndNotUpdateNumberOfComments_When_TaskIdIsNullOrNonExisting()
+      throws Exception {
     TaskComment newTaskCommentForNonExistingTask =
         taskService.newTaskComment("Definitely non existing ID");
     newTaskCommentForNonExistingTask.setTextField("a newly created taskComment");
@@ -138,5 +179,6 @@ class CreateTaskCommentAccTest {
     call = () -> taskService.createTaskComment(newTaskCommentForTaskIdNull);
     e = catchThrowableOfType(TaskNotFoundException.class, call);
     assertThat(e.getTaskId()).isNull();
+    assertThat(taskService.getTask(taskWithComments.getId()).getNumberOfComments()).isEqualTo(2);
   }
 }

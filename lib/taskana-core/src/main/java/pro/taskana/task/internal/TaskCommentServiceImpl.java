@@ -26,17 +26,20 @@ class TaskCommentServiceImpl {
   private final InternalTaskanaEngine taskanaEngine;
   private final TaskServiceImpl taskService;
   private final TaskCommentMapper taskCommentMapper;
+  private final TaskMapper taskMapper;
   private final UserMapper userMapper;
 
   TaskCommentServiceImpl(
       InternalTaskanaEngine taskanaEngine,
       TaskCommentMapper taskCommentMapper,
       UserMapper userMapper,
+      TaskMapper taskMapper,
       TaskServiceImpl taskService) {
     this.taskanaEngine = taskanaEngine;
     this.taskService = taskService;
     this.taskCommentMapper = taskCommentMapper;
     this.userMapper = userMapper;
+    this.taskMapper = taskMapper;
   }
 
   TaskComment newTaskComment(String taskId) {
@@ -110,6 +113,8 @@ class TaskCommentServiceImpl {
 
       taskCommentMapper.insert(taskCommentImplToCreate);
 
+      taskMapper.incrementNumberOfComments(taskCommentImplToCreate.getTaskId(), Instant.now());
+
     } finally {
       taskanaEngine.returnConnection();
     }
@@ -137,6 +142,7 @@ class TaskCommentServiceImpl {
           || taskanaEngine.getEngine().isUserInRole(TaskanaRole.TASK_ADMIN)) {
 
         taskCommentMapper.delete(taskCommentId);
+        taskMapper.decrementNumberOfComments(taskCommentToDelete.getTaskId(), Instant.now());
 
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug("taskComment {} deleted", taskCommentToDelete.getId());

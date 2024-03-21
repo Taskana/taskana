@@ -30,10 +30,12 @@ import pro.taskana.task.api.TaskState;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.ObjectReference;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.testapi.TaskanaConfigurationModifier;
 import pro.taskana.testapi.TaskanaInject;
 import pro.taskana.testapi.TaskanaIntegrationTest;
 import pro.taskana.testapi.builder.TaskBuilder;
+import pro.taskana.testapi.builder.TaskCommentBuilder;
 import pro.taskana.testapi.builder.UserBuilder;
 import pro.taskana.testapi.builder.WorkbasketAccessItemBuilder;
 import pro.taskana.testapi.security.WithAccessId;
@@ -158,6 +160,22 @@ class GetTaskAccTest {
             .classificationSummary(defaultClassificationSummary)
             .primaryObjRef(defaultObjectReference)
             .buildAndStore(taskService);
+
+    TaskComment comment1 =
+        TaskCommentBuilder.newTaskComment()
+            .taskId(task.getId())
+            .textField("Text1")
+            .created(Instant.now())
+            .modified(Instant.now())
+            .buildAndStore(taskService);
+
+    TaskComment comment2 =
+        TaskCommentBuilder.newTaskComment()
+            .taskId(task.getId())
+            .textField("Text1")
+            .created(Instant.now())
+            .modified(Instant.now())
+            .buildAndStore(taskService);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -194,6 +212,7 @@ class GetTaskAccTest {
     assertThat(readTask.getPrimaryObjRef().getValue()).isEqualTo(defaultObjectReference.getValue());
     assertThat(readTask.isRead()).isTrue();
     assertThat(readTask.isTransferred()).isFalse();
+    assertThat(readTask.getNumberOfComments()).isEqualTo(2);
     assertThat(readTask.getCallbackInfo()).isEqualTo(callbackInfo);
     assertThat(readTask.getCustomAttributeMap()).isEqualTo(new HashMap<String, String>());
     assertThat(readTask.getCustomField(TaskCustomField.CUSTOM_1)).isEqualTo("custom1");

@@ -536,6 +536,15 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    */
   TaskQuery orderByState(SortDirection sortDirection);
 
+  /**
+   * Add the hasComments flag to the query.
+   *
+   * @param hasComments as Boolean. If null, it won't be integrated into the statement. It will only
+   *     be integrated into the statement if set to true or false
+   * @return the query
+   */
+  TaskQuery hasComments(Boolean hasComments);
+
   // endregion
   // region classificationId
 
@@ -1246,8 +1255,8 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   /**
    * Add the isRead flag to the query.
    *
-   * @param isRead as Boolean. If null, it won't be integrated into the statement. You have to set
-   *     false.
+   * @param isRead as Boolean.  If null, it won't be integrated into the statement. It will only
+   *     be integrated into the statement if set to true or false
    * @return the query
    */
   TaskQuery readEquals(Boolean isRead);
@@ -1258,8 +1267,8 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
   /**
    * Add the isTransferred flag to the query.
    *
-   * @param isTransferred as Boolean. If null, it won't be integrated into the statement. You have
-   *     to set false.
+   * @param isTransferred as Boolean.  If null, it won't be integrated into the statement. It will
+   *     only be integrated into the statement if set to true or false
    * @return the query
    */
   TaskQuery transferredEquals(Boolean isTransferred);

@@ -187,6 +187,7 @@ class CreateTaskAccTest {
     assertThat(createdTask.getPlanned()).isEqualTo(expectedPlanned);
     assertThat(createdTask.getReceived()).isNull();
     assertThat(createdTask.getState()).isEqualTo(TaskState.READY);
+    assertThat(createdTask.getNumberOfComments()).isZero();
     assertThat(createdTask.getParentBusinessProcessId()).isNull();
     assertThat(createdTask.getPriority()).isEqualTo(defaultClassificationSummary.getPriority());
     assertThat(createdTask.isRead()).isFalse();

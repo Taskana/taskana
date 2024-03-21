@@ -15,6 +15,7 @@ import pro.taskana.classification.api.models.Classification;
 import pro.taskana.common.api.TaskanaEngine;
 import pro.taskana.common.api.exceptions.InvalidArgumentException;
 import pro.taskana.common.api.exceptions.SystemException;
+import pro.taskana.common.api.exceptions.TaskanaException;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.NotAuthorizedOnTaskCommentException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
@@ -130,12 +131,14 @@ class DeleteTaskCommentAccTest {
     List<TaskComment> taskCommentsAfterDeletionWithAdmin =
         taskService.getTaskComments(task1.getId());
     assertThat(taskCommentsAfterDeletionWithAdmin).isEmpty();
+    assertThat(taskService.getTask(task1.getId()).getNumberOfComments()).isZero();
   }
 
   @WithAccessId(user = "admin")
   @WithAccessId(user = "taskadmin")
   @TestTemplate
-  void should_DeleteTaskComment_When_UserIsInAdministrativeRole() throws Exception {
+  void should_DeleteTaskCommentAndUpdateNumberOfComments_When_UserIsInAdministrativeRole()
+      throws Exception {
     comment1 =
         TaskCommentBuilder.newTaskComment()
             .taskId(task1.getId())
@@ -147,6 +150,7 @@ class DeleteTaskCommentAccTest {
 
     List<TaskComment> taskCommentsAfterDeletion = taskService.getTaskComments(task1.getId());
     assertThat(taskCommentsAfterDeletion).isEmpty();
+    assertThat(taskService.getTask(task1.getId()).getNumberOfComments()).isZero();
   }
 
   @WithAccessId(user = "user-1-1")
@@ -168,7 +172,7 @@ class DeleteTaskCommentAccTest {
   void should_FailToDeleteTaskComment_When_CommentIdDoesNotExist() throws Exception {
 
     ThrowingCallable call = () -> taskService.deleteTaskComment("non existing task comment id");
-    TaskCommentNotFoundException e = catchThrowableOfType(TaskCommentNotFoundException.class, call);
+    TaskCommentNotFoundException e = catchThrowableOfType(call, TaskCommentNotFoundException.class);
     assertThat(e.getTaskCommentId()).isEqualTo("non existing task comment id");
   }
 }
