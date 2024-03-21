@@ -519,6 +519,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   @JsonProperty("state-not")
   private final TaskState[] stateNotIn;
   // endregion
+  // region comments
+  /** Filter by the has comments flag of the Task. This is an exact match. */
+  @JsonProperty("has-comments")
+  private final Boolean hasComments;
+  // endregion
   // region classificationId
   /** Filter by the classification id of the Task. This is an exact match. */
   @JsonProperty("classification-id")
@@ -1233,6 +1238,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     "priority-not-until",
     "state",
     "state-not",
+    "has-comments",
     "classification-id",
     "classification-id-not",
     "classification-key",
@@ -1390,6 +1396,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
       Integer priorityNotUntil,
       TaskState[] stateIn,
       TaskState[] stateNotIn,
+      Boolean hasComments,
       String[] classificationIdIn,
       String[] classificationIdNotIn,
       String[] classificationKeyIn,
@@ -1546,6 +1553,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     this.priorityNotUntil = priorityNotUntil;
     this.stateIn = stateIn;
     this.stateNotIn = stateNotIn;
+    this.hasComments = hasComments;
     this.classificationIdIn = classificationIdIn;
     this.classificationIdNotIn = classificationIdNotIn;
     this.classificationKeyIn = classificationKeyIn;
@@ -1944,6 +1952,8 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
 
     Optional.ofNullable(isTransferred).ifPresent(query::transferredEquals);
 
+    Optional.ofNullable(hasComments).ifPresent(query::hasComments);
+
     Optional.ofNullable(attachmentClassificationIdIn)
         .ifPresent(query::attachmentClassificationIdIn);
     Optional.ofNullable(attachmentClassificationIdNotIn)
@@ -2205,7 +2215,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     if (this.ownerIn == null) {
       return new String[]{null};
     }
-    List<String> ownerInAsList = new ArrayList(Arrays.asList(this.ownerIn));
+    List<String> ownerInAsList = new ArrayList<>(Arrays.asList(this.ownerIn));
     ownerInAsList.add(null);
     return ownerInAsList.toArray(new String[ownerInAsList.size()]);
   }

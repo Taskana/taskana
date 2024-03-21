@@ -97,6 +97,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
     task.setPriority(123);
     task.setManualPriority(-1);
     task.setState(TaskState.READY);
+    task.setNumberOfComments(2);
     task.setBusinessProcessId("businessProcessId");
     task.setParentBusinessProcessId("parentBusinessProcessId");
     task.setOwner("owner");
@@ -173,6 +174,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
     repModel.setPriority(123);
     repModel.setManualPriority(123);
     repModel.setState(TaskState.READY);
+    repModel.setNumberOfComments(2);
     repModel.setBusinessProcessId("businessProcessId");
     repModel.setParentBusinessProcessId("parentBusinessProcessId");
     repModel.setOwner("owner");
@@ -269,6 +271,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
     task.setPriority(123);
     task.setManualPriority(-5);
     task.setState(TaskState.READY);
+    task.setNumberOfComments(2);
     task.setClassificationSummary(classification);
     task.setWorkbasketSummary(workbasket);
     task.setBusinessProcessId("businessProcessId");
@@ -330,6 +333,7 @@ class TaskSummaryRepresentationModelAssemblerTest {
     assertThat(taskSummary.getPriority()).isEqualTo(repModel.getPriority());
     assertThat(taskSummary.getManualPriority()).isEqualTo(repModel.getManualPriority());
     assertThat(taskSummary.getState()).isEqualTo(repModel.getState());
+    assertThat(taskSummary.getNumberOfComments()).isEqualTo(repModel.getNumberOfComments());
     assertThat(taskSummary.getClassificationSummary().getId())
         .isEqualTo(repModel.getClassificationSummary().getClassificationId());
     assertThat(taskSummary.getWorkbasketSummary().getId())

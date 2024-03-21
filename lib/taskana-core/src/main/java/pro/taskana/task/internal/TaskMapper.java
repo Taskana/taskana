@@ -27,7 +27,7 @@ public interface TaskMapper {
   @Select(
       "<script>SELECT ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, RECEIVED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, MANUAL_PRIORITY, STATE, CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CALLBACK_INFO, CALLBACK_STATE, CUSTOM_ATTRIBUTES, "
           + "CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16, "
-          + "CUSTOM_INT_1, CUSTOM_INT_2, CUSTOM_INT_3, CUSTOM_INT_4, CUSTOM_INT_5, CUSTOM_INT_6, CUSTOM_INT_7, CUSTOM_INT_8 "
+          + "CUSTOM_INT_1, CUSTOM_INT_2, CUSTOM_INT_3, CUSTOM_INT_4, CUSTOM_INT_5, CUSTOM_INT_6, CUSTOM_INT_7, CUSTOM_INT_8, NUMBER_OF_COMMENTS "
           + "FROM TASK "
           + "WHERE ID = #{id} "
           + "<if test=\"_databaseId == 'db2'\">with UR </if> "
@@ -99,19 +99,20 @@ public interface TaskMapper {
   @Result(property = "customInt6", column = "CUSTOM_INT_6")
   @Result(property = "customInt7", column = "CUSTOM_INT_7")
   @Result(property = "customInt8", column = "CUSTOM_INT_8")
+  @Result(property = "numberOfComments", column = "NUMBER_OF_COMMENTS")
   TaskImpl findById(@Param("id") String id);
 
   @Insert(
-      "INSERT INTO TASK(ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, RECEIVED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, MANUAL_PRIORITY, STATE,  CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, "
+      "INSERT INTO TASK(ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, RECEIVED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, MANUAL_PRIORITY, STATE, CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, "
           + "POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CALLBACK_INFO, CALLBACK_STATE, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, "
-          + "CUSTOM_9, CUSTOM_10, CUSTOM_11,  CUSTOM_12,  CUSTOM_13,  CUSTOM_14,  CUSTOM_15,  CUSTOM_16, CUSTOM_INT_1, CUSTOM_INT_2, CUSTOM_INT_3, CUSTOM_INT_4, CUSTOM_INT_5, CUSTOM_INT_6, CUSTOM_INT_7, CUSTOM_INT_8 ) "
+          + "CUSTOM_9, CUSTOM_10, CUSTOM_11,  CUSTOM_12,  CUSTOM_13,  CUSTOM_14,  CUSTOM_15,  CUSTOM_16, CUSTOM_INT_1, CUSTOM_INT_2, CUSTOM_INT_3, CUSTOM_INT_4, CUSTOM_INT_5, CUSTOM_INT_6, CUSTOM_INT_7, CUSTOM_INT_8, NUMBER_OF_COMMENTS) "
           + "VALUES(#{id},#{externalId}, #{created}, #{claimed}, #{completed}, #{modified}, #{planned}, #{received}, #{due}, #{name}, #{creator}, #{description}, #{note}, #{priority}, #{manualPriority}, #{state}, #{classificationSummary.category}, "
           + "#{classificationSummary.key}, #{classificationSummary.id}, #{workbasketSummary.id}, #{workbasketSummary.key}, #{workbasketSummary.domain}, #{businessProcessId}, "
           + "#{parentBusinessProcessId}, #{owner}, #{primaryObjRef.company}, #{primaryObjRef.system}, #{primaryObjRef.systemInstance}, #{primaryObjRef.type}, #{primaryObjRef.value}, "
           + "#{isRead}, #{isTransferred}, #{callbackInfo,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.common.internal.persistence.MapTypeHandler}, #{callbackState}, "
           + "#{customAttributes,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.common.internal.persistence.MapTypeHandler}, "
           + "#{custom1}, #{custom2}, #{custom3}, #{custom4}, #{custom5}, #{custom6}, #{custom7}, #{custom8}, #{custom9}, #{custom10}, "
-          + "#{custom11}, #{custom12}, #{custom13}, #{custom14}, #{custom15},  #{custom16}, #{customInt1}, #{customInt2}, #{customInt3}, #{customInt4}, #{customInt5}, #{customInt6}, #{customInt7}, #{customInt8})")
+          + "#{custom11}, #{custom12}, #{custom13}, #{custom14}, #{custom15},  #{custom16}, #{customInt1}, #{customInt2}, #{customInt3}, #{customInt4}, #{customInt5}, #{customInt6}, #{customInt7}, #{customInt8}, #{numberOfComments})")
   @Options(keyProperty = "id", keyColumn = "ID")
   void insert(TaskImpl task);
 
@@ -125,7 +126,7 @@ public interface TaskMapper {
           + "CUSTOM_ATTRIBUTES = #{customAttributes,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.common.internal.persistence.MapTypeHandler}, CUSTOM_1 = #{custom1}, CUSTOM_2 = #{custom2}, "
           + "CUSTOM_3 = #{custom3}, CUSTOM_4 = #{custom4}, CUSTOM_5 = #{custom5}, CUSTOM_6 = #{custom6}, CUSTOM_7 = #{custom7}, CUSTOM_8 = #{custom8}, "
           + "CUSTOM_9 = #{custom9}, CUSTOM_10 = #{custom10}, CUSTOM_11 = #{custom11}, CUSTOM_12 = #{custom12}, CUSTOM_13 = #{custom13}, CUSTOM_14 = #{custom14}, CUSTOM_15 = #{custom15}, CUSTOM_16 = #{custom16}, "
-          + "CUSTOM_INT_1 = #{customInt1}, CUSTOM_INT_2 = #{customInt2}, CUSTOM_INT_3 = #{customInt3}, CUSTOM_INT_4 = #{customInt4}, CUSTOM_INT_5 = #{customInt5}, CUSTOM_INT_6 = #{customInt6}, CUSTOM_INT_7 = #{customInt7}, CUSTOM_INT_8 = #{customInt8} "
+          + "CUSTOM_INT_1 = #{customInt1}, CUSTOM_INT_2 = #{customInt2}, CUSTOM_INT_3 = #{customInt3}, CUSTOM_INT_4 = #{customInt4}, CUSTOM_INT_5 = #{customInt5}, CUSTOM_INT_6 = #{customInt6}, CUSTOM_INT_7 = #{customInt7}, CUSTOM_INT_8 = #{customInt8}, NUMBER_OF_COMMENTS = #{numberOfComments} "
           + "WHERE ID = #{id}")
   void update(TaskImpl task);
 
@@ -305,4 +306,12 @@ public interface TaskMapper {
   List<Pair<String, String>> getTaskAndWorkbasketIdsNotAuthorizedFor(
       @Param("taskSummaries") List<MinimalTaskSummary> taskSummaries,
       @Param("accessIds") List<String> accessIds);
+
+  @Update(
+      "UPDATE TASK SET MODIFIED = #{modified}, NUMBER_OF_COMMENTS = NUMBER_OF_COMMENTS+1 WHERE ID = #{id}")
+  void incrementNumberOfComments(@Param("id") String id, @Param("modified") Instant modified);
+
+  @Update(
+      "UPDATE TASK SET MODIFIED = #{modified}, NUMBER_OF_COMMENTS = NUMBER_OF_COMMENTS-1 WHERE ID = #{id}")
+  void decrementNumberOfComments(@Param("id") String id, @Param("modified") Instant modified);
 }
