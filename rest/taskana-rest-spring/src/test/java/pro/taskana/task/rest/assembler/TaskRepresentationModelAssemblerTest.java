@@ -84,6 +84,7 @@ class TaskRepresentationModelAssemblerTest {
     repModel.setManualPriority(123);
     repModel.setPriority(123);
     repModel.setState(TaskState.READY);
+    repModel.setNumberOfComments(2);
     repModel.setClassificationSummary(classificationSummary);
     repModel.setWorkbasketSummary(workbasketResource);
     repModel.setBusinessProcessId("businessProcessId");
@@ -187,6 +188,7 @@ class TaskRepresentationModelAssemblerTest {
     task.setPriority(123);
     task.setManualPriority(-5);
     task.setState(TaskState.READY);
+    task.setNumberOfComments(2);
     task.setClassificationSummary(classification);
     task.setWorkbasketSummary(workbasket.asSummary());
     task.setBusinessProcessId("businessProcessId");
@@ -261,6 +263,7 @@ class TaskRepresentationModelAssemblerTest {
     task.setPriority(123);
     task.setManualPriority(123);
     task.setState(TaskState.READY);
+    task.setNumberOfComments(2);
     task.setClassificationSummary(classification);
     task.setWorkbasketSummary(workbasket);
     task.setBusinessProcessId("businessProcessId");

@@ -68,6 +68,7 @@ public class TaskRepresentationModelAssembler
     repModel.setPriority(task.getPriority());
     repModel.setManualPriority(task.getManualPriority());
     repModel.setState(task.getState());
+    repModel.setNumberOfComments(task.getNumberOfComments());
     repModel.setClassificationSummary(
         classificationAssembler.toModel(task.getClassificationSummary()));
     repModel.setWorkbasketSummary(workbasketAssembler.toModel(task.getWorkbasketSummary()));
@@ -85,8 +86,11 @@ public class TaskRepresentationModelAssembler
     repModel.setGroupByCount(task.getGroupByCount());
     repModel.setAttachments(
         task.getAttachments().stream().map(attachmentAssembler::toModel).toList());
+            .collect(Collectors.toList()));
+            .toList());
     repModel.setCustomAttributes(
         task.getCustomAttributeMap().entrySet().stream().map(CustomAttribute::of).toList());
+            .collect(Collectors.toList()));
     repModel.setCallbackInfo(
         task.getCallbackInfo().entrySet().stream().map(CustomAttribute::of).toList());
     repModel.setCustom1(task.getCustomField(TaskCustomField.CUSTOM_1));
@@ -140,6 +144,7 @@ public class TaskRepresentationModelAssembler
     task.setPriority(repModel.getPriority());
     task.setManualPriority(repModel.getManualPriority());
     task.setState(repModel.getState());
+    task.setNumberOfComments(repModel.getNumberOfComments());
     if (repModel.getClassificationSummary() != null) {
       task.setClassificationSummary(
           classificationAssembler.toEntityModel(repModel.getClassificationSummary()));
@@ -181,6 +186,7 @@ public class TaskRepresentationModelAssembler
     task.setCustomIntField(TaskCustomIntField.CUSTOM_INT_8, repModel.getCustomInt8());
     task.setAttachments(
         repModel.getAttachments().stream().map(attachmentAssembler::toEntityModel).toList());
+            .collect(Collectors.toList()));
     task.setSecondaryObjectReferences(
         repModel.getSecondaryObjectReferences().stream()
             .map(objectReferenceAssembler::toEntity)

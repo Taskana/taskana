@@ -379,7 +379,7 @@ public class TaskQuerySqlProvider {
         + "CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, "
         + "CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16, "
         + "CUSTOM_INT_1, CUSTOM_INT_2, CUSTOM_INT_3,  CUSTOM_INT_4,  CUSTOM_INT_5, "
-        + "CUSTOM_INT_6, CUSTOM_INT_7, CUSTOM_INT_8"
+        + "CUSTOM_INT_6, CUSTOM_INT_7, CUSTOM_INT_8, NUMBER_OF_COMMENTS"
         + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, CNAME</if>"
         + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, ACNAME</if>"
         + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
@@ -644,6 +644,10 @@ public class TaskQuerySqlProvider {
     whereCustomStatements("custom", "t.CUSTOM", 16, sb);
     whereCustomIntStatements("customInt", "t.CUSTOM_INT", 8, sb);
 
+    sb.append("<if test='hasComments != null and hasComments.booleanValue()'>"
+        + "AND NUMBER_OF_COMMENTS > 0</if> ");
+    sb.append("<if test='hasComments != null and !hasComments.booleanValue()'>"
+        + "AND NUMBER_OF_COMMENTS = 0</if> ");
     sb.append("<if test='isRead != null'>AND IS_READ = #{isRead}</if> ");
     sb.append("<if test='isTransferred != null'>AND IS_TRANSFERRED = #{isTransferred}</if> ");
     sb.append(

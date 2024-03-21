@@ -67,6 +67,7 @@ public class TaskSummaryRepresentationModelAssembler
     repModel.setPriority(taskSummary.getPriority());
     repModel.setManualPriority(taskSummary.getManualPriority());
     repModel.setState(taskSummary.getState());
+    repModel.setNumberOfComments(taskSummary.getNumberOfComments());
     repModel.setClassificationSummary(
         classificationAssembler.toModel(taskSummary.getClassificationSummary()));
     repModel.setWorkbasketSummary(workbasketAssembler.toModel(taskSummary.getWorkbasketSummary()));
@@ -84,6 +85,7 @@ public class TaskSummaryRepresentationModelAssembler
     repModel.setGroupByCount(taskSummary.getGroupByCount());
     repModel.setAttachmentSummaries(
         taskSummary.getAttachmentSummaries().stream().map(attachmentAssembler::toModel).toList());
+            .collect(Collectors.toList()));
     repModel.setCustom1(taskSummary.getCustomField(TaskCustomField.CUSTOM_1));
     repModel.setCustom2(taskSummary.getCustomField(TaskCustomField.CUSTOM_2));
     repModel.setCustom3(taskSummary.getCustomField(TaskCustomField.CUSTOM_3));
@@ -129,6 +131,7 @@ public class TaskSummaryRepresentationModelAssembler
     taskSummary.setPriority(repModel.getPriority());
     taskSummary.setManualPriority(repModel.getManualPriority());
     taskSummary.setState(repModel.getState());
+    taskSummary.setNumberOfComments(repModel.getNumberOfComments());
     taskSummary.setClassificationSummary(
         classificationAssembler.toEntityModel(repModel.getClassificationSummary()));
     if (repModel.getWorkbasketSummary() != null) {

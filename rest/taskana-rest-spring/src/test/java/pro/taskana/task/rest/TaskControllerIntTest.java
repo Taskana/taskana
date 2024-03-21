@@ -44,7 +44,6 @@ import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.rest.test.RestHelper;
 import pro.taskana.rest.test.TaskanaSpringBootTest;
-import pro.taskana.sampledata.SampleDataGenerator;
 import pro.taskana.task.api.TaskState;
 import pro.taskana.task.rest.models.AttachmentRepresentationModel;
 import pro.taskana.task.rest.models.IsReadRepresentationModel;
@@ -80,11 +79,6 @@ class TaskControllerIntTest {
     this.restHelper = restHelper;
     this.dataSource = dataSource;
     this.schemaName = schemaName;
-  }
-
-  void resetDb() {
-    SampleDataGenerator sampleDataGenerator = new SampleDataGenerator(dataSource, schemaName);
-    sampleDataGenerator.generateSampleData();
   }
 
   @Test
@@ -1331,10 +1325,6 @@ class TaskControllerIntTest {
 
     @Test
     void testGetLastPageSortedByDueWithHiddenTasksRemovedFromResult() {
-      resetDb();
-      // required because
-      // ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
-      // tasks and this test depends on the tasks as they are in sampledata
       String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + "?sort-by=DUE&order=DESCENDING";
       HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
@@ -1365,9 +1355,6 @@ class TaskControllerIntTest {
 
     @Test
     void should_GetAllTasks_For_GettingSecondPageFilteredByPorAttributesSortedByType() {
-      resetDb(); // required because
-      // ClassificationControllerIntTest.testGetQueryByPorSecondPageSortedByType changes
-      // tasks and this test depends on the tasks as they are in sampledata
       String url =
           restHelper.toUrl(RestEndpoints.URL_TASKS)
               + "?por-company=00&por-system=PASystem&por-instance=00&"
@@ -1391,6 +1378,51 @@ class TaskControllerIntTest {
       assertThat(response.getBody().getLink(IanaLinkRelations.FIRST)).isNotNull();
       assertThat(response.getBody().getLink(IanaLinkRelations.LAST)).isNotNull();
       assertThat(response.getBody().getLink(IanaLinkRelations.PREV)).isNotNull();
+    }
+
+    @Test
+    void should_GetAllTasksWithComments_When_FilteringByHasCommentsIsSetToTrue() {
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS)
+              + "?has-comments=true";
+      HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+      ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+      assertThat(response.getBody()).isNotNull();
+      assertThat(response.getBody().getContent())
+          .extracting(TaskSummaryRepresentationModel::getTaskId)
+          .containsExactlyInAnyOrder("TKI:000000000000000000000000000000000000",
+              "TKI:000000000000000000000000000000000001",
+              "TKI:000000000000000000000000000000000002",
+              "TKI:000000000000000000000000000000000004",
+              "TKI:000000000000000000000000000000000025",
+              "TKI:000000000000000000000000000000000026",
+              "TKI:000000000000000000000000000000000027");
+    }
+
+    @Test
+    void should_GetAllTasksWithoutComments_When_FilteringByHasCommentsIsSetToFalse() {
+      String url =
+          restHelper.toUrl(RestEndpoints.URL_TASKS)
+              + "?has-comments=false";
+      HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+
+      ResponseEntity<TaskSummaryPagedRepresentationModel> response =
+          TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_SUMMARY_PAGE_MODEL_TYPE);
+
+      assertThat(response.getBody()).isNotNull();
+      assertThat(response.getBody().getContent())
+          .extracting(TaskSummaryRepresentationModel::getTaskId)
+          .doesNotContain("TKI:000000000000000000000000000000000000",
+              "TKI:000000000000000000000000000000000001",
+              "TKI:000000000000000000000000000000000002",
+              "TKI:000000000000000000000000000000000004",
+              "TKI:000000000000000000000000000000000025",
+              "TKI:000000000000000000000000000000000026",
+              "TKI:000000000000000000000000000000000027")
+          .hasSize(54);
     }
 
     @Test
