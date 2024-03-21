@@ -87,6 +87,7 @@ class CreateTaskCommentAccTest {
         taskService.getTaskComments(taskWithComments.getId());
     assertThat(taskCommentsAfterInsert)
         .containsExactlyInAnyOrder(comment1, comment2, taskCommentToCreate);
+    assertThat(taskService.getTask(taskWithComments.getId()).getNumberOfComments()).isEqualTo(3);
 
     // Deleting the comment so that the comments remain the same in different tests inside this
     // class

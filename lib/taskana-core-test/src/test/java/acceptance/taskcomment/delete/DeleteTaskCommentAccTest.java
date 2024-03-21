@@ -84,6 +84,7 @@ class DeleteTaskCommentAccTest {
 
     List<TaskComment> taskCommentsAfterDeletion = taskService.getTaskComments(task1.getId());
     assertThat(taskCommentsAfterDeletion).hasSize(0);
+    assertThat(taskService.getTask(task1.getId()).getNumberOfComments()).isZero();
   }
 
   @WithAccessId(user = "user-1-2", groups = "user-1-1")
@@ -104,6 +105,7 @@ class DeleteTaskCommentAccTest {
 
     List<TaskComment> taskCommentsAfterDeletion = taskService.getTaskComments(task1.getId());
     assertThat(taskCommentsAfterDeletion).hasSize(1);
+    assertThat(taskService.getTask(task1.getId()).getNumberOfComments()).isOne();
 
     taskanaEngine.runAsAdmin(
         () -> {

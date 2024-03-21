@@ -25,7 +25,7 @@ import pro.taskana.task.internal.models.TaskImpl;
 public interface TaskMapper {
 
   @Select(
-      "<script>SELECT ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, RECEIVED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, MANUAL_PRIORITY, STATE, CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CALLBACK_INFO, CALLBACK_STATE, CUSTOM_ATTRIBUTES, "
+      "<script>SELECT ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, RECEIVED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, MANUAL_PRIORITY, STATE, NUMBER_OF_COMMENTS, CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CALLBACK_INFO, CALLBACK_STATE, CUSTOM_ATTRIBUTES, "
           + "CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16, "
           + "CUSTOM_INT_1, CUSTOM_INT_2, CUSTOM_INT_3, CUSTOM_INT_4, CUSTOM_INT_5, CUSTOM_INT_6, CUSTOM_INT_7, CUSTOM_INT_8 "
           + "FROM TASK "
@@ -48,6 +48,7 @@ public interface TaskMapper {
   @Result(property = "priority", column = "PRIORITY")
   @Result(property = "manualPriority", column = "MANUAL_PRIORITY")
   @Result(property = "state", column = "STATE")
+  @Result(property = "numberOfComments", column = "NUMBER_OF_COMMENTS")
   @Result(property = "workbasketSummaryImpl.id", column = "WORKBASKET_ID")
   @Result(property = "workbasketSummaryImpl.key", column = "WORKBASKET_KEY")
   @Result(property = "classificationSummaryImpl.category", column = "CLASSIFICATION_CATEGORY")
@@ -102,10 +103,10 @@ public interface TaskMapper {
   TaskImpl findById(@Param("id") String id);
 
   @Insert(
-      "INSERT INTO TASK(ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, RECEIVED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, MANUAL_PRIORITY, STATE,  CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, "
+      "INSERT INTO TASK(ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, RECEIVED, DUE, NAME, CREATOR, DESCRIPTION, NOTE, PRIORITY, MANUAL_PRIORITY, STATE, NUMBER_OF_COMMENTS, CLASSIFICATION_CATEGORY, CLASSIFICATION_KEY, CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, "
           + "POR_SYSTEM, POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CALLBACK_INFO, CALLBACK_STATE, CUSTOM_ATTRIBUTES, CUSTOM_1, CUSTOM_2, CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, "
           + "CUSTOM_9, CUSTOM_10, CUSTOM_11,  CUSTOM_12,  CUSTOM_13,  CUSTOM_14,  CUSTOM_15,  CUSTOM_16, CUSTOM_INT_1, CUSTOM_INT_2, CUSTOM_INT_3, CUSTOM_INT_4, CUSTOM_INT_5, CUSTOM_INT_6, CUSTOM_INT_7, CUSTOM_INT_8 ) "
-          + "VALUES(#{id},#{externalId}, #{created}, #{claimed}, #{completed}, #{modified}, #{planned}, #{received}, #{due}, #{name}, #{creator}, #{description}, #{note}, #{priority}, #{manualPriority}, #{state}, #{classificationSummary.category}, "
+          + "VALUES(#{id},#{externalId}, #{created}, #{claimed}, #{completed}, #{modified}, #{planned}, #{received}, #{due}, #{name}, #{creator}, #{description}, #{note}, #{priority}, #{manualPriority}, #{state}, #{numberOfComments}, #{classificationSummary.category}, "
           + "#{classificationSummary.key}, #{classificationSummary.id}, #{workbasketSummary.id}, #{workbasketSummary.key}, #{workbasketSummary.domain}, #{businessProcessId}, "
           + "#{parentBusinessProcessId}, #{owner}, #{primaryObjRef.company}, #{primaryObjRef.system}, #{primaryObjRef.systemInstance}, #{primaryObjRef.type}, #{primaryObjRef.value}, "
           + "#{isRead}, #{isTransferred}, #{callbackInfo,jdbcType=CLOB,javaType=java.util.Map,typeHandler=pro.taskana.common.internal.persistence.MapTypeHandler}, #{callbackState}, "
@@ -117,7 +118,7 @@ public interface TaskMapper {
 
   @Update(
       "UPDATE TASK SET CLAIMED = #{claimed}, COMPLETED = #{completed}, MODIFIED = #{modified}, PLANNED = #{planned}, RECEIVED = #{received}, DUE = #{due}, NAME = #{name}, DESCRIPTION = #{description}, NOTE = #{note}, "
-          + " PRIORITY = #{priority}, MANUAL_PRIORITY = #{manualPriority}, STATE = #{state}, CLASSIFICATION_CATEGORY = #{classificationSummary.category}, CLASSIFICATION_KEY = #{classificationSummary.key}, CLASSIFICATION_ID = #{classificationSummary.id}, "
+          + " PRIORITY = #{priority}, MANUAL_PRIORITY = #{manualPriority}, STATE = #{state}, NUMBER_OF_COMMENTS = #{numberOfComments}, CLASSIFICATION_CATEGORY = #{classificationSummary.category}, CLASSIFICATION_KEY = #{classificationSummary.key}, CLASSIFICATION_ID = #{classificationSummary.id}, "
           + "WORKBASKET_ID = #{workbasketSummary.id}, WORKBASKET_KEY = #{workbasketSummary.key}, DOMAIN = #{workbasketSummary.domain}, "
           + "BUSINESS_PROCESS_ID = #{businessProcessId}, PARENT_BUSINESS_PROCESS_ID = #{parentBusinessProcessId}, OWNER = #{owner}, POR_COMPANY = #{primaryObjRef.company}, POR_SYSTEM = #{primaryObjRef.system}, "
           + "POR_INSTANCE = #{primaryObjRef.systemInstance}, POR_TYPE = #{primaryObjRef.type}, POR_VALUE = #{primaryObjRef.value}, IS_READ = #{isRead}, IS_TRANSFERRED = #{isTransferred}, "
@@ -305,4 +306,12 @@ public interface TaskMapper {
   List<Pair<String, String>> getTaskAndWorkbasketIdsNotAuthorizedFor(
       @Param("taskSummaries") List<MinimalTaskSummary> taskSummaries,
       @Param("accessIds") List<String> accessIds);
+
+  @Update(
+      "UPDATE TASK SET MODIFIED = #{modified}, NUMBER_OF_COMMENTS = NUMBER_OF_COMMENTS+1 WHERE ID = #{id}")
+  void incrementNumberOfComments(@Param("id") String id, @Param("modified") Instant modified);
+
+  @Update(
+      "UPDATE TASK SET MODIFIED = #{modified}, NUMBER_OF_COMMENTS = NUMBER_OF_COMMENTS-1 WHERE ID = #{id}")
+  void decrementNumberOfComments(@Param("id") String id, @Param("modified") Instant modified);
 }

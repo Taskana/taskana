@@ -536,6 +536,31 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    */
   TaskQuery orderByState(SortDirection sortDirection);
 
+  /**
+   * Add number of comments to your query.
+   *
+   * @param numberOfComments the number of comments
+   * @return the query
+   */
+  TaskQuery numberOfCommentsIn(int... numberOfComments);
+
+  /**
+   * Exclude these number of comments from your query.
+   *
+   * @param numberOfComments the number of comments
+   * @return the query
+   */
+  TaskQuery numberOfCommentsNotIn(int... numberOfComments);
+
+  /**
+   * This method sorts the query result according to the count of comments.
+   *
+   * @param sortDirection Determines whether the result is sorted in ascending or descending order.
+   *     If sortDirection is null, the result is sorted in ascending order
+   * @return the query
+   */
+  TaskQuery orderByNumberOfComments(SortDirection sortDirection);
+
   // endregion
   // region classificationId
 

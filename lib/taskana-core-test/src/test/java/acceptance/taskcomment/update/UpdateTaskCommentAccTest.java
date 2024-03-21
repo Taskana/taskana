@@ -76,6 +76,7 @@ class UpdateTaskCommentAccTest {
     assertThat(taskCommentsAfterUpdate)
         .extracting(TaskComment::getTextField)
         .containsExactly("updated textfield");
+    assertThat(taskService.getTask(task.getId()).getNumberOfComments()).isOne();
   }
 
   @WithAccessId(user = "user-1-2")

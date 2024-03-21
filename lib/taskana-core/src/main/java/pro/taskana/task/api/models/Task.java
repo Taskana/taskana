@@ -245,6 +245,13 @@ public interface Task extends TaskSummary {
   String getClassificationCategory();
 
   /**
+   * Returns the count of the comments of the current {@linkplain Task}.
+   *
+   * @return numberOfComments
+   */
+  int getNumberOfComments();
+
+  /**
    * Duplicates this Task without the internal and external id. All referenced {@linkplain
    * Attachment}s and {@linkplain ObjectReference}s are copied as well.
    *

@@ -115,6 +115,14 @@ class CreateTaskAccTest {
     assertThat(task.asSummary().getAttachmentSummaries()).isNotNull();
   }
 
+  @WithAccessId(user = "user-1-2")
+  @Test
+  void should_SetNumberOfCommentsToZero_When_CreatingNewTaskWithTaskService() throws Exception {
+    Task task = taskService.newTask(defaultWorkbasketSummary.getId());
+
+    assertThat(task.getNumberOfComments()).isZero();
+  }
+
   @WithAccessId(user = "user-taskrouter")
   @Test
   void should_CreateTask_When_UserIsMemberOfTaskRouterRole() throws Exception {
@@ -187,6 +195,7 @@ class CreateTaskAccTest {
     assertThat(createdTask.getPlanned()).isEqualTo(expectedPlanned);
     assertThat(createdTask.getReceived()).isNull();
     assertThat(createdTask.getState()).isEqualTo(TaskState.READY);
+    assertThat(createdTask.getNumberOfComments()).isZero();
     assertThat(createdTask.getParentBusinessProcessId()).isNull();
     assertThat(createdTask.getPriority()).isEqualTo(defaultClassificationSummary.getPriority());
     assertThat(createdTask.isRead()).isFalse();

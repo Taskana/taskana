@@ -37,6 +37,7 @@ public class TaskSummaryImpl implements TaskSummary {
   protected int priority;
   protected int manualPriority = DEFAULT_MANUAL_PRIORITY;
   protected TaskState state;
+  protected int numberOfComments;
   protected ClassificationSummary classificationSummary;
   protected Integer groupByCount;
   protected WorkbasketSummary workbasketSummary;
@@ -92,6 +93,7 @@ public class TaskSummaryImpl implements TaskSummary {
     priority = copyFrom.priority;
     manualPriority = copyFrom.manualPriority;
     state = copyFrom.state;
+    numberOfComments = copyFrom.numberOfComments;
     classificationSummary = copyFrom.classificationSummary;
     workbasketSummary = copyFrom.workbasketSummary;
     businessProcessId = copyFrom.businessProcessId;
@@ -283,6 +285,23 @@ public class TaskSummaryImpl implements TaskSummary {
 
   public void setState(TaskState state) {
     this.state = state;
+  }
+
+  @Override
+  public int getNumberOfComments() {
+    return numberOfComments;
+  }
+
+  public void setNumberOfComments(int numberOfComments) {
+    this.numberOfComments = numberOfComments;
+  }
+
+  public void incrementNumberOfComments() {
+    this.numberOfComments++;
+  }
+
+  public void decrementNumberOfComments() {
+    this.numberOfComments--;
   }
 
   @Override
@@ -799,6 +818,7 @@ public class TaskSummaryImpl implements TaskSummary {
         priority,
         manualPriority,
         state,
+        numberOfComments,
         classificationSummary,
         workbasketSummary,
         businessProcessId,
@@ -853,6 +873,7 @@ public class TaskSummaryImpl implements TaskSummary {
         && manualPriority == other.manualPriority
         && isRead == other.isRead
         && isTransferred == other.isTransferred
+        && numberOfComments == other.numberOfComments
         && Objects.equals(id, other.id)
         && Objects.equals(externalId, other.externalId)
         && Objects.equals(created, other.created)
@@ -937,6 +958,8 @@ public class TaskSummaryImpl implements TaskSummary {
         + manualPriority
         + ", state="
         + state
+        + ", numberOfComments="
+        + numberOfComments
         + ", classificationSummary="
         + classificationSummary
         + ", workbasketSummary="

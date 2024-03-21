@@ -741,6 +741,7 @@ public class TaskController {
     POR_SYSTEM(TaskQuery::orderByPrimaryObjectReferenceSystem),
     POR_SYSTEM_INSTANCE(TaskQuery::orderByPrimaryObjectReferenceSystemInstance),
     STATE(TaskQuery::orderByState),
+    NUMBER_OF_COMMENTS(TaskQuery::orderByNumberOfComments),
     NAME(TaskQuery::orderByName),
     DUE(TaskQuery::orderByDue),
     PLANNED(TaskQuery::orderByPlanned),

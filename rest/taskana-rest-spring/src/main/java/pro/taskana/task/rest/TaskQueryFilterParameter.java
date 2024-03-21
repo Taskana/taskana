@@ -519,6 +519,14 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   @JsonProperty("state-not")
   private final TaskState[] stateNotIn;
   // endregion
+  // region numberOfComments
+  /** Filter by the number of comments of the Task. This is an exact match. */
+  @JsonProperty("numberOfComments")
+  private final int[] numberOfCommentsIn;
+  /** Filter by what the number of comments of the Task shouldn't be. This is an exact match. */
+  @JsonProperty("numberOfComments-not")
+  private final int[] numberOfCommentsNotIn;
+  // endregion
   // region classificationId
   /** Filter by the classification id of the Task. This is an exact match. */
   @JsonProperty("classification-id")
@@ -1233,6 +1241,8 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     "priority-not-until",
     "state",
     "state-not",
+    "numberOfComments",
+    "numberOfComments-not",
     "classification-id",
     "classification-id-not",
     "classification-key",
@@ -1390,6 +1400,8 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
       Integer priorityNotUntil,
       TaskState[] stateIn,
       TaskState[] stateNotIn,
+      int[] numberOfCommentsIn,
+      int[] numberOfCommentsNotIn,
       String[] classificationIdIn,
       String[] classificationIdNotIn,
       String[] classificationKeyIn,
@@ -1546,6 +1558,8 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     this.priorityNotUntil = priorityNotUntil;
     this.stateIn = stateIn;
     this.stateNotIn = stateNotIn;
+    this.numberOfCommentsIn = numberOfCommentsIn;
+    this.numberOfCommentsNotIn = numberOfCommentsNotIn;
     this.classificationIdIn = classificationIdIn;
     this.classificationIdNotIn = classificationIdNotIn;
     this.classificationKeyIn = classificationKeyIn;
@@ -1779,6 +1793,9 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
 
     Optional.ofNullable(stateIn).ifPresent(query::stateIn);
     Optional.ofNullable(stateNotIn).ifPresent(query::stateNotIn);
+
+    Optional.ofNullable(numberOfCommentsIn).ifPresent(query::numberOfCommentsIn);
+    Optional.ofNullable(numberOfCommentsNotIn).ifPresent(query::numberOfCommentsNotIn);
 
     Optional.ofNullable(classificationIdIn).ifPresent(query::classificationIdIn);
     Optional.ofNullable(classificationIdNotIn).ifPresent(query::classificationIdNotIn);

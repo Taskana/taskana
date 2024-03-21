@@ -20,6 +20,7 @@ public enum TaskQueryColumnName implements QueryColumnName {
   PRIORITY("t.priority"),
   MANUAL_PRIORITY("t.manual_priority"),
   STATE("t.state"),
+  NUMBER_OF_COMMENTS("t.number_of_comments"),
   CLASSIFICATION_CATEGORY("t.classification_category"),
   CLASSIFICATION_KEY("t.classification_key"),
   CLASSIFICATION_ID("t.classification_id"),

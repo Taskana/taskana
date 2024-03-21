@@ -15,6 +15,7 @@ import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.task.internal.models.TaskCommentImpl;
+import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.user.api.models.User;
 import pro.taskana.user.internal.UserMapper;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
@@ -26,17 +27,20 @@ class TaskCommentServiceImpl {
   private final InternalTaskanaEngine taskanaEngine;
   private final TaskServiceImpl taskService;
   private final TaskCommentMapper taskCommentMapper;
+  private final TaskMapper taskMapper;
   private final UserMapper userMapper;
 
   TaskCommentServiceImpl(
       InternalTaskanaEngine taskanaEngine,
       TaskCommentMapper taskCommentMapper,
       UserMapper userMapper,
+      TaskMapper taskMapper,
       TaskServiceImpl taskService) {
     this.taskanaEngine = taskanaEngine;
     this.taskService = taskService;
     this.taskCommentMapper = taskCommentMapper;
     this.userMapper = userMapper;
+    this.taskMapper = taskMapper;
   }
 
   TaskComment newTaskComment(String taskId) {
@@ -110,6 +114,10 @@ class TaskCommentServiceImpl {
 
       taskCommentMapper.insert(taskCommentImplToCreate);
 
+      TaskImpl task = (TaskImpl) taskService.getTask(taskCommentImplToCreate.getTaskId());
+      taskMapper.incrementNumberOfComments(task.getId(), Instant.now());
+      task.incrementNumberOfComments();
+
     } finally {
       taskanaEngine.returnConnection();
     }
@@ -136,7 +144,11 @@ class TaskCommentServiceImpl {
           || taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)
           || taskanaEngine.getEngine().isUserInRole(TaskanaRole.TASK_ADMIN)) {
 
+        TaskImpl task =
+            (TaskImpl) taskService.getTask(taskCommentMapper.findById(taskCommentId).getTaskId());
         taskCommentMapper.delete(taskCommentId);
+        taskMapper.decrementNumberOfComments(task.getId(), Instant.now());
+        task.decrementNumberOfComments();
 
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug("taskComment {} deleted", taskCommentToDelete.getId());

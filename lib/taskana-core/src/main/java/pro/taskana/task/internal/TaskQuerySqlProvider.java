@@ -364,23 +364,22 @@ public class TaskQuerySqlProvider {
 
   private static String db2selectFields() {
     // needs to be the same order as the commonSelectFields (TaskQueryColumnValue)
-    return "ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, RECEIVED, DUE, NAME, "
-        + "CREATOR, DESCRIPTION, NOTE, PRIORITY, MANUAL_PRIORITY, STATE, CLASSIFICATION_CATEGORY, "
-        + "TCLASSIFICATION_KEY, CLASSIFICATION_ID, "
-        + "WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, "
-        + "BUSINESS_PROCESS_ID, PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, "
-        + "POR_INSTANCE, POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_1, CUSTOM_2, "
-        + "CUSTOM_3, CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10, "
-        + "CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16, "
-        + "CUSTOM_INT_1, CUSTOM_INT_2, CUSTOM_INT_3,  CUSTOM_INT_4,  CUSTOM_INT_5, "
-        + "CUSTOM_INT_6, CUSTOM_INT_7, CUSTOM_INT_8"
-        + "<if test=\"addClassificationNameToSelectClauseForOrdering\">, CNAME</if>"
-        + "<if test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">, ACNAME</if>"
-        + "<if test=\"addAttachmentColumnsToSelectClauseForOrdering\">"
-        + ", ACLASSIFICATION_ID, ACLASSIFICATION_KEY, CHANNEL, REF_VALUE, ARECEIVED"
-        + "</if>"
-        + "<if test=\"addWorkbasketNameToSelectClauseForOrdering\">, WNAME</if>"
-        + "<if test=\"joinWithUserInfo\">, ULONG_NAME </if>";
+    return "ID, EXTERNAL_ID, CREATED, CLAIMED, COMPLETED, MODIFIED, PLANNED, RECEIVED, DUE, NAME,"
+               + " CREATOR, DESCRIPTION, NOTE, PRIORITY, MANUAL_PRIORITY, STATE,"
+               + " NUMBER_OF_COMMENTS, CLASSIFICATION_CATEGORY, TCLASSIFICATION_KEY,"
+               + " CLASSIFICATION_ID, WORKBASKET_ID, WORKBASKET_KEY, DOMAIN, BUSINESS_PROCESS_ID,"
+               + " PARENT_BUSINESS_PROCESS_ID, OWNER, POR_COMPANY, POR_SYSTEM, POR_INSTANCE,"
+               + " POR_TYPE, POR_VALUE, IS_READ, IS_TRANSFERRED, CUSTOM_1, CUSTOM_2, CUSTOM_3,"
+               + " CUSTOM_4, CUSTOM_5, CUSTOM_6, CUSTOM_7, CUSTOM_8, CUSTOM_9, CUSTOM_10,"
+               + " CUSTOM_11, CUSTOM_12, CUSTOM_13, CUSTOM_14, CUSTOM_15, CUSTOM_16, CUSTOM_INT_1,"
+               + " CUSTOM_INT_2, CUSTOM_INT_3,  CUSTOM_INT_4,  CUSTOM_INT_5, CUSTOM_INT_6,"
+               + " CUSTOM_INT_7, CUSTOM_INT_8<if"
+               + " test=\"addClassificationNameToSelectClauseForOrdering\">, CNAME</if><if"
+               + " test=\"addAttachmentClassificationNameToSelectClauseForOrdering\">,"
+               + " ACNAME</if><if test=\"addAttachmentColumnsToSelectClauseForOrdering\">,"
+               + " ACLASSIFICATION_ID, ACLASSIFICATION_KEY, CHANNEL, REF_VALUE, ARECEIVED</if><if"
+               + " test=\"addWorkbasketNameToSelectClauseForOrdering\">, WNAME</if><if"
+               + " test=\"joinWithUserInfo\">, ULONG_NAME </if>";
   }
 
   private static String checkForAuthorization() {
@@ -605,6 +604,8 @@ public class TaskQuerySqlProvider {
     whereNotIn("ownerLongNameNotIn", "u.LONG_NAME", sb);
     whereIn("stateIn", "t.STATE", sb);
     whereNotIn("stateNotIn", "t.STATE", sb);
+    whereIn("numberOfCommentsIn", "t.NUMBER_OF_COMMENTS", sb);
+    whereNotIn("numberOfCommentsNotIn", "t.NUMBER_OF_COMMENTS", sb);
     whereIn("taskId", "t.ID", sb);
     whereNotIn("taskIdNotIn", "t.ID", sb);
     whereIn("workbasketIdIn", "t.WORKBASKET_ID", sb);

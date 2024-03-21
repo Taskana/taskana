@@ -311,6 +311,7 @@ class TaskQueryImplAccTest {
               .note("Note")
               .description("Description")
               .state(TaskState.COMPLETED)
+              .numberOfComments(3)
               .businessProcessId("BPI:SomeNumber")
               .parentBusinessProcessId("BPI:OtherNumber")
               .owner("user-1-2")
