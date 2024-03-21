@@ -166,6 +166,11 @@ public class TaskBuilder implements SummaryEntityBuilder<TaskSummary, Task, Task
     return this;
   }
 
+  public TaskBuilder numberOfComments(Integer numberOfComments) {
+    testTask.setNumberOfComments(numberOfComments);
+    return this;
+  }
+
   public TaskBuilder groupByCount(Integer count) {
     testTask.setGroupByCount(count);
     return this;

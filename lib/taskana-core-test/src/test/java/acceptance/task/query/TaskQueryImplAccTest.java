@@ -311,6 +311,7 @@ class TaskQueryImplAccTest {
               .note("Note")
               .description("Description")
               .state(TaskState.COMPLETED)
+              .numberOfComments(3)
               .businessProcessId("BPI:SomeNumber")
               .parentBusinessProcessId("BPI:OtherNumber")
               .owner("user-1-2")
@@ -2359,6 +2360,47 @@ class TaskQueryImplAccTest {
             taskService.createTaskQuery().workbasketIdIn(wb.getId()).readEquals(false).list();
 
         assertThat(list).containsExactly(taskSummary2);
+      }
+    }
+
+    @Nested
+    @TestInstance(Lifecycle.PER_CLASS)
+    class Comments {
+
+      WorkbasketSummary wb;
+      TaskSummary taskSummary1;
+      TaskSummary taskSummary2;
+      TaskSummary taskSummary3;
+      TaskSummary taskSummary4;
+      TaskSummary taskSummary5;
+
+      @WithAccessId(user = "user-1-1")
+      @BeforeAll
+      void setup() throws Exception {
+        wb = createWorkbasketWithPermission();
+        taskSummary1 = taskInWorkbasket(wb).numberOfComments(3).buildAndStoreAsSummary(taskService);
+        taskSummary2 = taskInWorkbasket(wb).numberOfComments(0).buildAndStoreAsSummary(taskService);
+        taskSummary3 = taskInWorkbasket(wb).numberOfComments(1).buildAndStoreAsSummary(taskService);
+        taskSummary4 = taskInWorkbasket(wb).numberOfComments(2).buildAndStoreAsSummary(taskService);
+        taskSummary5 = taskInWorkbasket(wb).numberOfComments(0).buildAndStoreAsSummary(taskService);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @Test
+      void should_ApplyFilter_When_QueryingForHasCommentsEqualsTrue() {
+        List<TaskSummary> list =
+            taskService.createTaskQuery().workbasketIdIn(wb.getId()).hasComments(true).list();
+
+        assertThat(list).containsExactlyInAnyOrder(taskSummary1, taskSummary3, taskSummary4);
+      }
+
+      @WithAccessId(user = "user-1-1")
+      @Test
+      void should_ApplyFilter_When_QueryingForHasCommentsFalse() {
+        List<TaskSummary> list =
+            taskService.createTaskQuery().workbasketIdIn(wb.getId()).hasComments(false).list();
+
+        assertThat(list).containsExactlyInAnyOrder(taskSummary2, taskSummary5);
       }
     }
 

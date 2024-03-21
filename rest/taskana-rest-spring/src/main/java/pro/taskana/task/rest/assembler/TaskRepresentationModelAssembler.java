@@ -68,6 +68,7 @@ public class TaskRepresentationModelAssembler
     repModel.setPriority(task.getPriority());
     repModel.setManualPriority(task.getManualPriority());
     repModel.setState(task.getState());
+    repModel.setNumberOfComments(task.getNumberOfComments());
     repModel.setClassificationSummary(
         classificationAssembler.toModel(task.getClassificationSummary()));
     repModel.setWorkbasketSummary(workbasketAssembler.toModel(task.getWorkbasketSummary()));
@@ -79,22 +80,22 @@ public class TaskRepresentationModelAssembler
     repModel.setSecondaryObjectReferences(
         task.getSecondaryObjectReferences().stream()
             .map(objectReferenceAssembler::toModel)
-            .collect(Collectors.toList()));
+            .toList());
     repModel.setRead(task.isRead());
     repModel.setTransferred(task.isTransferred());
     repModel.setGroupByCount(task.getGroupByCount());
     repModel.setAttachments(
         task.getAttachments().stream()
             .map(attachmentAssembler::toModel)
-            .collect(Collectors.toList()));
+            .toList());
     repModel.setCustomAttributes(
         task.getCustomAttributeMap().entrySet().stream()
             .map(CustomAttribute::of)
-            .collect(Collectors.toList()));
+            .toList());
     repModel.setCallbackInfo(
         task.getCallbackInfo().entrySet().stream()
             .map(CustomAttribute::of)
-            .collect(Collectors.toList()));
+            .toList());
     repModel.setCustom1(task.getCustomField(TaskCustomField.CUSTOM_1));
     repModel.setCustom2(task.getCustomField(TaskCustomField.CUSTOM_2));
     repModel.setCustom3(task.getCustomField(TaskCustomField.CUSTOM_3));
@@ -146,6 +147,7 @@ public class TaskRepresentationModelAssembler
     task.setPriority(repModel.getPriority());
     task.setManualPriority(repModel.getManualPriority());
     task.setState(repModel.getState());
+    task.setNumberOfComments(repModel.getNumberOfComments());
     if (repModel.getClassificationSummary() != null) {
       task.setClassificationSummary(
           classificationAssembler.toEntityModel(repModel.getClassificationSummary()));
@@ -188,11 +190,11 @@ public class TaskRepresentationModelAssembler
     task.setAttachments(
         repModel.getAttachments().stream()
             .map(attachmentAssembler::toEntityModel)
-            .collect(Collectors.toList()));
+            .toList());
     task.setSecondaryObjectReferences(
         repModel.getSecondaryObjectReferences().stream()
             .map(objectReferenceAssembler::toEntity)
-            .collect(Collectors.toList()));
+            .toList());
     task.setCustomAttributeMap(
         repModel.getCustomAttributes().stream()
             .collect(Collectors.toMap(CustomAttribute::getKey, CustomAttribute::getValue)));

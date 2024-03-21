@@ -109,6 +109,7 @@ public class TaskQueryImpl implements TaskQuery {
   private IntInterval[] priorityNotWithin;
   private TaskState[] stateIn;
   private TaskState[] stateNotIn;
+  private Boolean hasComments;
   private String[] classificationIdIn;
   private String[] classificationIdNotIn;
   private String[] classificationKeyIn;
@@ -641,6 +642,12 @@ public class TaskQueryImpl implements TaskQuery {
   @Override
   public TaskQuery orderByState(SortDirection sortDirection) {
     return addOrderCriteria("STATE", sortDirection);
+  }
+
+  @Override
+  public TaskQuery hasComments(Boolean hasComments) {
+    this.hasComments = hasComments;
+    return this;
   }
 
   @Override
