@@ -536,6 +536,15 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    */
   TaskQuery orderByState(SortDirection sortDirection);
 
+  /**
+   * Add the hasComments flag to the query.
+   *
+   * @param hasComments as Boolean. If null, it won't be integrated into the statement. You have to
+   *     set false.
+   * @return the query
+   */
+  TaskQuery hasComments(Boolean hasComments);
+
   // endregion
   // region classificationId
 

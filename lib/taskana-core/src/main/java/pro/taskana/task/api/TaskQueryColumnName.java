@@ -62,6 +62,7 @@ public enum TaskQueryColumnName implements QueryColumnName {
   CUSTOM_INT_6("t.custom_int_6"),
   CUSTOM_INT_7("t.custom_int_7"),
   CUSTOM_INT_8("t.custom_int_8"),
+  NUMBER_OF_COMMENTS("t.number_of_comments"),
   A_CLASSIFICATION_NAME("ac.name"),
   A_CLASSIFICATION_ID("a.classification_id"),
   A_CLASSIFICATION_KEY("a.classification_key"),

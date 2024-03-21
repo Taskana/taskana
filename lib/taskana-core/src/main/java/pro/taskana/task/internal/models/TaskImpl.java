@@ -290,6 +290,7 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
     taskSummary.setManualPriority(manualPriority);
     taskSummary.setRead(isRead);
     taskSummary.setState(state);
+    taskSummary.setNumberOfComments(numberOfComments);
     taskSummary.setTransferred(isTransferred);
     taskSummary.setWorkbasketSummary(workbasketSummary);
     return taskSummary;
@@ -397,6 +398,8 @@ public class TaskImpl extends TaskSummaryImpl implements Task {
         + manualPriority
         + ", state="
         + state
+        + ", numberOfComments="
+        + numberOfComments
         + ", classificationSummary="
         + classificationSummary
         + ", workbasketSummary="

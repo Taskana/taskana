@@ -68,6 +68,7 @@ public interface TaskQueryMapper {
   @Result(property = "customInt6", column = "CUSTOM_INT_6")
   @Result(property = "customInt7", column = "CUSTOM_INT_7")
   @Result(property = "customInt8", column = "CUSTOM_INT_8")
+  @Result(property = "numberOfComments", column = "NUMBER_OF_COMMENTS")
   List<TaskSummaryImpl> queryTaskSummaries(TaskQueryImpl taskQuery);
 
   @SelectProvider(type = TaskQuerySqlProvider.class, method = "queryTaskSummariesDb2")
@@ -129,6 +130,7 @@ public interface TaskQueryMapper {
   @Result(property = "customInt6", column = "CUSTOM_INT_6")
   @Result(property = "customInt7", column = "CUSTOM_INT_7")
   @Result(property = "customInt8", column = "CUSTOM_INT_8")
+  @Result(property = "numberOfComments", column = "NUMBER_OF_COMMENTS")
   List<TaskSummaryImpl> queryTaskSummariesDb2(TaskQueryImpl taskQuery);
 
   @SelectProvider(type = TaskQuerySqlProvider.class, method = "queryTaskSummariesOracle")
@@ -190,6 +192,7 @@ public interface TaskQueryMapper {
   @Result(property = "customInt6", column = "CUSTOM_INT_6")
   @Result(property = "customInt7", column = "CUSTOM_INT_7")
   @Result(property = "customInt8", column = "CUSTOM_INT_8")
+  @Result(property = "numberOfComments", column = "NUMBER_OF_COMMENTS")
   List<TaskSummaryImpl> queryTaskSummariesOracle(TaskQueryImpl taskQuery);
 
   @SelectProvider(type = TaskQuerySqlProvider.class, method = "countQueryTasks")

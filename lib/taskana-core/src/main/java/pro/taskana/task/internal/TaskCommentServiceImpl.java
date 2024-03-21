@@ -13,6 +13,7 @@ import pro.taskana.common.internal.util.IdGenerator;
 import pro.taskana.task.api.exceptions.NotAuthorizedOnTaskCommentException;
 import pro.taskana.task.api.exceptions.TaskCommentNotFoundException;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
+import pro.taskana.task.api.models.Task;
 import pro.taskana.task.api.models.TaskComment;
 import pro.taskana.task.internal.models.TaskCommentImpl;
 import pro.taskana.user.api.models.User;
@@ -26,17 +27,20 @@ class TaskCommentServiceImpl {
   private final InternalTaskanaEngine taskanaEngine;
   private final TaskServiceImpl taskService;
   private final TaskCommentMapper taskCommentMapper;
+  private final TaskMapper taskMapper;
   private final UserMapper userMapper;
 
   TaskCommentServiceImpl(
       InternalTaskanaEngine taskanaEngine,
       TaskCommentMapper taskCommentMapper,
       UserMapper userMapper,
+      TaskMapper taskMapper,
       TaskServiceImpl taskService) {
     this.taskanaEngine = taskanaEngine;
     this.taskService = taskService;
     this.taskCommentMapper = taskCommentMapper;
     this.userMapper = userMapper;
+    this.taskMapper = taskMapper;
   }
 
   TaskComment newTaskComment(String taskId) {
@@ -110,6 +114,8 @@ class TaskCommentServiceImpl {
 
       taskCommentMapper.insert(taskCommentImplToCreate);
 
+      taskMapper.incrementNumberOfComments(taskCommentImplToCreate.getTaskId(), Instant.now());
+
     } finally {
       taskanaEngine.returnConnection();
     }
@@ -136,7 +142,10 @@ class TaskCommentServiceImpl {
           || taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN)
           || taskanaEngine.getEngine().isUserInRole(TaskanaRole.TASK_ADMIN)) {
 
+        Task task =
+            taskService.getTask(taskCommentMapper.findById(taskCommentId).getTaskId());
         taskCommentMapper.delete(taskCommentId);
+        taskMapper.decrementNumberOfComments(task.getId(), Instant.now());
 
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug("taskComment {} deleted", taskCommentToDelete.getId());
