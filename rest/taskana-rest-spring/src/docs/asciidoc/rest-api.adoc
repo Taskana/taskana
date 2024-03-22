@@ -120,6 +120,7 @@ include::{snippets}/TaskControllerRestDocTest/setTaskReadDocTest/auto-section.ad
 include::{snippets}/TaskControllerRestDocTest/deleteTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/forceDeleteTaskDocTest/auto-section.adoc[]
 include::{snippets}/TaskControllerRestDocTest/deleteTasksDocTest/auto-section.adoc[]
+include::{snippets}/TaskControllerRestDocTest/transferTasksDocTest/auto-section.adoc[]
 
 == Task Comment Resource
 
