@@ -76,6 +76,7 @@ class UpdateTaskCommentAccTest {
     assertThat(taskCommentsAfterUpdate)
         .extracting(TaskComment::getTextField)
         .containsExactly("updated textfield");
+    assertThat(taskService.getTask(task.getId()).getNumberOfComments()).isOne();
   }
 
   @WithAccessId(user = "user-1-2")
@@ -109,6 +110,7 @@ class UpdateTaskCommentAccTest {
     ThrowingCallable updateTaskCommentCall = () -> taskService.updateTaskComment(taskComment);
     assertThatThrownBy(updateTaskCommentCall)
         .isInstanceOf(NotAuthorizedOnTaskCommentException.class);
+    assertThat(taskService.getTask(task.getId()).getNumberOfComments()).isOne();
   }
 
   @WithAccessId(user = "user-1-1")
@@ -130,6 +132,7 @@ class UpdateTaskCommentAccTest {
 
     assertThatThrownBy(() -> taskService.updateTaskComment(concurrentTaskCommentToUpdate))
         .isInstanceOf(ConcurrencyException.class);
+    assertThat(taskService.getTask(task.getId()).getNumberOfComments()).isOne();
   }
 
   private TaskBuilder createDefaultTask() {

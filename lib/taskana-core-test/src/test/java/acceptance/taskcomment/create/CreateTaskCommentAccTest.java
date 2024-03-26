@@ -87,6 +87,7 @@ class CreateTaskCommentAccTest {
         taskService.getTaskComments(taskWithComments.getId());
     assertThat(taskCommentsAfterInsert)
         .containsExactlyInAnyOrder(comment1, comment2, taskCommentToCreate);
+    assertThat(taskService.getTask(taskWithComments.getId()).getNumberOfComments()).isEqualTo(3);
 
     // Deleting the comment so that the comments remain the same in different tests inside this
     // class
@@ -95,7 +96,7 @@ class CreateTaskCommentAccTest {
 
   @WithAccessId(user = "user-1-2")
   @Test
-  void should_FailToCreateTaskComment_When_UserHasNoWorkbasketPermission() {
+  void should_FailToCreateTaskComment_When_UserHasNoWorkbasketPermission() throws Exception {
     TaskComment taskCommentToCreate = taskService.newTaskComment(taskWithComments.getId());
     taskCommentToCreate.setTextField("Some text");
 
@@ -120,6 +121,7 @@ class CreateTaskCommentAccTest {
         taskService.getTaskComments(taskWithComments.getId());
     assertThat(taskCommentsAfterInsert)
         .containsExactlyInAnyOrder(comment1, comment2, taskCommentToCreate);
+    assertThat(taskService.getTask(taskWithComments.getId()).getNumberOfComments()).isEqualTo(3);
   }
 
   @WithAccessId(user = "user-1-1")
@@ -138,5 +140,6 @@ class CreateTaskCommentAccTest {
     call = () -> taskService.createTaskComment(newTaskCommentForTaskIdNull);
     e = catchThrowableOfType(call, TaskNotFoundException.class);
     assertThat(e.getTaskId()).isNull();
+    assertThat(taskService.getTask(taskWithComments.getId()).getNumberOfComments()).isEqualTo(2);
   }
 }

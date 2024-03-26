@@ -277,6 +277,13 @@ public interface TaskSummary {
   boolean isManualPriorityActive();
 
   /**
+   * Returns the count of the comments of the {@linkplain Task}.
+   *
+   * @return numberOfComments
+   */
+  int getNumberOfComments();
+
+  /**
    * Returns the value of the specified {@linkplain TaskCustomField} of the {@linkplain Task}.
    *
    * @param customField identifies which {@linkplain TaskCustomField} is requested

@@ -61,6 +61,8 @@ public class TaskSummaryRepresentationModel
   protected int manualPriority = DEFAULT_MANUAL_PRIORITY;
   /** The current task state. */
   protected TaskState state;
+  /** The current count of the comments. */
+  protected int numberOfComments;
   /** The classification of this task. */
   @NotNull protected ClassificationSummaryRepresentationModel classificationSummary;
   /** The workbasket this task resides in. */
@@ -260,6 +262,14 @@ public class TaskSummaryRepresentationModel
 
   public void setState(TaskState state) {
     this.state = state;
+  }
+
+  public int getNumberOfComments() {
+    return numberOfComments;
+  }
+
+  public void setNumberOfComments(int numberOfComments) {
+    this.numberOfComments = numberOfComments;
   }
 
   public ClassificationSummaryRepresentationModel getClassificationSummary() {

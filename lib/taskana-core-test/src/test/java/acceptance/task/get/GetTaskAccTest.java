@@ -112,6 +112,7 @@ class GetTaskAccTest {
             .owner("user-1-1")
             .read(true)
             .transferred(false)
+            .numberOfComments(2)
             .callbackInfo(callbackInfo)
             .customAttribute(TaskCustomField.CUSTOM_1, "custom1")
             .customAttribute(TaskCustomField.CUSTOM_2, "custom2")
@@ -194,6 +195,7 @@ class GetTaskAccTest {
     assertThat(readTask.getPrimaryObjRef().getValue()).isEqualTo(defaultObjectReference.getValue());
     assertThat(readTask.isRead()).isTrue();
     assertThat(readTask.isTransferred()).isFalse();
+    assertThat(readTask.getNumberOfComments()).isEqualTo(2);
     assertThat(readTask.getCallbackInfo()).isEqualTo(callbackInfo);
     assertThat(readTask.getCustomAttributeMap()).isEqualTo(new HashMap<String, String>());
     assertThat(readTask.getCustomField(TaskCustomField.CUSTOM_1)).isEqualTo("custom1");
