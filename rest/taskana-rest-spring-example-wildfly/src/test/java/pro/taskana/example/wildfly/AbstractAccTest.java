@@ -77,7 +77,7 @@ public class AbstractAccTest {
   protected String parseServerLog() throws Exception {
 
     // TO-DO: make log4j log into rollingFile from log4j.xml
-    File file = new File("target/wildfly-27.0.1.Final/standalone/log/server.log");
+    File file = new File("target/wildfly-30.0.1.Final/standalone/log/server.log");
 
     BufferedReader br = new BufferedReader(new FileReader(file));
 
