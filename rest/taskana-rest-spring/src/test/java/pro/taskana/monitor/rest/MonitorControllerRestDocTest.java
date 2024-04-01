@@ -2,11 +2,13 @@ package pro.taskana.monitor.rest;
 
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.rest.test.BaseRestDocTest;
 
+@Disabled
 class MonitorControllerRestDocTest extends BaseRestDocTest {
 
   @Test

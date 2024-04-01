@@ -99,7 +99,8 @@ public class TaskHistoryEventController {
   @GetMapping(path = HistoryRestEndpoints.URL_HISTORY_EVENTS_ID)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskHistoryEventRepresentationModel> getTaskHistoryEvent(
-      @PathVariable String historyEventId) throws TaskanaHistoryEventNotFoundException {
+      @PathVariable("historyEventId") String historyEventId)
+      throws TaskanaHistoryEventNotFoundException {
     TaskHistoryEvent resultEvent = simpleHistoryService.getTaskHistoryEvent(historyEventId);
 
     TaskHistoryEventRepresentationModel taskEventResource = assembler.toModel(resultEvent);

@@ -57,7 +57,7 @@ public class ExampleBootstrapTest {
     // Delete Taskana folder if exists
     Path taskanaH2Data = Path.of(System.getProperty("user.home"), "taskana-h2-data");
     if (Files.exists(taskanaH2Data)) {
-      FileUtils.deleteDirectory(taskanaH2Data.toFile());
+      FileUtils.forceDelete(taskanaH2Data.toFile());
     }
   }
 

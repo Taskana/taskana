@@ -3,7 +3,7 @@
 <module name="com.h2database.h2" xmlns="urn:jboss:module:1.9">
 
   <resources>
-    <resource-root path="h2-2.1.214.jar"/>
+    <resource-root path="h2-2.2.224.jar"/>
   </resources>
   <dependencies>
     <module name="java.compiler"/>

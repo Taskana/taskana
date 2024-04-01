@@ -61,7 +61,7 @@ public class UserController {
    */
   @GetMapping(RestEndpoints.URL_USERS_ID)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<UserRepresentationModel> getUser(@PathVariable String userId)
+  public ResponseEntity<UserRepresentationModel> getUser(@PathVariable("userId") String userId)
       throws UserNotFoundException, InvalidArgumentException {
     User user = userService.getUser(userId);
     return ResponseEntity.ok(userAssembler.toModel(user));
@@ -136,7 +136,7 @@ public class UserController {
   @PutMapping(RestEndpoints.URL_USERS_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<UserRepresentationModel> updateUser(
-      @PathVariable(value = "userId") String userId, @RequestBody UserRepresentationModel repModel)
+      @PathVariable("userId") String userId, @RequestBody UserRepresentationModel repModel)
       throws InvalidArgumentException, UserNotFoundException, NotAuthorizedException {
     if (!userId.equals(repModel.getUserId())) {
       throw new InvalidArgumentException(
@@ -163,7 +163,7 @@ public class UserController {
    */
   @DeleteMapping(RestEndpoints.URL_USERS_ID)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
-  public ResponseEntity<UserRepresentationModel> deleteUser(@PathVariable String userId)
+  public ResponseEntity<UserRepresentationModel> deleteUser(@PathVariable("userId") String userId)
       throws UserNotFoundException, NotAuthorizedException, InvalidArgumentException {
     userService.deleteUser(userId);
 

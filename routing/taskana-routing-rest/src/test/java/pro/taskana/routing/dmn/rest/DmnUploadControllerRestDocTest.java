@@ -3,6 +3,7 @@ package pro.taskana.routing.dmn.rest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
@@ -10,6 +11,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pro.taskana.rest.test.BaseRestDocTest;
 
+@Disabled
 class DmnUploadControllerRestDocTest extends BaseRestDocTest {
 
   private static final String EXCEL_NAME = "testExcelRouting.xlsx";

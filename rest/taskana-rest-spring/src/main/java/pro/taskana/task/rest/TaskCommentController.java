@@ -68,7 +68,7 @@ public class TaskCommentController {
   @GetMapping(path = RestEndpoints.URL_TASK_COMMENT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> getTaskComment(
-      @PathVariable String taskCommentId)
+        @PathVariable("taskCommentId") String taskCommentId)
       throws TaskNotFoundException,
           TaskCommentNotFoundException,
           InvalidArgumentException,
@@ -95,7 +95,7 @@ public class TaskCommentController {
   @GetMapping(path = RestEndpoints.URL_TASK_COMMENTS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentCollectionRepresentationModel> getTaskComments(
-      @PathVariable String taskId,
+      @PathVariable("taskId") String taskId,
       HttpServletRequest request,
       TaskCommentQueryFilterParameter filterParameter,
       TaskCommentQuerySortParameter sortParameter,
@@ -138,7 +138,7 @@ public class TaskCommentController {
   @DeleteMapping(path = RestEndpoints.URL_TASK_COMMENT)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> deleteTaskComment(
-      @PathVariable String taskCommentId)
+      @PathVariable("taskCommentId") String taskCommentId)
       throws TaskNotFoundException,
           TaskCommentNotFoundException,
           InvalidArgumentException,
@@ -169,7 +169,7 @@ public class TaskCommentController {
   @PutMapping(path = RestEndpoints.URL_TASK_COMMENT)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> updateTaskComment(
-      @PathVariable String taskCommentId,
+      @PathVariable("taskCommentId") String taskCommentId,
       @RequestBody TaskCommentRepresentationModel taskCommentRepresentationModel)
       throws TaskNotFoundException,
           TaskCommentNotFoundException,
@@ -209,7 +209,7 @@ public class TaskCommentController {
   @PostMapping(path = RestEndpoints.URL_TASK_COMMENTS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskCommentRepresentationModel> createTaskComment(
-      @PathVariable String taskId,
+      @PathVariable("taskId") String taskId,
       @RequestBody TaskCommentRepresentationModel taskCommentRepresentationModel)
       throws InvalidArgumentException, TaskNotFoundException, NotAuthorizedOnWorkbasketException {
     taskCommentRepresentationModel.setTaskId(taskId);
