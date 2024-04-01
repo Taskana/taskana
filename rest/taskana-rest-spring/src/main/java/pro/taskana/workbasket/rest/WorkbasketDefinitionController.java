@@ -82,7 +82,7 @@ public class WorkbasketDefinitionController {
   @GetMapping(path = RestEndpoints.URL_WORKBASKET_DEFINITIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketDefinitionCollectionRepresentationModel> exportWorkbaskets(
-      @RequestParam(required = false) String[] domain) {
+      @RequestParam(value = "domain", required = false) String[] domain) {
     WorkbasketQuery query = workbasketService.createWorkbasketQuery();
     Optional.ofNullable(domain).ifPresent(query::domainIn);
 

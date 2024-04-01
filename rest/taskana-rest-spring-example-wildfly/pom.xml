@@ -59,6 +59,7 @@
       <artifactId>taskana-rest-spring-example-common</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.springframework.plugin</groupId>
       <artifactId>spring-plugin-core</artifactId>

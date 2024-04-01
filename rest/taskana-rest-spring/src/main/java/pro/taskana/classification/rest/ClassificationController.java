@@ -106,7 +106,8 @@ public class ClassificationController {
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATIONS_ID, produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ClassificationRepresentationModel> getClassification(
-      @PathVariable String classificationId) throws ClassificationNotFoundException {
+      @PathVariable("classificationId") String classificationId)
+      throws ClassificationNotFoundException {
     Classification classification = classificationService.getClassification(classificationId);
     return ResponseEntity.ok(modelAssembler.toModel(classification));
   }
@@ -159,7 +160,7 @@ public class ClassificationController {
   @PutMapping(path = RestEndpoints.URL_CLASSIFICATIONS_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<ClassificationRepresentationModel> updateClassification(
-      @PathVariable(value = "classificationId") String classificationId,
+      @PathVariable("classificationId") String classificationId,
       @RequestBody ClassificationRepresentationModel resource)
       throws ClassificationNotFoundException,
           ConcurrencyException,
@@ -193,7 +194,7 @@ public class ClassificationController {
   @DeleteMapping(path = RestEndpoints.URL_CLASSIFICATIONS_ID)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ClassificationRepresentationModel> deleteClassification(
-      @PathVariable String classificationId)
+      @PathVariable("classificationId") String classificationId)
       throws ClassificationNotFoundException, ClassificationInUseException, NotAuthorizedException {
     classificationService.deleteClassification(classificationId);
     return ResponseEntity.noContent().build();

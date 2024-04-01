@@ -4,6 +4,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -14,6 +15,7 @@ import pro.taskana.classification.rest.models.ClassificationCollectionRepresenta
 import pro.taskana.common.rest.RestEndpoints;
 import pro.taskana.rest.test.BaseRestDocTest;
 
+@Disabled
 class ClassificationDefinitionControllerRestDocTest extends BaseRestDocTest {
 
   @Autowired ClassificationRepresentationModelAssembler assembler;

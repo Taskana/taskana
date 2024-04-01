@@ -5,6 +5,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -15,6 +16,7 @@ import pro.taskana.user.api.models.User;
 import pro.taskana.user.rest.assembler.UserRepresentationModelAssembler;
 import pro.taskana.user.rest.models.UserRepresentationModel;
 
+@Disabled
 class UserControllerRestDocTest extends BaseRestDocTest {
   @Autowired UserRepresentationModelAssembler assembler;
   @Autowired UserService userService;

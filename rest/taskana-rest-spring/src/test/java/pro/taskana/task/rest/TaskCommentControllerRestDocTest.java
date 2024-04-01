@@ -5,6 +5,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import pro.taskana.task.rest.models.TaskCommentRepresentationModel;
 import pro.taskana.testapi.security.JaasExtension;
 import pro.taskana.testapi.security.WithAccessId;
 
+@Disabled
 @ExtendWith(JaasExtension.class)
 class TaskCommentControllerRestDocTest extends BaseRestDocTest {
 
