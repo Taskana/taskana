@@ -63,7 +63,7 @@ public class TaskanaEngineController {
   @GetMapping(path = RestEndpoints.URL_CLASSIFICATION_CATEGORIES)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<List<String>> getClassificationCategories(
-      @RequestParam(required = false) String type) {
+      @RequestParam(value = "type", required = false) String type) {
     if (type != null) {
       return ResponseEntity.ok(taskanaConfiguration.getClassificationCategoriesByType(type));
     }

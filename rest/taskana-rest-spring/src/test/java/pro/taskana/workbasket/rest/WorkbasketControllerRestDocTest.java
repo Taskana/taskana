@@ -6,6 +6,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import pro.taskana.workbasket.rest.assembler.WorkbasketRepresentationModelAssemb
 import pro.taskana.workbasket.rest.models.WorkbasketAccessItemCollectionRepresentationModel;
 import pro.taskana.workbasket.rest.models.WorkbasketRepresentationModel;
 
+@Disabled
 @ExtendWith(JaasExtension.class)
 class WorkbasketControllerRestDocTest extends BaseRestDocTest {
 

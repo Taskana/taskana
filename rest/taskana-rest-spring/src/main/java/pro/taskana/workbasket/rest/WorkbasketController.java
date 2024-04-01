@@ -128,7 +128,7 @@ public class WorkbasketController {
   @GetMapping(path = RestEndpoints.URL_WORKBASKET_ID, produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketRepresentationModel> getWorkbasket(
-      @PathVariable(value = "workbasketId") String workbasketId)
+      @PathVariable("workbasketId") String workbasketId)
       throws WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException {
     Workbasket workbasket = workbasketService.getWorkbasket(workbasketId);
 
@@ -160,7 +160,7 @@ public class WorkbasketController {
   @DeleteMapping(path = RestEndpoints.URL_WORKBASKET_ID)
   @Transactional(rollbackFor = Exception.class, noRollbackFor = WorkbasketNotFoundException.class)
   public ResponseEntity<WorkbasketRepresentationModel> deleteWorkbasket(
-      @PathVariable(value = "workbasketId") String workbasketId)
+      @PathVariable("workbasketId") String workbasketId)
       throws InvalidArgumentException,
           WorkbasketNotFoundException,
           WorkbasketInUseException,
@@ -229,7 +229,7 @@ public class WorkbasketController {
   @PutMapping(path = RestEndpoints.URL_WORKBASKET_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketRepresentationModel> updateWorkbasket(
-      @PathVariable(value = "workbasketId") String workbasketId,
+      @PathVariable("workbasketId") String workbasketId,
       @RequestBody WorkbasketRepresentationModel workbasketRepresentationModel)
       throws WorkbasketNotFoundException,
           NotAuthorizedException,
@@ -267,7 +267,7 @@ public class WorkbasketController {
       produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketAccessItemCollectionRepresentationModel> getWorkbasketAccessItems(
-      @PathVariable(value = "workbasketId") String workbasketId)
+      @PathVariable("workbasketId") String workbasketId)
       throws WorkbasketNotFoundException,
           NotAuthorizedException,
           NotAuthorizedOnWorkbasketException {
@@ -298,7 +298,7 @@ public class WorkbasketController {
   @PutMapping(path = RestEndpoints.URL_WORKBASKET_ID_ACCESS_ITEMS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketAccessItemCollectionRepresentationModel> setWorkbasketAccessItems(
-      @PathVariable(value = "workbasketId") String workbasketId,
+      @PathVariable("workbasketId") String workbasketId,
       @RequestBody WorkbasketAccessItemCollectionRepresentationModel workbasketAccessItemRepModels)
       throws InvalidArgumentException,
           WorkbasketNotFoundException,
@@ -337,7 +337,7 @@ public class WorkbasketController {
       produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<DistributionTargetsCollectionRepresentationModel> getDistributionTargets(
-      @PathVariable(value = "workbasketId") String workbasketId)
+      @PathVariable("workbasketId") String workbasketId)
       throws WorkbasketNotFoundException, NotAuthorizedOnWorkbasketException {
     List<WorkbasketSummary> distributionTargets =
         workbasketService.getDistributionTargets(workbasketId);
@@ -363,7 +363,7 @@ public class WorkbasketController {
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<DistributionTargetsCollectionRepresentationModel>
       setDistributionTargetsForWorkbasketId(
-          @PathVariable(value = "workbasketId") String sourceWorkbasketId,
+          @PathVariable("workbasketId") String sourceWorkbasketId,
           @RequestBody List<String> targetWorkbasketIds)
           throws WorkbasketNotFoundException,
               NotAuthorizedException,
@@ -391,7 +391,7 @@ public class WorkbasketController {
   @DeleteMapping(path = RestEndpoints.URL_WORKBASKET_ID_DISTRIBUTION)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> removeDistributionTargetForWorkbasketId(
-      @PathVariable(value = "workbasketId") String targetWorkbasketId)
+      @PathVariable("workbasketId") String targetWorkbasketId)
       throws WorkbasketNotFoundException,
           NotAuthorizedOnWorkbasketException,
           NotAuthorizedException {
