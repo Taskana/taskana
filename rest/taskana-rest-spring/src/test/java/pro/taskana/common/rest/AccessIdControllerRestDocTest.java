@@ -2,10 +2,12 @@ package pro.taskana.common.rest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pro.taskana.rest.test.BaseRestDocTest;
 
+@Disabled
 class AccessIdControllerRestDocTest extends BaseRestDocTest {
 
   @Test

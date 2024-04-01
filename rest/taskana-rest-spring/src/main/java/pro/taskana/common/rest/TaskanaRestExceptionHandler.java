@@ -117,13 +117,22 @@ public class TaskanaRestExceptionHandler extends ResponseEntityExceptionHandler 
           Map.entry(UnsupportedDatabaseException.ERROR_KEY, HttpStatus.INTERNAL_SERVER_ERROR),
           Map.entry(ERROR_KEY_UNKNOWN_ERROR, HttpStatus.INTERNAL_SERVER_ERROR));
 
-  @ExceptionHandler(MaxUploadSizeExceededException.class)
+  @Override
   protected ResponseEntity<Object> handleMaxUploadSizeExceededException(
-      MaxUploadSizeExceededException ex, WebRequest req) {
-    HttpStatus status =
+      MaxUploadSizeExceededException ex,
+      HttpHeaders headers,
+      HttpStatusCode status,
+      WebRequest request
+  ) {
+
+    return buildResponse(
+        ErrorCode.of(ERROR_KEY_PAYLOAD),
+        ex,
+        request,
         HTTP_STATUS_BY_ERROR_CODE_KEY.getOrDefault(
-            ERROR_KEY_PAYLOAD, HttpStatus.INTERNAL_SERVER_ERROR);
-    return buildResponse(ErrorCode.of(ERROR_KEY_PAYLOAD), ex, req, status);
+            ERROR_KEY_PAYLOAD, HttpStatus.INTERNAL_SERVER_ERROR
+        )
+    );
   }
 
   @ExceptionHandler(BeanInstantiationException.class)

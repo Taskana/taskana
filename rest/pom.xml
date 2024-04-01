@@ -21,7 +21,9 @@
     <module>../web</module>
     <module>taskana-rest-spring-example-common</module>
     <module>taskana-rest-spring-example-boot</module>
+<!-- enable it, when decission is made how to proceed
     <module>taskana-rest-spring-example-wildfly</module>
+    -->
     <module>taskana-rest-spring-test-lib</module>
   </modules>
 
