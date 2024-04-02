@@ -191,7 +191,7 @@ public class ClassificationController {
    * @throws NotAuthorizedException if the user is not authorized to delete a Classification
    */
   @DeleteMapping(path = RestEndpoints.URL_CLASSIFICATIONS_ID)
-  @Transactional(readOnly = true, rollbackFor = Exception.class)
+  @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<ClassificationRepresentationModel> deleteClassification(
       @PathVariable String classificationId)
       throws ClassificationNotFoundException, ClassificationInUseException, NotAuthorizedException {

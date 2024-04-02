@@ -154,6 +154,7 @@ public class ClassificationServiceImpl implements ClassificationService {
         if (isReferentialIntegrityConstraintViolation(e)) {
           throw new ClassificationInUseException(classification, e);
         }
+        throw e;
       }
     } finally {
       taskanaEngine.returnConnection();
