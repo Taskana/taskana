@@ -334,7 +334,7 @@ public class ClassificationController {
             content = {@Content(schema = @Schema())})
       })
   @DeleteMapping(path = RestEndpoints.URL_CLASSIFICATIONS_ID)
-  @Transactional(readOnly = true, rollbackFor = Exception.class)
+  @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<ClassificationRepresentationModel> deleteClassification(
       @PathVariable("classificationId") String classificationId)
       throws ClassificationNotFoundException, ClassificationInUseException, NotAuthorizedException {
