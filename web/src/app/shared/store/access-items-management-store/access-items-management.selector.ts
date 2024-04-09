@@ -7,4 +7,9 @@ export class AccessItemsManagementSelector {
   static groups(state: AccessItemsManagementStateModel): AccessId[] {
     return state.groups;
   }
+
+  @Selector([AccessItemsManagementState])
+  static permissions(state: AccessItemsManagementStateModel): AccessId[] {
+    return state.permissions;
+  }
 }

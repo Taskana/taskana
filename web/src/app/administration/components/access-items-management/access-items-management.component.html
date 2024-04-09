@@ -34,6 +34,29 @@
     <ng-template #noGroups>The user is not associated to any groups </ng-template>
   </mat-expansion-panel>
 
+  <!-- EXPANSION PANEL PERMISSIONS -->
+  <mat-expansion-panel *ngIf="accessItemsForm" class="access-items__permissions-expansion-panel">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Permissions of {{accessId.accessId}}</mat-panel-title>
+    </mat-expansion-panel-header>
+    <!-- TABLE WITH PERMISSION NAMES AND ACCESS IDs -->
+    <table *ngIf="permissions && permissions.length > 0; else noPermissions" mat-table [dataSource]="permissions">
+      <ng-container matColumnDef="Name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell class="access-items__permission-table-cell" *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+      <ng-container matColumnDef="Access Id">
+        <th mat-header-cell *matHeaderCellDef> Access Id </th>
+        <td mat-cell class="access-items__permission-table-cell" *matCellDef="let element"> {{element.accessId}} </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="['Name', 'Access Id']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['Name', 'Access Id'];"></tr>
+    </table>
+
+    <ng-template #noPermissions>The user is not associated to any permissions </ng-template>
+  </mat-expansion-panel>
+
   <!-- EXPANSION PANEL AUTHORIZATION -->
   <mat-expansion-panel *ngIf="accessItemsForm" [expanded]="true" class="access-items__authorization-expansion-panel">
     <mat-expansion-panel-header>

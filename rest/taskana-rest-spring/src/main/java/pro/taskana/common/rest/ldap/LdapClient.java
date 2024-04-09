@@ -7,13 +7,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.naming.InvalidNameException;
 import javax.naming.directory.SearchControls;
+import javax.naming.ldap.LdapName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +27,9 @@ import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.AbstractContextMapper;
 import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
+import org.springframework.ldap.filter.NotPresentFilter;
 import org.springframework.ldap.filter.OrFilter;
+import org.springframework.ldap.filter.PresentFilter;
 import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
 import org.springframework.ldap.support.LdapNameBuilder;
 import org.springframework.stereotype.Component;
@@ -62,15 +68,16 @@ public class LdapClient {
   }
 
   /**
-   * Search LDAP for matching users or groups.
+   * Search LDAP for matching users or groups or permissions.
    *
-   * @param name lookup string for names or groups
+   * @param name lookup string for names or groups or permissions
    * @return a list of AccessIdResources sorted by AccessId and limited to
    *     maxNumberOfReturnedAccessIds
    * @throws InvalidArgumentException if input is shorter than minSearchForLength
+   * @throws InvalidNameException thrown if name is not a valid dn
    */
-  public List<AccessIdRepresentationModel> searchUsersAndGroups(final String name)
-      throws InvalidArgumentException {
+  public List<AccessIdRepresentationModel> searchUsersAndGroupsAndPermissions(final String name)
+      throws InvalidArgumentException, InvalidNameException {
     isInitOrFail();
     testMinSearchForLength(name);
 
@@ -83,6 +90,7 @@ public class LdapClient {
     } else {
       accessIds.addAll(searchUsersByNameOrAccessId(name));
       accessIds.addAll(searchGroupsByName(name));
+      accessIds.addAll(searchPermissionsByName(name));
     }
     sortListOfAccessIdResources(accessIds);
     return getFirstPageOfaResultList(accessIds);
@@ -214,19 +222,74 @@ public class LdapClient {
     if (!CN.equals(getGroupNameAttribute())) {
       orFilter.or(new WhitespaceWildcardsFilter(CN, name));
     }
+    final AndFilter andFilter2 = new AndFilter();
+    andFilter2.and(new NotPresentFilter(getUserPermissionsAttribute()));
     andFilter.and(orFilter);
+    andFilter2.and(andFilter);
 
     LOGGER.debug("Using filter '{}' for LDAP query.", andFilter);
 
     return ldapTemplate.search(
         getGroupSearchBase(),
-        andFilter.encode(),
+        andFilter2.encode(),
         SearchControls.SUBTREE_SCOPE,
         getLookUpGroupAttributesToReturn(),
         new GroupContextMapper());
   }
 
-  public AccessIdRepresentationModel searchAccessIdByDn(final String dn) {
+  public Map<String, List<String>> searchAccessIdForGroupsAndPermissionsByDn(List<String> dns)
+      throws InvalidNameException {
+    List<String> accessIdsOfGroupsAndPermissions = new ArrayList<>();
+    List<AccessIdRepresentationModel> permissions = new ArrayList<>();
+    List<String> accessIdsOfPermissions = new ArrayList<>();
+    for (String groupOrPermission : dns) {
+      accessIdsOfGroupsAndPermissions.add(searchAccessIdByDn(groupOrPermission)
+          .getAccessId());
+    }
+    for (String groupOrPermission : accessIdsOfGroupsAndPermissions) {
+      permissions.addAll(searchPermissionsByName(groupOrPermission));
+    }
+    for (AccessIdRepresentationModel permission : permissions) {
+      accessIdsOfPermissions.add(permission.getAccessId());
+    }
+    List<String> accessIdsOfGroups = new ArrayList<>(accessIdsOfGroupsAndPermissions);
+    accessIdsOfGroups.removeAll(accessIdsOfPermissions);
+    Map<String, List<String>> map = new HashMap<>();
+    map.put("permissions", accessIdsOfPermissions);
+    map.put("groups", accessIdsOfGroups);
+    return map;
+  }
+
+  public List<AccessIdRepresentationModel> searchPermissionsByName(final String name)
+      throws InvalidArgumentException {
+    isInitOrFail();
+    testMinSearchForLength(name);
+
+    final AndFilter andFilter = new AndFilter();
+    andFilter.and(new EqualsFilter(getPermissionSearchFilterName(),
+        getPermissionSearchFilterValue()));
+    final OrFilter orFilter = new OrFilter();
+    orFilter.or(new WhitespaceWildcardsFilter(getUserPermissionsAttribute(), name));
+    if (!CN.equals(getUserPermissionsAttribute())) {
+      orFilter.or(new WhitespaceWildcardsFilter(CN, name));
+    }
+    final AndFilter andFilter2 = new AndFilter();
+    andFilter2.and(new PresentFilter(getUserPermissionsAttribute()));
+    andFilter.and(orFilter);
+    andFilter2.and(andFilter);
+
+    LOGGER.debug("Using filter '{}' for LDAP query.", andFilter);
+
+    return ldapTemplate.search(
+        getPermissionSearchBase(),
+        andFilter2.encode(),
+        SearchControls.SUBTREE_SCOPE,
+        getLookUpPermissionAttributesToReturn(),
+        new PermissionContextMapper());
+  }
+
+  public AccessIdRepresentationModel searchAccessIdByDn(final String dn)
+      throws InvalidNameException {
     isInitOrFail();
     // Obviously Spring LdapTemplate does have a inconsistency and always adds the base name to the
     // given DN.
@@ -239,11 +302,13 @@ public class LdapClient {
           "Removed baseDN {} from given DN. New DN to be used: {}", getBaseDn(), nameWithoutBaseDn);
     }
     return ldapTemplate.lookup(
-        nameWithoutBaseDn, getLookUpUserAndGroupAttributesToReturn(), new DnContextMapper());
+        new LdapName(nameWithoutBaseDn),
+        getLookUpUserAndGroupAndPermissionAttributesToReturn(),
+        new DnContextMapper());
   }
 
   public List<AccessIdRepresentationModel> searchGroupsAccessIdIsMemberOf(final String accessId)
-      throws InvalidArgumentException {
+      throws InvalidArgumentException, InvalidNameException {
     isInitOrFail();
     testMinSearchForLength(accessId);
 
@@ -259,22 +324,64 @@ public class LdapClient {
       orFilter.or(new EqualsFilter(getGroupsOfUserName(), accessId));
     }
     orFilter.or(new EqualsFilter(getGroupsOfUserName(), dn));
+    final AndFilter andFilter2 = new AndFilter();
+    andFilter2.and(new NotPresentFilter(getUserPermissionsAttribute()));
     andFilter.and(orFilter);
+    andFilter2.and(andFilter);
 
     String[] userAttributesToReturn = {getUserIdAttribute(), getGroupNameAttribute()};
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug(
           "Using filter '{}' for LDAP query with group search base {}.",
-          andFilter,
+          andFilter2,
           getGroupSearchBase());
     }
 
     return ldapTemplate.search(
         getGroupSearchBase(),
-        andFilter.encode(),
+        andFilter2.encode(),
         SearchControls.SUBTREE_SCOPE,
         userAttributesToReturn,
         new GroupContextMapper());
+  }
+
+  public List<AccessIdRepresentationModel> searchPermissionsAccessIdHas(final String accessId)
+      throws InvalidArgumentException, InvalidNameException {
+    isInitOrFail();
+    testMinSearchForLength(accessId);
+
+    String dn = searchDnForAccessId(accessId);
+    if (dn == null || dn.isEmpty()) {
+      throw new InvalidArgumentException("The AccessId is invalid");
+    }
+
+    final AndFilter andFilter = new AndFilter();
+    andFilter.and(new EqualsFilter(getPermissionSearchFilterName(),
+        getPermissionSearchFilterValue()));
+    final OrFilter orFilter = new OrFilter();
+    if (!"DN".equalsIgnoreCase(getPermissionsOfUserType())) {
+      orFilter.or(new EqualsFilter(getPermissionsOfUserName(), accessId));
+    }
+    orFilter.or(new EqualsFilter(getPermissionsOfUserName(), dn));
+    final AndFilter andFilter2 = new AndFilter();
+    andFilter2.and(new PresentFilter(getUserPermissionsAttribute()));
+    andFilter.and(orFilter);
+    andFilter2.and(andFilter);
+
+    String[] userAttributesToReturn = {getUserIdAttribute(), getUserPermissionsAttribute()};
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "Using filter '{}' for LDAP query with group search base {}.",
+          andFilter2,
+          getPermissionSearchBase());
+    }
+
+    return ldapTemplate.search(
+        getPermissionSearchBase(),
+        andFilter2.encode(),
+        SearchControls.SUBTREE_SCOPE,
+        userAttributesToReturn,
+        new PermissionContextMapper());
   }
 
   /**
@@ -283,41 +390,110 @@ public class LdapClient {
    * @param accessId The access id to lookup
    * @return the LDAP Distinguished Name for the access id
    * @throws InvalidArgumentException thrown if the given access id is ambiguous.
+   * @throws InvalidNameException thrown if name is not a valid dn
    */
-  public String searchDnForAccessId(String accessId) throws InvalidArgumentException {
+  public String searchDnForAccessId(String accessId)
+      throws InvalidArgumentException, InvalidNameException {
     isInitOrFail();
 
     if (nameIsDn(accessId)) {
       AccessIdRepresentationModel groupByDn = searchAccessIdByDn(accessId);
       return groupByDn.getAccessId();
     } else {
-      final AndFilter andFilter = new AndFilter();
-      andFilter.and(new EqualsFilter(getUserSearchFilterName(), getUserSearchFilterValue()));
-      final OrFilter orFilter = new OrFilter();
-      orFilter.or(new EqualsFilter(getUserIdAttribute(), accessId));
-      andFilter.and(orFilter);
+      return searchDnForAccessIdIfAccessIdNameIsNotDn(accessId);
+    }
+  }
 
-      LOGGER.debug(
-          "Using filter '{}' for LDAP query with user search base {}.",
-          andFilter,
-          getUserSearchBase());
-
-      final List<String> distinguishedNames =
-          ldapTemplate.search(
-              getUserSearchBase(),
-              andFilter.encode(),
-              SearchControls.SUBTREE_SCOPE,
-              null,
-              new DnStringContextMapper());
-
-      if (distinguishedNames == null || distinguishedNames.isEmpty()) {
-        return null;
-      } else if (distinguishedNames.size() > 1) {
+  private String searchDnForAccessIdIfAccessIdNameIsNotDn(String accessId) {
+    final List<String> distinguishedNames = searchDnForUserAccessId(accessId);
+    if (distinguishedNames == null || distinguishedNames.isEmpty()) {
+      final List<String> distinguishedNamesPermissions = searchDnForPermissionAccessId(accessId);
+      if (distinguishedNamesPermissions == null || distinguishedNamesPermissions.isEmpty()) {
+        final List<String> distinguishedNamesGroups = searchDnForGroupAccessId(accessId);
+        if (distinguishedNamesGroups == null || distinguishedNamesGroups.isEmpty()) {
+          return null;
+        } else if (distinguishedNamesGroups.size() > 1) {
+          throw new InvalidArgumentException("Ambiguous access id found: " + accessId);
+        } else {
+          return distinguishedNamesGroups.get(0);
+        }
+      } else if (distinguishedNamesPermissions.size() > 1) {
         throw new InvalidArgumentException("Ambiguous access id found: " + accessId);
       } else {
-        return distinguishedNames.get(0);
+        return distinguishedNamesPermissions.get(0);
       }
+    } else if (distinguishedNames.size() > 1) {
+      throw new InvalidArgumentException("Ambiguous access id found: " + accessId);
+    } else {
+      return distinguishedNames.get(0);
     }
+  }
+
+  private List<String> searchDnForUserAccessId(String accessId) {
+    final AndFilter andFilter = new AndFilter();
+    andFilter.and(new EqualsFilter(getUserSearchFilterName(), getUserSearchFilterValue()));
+    final OrFilter orFilter = new OrFilter();
+    orFilter.or(new EqualsFilter(getUserIdAttribute(), accessId));
+    andFilter.and(orFilter);
+
+    LOGGER.debug(
+        "Using filter '{}' for LDAP query with user search base {}.",
+        andFilter,
+        getUserSearchBase());
+
+    return ldapTemplate.search(
+            getUserSearchBase(),
+            andFilter.encode(),
+            SearchControls.SUBTREE_SCOPE,
+            null,
+            new DnStringContextMapper());
+  }
+
+  private List<String> searchDnForPermissionAccessId(String accessId) {
+    final AndFilter andFilter = new AndFilter();
+    andFilter.and(new EqualsFilter(getPermissionSearchFilterName(),
+        getPermissionSearchFilterValue()));
+    final OrFilter orFilter = new OrFilter();
+    orFilter.or(new EqualsFilter(getUserPermissionsAttribute(), accessId));
+    final AndFilter andFilterPermission2 = new AndFilter();
+    andFilter.and(new PresentFilter(getUserPermissionsAttribute()));
+    andFilter.and(orFilter);
+    andFilterPermission2.and(andFilter);
+
+    LOGGER.debug(
+        "Using filter '{}' for LDAP query with user search base {}.",
+        andFilterPermission2,
+        getPermissionSearchBase());
+
+    return ldapTemplate.search(
+            getPermissionSearchBase(),
+            andFilterPermission2.encode(),
+            SearchControls.SUBTREE_SCOPE,
+            null,
+            new DnStringContextMapper());
+  }
+
+  private List<String> searchDnForGroupAccessId(String accessId) {
+    final AndFilter andFilter = new AndFilter();
+    andFilter.and(new EqualsFilter(getGroupSearchFilterName(), getGroupSearchFilterValue()));
+    final OrFilter orFilter = new OrFilter();
+    orFilter.or(new EqualsFilter(getGroupNameAttribute(), accessId));
+    final AndFilter andFilter2 = new AndFilter();
+    andFilter2.and(new NotPresentFilter(getUserPermissionsAttribute()));
+    andFilter.and(orFilter);
+    andFilter2.and(andFilter);
+
+    LOGGER.debug(
+        "Using filter '{}' for LDAP query with user search base {}.",
+        andFilter2,
+        getPermissionSearchBase());
+
+    return ldapTemplate.search(
+            getPermissionSearchBase(),
+            andFilter.encode(),
+            SearchControls.SUBTREE_SCOPE,
+            null,
+            new DnStringContextMapper());
   }
 
   /**
@@ -325,8 +501,9 @@ public class LdapClient {
    *
    * @param name lookup string for names or groups
    * @return whether the given name is valid or not
+   * @throws InvalidNameException thrown if name is not a valid dn
    */
-  public boolean validateAccessId(final String name) {
+  public boolean validateAccessId(final String name) throws InvalidNameException {
     isInitOrFail();
 
     if (nameIsDn(name)) {
@@ -417,6 +594,22 @@ public class LdapClient {
     return LdapSettings.TASKANA_LDAP_USER_PERMISSIONS_ATTRIBUTE.getValueFromEnv(env);
   }
 
+  public String getPermissionSearchBase() {
+    return LdapSettings.TASKANA_LDAP_PERMISSION_SEARCH_BASE.getValueFromEnv(env);
+  }
+
+  public String getPermissionSearchFilterName() {
+    return LdapSettings.TASKANA_LDAP_PERMISSION_SEARCH_FILTER_NAME.getValueFromEnv(env);
+  }
+
+  public String getPermissionSearchFilterValue() {
+    return LdapSettings.TASKANA_LDAP_PERMISSION_SEARCH_FILTER_VALUE.getValueFromEnv(env);
+  }
+
+  public String getPermissionNameAttribute() {
+    return LdapSettings.TASKANA_LDAP_PERMISSION_NAME_ATTRIBUTE.getValueFromEnv(env);
+  }
+
   public String getGroupSearchBase() {
     return LdapSettings.TASKANA_LDAP_GROUP_SEARCH_BASE.getValueFromEnv(env);
   }
@@ -458,6 +651,15 @@ public class LdapClient {
     return Integer.parseInt(envValue);
   }
 
+  public boolean useDnForGroups() {
+    String envValue =
+        LdapSettings.TASKANA_LDAP_USE_DN_FOR_GROUPS.getValueFromEnv(env);
+    if (envValue == null || envValue.isEmpty()) {
+      return true;
+    }
+    return Boolean.parseBoolean(envValue);
+  }
+
   public int getMaxNumberOfReturnedAccessIds() {
     return maxNumberOfReturnedAccessIds;
   }
@@ -472,6 +674,19 @@ public class LdapClient {
 
   public String getGroupsOfUserType() {
     return LdapSettings.TASKANA_LDAP_GROUPS_OF_USER_TYPE.getValueFromEnv(env);
+  }
+
+  public String getPermissionsOfUserName() {
+    String permissionsOfUser =
+        LdapSettings.TASKANA_LDAP_PERMISSIONS_OF_USER_NAME.getValueFromEnv(env);
+    if (permissionsOfUser == null || permissionsOfUser.isEmpty()) {
+      permissionsOfUser = LdapSettings.TASKANA_LDAP_PERMISSIONS_OF_USER.getValueFromEnv(env);
+    }
+    return permissionsOfUser;
+  }
+
+  public String getPermissionsOfUserType() {
+    return LdapSettings.TASKANA_LDAP_PERMISSIONS_OF_USER_TYPE.getValueFromEnv(env);
   }
 
   public boolean isUser(String accessId) {
@@ -522,10 +737,19 @@ public class LdapClient {
     return new String[] {getGroupNameAttribute(), CN, getGroupSearchFilterName()};
   }
 
-  String[] getLookUpUserAndGroupAttributesToReturn() {
-    return Stream.concat(
+  String[] getLookUpPermissionAttributesToReturn() {
+    return new String[] {
+        getUserPermissionsAttribute(),
+        getPermissionSearchFilterName()
+    };
+  }
+
+  String[] getLookUpUserAndGroupAndPermissionAttributesToReturn() {
+    return Stream.concat(Stream.concat(
             Arrays.stream(getLookUpUserAttributesToReturn()),
-            Arrays.stream(getLookUpGroupAttributesToReturn()))
+            Arrays.stream(getLookUpGroupAttributesToReturn())),
+          Arrays.stream(getLookUpPermissionAttributesToReturn())
+        )
         .toArray(String[]::new);
   }
 
@@ -587,6 +811,9 @@ public class LdapClient {
         .filter(not(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER::equals))
         .filter(not(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER_NAME::equals))
         .filter(not(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER_TYPE::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_PERMISSIONS_OF_USER::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_PERMISSIONS_OF_USER_NAME::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_PERMISSIONS_OF_USER_TYPE::equals))
         .filter(p -> p.getValueFromEnv(env) == null)
         .toList();
   }
@@ -622,6 +849,15 @@ public class LdapClient {
     }
   }
 
+  private String getGroupIdFromContext(final DirContextOperations context) {
+    String groupId = context.getStringAttribute(getGroupNameAttribute());
+    if (groupId != null && useLowerCaseForAccessIds) {
+      return groupId.toLowerCase();
+    } else {
+      return groupId;
+    }
+  }
+
   private Set<String> getGroupIdsFromContext(final DirContextOperations context) {
     String[] groupAttributes = context.getStringAttributes(getUserMemberOfGroupAttribute());
     Set<String> groups = groupAttributes != null ? Set.of(groupAttributes) : Collections.emptySet();
@@ -633,6 +869,15 @@ public class LdapClient {
               .collect(Collectors.toSet());
     }
     return groups;
+  }
+
+  private String getPermissionIdFromContext(final DirContextOperations context) {
+    String permissionId = context.getStringAttribute(getUserPermissionsAttribute());
+    if (permissionId != null && useLowerCaseForAccessIds) {
+      return permissionId.toLowerCase();
+    } else {
+      return permissionId;
+    }
   }
 
   private Set<String> getPermissionIdsFromContext(final DirContextOperations context) {
@@ -655,8 +900,23 @@ public class LdapClient {
     @Override
     public AccessIdRepresentationModel doMapFromContext(final DirContextOperations context) {
       final AccessIdRepresentationModel accessId = new AccessIdRepresentationModel();
-      accessId.setAccessId(getDnFromContext(context)); // fully qualified dn
+      if (useDnForGroups()) {
+        accessId.setAccessId(getDnFromContext(context)); // fully qualified dn
+      } else {
+        accessId.setAccessId(getGroupIdFromContext(context));
+      }
       accessId.setName(context.getStringAttribute(getGroupNameAttribute()));
+      return accessId;
+    }
+  }
+
+  class PermissionContextMapper extends AbstractContextMapper<AccessIdRepresentationModel> {
+
+    @Override
+    public AccessIdRepresentationModel doMapFromContext(final DirContextOperations context) {
+      final AccessIdRepresentationModel accessId = new AccessIdRepresentationModel();
+      accessId.setAccessId(getPermissionIdFromContext(context)); // fully qualified dn
+      accessId.setName(context.getStringAttribute(getUserPermissionsAttribute()));
       return accessId;
     }
   }
@@ -712,9 +972,16 @@ public class LdapClient {
         String firstName = context.getStringAttribute(getUserFirstnameAttribute());
         String lastName = context.getStringAttribute(getUserLastnameAttribute());
         accessId.setName(String.format("%s, %s", lastName, firstName));
-      } else {
-        accessId.setAccessId(getDnFromContext(context)); // fully qualified dn
+      } else if (context.getStringAttribute(getUserPermissionsAttribute()) == null) {
+        if (useDnForGroups()) {
+          accessId.setAccessId(getDnFromContext(context)); // fully qualified dn
+        } else {
+          accessId.setAccessId(getGroupIdFromContext(context));
+        }
         accessId.setName(context.getStringAttribute(getGroupNameAttribute()));
+      } else {
+        accessId.setAccessId(getPermissionIdFromContext(context));
+        accessId.setName(context.getStringAttribute(getUserPermissionsAttribute()));
       }
       return accessId;
     }

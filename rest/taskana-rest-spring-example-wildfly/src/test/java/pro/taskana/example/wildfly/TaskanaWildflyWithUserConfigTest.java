@@ -105,7 +105,7 @@ public class TaskanaWildflyWithUserConfigTest extends AbstractAccTest {
     TaskanaUserInfoRepresentationModel currentUser = response.getBody();
     assertThat(currentUser).isNotNull();
     assertThat(currentUser.getUserId()).isEqualTo("user-2-1");
-    assertThat(currentUser.getGroupIds()).hasSize(2);
+    assertThat(currentUser.getGroupIds()).hasSize(3);
     assertThat(currentUser.getRoles()).hasSize(1);
   }
 

@@ -90,7 +90,8 @@ export class FormsValidatorService {
     }
 
     form.controls.forEach((control) => {
-      const { permEditTasks, permReadTasks, permRead } = control.value;
+      const { permEditTasks, permReadTasks, permRead, permOpen, permDistribute, permAppend, permTransfer } =
+        control.value;
 
       if (permEditTasks && (!permReadTasks || !permRead)) {
         this.notificationsService.showWarning('PERM_EDIT_TASKS_MISSING_DEPENDING_PERMISSION');
@@ -98,6 +99,14 @@ export class FormsValidatorService {
 
       if (permReadTasks && !permRead) {
         this.notificationsService.showWarning('PERM_READ_TASKS_MISSING_DEPENDING_PERMISSIONS');
+      }
+
+      if (permOpen && (!permReadTasks || !permRead)) {
+        this.notificationsService.showWarning('PERM_OPEN_MISSING_DEPENDING_PERMISSIONS');
+      }
+
+      if (permDistribute && (!permAppend || !permTransfer)) {
+        this.notificationsService.showWarning('PERM_DISTRIBUTE_MISSING_DEPENDING_PERMISSIONS');
       }
     });
 

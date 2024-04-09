@@ -157,7 +157,13 @@ export class WorkbasketAccessItemsComponent implements OnInit, OnChanges, OnDest
       this.selectedWorkbasket$.pipe(take(1)).subscribe((workbasket) => {
         this.accessItemsRepresentation._links = { self: { href: workbasket._links.accessItems.href } };
         this.setWorkbasketIdForCopy(workbasket.workbasketId);
-        this.onSave();
+        this.formsValidatorService
+          .validateFormAccess(this.accessItemsGroups, this.toggleValidationAccessIdMap)
+          .then((value) => {
+            if (value) {
+              this.onSave();
+            }
+          });
       });
     });
 

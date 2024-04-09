@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -215,11 +214,12 @@ class JaasExtensionTest {
     assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo(accessId.user());
   }
 
-  @WithAccessId(user = "testtemplate1", groups = "abc")
+  @WithAccessId(user = "testtemplate1", groups = "abc", permissions = "perm")
   @TestTemplate
   void should_InjectCorrectAccessId_When_AnnotationExists_On_TestTemplate(WithAccessId accessId) {
     assertThat(accessId.user()).isEqualTo("testtemplate1");
     assertThat(accessId.groups()).containsExactly("abc");
+    assertThat(accessId.permissions()).containsExactly("perm");
   }
 
   // endregion
@@ -406,21 +406,21 @@ class JaasExtensionTest {
 
   @TestFactory
   Iterable<DynamicTest> should_NotSetAccessIdForDynamicTestInIterable_When_AnnotationIsMissing() {
-    return Stream.of(NULL_DYNAMIC_TEST, NULL_DYNAMIC_TEST).collect(Collectors.toList());
+    return Stream.of(NULL_DYNAMIC_TEST, NULL_DYNAMIC_TEST).toList();
   }
 
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @TestFactory
   Iterable<DynamicTest> should_SetAccessIdForDynamicTestInIterable_When_AnnotationExists() {
     return Stream.of(DYNAMIC_TEST_USER_DYNAMIC_TEST, DYNAMIC_TEST_USER_DYNAMIC_TEST)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
   @TestFactory
   Iterable<DynamicTest> should_SetMultipleAccessIdForDynamicTestInIterable_When_AnnotationsExist() {
-    return Stream.of(NOT_NULL_DYNAMIC_TEST, NOT_NULL_DYNAMIC_TEST).collect(Collectors.toList());
+    return Stream.of(NOT_NULL_DYNAMIC_TEST, NOT_NULL_DYNAMIC_TEST).toList();
   }
 
   // WITH DynamicContainer
@@ -431,7 +431,7 @@ class JaasExtensionTest {
     Supplier<DynamicContainer> supplier =
         () ->
             dynamicContainer("dynamic container", Stream.of(NULL_DYNAMIC_TEST, NULL_DYNAMIC_TEST));
-    return Stream.generate(supplier).limit(2).collect(Collectors.toList());
+    return Stream.generate(supplier).limit(2).toList();
   }
 
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
@@ -443,7 +443,7 @@ class JaasExtensionTest {
             dynamicContainer(
                 "dynamic container",
                 Stream.of(DYNAMIC_TEST_USER_DYNAMIC_TEST, DYNAMIC_TEST_USER_DYNAMIC_TEST));
-    return Stream.generate(supplier).limit(2).collect(Collectors.toList());
+    return Stream.generate(supplier).limit(2).toList();
   }
 
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
@@ -455,7 +455,7 @@ class JaasExtensionTest {
         () ->
             dynamicContainer(
                 "dynamic container", Stream.of(NOT_NULL_DYNAMIC_TEST, NOT_NULL_DYNAMIC_TEST));
-    return Stream.generate(supplier).limit(2).collect(Collectors.toList());
+    return Stream.generate(supplier).limit(2).toList();
   }
 
   // WITH nested DynamicContainer
@@ -467,7 +467,7 @@ class JaasExtensionTest {
         () -> dynamicContainer("inside container", Stream.of(NULL_DYNAMIC_TEST, NULL_DYNAMIC_TEST));
     Supplier<DynamicContainer> outsideSupplier =
         () -> dynamicContainer("outside container", Stream.of(supplier.get(), NULL_DYNAMIC_TEST));
-    return Stream.generate(outsideSupplier).limit(2).collect(Collectors.toList());
+    return Stream.generate(outsideSupplier).limit(2).toList();
   }
 
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
@@ -483,7 +483,7 @@ class JaasExtensionTest {
         () ->
             dynamicContainer(
                 "outside container", Stream.of(supplier.get(), DYNAMIC_TEST_USER_DYNAMIC_TEST));
-    return Stream.generate(outsideSupplier).limit(2).collect(Collectors.toList());
+    return Stream.generate(outsideSupplier).limit(2).toList();
   }
 
   @WithAccessId(user = INSIDE_DYNAMIC_TEST_USER)
@@ -498,7 +498,7 @@ class JaasExtensionTest {
     Supplier<DynamicContainer> outsideSupplier =
         () ->
             dynamicContainer("outside container", Stream.of(supplier.get(), NOT_NULL_DYNAMIC_TEST));
-    return Stream.generate(outsideSupplier).limit(2).collect(Collectors.toList());
+    return Stream.generate(outsideSupplier).limit(2).toList();
   }
 
   // endregion

@@ -39,6 +39,8 @@ public abstract class AbstractAccTest {
       "cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA";
   public static final String GROUP_2_DN =
       "cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA";
+  public static final String PERM_1 =
+      "taskana:callcenter:ab:ab/a:callcenter";
 
   protected static TaskanaConfiguration taskanaConfiguration;
   protected static TaskanaEngine taskanaEngine;

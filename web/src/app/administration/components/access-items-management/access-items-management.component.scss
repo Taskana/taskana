@@ -45,6 +45,11 @@ tr:first-child > td {
     text-align: left;
   }
 
+    &__permission-table-cell {
+      height: 48px;
+      text-align: left;
+    }
+
   &__table {
     overflow-x: auto;
     overflow-y: hidden;
@@ -66,6 +71,11 @@ tr:first-child > td {
     width: 98%;
     left: 1%;
   }
+
+    &__permissions-expansion-panel {
+      width: 98%;
+      left: 1%;
+    }
 
   &__authorization-expansion-panel {
     width: 98%;

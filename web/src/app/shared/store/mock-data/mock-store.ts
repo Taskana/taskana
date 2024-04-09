@@ -17,6 +17,9 @@ export const classificationStateMock = {
 export const engineConfigurationMock = {
   customisation: {
     EN: {
+      global: {
+        debounceTimeLookupField: 50
+      },
       workbaskets: {
         information: {
           owner: {

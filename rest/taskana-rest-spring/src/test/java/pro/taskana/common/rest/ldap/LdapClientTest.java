@@ -17,11 +17,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -45,37 +48,39 @@ class LdapClientTest {
 
   @Spy @InjectMocks LdapClient cut;
 
-  @Test
-  void should_SearchGroupByDn_For_LdapCall() {
+  @ParameterizedTest
+  @CsvSource(value = {
+      "cn=developersgroup,ou=groups,o=taskanatest;cn=developersgroup,ou=groups",
+      "cn=developers:permission,cn=groups;"
+          + "cn=developers:permission,cn=groups",
+      "cn=Developersgroup,ou=groups,o=taskanatest;cn=developersgroup,ou=groups",
+      "cn=Developers:Permission,cn=groups,o=taskanatest;"
+          + "cn=developers:permission,cn=groups"
+  }, delimiter = ';')
+  void should_SearchGroupOrPermissionByDnAndConvertAccessIdToLowercase_For_LdapCall(String arg1,
+      String arg2) throws InvalidNameException {
     setUpEnvMock();
     cut.init();
 
-    cut.searchAccessIdByDn("cn=developersgroup,ou=groups,o=taskanatest");
+    cut.searchAccessIdByDn(arg1);
 
     verify(ldapTemplate)
-        .lookup(eq("cn=developersgroup,ou=groups"), any(), any(LdapClient.DnContextMapper.class));
+        .lookup(eq(new LdapName(arg2)), any(), any(LdapClient.DnContextMapper.class));
   }
 
   @Test
-  void should_ConvertAccessIdToLowercase_When_SearchingGroupByDn() {
-    setUpEnvMock();
-    cut.init();
-
-    cut.searchAccessIdByDn("cn=Developersgroup,ou=groups,o=taskanatest");
-
-    verify(ldapTemplate)
-        .lookup(eq("cn=developersgroup,ou=groups"), any(), any(LdapClient.DnContextMapper.class));
-  }
-
-  @Test
-  void testLdap_searchUsersAndGroups() throws Exception {
+  void testLdap_searchUsersAndGroupsAndPermissions() throws Exception {
 
     setUpEnvMock();
     cut.init();
 
+    AccessIdRepresentationModel permission = new AccessIdRepresentationModel("testP", "testPId");
     AccessIdRepresentationModel group = new AccessIdRepresentationModel("testG", "testGId");
     AccessIdRepresentationModel user = new AccessIdRepresentationModel("testU", "testUId");
 
+    when(ldapTemplate.search(
+        any(String.class), any(), anyInt(), any(), any(LdapClient.PermissionContextMapper.class)))
+        .thenReturn(List.of(permission));
     when(ldapTemplate.search(
             any(String.class), any(), anyInt(), any(), any(LdapClient.GroupContextMapper.class)))
         .thenReturn(List.of(group));
@@ -83,7 +88,9 @@ class LdapClientTest {
             any(String.class), any(), anyInt(), any(), any(LdapClient.UserContextMapper.class)))
         .thenReturn(List.of(user));
 
-    assertThat(cut.searchUsersAndGroups("test")).hasSize(2).containsExactlyInAnyOrder(user, group);
+    assertThat(cut.searchUsersAndGroupsAndPermissions("test"))
+        .hasSize(3)
+        .containsExactlyInAnyOrder(user, group, permission);
   }
 
   @Test
@@ -105,18 +112,20 @@ class LdapClientTest {
   }
 
   @Test
-  void should_ReturnAllUsersAndMembersOfGroupsWithTaskanaUserRole() throws Exception {
+  void should_ReturnAllUsersAndMembersOfGroupsAndMemberOfPermissionsWithTaskanaUserRole() {
 
     setUpEnvMock();
     cut.init();
 
-    AccessIdRepresentationModel user = new AccessIdRepresentationModel("testU", "testUId");
-
     Set<String> groupsOfUserRole = new HashSet<>();
     Map<TaskanaRole, Set<String>> roleMap = new HashMap<>();
     roleMap.put(TaskanaRole.USER, groupsOfUserRole);
+    Set<String> permissionsOfUserRole = new HashSet<>();
+    roleMap.put(TaskanaRole.USER, permissionsOfUserRole);
 
     when(taskanaConfiguration.getRoleMap()).thenReturn(roleMap);
+
+    AccessIdRepresentationModel user = new AccessIdRepresentationModel("testU", "testUId");
 
     when(ldapTemplate.search(
             any(String.class), any(), anyInt(), any(), any(LdapClient.UserContextMapper.class)))
@@ -126,7 +135,7 @@ class LdapClientTest {
   }
 
   @Test
-  void testLdap_getNameWithoutBaseDn() {
+  void testLdap_getNameWithoutBaseDnForGroup() {
 
     setUpEnvMock();
     cut.init();
@@ -135,11 +144,23 @@ class LdapClientTest {
   }
 
   @Test
-  void shouldNot_CreateOrCriteriaWithDnAndAccessIdString_When_PropertyTypeIsSet()
-      throws InvalidArgumentException {
+  void testLdap_getNameWithoutBaseDnForPermission() {
 
     setUpEnvMock();
-    lenient().when(this.environment.getProperty("taskana.ldap.groupsOfUser.type")).thenReturn("dn");
+    cut.init();
+    assertThat(cut.getNameWithoutBaseDn("cn=other:permission,cn=groups,o=taskanatest"))
+        .isEqualTo("cn=other:permission,cn=groups");
+  }
+
+  @Test
+  void shouldNot_CreateOrCriteriaWithDnAndAccessIdStringForGroup_When_PropertyTypeIsSet()
+      throws InvalidArgumentException, InvalidNameException {
+
+    setUpEnvMock();
+    lenient().when(this.environment.getProperty("taskana.ldap.groupsOfUser.type"))
+        .thenReturn("dn");
+    lenient().when(this.environment.getProperty("taskana.ldap.permissionsOfUser.type"))
+        .thenReturn("dn");
     lenient()
         .when(
             ldapTemplate.search(
@@ -153,9 +174,10 @@ class LdapClientTest {
     cut.init();
 
     cut.searchGroupsAccessIdIsMemberOf("user-1-1");
+    cut.searchPermissionsAccessIdHas("user-1-1");
 
-    String expectedFilterValue =
-        "(&(objectclass=groupOfUniqueNames)(memberUid=uid=user-1-1,cn=users,OU=Test,O=TASKANA))";
+    String expectedFilterValue = "(&(!(permission=*))"
+        + "(&(objectclass=groupOfUniqueNames)(memberUid=uid=user-1-1,cn=users,OU=Test,O=TASKANA)))";
     verify(ldapTemplate)
         .search(
             any(String.class),
@@ -163,6 +185,16 @@ class LdapClientTest {
             anyInt(),
             any(),
             any(LdapClient.GroupContextMapper.class));
+
+    String expectedFilterValueForPermission = "(&(permission=*)"
+        + "(&(objectclass=groupOfUniqueNames)(memberUid=uid=user-1-1,cn=users,OU=Test,O=TASKANA)))";
+    verify(ldapTemplate)
+        .search(
+            any(String.class),
+            eq(expectedFilterValueForPermission),
+            anyInt(),
+            any(),
+            any(LdapClient.PermissionContextMapper.class));
   }
 
   @Test
@@ -173,7 +205,7 @@ class LdapClientTest {
     List<AccessIdRepresentationModel> result =
         IntStream.range(0, 100)
             .mapToObj(i -> new AccessIdRepresentationModel("" + i, "" + i))
-            .collect(Collectors.toList());
+            .toList();
 
     assertThat(cut.getFirstPageOfaResultList(result))
         .hasSize(cut.getMaxNumberOfReturnedAccessIds());
@@ -193,7 +225,7 @@ class LdapClientTest {
     // userMobilePhoneAttribute, userEmailAttribute, userOrglevel1Attribute, userOrglevel2Attribute,
     // userOrglevel3Attribute, userOrglevel4Attribute, groupsOfUser, groupsOfUserName,
     // groupOfUserType
-    assertThat(cut.checkForMissingConfigurations()).hasSize(LdapSettings.values().length - 12);
+    assertThat(cut.checkForMissingConfigurations()).hasSize(LdapSettings.values().length - 15);
   }
 
   @Test
@@ -231,7 +263,14 @@ class LdapClientTest {
               {"taskana.ldap.userOrglevel1Attribute", "orgLevel1"},
               {"taskana.ldap.userOrglevel2Attribute", "orgLevel2"},
               {"taskana.ldap.userOrglevel3Attribute", "orgLevel3"},
-              {"taskana.ldap.userOrglevel4Attribute", "orgLevel4"}
+              {"taskana.ldap.userOrglevel4Attribute", "orgLevel4"},
+              {"taskana.ldap.permissionsOfUser", "memberUid"},
+              {"taskana.ldap.permissionNameAttribute", "permission"},
+              {"taskana.ldap.permissionSearchFilterValue", "groupOfUniqueNames"},
+              {"taskana.ldap.permissionSearchFilterName", "objectclass"},
+              {"taskana.ldap.permissionSearchBase", "ou=groups"},
+              {"taskana.ldap.userPermissionsAttribute", "permission"},
+                {"taskana.ldap.useDnForGroups", "false"},
             })
         .forEach(
             strings ->

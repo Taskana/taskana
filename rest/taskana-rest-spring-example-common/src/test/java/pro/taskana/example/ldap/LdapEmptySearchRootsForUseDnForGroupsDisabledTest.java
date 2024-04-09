@@ -5,13 +5,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 import pro.taskana.rest.test.TaskanaSpringBootTest;
 
 /** Test Ldap attachment. */
 @TaskanaSpringBootTest
+@TestPropertySource(properties = "taskana.ldap.useDnForGroups=false")
 @ActiveProfiles({"emptySearchRoots"})
-class LdapEmptySearchRootsTest extends LdapTest {
+class LdapEmptySearchRootsForUseDnForGroupsDisabledTest
+    extends LdapForUseDnForGroupsDisabledTest {
 
   @Test
   void should_FindGroupsForUser_When_UserIdIsProvided() throws Exception {
@@ -20,9 +23,7 @@ class LdapEmptySearchRootsTest extends LdapTest {
     assertThat(groups)
         .extracting(AccessIdRepresentationModel::getAccessId)
         .containsExactlyInAnyOrder(
-            "cn=ksc-users,cn=groups,ou=test,o=taskana",
-            "cn=organisationseinheit ksc 2,cn=organisationseinheit ksc,"
-                + "cn=organisation,ou=test,o=taskana");
+            "ksc-users", "organisationseinheit ksc 2");
   }
 
   @Test
@@ -47,3 +48,4 @@ class LdapEmptySearchRootsTest extends LdapTest {
     assertThat(dn).isEqualTo("cn=g02,cn=groups,ou=test,o=taskana");
   }
 }
+

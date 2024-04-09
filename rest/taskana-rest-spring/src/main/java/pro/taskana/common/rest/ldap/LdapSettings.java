@@ -20,6 +20,10 @@ enum LdapSettings {
   TASKANA_LDAP_USER_ORG_LEVEL_4_ATTRIBUTE("taskana.ldap.userOrglevel4Attribute"),
   TASKANA_LDAP_USER_MEMBER_OF_GROUP_ATTRIBUTE("taskana.ldap.userMemberOfGroupAttribute"),
   TASKANA_LDAP_USER_PERMISSIONS_ATTRIBUTE("taskana.ldap.userPermissionsAttribute"),
+  TASKANA_LDAP_PERMISSION_SEARCH_BASE("taskana.ldap.permissionSearchBase"),
+  TASKANA_LDAP_PERMISSION_SEARCH_FILTER_NAME("taskana.ldap.permissionSearchFilterName"),
+  TASKANA_LDAP_PERMISSION_SEARCH_FILTER_VALUE("taskana.ldap.permissionSearchFilterValue"),
+  TASKANA_LDAP_PERMISSION_NAME_ATTRIBUTE("taskana.ldap.permissionNameAttribute"),
   TASKANA_LDAP_GROUP_SEARCH_BASE("taskana.ldap.groupSearchBase"),
   TASKANA_LDAP_BASE_DN("taskana.ldap.baseDn"),
   TASKANA_LDAP_GROUP_SEARCH_FILTER_NAME("taskana.ldap.groupSearchFilterName"),
@@ -29,7 +33,11 @@ enum LdapSettings {
   TASKANA_LDAP_MAX_NUMBER_OF_RETURNED_ACCESS_IDS("taskana.ldap.maxNumberOfReturnedAccessIds"),
   TASKANA_LDAP_GROUPS_OF_USER("taskana.ldap.groupsOfUser"),
   TASKANA_LDAP_GROUPS_OF_USER_NAME("taskana.ldap.groupsOfUser.name"),
-  TASKANA_LDAP_GROUPS_OF_USER_TYPE("taskana.ldap.groupsOfUser.type");
+  TASKANA_LDAP_GROUPS_OF_USER_TYPE("taskana.ldap.groupsOfUser.type"),
+  TASKANA_LDAP_PERMISSIONS_OF_USER("taskana.ldap.permissionsOfUser"),
+  TASKANA_LDAP_PERMISSIONS_OF_USER_NAME("taskana.ldap.permissionsOfUser.name"),
+  TASKANA_LDAP_PERMISSIONS_OF_USER_TYPE("taskana.ldap.permissionsOfUser.type"),
+  TASKANA_LDAP_USE_DN_FOR_GROUPS("taskana.ldap.useDnForGroups");
 
   private final String key;
 

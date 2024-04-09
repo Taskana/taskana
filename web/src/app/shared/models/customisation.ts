@@ -6,6 +6,7 @@ export interface Customisation {
 }
 
 export interface CustomisationContent {
+  global?: GlobalCustomisation;
   workbaskets?: WorkbasketsCustomisation;
   classifications?: ClassificationsCustomisation;
   tasks?: TasksCustomisation;
@@ -29,6 +30,10 @@ export interface ClassificationCategoryImages {
 export interface WorkbasketsCustomisation {
   information?: { owner: LookupField } & CustomFields;
   'access-items'?: AccessItemsCustomisation;
+}
+
+export interface GlobalCustomisation {
+  debounceTimeLookupField: number;
 }
 
 export type AccessItemsCustomisation = { accessId?: LookupField } & CustomFields;

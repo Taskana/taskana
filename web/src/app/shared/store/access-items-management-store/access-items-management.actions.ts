@@ -13,6 +13,11 @@ export class GetGroupsByAccessId {
   constructor(public accessId: string) {}
 }
 
+export class GetPermissionsByAccessId {
+  static readonly type = '[Access Items Management] Get permissions by access ID';
+  constructor(public accessId: string) {}
+}
+
 export class GetAccessItems {
   static readonly type = '[Access Items Management] Get access items';
   constructor(

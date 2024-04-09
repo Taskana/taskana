@@ -70,20 +70,21 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_GetAllTransferTargetsForUserAndGroup_When_QueryingForSinglePermission()
+  void should_GetAllTransferTargetsForUserGroupPermission_When_QueryingForSinglePermission()
       throws Exception {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
-            .accessIdsHavePermissions(List.of(WorkbasketPermission.APPEND), "user-1-1", GROUP_1_DN)
+            .accessIdsHavePermissions(List.of(WorkbasketPermission.APPEND), "user-1-1",
+                GROUP_1_DN, PERM_1)
             .list();
 
-    assertThat(results).hasSize(6);
+    assertThat(results).hasSize(7);
   }
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_GetAllTransferTargetsForUserAndGroup_When_QueryingForMultiplePermissions()
+  void should_GetAllTransferTargetsForUserGroupPermission_When_QueryingForMultiplePermissions()
       throws Exception {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
@@ -91,21 +92,37 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
             .accessIdsHavePermissions(
                 List.of(WorkbasketPermission.APPEND, WorkbasketPermission.OPEN),
                 "user-1-1",
-                GROUP_1_DN)
+                GROUP_1_DN, PERM_1)
             .list();
 
-    assertThat(results).hasSize(4);
+    assertThat(results).hasSize(5);
   }
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_GetAllWorkbasketsForUserAndGroup_When_QueryingForReadTasksPermissions()
+  void should_GetAllWorkbasketsForUserGroupPermission_When_QueryingForReadTasksPermissions()
       throws Exception {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
             .accessIdsHavePermissions(
-                List.of(WorkbasketPermission.READTASKS), "user-1-1", GROUP_1_DN)
+                List.of(WorkbasketPermission.READTASKS), "user-1-1",
+                GROUP_1_DN, PERM_1)
+            .list();
+
+    assertThat(results).hasSize(8);
+  }
+
+  @WithAccessId(user = "businessadmin")
+  @Test
+  void should_GetAllWorkbasketsForUserGroupPermission_When_QueryingForEditTasksPermissions()
+      throws Exception {
+    List<WorkbasketSummary> results =
+        WORKBASKET_SERVICE
+            .createWorkbasketQuery()
+            .accessIdsHavePermissions(
+                List.of(WorkbasketPermission.EDITTASKS), "user-1-1",
+                GROUP_1_DN, PERM_1)
             .list();
 
     assertThat(results).hasSize(7);
@@ -113,63 +130,52 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_GetAllWorkbasketsForUserAndGroup_When_QueryingForEditTasksPermissions()
+  void should_GetAllTransferTargetsForUserGroupPermission_When_QueryingForSortedByNameAscending()
       throws Exception {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
-            .accessIdsHavePermissions(
-                List.of(WorkbasketPermission.READTASKS), "user-1-1", GROUP_1_DN)
-            .list();
-
-    assertThat(results).hasSize(7);
-  }
-
-  @WithAccessId(user = "businessadmin")
-  @Test
-  void should_GetAllTransferTargetsForUserAndGroup_When_QueryingForSortedByNameAscending()
-      throws Exception {
-    List<WorkbasketSummary> results =
-        WORKBASKET_SERVICE
-            .createWorkbasketQuery()
-            .accessIdsHavePermissions(List.of(WorkbasketPermission.APPEND), "user-1-1", GROUP_1_DN)
+            .accessIdsHavePermissions(List.of(WorkbasketPermission.APPEND),
+                "user-1-1", GROUP_1_DN, PERM_1)
             .orderByName(SortDirection.ASCENDING)
             .list();
 
-    assertThat(results).hasSize(6);
+    assertThat(results).hasSize(7);
     assertThat(results.get(0).getKey()).isEqualTo("GPK_KSC_1");
   }
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_GetAllTransferTargetsForUserAndGroup_When_QueryingForSortedByNameDescending()
+  void should_GetAllTransferTargetsForUserGroupPermission_When_QueryingForSortedByNameDescending()
       throws Exception {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
-            .accessIdsHavePermissions(List.of(WorkbasketPermission.APPEND), "user-1-1", GROUP_1_DN)
+            .accessIdsHavePermissions(List.of(WorkbasketPermission.APPEND),
+                "user-1-1", GROUP_1_DN, PERM_1)
             .orderByName(SortDirection.DESCENDING)
             .orderByKey(SortDirection.ASCENDING)
             .list();
 
-    assertThat(results).hasSize(6);
+    assertThat(results).hasSize(7);
     assertThat(results.get(0).getKey()).isEqualTo("USER-2-2");
   }
 
   @WithAccessId(user = "businessadmin")
   @Test
-  void should_GetAllTransferSourcesForUserAndGroup_When_QueryingForSinglePermission()
+  void should_GetAllTransferSourcesForUserGroupPermission_When_QueryingForSinglePermission()
       throws Exception {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
             .accessIdsHavePermissions(
-                List.of(WorkbasketPermission.DISTRIBUTE), "user-1-1", GROUP_1_DN)
+                List.of(WorkbasketPermission.DISTRIBUTE),
+                "user-1-1", GROUP_1_DN, PERM_1)
             .list();
 
     assertThat(results)
         .extracting(WorkbasketSummary::getKey)
-        .containsExactlyInAnyOrder("GPK_KSC_1", "USER-1-1");
+        .containsExactlyInAnyOrder("GPK_KSC_1", "USER-1-1", "TEAMLEAD-2");
   }
 
   // endregion
@@ -224,28 +230,28 @@ class QueryWorkbasketByPermissionAccTest extends AbstractAccTest {
     assertThat(results).hasSize(3);
   }
 
-  @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
+  @WithAccessId(user = "user-1-1", groups = {GROUP_1_DN, PERM_1})
   @Test
-  void should_GetAllTransferTargetsForSubjectUserAndGroup_When_QueryingForSinglePermission() {
+  void should_GetAllTransferTargetsForSubjectUserGroupPerm_When_QueryingForSinglePermission() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
             .callerHasPermissions(WorkbasketPermission.APPEND)
             .list();
 
-    assertThat(results).hasSize(6);
+    assertThat(results).hasSize(7);
   }
 
-  @WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
+  @WithAccessId(user = "user-1-1", groups = {GROUP_1_DN, PERM_1})
   @Test
-  void should_GetAllTransferTargetsForSubjectUserAndGroup_When_QueryingForMultiplePermissions() {
+  void should_GetAllTransferTargetsForSubjectUserGroupPerm_When_QueryingForMultiplePermissions() {
     List<WorkbasketSummary> results =
         WORKBASKET_SERVICE
             .createWorkbasketQuery()
             .callerHasPermissions(WorkbasketPermission.APPEND, WorkbasketPermission.OPEN)
             .list();
 
-    assertThat(results).hasSize(4);
+    assertThat(results).hasSize(5);
   }
 
   @WithAccessId(user = "businessadmin")
