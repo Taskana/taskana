@@ -1,6 +1,7 @@
 import { Action, NgxsAfterBootstrap, State, StateContext } from '@ngxs/store';
 import {
   GetAccessItems,
+  GetPermissionsByAccessId,
   GetGroupsByAccessId,
   RemoveAccessItemsPermissions,
   SelectAccessId
@@ -47,6 +48,26 @@ export class AccessItemsManagementState implements NgxsAfterBootstrap {
         (groups: AccessId[]) => {
           ctx.patchState({
             groups
+          });
+        },
+        () => {
+          this.requestInProgressService.setRequestInProgress(false);
+        }
+      )
+    );
+  }
+
+  @Action(GetPermissionsByAccessId)
+  getPermissionsByAccessId(
+    ctx: StateContext<AccessItemsManagementStateModel>,
+    action: GetPermissionsByAccessId
+  ): Observable<any> {
+    return this.accessIdsService.getPermissionsByAccessId(action.accessId).pipe(
+      take(1),
+      tap(
+        (permissions: AccessId[]) => {
+          ctx.patchState({
+            permissions
           });
         },
         () => {
@@ -108,4 +129,5 @@ export interface AccessItemsManagementStateModel {
   accessItemsResource: WorkbasketAccessItemsRepresentation;
   selectedAccessId: AccessId;
   groups: AccessId[];
+  permissions: AccessId[];
 }

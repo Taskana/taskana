@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static pro.taskana.rest.test.RestHelper.TEMPLATE;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -42,7 +41,7 @@ class WorkbasketControllerIntTest {
   }
 
   @Test
-  void testGetWorkbasket() throws UnsupportedEncodingException {
+  void testGetWorkbasket()  {
     final String url =
         restHelper.toUrl(
             RestEndpoints.URL_WORKBASKET_ID, "WBI%3A100000000000000000000000000000000006");
@@ -278,7 +277,7 @@ class WorkbasketControllerIntTest {
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
     assertThat(response.getHeaders().getContentType()).isEqualTo(MediaTypes.HAL_JSON);
-    assertThat(response.getBody().getContent()).hasSize(3);
+    assertThat(response.getBody().getContent()).hasSize(4);
   }
 
   @Test

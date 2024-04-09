@@ -146,6 +146,9 @@ describe('AccessItemsManagementComponent', () => {
 
     const groups = store.selectSnapshot((state) => state.accessItemsManagement);
     expect(groups).toBeDefined();
+
+    const permissions = store.selectSnapshot((state) => state.accessItemsManagement);
+    expect(permissions).toBeDefined();
   });
 
   it('should be able to get groups if selected access ID is not null in onSelectAccessId', () => {
@@ -158,11 +161,29 @@ describe('AccessItemsManagementComponent', () => {
     expect(groups).toMatchObject({});
   });
 
+  it('should be able to get permissions if selected access ID is not null in onSelectAccessId', () => {
+    const selectedAccessId = { accessId: '1', name: '' };
+    app.permissions = [
+      { accessId: '1', name: 'perm' },
+      { accessId: '2', name: 'perm' }
+    ];
+    app.onSelectAccessId(selectedAccessId);
+    const permissions = store.selectSnapshot((state) => state.accessItemsManagement);
+    expect(selectedAccessId).not.toBeNull();
+    expect(permissions).not.toBeNull();
+    app.onSelectAccessId(null);
+    expect(permissions).toMatchObject({});
+  });
+
   it('should dispatch GetAccessItems action in searchForAccessItemsWorkbaskets', async((done) => {
     app.accessId = { accessId: '1', name: 'max' };
     app.groups = [
       { accessId: '1', name: 'users' },
       { accessId: '2', name: 'users' }
+    ];
+    app.permissions = [
+      { accessId: '1', name: 'perm' },
+      { accessId: '2', name: 'perm' }
     ];
     app.sortModel = {
       'sort-by': WorkbasketAccessItemQuerySortParameter.ACCESS_ID,
@@ -175,6 +196,7 @@ describe('AccessItemsManagementComponent', () => {
       actionDispatched = true;
       expect(actionDispatched).toBe(true);
       expect(app.setAccessItemsGroups).toHaveBeenCalled();
+      expect(app.setAccessItemsPermissions).toHaveBeenCalled();
       done();
     });
   }));
@@ -194,6 +216,12 @@ describe('AccessItemsManagementComponent', () => {
     expect(app.accessItemsForm).not.toBeNull();
   });
 
+  it('should create accessItemsForm in setAccessItemsPermissions', () => {
+    app.setAccessItemsPermissions([]);
+    expect(app.accessItemsForm).toBeDefined();
+    expect(app.accessItemsForm).not.toBeNull();
+  });
+
   it('should invoke sorting function correctly', () => {
     const newSort: Sorting<WorkbasketAccessItemQuerySortParameter> = {
       'sort-by': WorkbasketAccessItemQuerySortParameter.ACCESS_ID,
@@ -201,6 +229,7 @@ describe('AccessItemsManagementComponent', () => {
     };
     app.accessId = { accessId: '1', name: 'max' };
     app.groups = [{ accessId: '1', name: 'users' }];
+    app.permissions = [{ accessId: '1', name: 'perm' }];
     app.sorting(newSort);
     expect(app.sortModel).toMatchObject(newSort);
   });
@@ -208,5 +237,10 @@ describe('AccessItemsManagementComponent', () => {
   it('should not return accessItemsGroups when accessItemsForm is null', () => {
     app.accessItemsForm = null;
     expect(app.accessItemsGroups).toBeNull();
+  });
+
+  it('should not return accessItemsPermissions when accessItemsForm is null', () => {
+    app.accessItemsForm = null;
+    expect(app.accessItemsPermissions).toBeNull();
   });
 });

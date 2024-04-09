@@ -38,6 +38,8 @@ public class BootWebSecurityConfigurer {
   private final String ldapUserDnPatterns;
   private final String ldapGroupSearchBase;
   private final String ldapGroupSearchFilter;
+  private final String ldapPermissionSearchBase;
+  private final String ldapPermissionSearchFilter;
 
   private final boolean devMode;
   private final boolean enableCsrf;
@@ -48,6 +50,9 @@ public class BootWebSecurityConfigurer {
       @Value("${taskana.ldap.userDnPatterns:uid={0},cn=users}") String ldapUserDnPatterns,
       @Value("${taskana.ldap.groupSearchBase:cn=groups}") String ldapGroupSearchBase,
       @Value("${taskana.ldap.groupSearchFilter:uniqueMember={0}}") String ldapGroupSearchFilter,
+      @Value("${taskana.ldap.permissionSearchBase:cn=permissions}") String ldapPermissionSearchBase,
+      @Value("${taskana.ldap.permissionSearchFilter:uniqueMember={0}}")
+      String ldapPermissionSearchFilter,
       @Value("${enableCsrf:false}") boolean enableCsrf,
       @Value("${devMode:false}") boolean devMode) {
     this.enableCsrf = enableCsrf;
@@ -55,6 +60,8 @@ public class BootWebSecurityConfigurer {
     this.ldapBaseDn = ldapBaseDn;
     this.ldapGroupSearchBase = ldapGroupSearchBase;
     this.ldapGroupSearchFilter = ldapGroupSearchFilter;
+    this.ldapPermissionSearchBase = ldapPermissionSearchBase;
+    this.ldapPermissionSearchFilter = ldapPermissionSearchFilter;
     this.ldapUserDnPatterns = ldapUserDnPatterns;
     this.devMode = devMode;
   }

@@ -16,6 +16,8 @@ public @interface WithAccessId {
 
   String[] groups() default {};
 
+  String[] permissions() default {};
+
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.METHOD)
   @interface WithAccessIds {

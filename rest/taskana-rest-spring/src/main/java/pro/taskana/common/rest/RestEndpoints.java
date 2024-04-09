@@ -20,6 +20,7 @@ public final class RestEndpoints {
   public static final String URL_ACCESS_ID = API_V1 + "access-ids";
   public static final String URL_ACCESS_ID_WITH_NAME = URL_ACCESS_ID + "/with-name";
   public static final String URL_ACCESS_ID_GROUPS = URL_ACCESS_ID + "/groups";
+  public static final String URL_ACCESS_ID_PERMISSIONS = URL_ACCESS_ID + "/permissions";
 
   // import / export endpoints
   public static final String URL_CLASSIFICATION_DEFINITIONS = API_V1 + "classification-definitions";

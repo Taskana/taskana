@@ -8,16 +8,19 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.TestPropertySource;
 import pro.taskana.common.rest.ldap.LdapClient;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 import pro.taskana.rest.test.TaskanaSpringBootTest;
 import pro.taskana.user.api.models.User;
 
 /** Test Ldap attachment. */
+@TestPropertySource(properties = "taskana.ldap.useDnForGroups=false")
 @TaskanaSpringBootTest
-class LdapTest {
+class LdapForUseDnForGroupsDisabledTest {
 
-  @Autowired LdapClient ldapClient;
+  @Autowired
+  LdapClient ldapClient;
 
   @Test
   void should_FindAllUsersAndGroupAndPermissions_When_SearchWithSubstringOfName() throws Exception {
@@ -26,7 +29,7 @@ class LdapTest {
     assertThat(usersGroupsPermissions)
         .extracting(AccessIdRepresentationModel::getAccessId)
         .containsExactlyInAnyOrder(
-            "teamlead-1", "teamlead-2", "cn=ksc-teamleads,cn=groups,ou=test,o=taskana");
+            "teamlead-1", "teamlead-2", "ksc-teamleads");
   }
 
   @Test
@@ -45,7 +48,7 @@ class LdapTest {
         ldapClient.searchGroupsAccessIdIsMemberOf("user-2-2");
     assertThat(groups)
         .extracting(AccessIdRepresentationModel::getAccessId)
-        .containsExactlyInAnyOrder("cn=ksc-users,cn=groups,ou=test,o=taskana");
+        .containsExactlyInAnyOrder("ksc-users");
   }
 
   @Test
@@ -104,3 +107,4 @@ class LdapTest {
     assertThat(user11.getOrgLevel4()).isNull();
   }
 }
+

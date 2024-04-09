@@ -34,6 +34,13 @@ export class AccessIdsService {
     return this.httpClient.get<AccessId[]>(`${this.url}/groups?access-id=${accessId}`);
   }
 
+  getPermissionsByAccessId(accessId: string): Observable<AccessId[]> {
+    if (!accessId || accessId.length < 3) {
+      return of([]);
+    }
+    return this.httpClient.get<AccessId[]>(`${this.url}/permissions?access-id=${accessId}`);
+  }
+
   getAccessItems(
     filterParameter?: WorkbasketAccessItemQueryFilterParameter,
     sortParameter?: Sorting<WorkbasketAccessItemQuerySortParameter>,

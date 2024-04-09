@@ -109,6 +109,12 @@ export const messageByErrorCode = {
     PERM_READ_TASKS_MISSING_DEPENDING_PERMISSIONS:
       '"Read tasks" permission was selected without the required "Read" permission. ' +
       'Your changes will still be saved but they might lead to unexpected behavior.',
+    PERM_OPEN_MISSING_DEPENDING_PERMISSIONS:
+      '"Open" permission was selected without the required "Read tasks" and "Read" permissions. ' +
+      'Your changes will still be saved but they might lead to unexpected behavior.',
+    PERM_DISTRIBUTE_MISSING_DEPENDING_PERMISSIONS:
+      '"Distribute" permission was selected without the required "Append" and "Transfer" permissions. ' +
+      'Your changes will still be saved but they might lead to unexpected behavior.',
     REPORT_DATA_WRONG_HEADER:
       'The received header of the Report data does not match the expected header. ' +
       'The data might be displayed incorrectly. Please contact your administrator.',

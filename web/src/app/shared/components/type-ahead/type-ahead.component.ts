@@ -1,12 +1,14 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { AccessIdsService } from '../../services/access-ids/access-ids.service';
-import { Observable, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Observable, Subject } from 'rxjs';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AccessId } from '../../models/access-id';
-import { take, takeUntil } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { Select } from '@ngxs/store';
 import { WorkbasketSelectors } from '../../store/workbasket-store/workbasket.selectors';
 import { ButtonAction } from '../../../administration/models/button-action';
+import { EngineConfigurationSelectors } from '../../store/engine-configuration-store/engine-configuration.selectors';
+import { GlobalCustomisation } from '../../models/customisation';
 
 @Component({
   selector: 'taskana-shared-type-ahead',
@@ -24,12 +26,16 @@ export class TypeAheadComponent implements OnInit, OnDestroy {
   @Output() accessIdEventEmitter = new EventEmitter<AccessId>();
   @Output() isFormValid = new EventEmitter<boolean>();
 
+  @Select(EngineConfigurationSelectors.globalCustomisation)
+  globalCustomisation$: Observable<GlobalCustomisation>;
+
   @Select(WorkbasketSelectors.buttonAction)
   buttonAction$: Observable<ButtonAction>;
 
   name: string = '';
   lastSavedAccessId: string = '';
   filteredAccessIds: AccessId[] = [];
+  debounceTime: number = 750;
   destroy$ = new Subject<void>();
   accessIdForm = new FormGroup({
     accessId: new FormControl('')
@@ -57,14 +63,27 @@ export class TypeAheadComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.accessIdForm.controls['accessId'].valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      const value = this.accessIdForm.controls['accessId'].value;
-      if (value === '') {
-        this.handleEmptyAccessId();
-        return;
-      }
-      this.searchForAccessId(value);
-    });
+    this.globalCustomisation$
+      .pipe(
+        take(1),
+        map((customisation) => customisation?.debounceTimeLookupField)
+      )
+      .subscribe((debounceTime) => {
+        if (!!debounceTime) {
+          this.debounceTime = debounceTime;
+        }
+      });
+
+    this.accessIdForm.controls['accessId'].valueChanges
+      .pipe(debounceTime(this.debounceTime), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(() => {
+        const value = this.accessIdForm.controls['accessId'].value;
+        if (value === '') {
+          this.handleEmptyAccessId();
+          return;
+        }
+        this.searchForAccessId(value);
+      });
 
     this.setAccessIdFromInput();
   }

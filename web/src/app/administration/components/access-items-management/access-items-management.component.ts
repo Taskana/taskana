@@ -18,6 +18,7 @@ import { AccessItemsCustomisation, CustomField, getCustomFields } from '../../..
 import { customFieldCount } from '../../../shared/models/workbasket-access-items';
 import {
   GetAccessItems,
+  GetPermissionsByAccessId,
   GetGroupsByAccessId,
   RemoveAccessItemsPermissions
 } from '../../../shared/store/access-items-management-store/access-items-management.actions';
@@ -38,6 +39,7 @@ export class AccessItemsManagementComponent implements OnInit {
   accessItemsForm: FormGroup;
   accessId: AccessId;
   groups: AccessId[];
+  permissions: AccessId[];
   defaultSortBy: WorkbasketAccessItemQuerySortParameter = WorkbasketAccessItemQuerySortParameter.ACCESS_ID;
   sortingFields: Map<WorkbasketAccessItemQuerySortParameter, string> = WORKBASKET_ACCESS_ITEM_SORT_PARAMETER_NAMING;
   sortModel: Sorting<WorkbasketAccessItemQuerySortParameter> = {
@@ -46,11 +48,13 @@ export class AccessItemsManagementComponent implements OnInit {
   };
   accessItems: WorkbasketAccessItems[];
   isGroup: boolean = false;
+  isPermission: boolean = false;
 
   @Select(EngineConfigurationSelectors.accessItemsCustomisation)
   accessItemsCustomization$: Observable<AccessItemsCustomisation>;
   @Select(AccessItemsManagementSelector.groups) groups$: Observable<AccessId[]>;
   customFields$: Observable<CustomField[]>;
+  @Select(AccessItemsManagementSelector.permissions) permissions$: Observable<AccessId[]>;
   destroy$ = new Subject<void>();
 
   constructor(
@@ -64,6 +68,9 @@ export class AccessItemsManagementComponent implements OnInit {
   ngOnInit() {
     this.groups$.pipe(takeUntil(this.destroy$)).subscribe((groups) => {
       this.groups = groups;
+    });
+    this.permissions$.pipe(takeUntil(this.destroy$)).subscribe((permissions) => {
+      this.permissions = permissions;
     });
   }
 
@@ -79,6 +86,12 @@ export class AccessItemsManagementComponent implements OnInit {
           .subscribe(() => {
             this.searchForAccessItemsWorkbaskets();
           });
+        this.store
+          .dispatch(new GetPermissionsByAccessId(selected.accessId))
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(() => {
+            this.searchForAccessItemsWorkbaskets();
+          });
       }
     } else {
       this.accessItemsForm = null;
@@ -88,19 +101,40 @@ export class AccessItemsManagementComponent implements OnInit {
 
   searchForAccessItemsWorkbaskets() {
     this.removeFocus();
-    const filterParameter: WorkbasketAccessItemQueryFilterParameter = {
-      'access-id': [this.accessId, ...this.groups].map((a) => a.accessId)
-    };
-    this.store
-      .dispatch(new GetAccessItems(filterParameter, this.sortModel))
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((state) => {
-        this.setAccessItemsGroups(
-          state['accessItemsManagement'].accessItemsResource
-            ? state['accessItemsManagement'].accessItemsResource.accessItems
-            : []
-        );
-      });
+    if (this.permissions == null) {
+      const filterParameter: WorkbasketAccessItemQueryFilterParameter = {
+        'access-id': [this.accessId, ...this.groups].map((a) => a.accessId)
+      };
+      this.store
+        .dispatch(new GetAccessItems(filterParameter, this.sortModel))
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((state) => {
+          this.setAccessItemsGroups(
+            state['accessItemsManagement'].accessItemsResource
+              ? state['accessItemsManagement'].accessItemsResource.accessItems
+              : []
+          );
+        });
+    } else {
+      const filterParameter: WorkbasketAccessItemQueryFilterParameter = {
+        'access-id': [this.accessId, ...this.groups, ...this.permissions].map((a) => a.accessId)
+      };
+      this.store
+        .dispatch(new GetAccessItems(filterParameter, this.sortModel))
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((state) => {
+          this.setAccessItemsPermissions(
+            state['accessItemsManagement'].accessItemsResource
+              ? state['accessItemsManagement'].accessItemsResource.accessItems
+              : []
+          );
+          this.setAccessItemsGroups(
+            state['accessItemsManagement'].accessItemsResource
+              ? state['accessItemsManagement'].accessItemsResource.accessItems
+              : []
+          );
+        });
+    }
   }
 
   setAccessItemsGroups(accessItems: Array<WorkbasketAccessItems>) {
@@ -117,6 +151,32 @@ export class AccessItemsManagementComponent implements OnInit {
       this.accessItemsForm = this.formBuilder.group({});
     }
     this.accessItemsForm.setControl('accessItemsGroups', AccessItemsFormArray);
+    if (!this.accessItemsForm.value.workbasketKeyFilter) {
+      this.accessItemsForm.addControl('workbasketKeyFilter', new FormControl());
+    }
+    if (!this.accessItemsForm.value.accessIdFilter) {
+      this.accessItemsForm.addControl('accessIdFilter', new FormControl());
+    }
+    this.accessItems = accessItems;
+    if (this.accessItemsForm.value.workbasketKeyFilter || this.accessItemsForm.value.accessIdFilter) {
+      this.filterAccessItems();
+    }
+  }
+
+  setAccessItemsPermissions(accessItems: Array<WorkbasketAccessItems>) {
+    const AccessItemsFormPermissions = accessItems.map((accessItem) => this.formBuilder.group(accessItem));
+    AccessItemsFormPermissions.forEach((accessItemPermission) => {
+      accessItemPermission.controls.accessId.setValidators(Validators.required);
+      Object.keys(accessItemPermission.controls).forEach((key) => {
+        accessItemPermission.controls[key].disable();
+      });
+    });
+
+    const AccessItemsFormArray = this.formBuilder.array(AccessItemsFormPermissions);
+    if (!this.accessItemsForm) {
+      this.accessItemsForm = this.formBuilder.group({});
+    }
+    this.accessItemsForm.setControl('accessItemsPermissions', AccessItemsFormArray);
     if (!this.accessItemsForm.value.workbasketKeyFilter) {
       this.accessItemsForm.addControl('workbasketKeyFilter', new FormControl());
     }
@@ -161,8 +221,15 @@ export class AccessItemsManagementComponent implements OnInit {
     return this.accessItemsForm ? (this.accessItemsForm.get('accessItemsGroups') as FormArray) : null;
   }
 
+  get accessItemsPermissions(): FormArray {
+    return this.accessItemsForm ? (this.accessItemsForm.get('accessItemsPermissions') as FormArray) : null;
+  }
+
   isFieldValid(field: string, index: number): boolean {
-    return this.formsValidatorService.isFieldValid(this.accessItemsGroups[index], field);
+    return (
+      this.formsValidatorService.isFieldValid(this.accessItemsGroups[index], field) ||
+      this.formsValidatorService.isFieldValid(this.accessItemsPermissions[index], field)
+    );
   }
 
   sorting(sort: Sorting<WorkbasketAccessItemQuerySortParameter>) {

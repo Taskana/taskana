@@ -17,14 +17,16 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.HttpStatusCodeException;
 import pro.taskana.common.internal.util.Pair;
 import pro.taskana.common.rest.models.AccessIdRepresentationModel;
 import pro.taskana.rest.test.RestHelper;
 import pro.taskana.rest.test.TaskanaSpringBootTest;
 
+@TestPropertySource(properties = "taskana.ldap.useDnForGroups=false")
 @TaskanaSpringBootTest
-class AccessIdControllerIntTest {
+class AccessIdControllerForUseDnForGroupsDisabledIntTest {
 
   private static final ParameterizedTypeReference<List<AccessIdRepresentationModel>>
       ACCESS_ID_LIST_TYPE = new ParameterizedTypeReference<List<AccessIdRepresentationModel>>() {};
@@ -32,7 +34,7 @@ class AccessIdControllerIntTest {
   private final RestHelper restHelper;
 
   @Autowired
-  AccessIdControllerIntTest(RestHelper restHelper) {
+  AccessIdControllerForUseDnForGroupsDisabledIntTest(RestHelper restHelper) {
     this.restHelper = restHelper;
   }
 
@@ -42,9 +44,9 @@ class AccessIdControllerIntTest {
         List.of(
             Pair.of(
                 "cn=ksc-users,cn=groups,OU=Test,O=TASKANA",
-                "cn=ksc-users,cn=groups,ou=test,o=taskana"),
+                "ksc-users"),
             Pair.of("uid=teamlead-1,cn=users,OU=Test,O=TASKANA", "teamlead-1"),
-            Pair.of("ksc-use", "cn=ksc-users,cn=groups,ou=test,o=taskana"),
+            Pair.of("ksc-use", "ksc-users"),
             Pair.of("user-b-2", "user-b-2"),
             Pair.of("User-b-2", "user-b-2"),
             Pair.of("cn=g01,cn=groups,OU=Test,O=TASKANA",
@@ -143,11 +145,10 @@ class AccessIdControllerIntTest {
         .extracting(AccessIdRepresentationModel::getAccessId)
         .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
         .containsExactlyInAnyOrder(
-            "cn=ksc-teamleads,cn=groups,OU=Test,O=TASKANA",
-            "cn=business-admins,cn=groups,OU=Test,O=TASKANA",
-            "cn=monitor-users,cn=groups,OU=Test,O=TASKANA",
-            "cn=Organisationseinheit KSC 2,"
-                + "cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA");
+            "ksc-teamleads",
+            "business-admins",
+            "monitor-users",
+            "Organisationseinheit KSC 2");
   }
 
   @Test
@@ -180,9 +181,8 @@ class AccessIdControllerIntTest {
         .extracting(AccessIdRepresentationModel::getAccessId)
         .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
         .containsExactlyInAnyOrder(
-            "cn=ksc-users,cn=groups,ou=Test,O=TASKANA",
-            "cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,"
-                + "cn=organisation,ou=Test,O=TASKANA");
+            "ksc-users",
+            "Organisationseinheit KSC 2");
   }
 
   @Test
@@ -232,7 +232,7 @@ class AccessIdControllerIntTest {
         .isNotNull()
         .extracting(AccessIdRepresentationModel::getAccessId)
         .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
-        .containsExactlyInAnyOrder("cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA");
+        .containsExactlyInAnyOrder("Organisationseinheit KSC");
   }
 
   @Test

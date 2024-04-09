@@ -3,12 +3,18 @@ import {
   ClassificationsCustomisation,
   AccessItemsCustomisation,
   TasksCustomisation,
-  ClassificationCategoryImages
+  ClassificationCategoryImages,
+  GlobalCustomisation
 } from 'app/shared/models/customisation';
 import { Selector } from '@ngxs/store';
 import { EngineConfigurationStateModel, EngineConfigurationState } from './engine-configuration.state';
 
 export class EngineConfigurationSelectors {
+  @Selector([EngineConfigurationState])
+  static globalCustomisation(state: EngineConfigurationStateModel): GlobalCustomisation {
+    return state.customisation[state.language].global;
+  }
+
   @Selector([EngineConfigurationState])
   static workbasketsCustomisation(state: EngineConfigurationStateModel): WorkbasketsCustomisation {
     return state.customisation[state.language].workbaskets;

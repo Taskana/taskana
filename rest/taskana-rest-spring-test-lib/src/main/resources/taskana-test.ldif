@@ -11,6 +11,11 @@ cn: groups
 objectclass: top
 objectclass: container
 
+dn: cn=permissions,OU=Test,O=TASKANA
+cn: permissions
+objectclass: top
+objectclass: container
+
 dn: cn=users,OU=Test,O=TASKANA
 cn: users
 objectclass: top
@@ -109,8 +114,6 @@ sn: Toll
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
 cn: Titus Toll
 userPassword: teamlead-1
-permission: organize
-permission: inet
 
 dn: uid=user-1-1,cn=users,OU=Test,O=TASKANA
 objectclass: inetorgperson
@@ -126,8 +129,6 @@ sn: Mustermann
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
 cn: Max Mustermann
 userPassword: user-1-1
-permission: organize
-permission: inet
 
 dn: uid=user-1-2,cn=users,OU=Test,O=TASKANA
 objectclass: inetorgperson
@@ -137,15 +138,14 @@ objectclass: top
 givenName: Elena
 description: desc
 memberOf: cn=ksc-users,cn=groups,OU=Test,O=TASKANA
+permission: Taskana:CallCenter:AB:AB/A:CallCenter
+permission: Taskana:CallCenter:AB:AB/A:CallCenter-vip
 memberOf: cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 uid: user-1-2
 sn: Eifrig
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
 cn: Elena Eifrig
 userPassword: user-1-2
-permission: organize
-permission: inet
-permission: program
 
 dn: uid=user-1-3,cn=users,OU=Test,O=TASKANA
 objectclass: inetorgperson
@@ -189,6 +189,7 @@ givenName: Simone
 description: desc
 memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA
 memberOf: cn=ksc-users,cn=groups,OU=Test,O=TASKANA
+permission: Taskana:CallCenter:AB:AB/A:CallCenter
 uid: user-2-1
 sn: Müller
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
@@ -223,9 +224,6 @@ sn: Bach
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
 cn: Thomas Bach
 userPassword: user-2-3
-permission: organize
-permission: inet
-permission: program
 
 dn: uid=user-2-4,cn=users,OU=Test,O=TASKANA
 objectclass: inetorgperson
@@ -282,9 +280,6 @@ sn: Meyer
 ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
 cn: Wiebke Meyer
 userPassword: user-2-7
-permission: organize
-permission: inet
-permission: manage
 
 dn: uid=user-2-8,cn=users,OU=Test,O=TASKANA
 objectclass: inetorgperson
@@ -370,10 +365,6 @@ sn: Bio
 ou: Organisationseinheit/Organisationseinheit B
 cn: Brunhilde Bio
 userPassword: user-b-2
-permission: organize
-permission: inet
-permission: siegen
-permission: frieden
 
 ########################
 # Users in other cn
@@ -423,6 +414,25 @@ dn: cn=monitor-users,cn=groups,OU=Test,O=TASKANA
 uniquemember: uid=teamlead-1,cn=users,OU=Test,O=TASKANA
 uniquemember: uid=teamlead-2,cn=users,OU=Test,O=TASKANA
 cn: monitor-users
+objectclass: groupofuniquenames
+objectclass: top
+
+########################
+# Permissions
+########################
+
+dn: cn=g01,cn=groups,OU=Test,O=TASKANA
+uniquemember: uid=user-1-2,cn=users,OU=Test,O=TASKANA
+uniquemember: uid=user-2-1,cn=users,OU=Test,O=TASKANA
+permission: Taskana:CallCenter:AB:AB/A:CallCenter
+cn: g01
+objectclass: groupofuniquenames
+objectclass: top
+
+dn: cn=g02,cn=groups,OU=Test,O=TASKANA
+uniquemember: uid=user-1-2,cn=users,OU=Test,O=TASKANA
+permission: Taskana:CallCenter:AB:AB/A:CallCenter-vip
+cn: g02
 objectclass: groupofuniquenames
 objectclass: top
 

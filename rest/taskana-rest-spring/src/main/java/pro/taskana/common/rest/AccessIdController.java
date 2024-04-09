@@ -1,6 +1,7 @@
 package pro.taskana.common.rest;
 
 import java.util.List;
+import javax.naming.InvalidNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -37,15 +38,17 @@ public class AccessIdController {
    * @throws InvalidArgumentException if the provided search for Access Id is shorter than the
    *     configured one.
    * @throws NotAuthorizedException if the current user is not ADMIN or BUSINESS_ADMIN.
-   * @title Search for Access Id (users and groups)
+   * @throws InvalidNameException if name is not a valid dn.
+   * @title Search for Access Id (users and groups and permissions)
    */
   @GetMapping(path = RestEndpoints.URL_ACCESS_ID)
-  public ResponseEntity<List<AccessIdRepresentationModel>> searchUsersAndGroups(
+  public ResponseEntity<List<AccessIdRepresentationModel>> searchUsersAndGroupsAndPermissions(
       @RequestParam("search-for") String searchFor)
-      throws InvalidArgumentException, NotAuthorizedException {
+      throws InvalidArgumentException, NotAuthorizedException, InvalidNameException {
     taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
 
-    List<AccessIdRepresentationModel> accessIdUsers = ldapClient.searchUsersAndGroups(searchFor);
+    List<AccessIdRepresentationModel> accessIdUsers =
+        ldapClient.searchUsersAndGroupsAndPermissions(searchFor);
     return ResponseEntity.ok(accessIdUsers);
   }
 
@@ -88,16 +91,39 @@ public class AccessIdController {
    * @return a list of the group Access Ids the requested Access Id belongs to
    * @throws InvalidArgumentException if the requested Access Id does not exist or is not unique.
    * @throws NotAuthorizedException if the current user is not ADMIN or BUSINESS_ADMIN.
+   * @throws InvalidNameException if name is not a valid dn.
    * @title Get groups for Access Id
    */
   @GetMapping(path = RestEndpoints.URL_ACCESS_ID_GROUPS)
   public ResponseEntity<List<AccessIdRepresentationModel>> getGroupsByAccessId(
       @RequestParam("access-id") String accessId)
-      throws InvalidArgumentException, NotAuthorizedException {
+      throws InvalidArgumentException, NotAuthorizedException, InvalidNameException {
     taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
 
     List<AccessIdRepresentationModel> accessIds =
         ldapClient.searchGroupsAccessIdIsMemberOf(accessId);
+
+    return ResponseEntity.ok(accessIds);
+  }
+
+  /**
+   * This endpoint retrieves all permissions a given Access Id belongs to.
+   *
+   * @param accessId the Access Id whose permissions should be determined.
+   * @return a list of the permission Access Ids the requested Access Id belongs to
+   * @throws InvalidArgumentException if the requested Access Id does not exist or is not unique.
+   * @throws NotAuthorizedException if the current user is not ADMIN or BUSINESS_ADMIN.
+   * @throws InvalidNameException if name is not a valid dn.
+   * @title Get permissions for Access Id
+   */
+  @GetMapping(path = RestEndpoints.URL_ACCESS_ID_PERMISSIONS)
+  public ResponseEntity<List<AccessIdRepresentationModel>> getPermissionsByAccessId(
+      @RequestParam("access-id") String accessId)
+      throws InvalidArgumentException, NotAuthorizedException, InvalidNameException {
+    taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
+
+    List<AccessIdRepresentationModel> accessIds =
+        ldapClient.searchPermissionsAccessIdHas(accessId);
 
     return ResponseEntity.ok(accessIds);
   }

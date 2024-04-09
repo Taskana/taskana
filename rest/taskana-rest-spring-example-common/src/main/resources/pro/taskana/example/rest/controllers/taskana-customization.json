@@ -1,5 +1,8 @@
 {
   "EN": {
+    "global": {
+      "debounceTimeLookupField": 750
+    },
     "workbaskets": {
       "information": {
         "owner": {
