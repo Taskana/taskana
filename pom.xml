@@ -83,7 +83,7 @@
 
     <!-- test dependencies -->
     <version.assertj>3.25.3</version.assertj>
-    <version.archunit>1.2.1</version.archunit>
+    <version.archunit>1.3.0</version.archunit>
     <version.equalsverifier>3.16.1</version.equalsverifier>
     <version.openpojo>0.9.1</version.openpojo>
     <version.jacoco>0.8.11</version.jacoco>
