@@ -5,7 +5,7 @@
   <defaultProtocol type="Servlet 6.0"/>
   <container qualifier="wildfly" default="true">
     <configuration>
-      <property name="jbossHome">target/wildfly-27.0.1.Final</property>
+      <property name="jbossHome">target/wildfly-31.0.1.Final</property>
       <property name="serverConfig">int-test-standalone.xml</property>
       <!--      <property name="javaVmArguments">-->
       <!--        -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y-->
