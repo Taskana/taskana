@@ -5,7 +5,7 @@
   <defaultProtocol type="Servlet 6.0"/>
   <container qualifier="wildfly" default="true">
     <configuration>
-      <property name="jbossHome">target/wildfly-27.0.1.Final</property>
+      <property name="jbossHome">target/wildfly-31.0.1.Final</property>
       <property name="serverConfig">int-test-standalone.xml</property>
 <!--            <property name="javaVmArguments">-->
 <!--              &#45;&#45;add-exports=java.naming/com.sun.jndi.ldap=ALL-UNNAMED-->
