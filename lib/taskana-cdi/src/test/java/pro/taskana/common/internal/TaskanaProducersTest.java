@@ -111,7 +111,7 @@ public class TaskanaProducersTest {
         "jdbc:h2:~/taskana-h2-data/testdb;NON_KEYWORDS=KEY,VALUE;AUTO_SERVER=TRUE;"
             + "IGNORECASE=TRUE;LOCK_MODE=0",
         "sa",
-        "");
+        "sa");
   }
 
   private int countTasksByName(String taskName) throws Exception {
