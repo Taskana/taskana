@@ -1345,7 +1345,7 @@ public class TaskServiceImpl implements TaskService {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
 
-      TaskImpl oldTask = duplicateTaskExactly(task);
+      final TaskImpl oldTask = duplicateTaskExactly(task);
       Instant now = Instant.now();
 
       checkPreconditionsForClaimTask(task, forceClaim);
@@ -1393,7 +1393,7 @@ public class TaskServiceImpl implements TaskService {
       task = (TaskImpl) getTask(taskId);
       task = (TaskImpl) beforeRequestReviewManager.beforeRequestReview(task);
 
-      TaskImpl oldTask = duplicateTaskExactly(task);
+      final TaskImpl oldTask = duplicateTaskExactly(task);
 
       if (force && task.getState().isEndState()) {
         throw new InvalidTaskStateException(
@@ -1446,7 +1446,7 @@ public class TaskServiceImpl implements TaskService {
       task = (TaskImpl) getTask(taskId);
       task = (TaskImpl) beforeRequestChangesManager.beforeRequestChanges(task);
 
-      TaskImpl oldTask = duplicateTaskExactly(task);
+      final TaskImpl oldTask = duplicateTaskExactly(task);
 
       if (force && task.getState().isEndState()) {
         throw new InvalidTaskStateException(
@@ -1591,7 +1591,7 @@ public class TaskServiceImpl implements TaskService {
     try {
       taskanaEngine.openConnection();
       task = (TaskImpl) getTask(taskId);
-      TaskImpl oldTask = duplicateTaskExactly(task);
+      final TaskImpl oldTask = duplicateTaskExactly(task);
 
       TaskState state = task.getState();
       if (!checkEditTasksPerm(task)) {
