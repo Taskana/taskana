@@ -61,7 +61,7 @@
 
     <!-- release dependencies -->
     <version.maven.gpg>3.2.3</version.maven.gpg>
-    <version.sonatype>1.6.13</version.sonatype>
+    <version.sonatype>1.7.0</version.sonatype>
 
     <!-- spring dependencies -->
     <version.jakarta.annotation-api>2.1.1</version.jakarta.annotation-api>
