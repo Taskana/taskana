@@ -414,7 +414,7 @@ jobs:
   deploy_to_azure:
     runs-on: ubuntu-20.04
     name: Deploy demo app to Microsoft Azure
-    if: github.repository == 'Taskana/taskana' && github.ref == 'refs/heads/master' && github.head_ref == ''
+    if: github.repository == 'Taskana/taskana' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/deploy-demo-fix') && github.head_ref == ''
     needs: [ test_frontend, test_e2e, test_backend ]
     steps:
       - name: Git checkout
@@ -462,7 +462,7 @@ jobs:
       - name: Wait for Azure for 60 seconds
         uses: jakejarvis/wait-action@master
         with:
-          time: '60s'
+          time: '100s'
       - name: Smoke test documentation
         run: ci/verify_docs_alive.sh
       - name: Cancel workflow
