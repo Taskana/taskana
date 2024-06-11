@@ -60,7 +60,7 @@
     <version.maven.sonar>3.11.0.3922</version.maven.sonar>
 
     <!-- release dependencies -->
-    <version.maven.gpg>3.2.3</version.maven.gpg>
+    <version.maven.gpg>3.2.4</version.maven.gpg>
     <version.sonatype>1.7.0</version.sonatype>
 
     <!-- spring dependencies -->
