@@ -1,6 +1,7 @@
 package pro.taskana.task.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.beans.ConstructorProperties;
 import java.time.Instant;
 import java.util.Optional;
@@ -10,10 +11,15 @@ import pro.taskana.task.api.TaskCommentQuery;
 public class TaskCommentQueryFilterParameter implements QueryParameter<TaskCommentQuery, Void> {
 
   /** Filter by the id of the TaskComment. This is an exact match. */
+  @Schema(name = "id", description = "Filter by the id of the TaskComment. This is an exact match.")
   @JsonProperty("id")
   private final String[] idIn;
 
   /** Filter by what the id of the TaskComment shouldn't be. This is an exact match. */
+  @Schema(
+      name = "id-not",
+      description =
+          "Filter by what the id of the TaskComment shouldn't be. This is an exact match.")
   @JsonProperty("id-not")
   private final String[] idNotIn;
 
@@ -22,6 +28,12 @@ public class TaskCommentQueryFilterParameter implements QueryParameter<TaskComme
    * front and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
+  @Schema(
+      name = "id-like",
+      description =
+          "Filter by the id of the TaskComment. This results in a substring search (% is appended "
+              + "to the front and end of the requested value). Further SQL 'LIKE' wildcard "
+              + "characters will be resolved correctly.")
   @JsonProperty("id-like")
   private final String[] idLike;
 
@@ -30,18 +42,34 @@ public class TaskCommentQueryFilterParameter implements QueryParameter<TaskComme
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
+  @Schema(
+      name = "id-not-like",
+      description =
+          "Filter by what the id of the TaskComment shouldn't be. This results in a substring "
+              + "search (% is appended to the front and end of the requested value). Further SQL "
+              + "'LIKE' wildcard characters will be resolved correctly.")
   @JsonProperty("id-not-like")
   private final String[] idNotLike;
 
   /** Filter by the task id of the TaskComment. This is an exact match. */
+  @Schema(
+      name = "task-id",
+      description = "Filter by the task id of the TaskComment. This is an exact match.")
   @JsonProperty("task-id")
   private final String[] taskIdIn;
 
   /** Filter by the creator of the TaskComment. This is an exact match. */
+  @Schema(
+      name = "creator",
+      description = "Filter by the creator of the TaskComment. This is an exact match.")
   @JsonProperty("creator")
   private final String[] creatorIn;
 
   /** Filter by what the creator of the TaskComment shouldn't be. This is an exact match. */
+  @Schema(
+      name = "creator-not",
+      description =
+          "Filter by what the creator of the TaskComment shouldn't be. This is an exact match.")
   @JsonProperty("creator-not")
   private final String[] creatorNotIn;
 
@@ -50,6 +78,12 @@ public class TaskCommentQueryFilterParameter implements QueryParameter<TaskComme
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "creator-like",
+      description =
+          "Filter by the creator of the TaskComment. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL 'LIKE' wildcard"
+              + " characters will be resolved correctly.")
   @JsonProperty("creator-like")
   private final String[] creatorLike;
 
@@ -58,6 +92,12 @@ public class TaskCommentQueryFilterParameter implements QueryParameter<TaskComme
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "creator-not-like",
+      description =
+          "Filter by what the creator of the TaskComment shouldn't be. This results in a substring "
+              + "search (% is appended to the front and end of the requested value). Further SQL "
+              + "'LIKE' wildcard characters will be resolved correctly.")
   @JsonProperty("creator-not-like")
   private final String[] creatorNotLike;
 
@@ -66,6 +106,12 @@ public class TaskCommentQueryFilterParameter implements QueryParameter<TaskComme
    * to the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "textfield-like",
+      description =
+          "Filter by the textfield of the TaskComment. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL 'LIKE' wildcard"
+              + " characters will be resolved correctly.")
   @JsonProperty("textfield-like")
   private final String[] textfieldLike;
 
@@ -74,6 +120,12 @@ public class TaskCommentQueryFilterParameter implements QueryParameter<TaskComme
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "textfield-not-like",
+      description =
+          "Filter by what the textfield of the TaskComment shouldn't be. This results in a "
+              + "substring search (% is appended to the front and end of the requested value). "
+              + "Further SQL 'LIKE' wildcard characters will be resolved correctly.")
   @JsonProperty("textfield-not-like")
   private final String[] textfieldNotLike;
 
@@ -83,6 +135,11 @@ public class TaskCommentQueryFilterParameter implements QueryParameter<TaskComme
    *
    * <p>The format is ISO-8601.
    */
+  @Schema(
+      name = "modified",
+      description =
+          "Filter by a time interval within which the TaskComment was modified. To create an open "
+              + "interval you can just leave it blank. The format is ISO-8601.")
   @JsonProperty("modified")
   private final Instant[] modifiedWithin;
 
@@ -92,6 +149,11 @@ public class TaskCommentQueryFilterParameter implements QueryParameter<TaskComme
    *
    * <p>The format is ISO-8601.
    */
+  @Schema(
+      name = "modified-not",
+      description =
+          "Filter by a time interval within which the TaskComment wasn't modified. To create an "
+              + "open interval you can just leave it blank. The format is ISO-8601.")
   @JsonProperty("modified-not")
   private final Instant[] modifiedNotWithin;
 
@@ -101,6 +163,11 @@ public class TaskCommentQueryFilterParameter implements QueryParameter<TaskComme
    *
    * <p>The format is ISO-8601.
    */
+  @Schema(
+      name = "created",
+      description =
+          "Filter by a time interval within which the TaskComment was created. To create an open "
+              + "interval you can just leave it blank. The format is ISO-8601.")
   @JsonProperty("created")
   private final Instant[] createdWithin;
 
@@ -110,6 +177,11 @@ public class TaskCommentQueryFilterParameter implements QueryParameter<TaskComme
    *
    * <p>The format is ISO-8601.
    */
+  @Schema(
+      name = "created-not",
+      description =
+          "Filter by a time interval within which the TaskComment wasn't created. To create an "
+              + "open interval you can just leave it blank. The format is ISO-8601.")
   @JsonProperty("created-not")
   private final Instant[] createdNotWithin;
 

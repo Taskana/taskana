@@ -1,6 +1,7 @@
 package pro.taskana.task.rest.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.beans.ConstructorProperties;
 import java.util.Collection;
 import pro.taskana.common.rest.models.PageMetadata;
@@ -16,6 +17,7 @@ public class TaskSummaryPagedRepresentationModel
   }
 
   /** The embedded tasks. */
+  @Schema(name = "tasks", description = "The embedded tasks.")
   @JsonProperty("tasks")
   @Override
   public Collection<TaskSummaryRepresentationModel> getContent() {

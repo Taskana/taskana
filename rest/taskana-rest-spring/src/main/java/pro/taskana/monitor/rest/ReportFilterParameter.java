@@ -1,40 +1,281 @@
 package pro.taskana.monitor.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.beans.ConstructorProperties;
 import pro.taskana.task.api.TaskState;
 
 public class ReportFilterParameter {
+  public Boolean getInWorkingDays() {
+    return inWorkingDays;
+  }
+
+  public String[] getWorkbasketId() {
+    return workbasketId;
+  }
+
+  public TaskState[] getState() {
+    return state;
+  }
+
+  public String[] getClassificationCategory() {
+    return classificationCategory;
+  }
+
+  public String[] getDomain() {
+    return domain;
+  }
+
+  public String[] getClassificationId() {
+    return classificationId;
+  }
+
+  public String[] getExcludedClassificationId() {
+    return excludedClassificationId;
+  }
+
+  public String[] getCustom1() {
+    return custom1;
+  }
+
+  public String[] getCustom1Like() {
+    return custom1Like;
+  }
+
+  public String[] getCustom1NotIn() {
+    return custom1NotIn;
+  }
+
+  public String[] getCustom2() {
+    return custom2;
+  }
+
+  public String[] getCustom2Like() {
+    return custom2Like;
+  }
+
+  public String[] getCustom2NotIn() {
+    return custom2NotIn;
+  }
+
+  public String[] getCustom3() {
+    return custom3;
+  }
+
+  public String[] getCustom3Like() {
+    return custom3Like;
+  }
+
+  public String[] getCustom3NotIn() {
+    return custom3NotIn;
+  }
+
+  public String[] getCustom4() {
+    return custom4;
+  }
+
+  public String[] getCustom4Like() {
+    return custom4Like;
+  }
+
+  public String[] getCustom4NotIn() {
+    return custom4NotIn;
+  }
+
+  public String[] getCustom5() {
+    return custom5;
+  }
+
+  public String[] getCustom5Like() {
+    return custom5Like;
+  }
+
+  public String[] getCustom5NotIn() {
+    return custom5NotIn;
+  }
+
+  public String[] getCustom6() {
+    return custom6;
+  }
+
+  public String[] getCustom6Like() {
+    return custom6Like;
+  }
+
+  public String[] getCustom6NotIn() {
+    return custom6NotIn;
+  }
+
+  public String[] getCustom7() {
+    return custom7;
+  }
+
+  public String[] getCustom7Like() {
+    return custom7Like;
+  }
+
+  public String[] getCustom7NotIn() {
+    return custom7NotIn;
+  }
+
+  public String[] getCustom8() {
+    return custom8;
+  }
+
+  public String[] getCustom8Like() {
+    return custom8Like;
+  }
+
+  public String[] getCustom8NotIn() {
+    return custom8NotIn;
+  }
+
+  public String[] getCustom9() {
+    return custom9;
+  }
+
+  public String[] getCustom9Like() {
+    return custom9Like;
+  }
+
+  public String[] getCustom9NotIn() {
+    return custom9NotIn;
+  }
+
+  public String[] getCustom10() {
+    return custom10;
+  }
+
+  public String[] getCustom10Like() {
+    return custom10Like;
+  }
+
+  public String[] getCustom10NotIn() {
+    return custom10NotIn;
+  }
+
+  public String[] getCustom11() {
+    return custom11;
+  }
+
+  public String[] getCustom11Like() {
+    return custom11Like;
+  }
+
+  public String[] getCustom11NotIn() {
+    return custom11NotIn;
+  }
+
+  public String[] getCustom12() {
+    return custom12;
+  }
+
+  public String[] getCustom12Like() {
+    return custom12Like;
+  }
+
+  public String[] getCustom12NotIn() {
+    return custom12NotIn;
+  }
+
+  public String[] getCustom13() {
+    return custom13;
+  }
+
+  public String[] getCustom13Like() {
+    return custom13Like;
+  }
+
+  public String[] getCustom13NotIn() {
+    return custom13NotIn;
+  }
+
+  public String[] getCustom14() {
+    return custom14;
+  }
+
+  public String[] getCustom14Like() {
+    return custom14Like;
+  }
+
+  public String[] getCustom14NotIn() {
+    return custom14NotIn;
+  }
+
+  public String[] getCustom15() {
+    return custom15;
+  }
+
+  public String[] getCustom15Like() {
+    return custom15Like;
+  }
+
+  public String[] getCustom15NotIn() {
+    return custom15NotIn;
+  }
+
+  public String[] getCustom16() {
+    return custom16;
+  }
+
+  public String[] getCustom16Like() {
+    return custom16Like;
+  }
+
+  public String[] getCustom16NotIn() {
+    return custom16NotIn;
+  }
 
   /** Determine weather the report should convert the age of the Tasks into working days. */
+  @Schema(
+      name = "in-working-days",
+      description =
+          "Determine weather the report should convert the age of the Tasks into working days.")
   @JsonProperty("in-working-days")
   protected final Boolean inWorkingDays;
 
   /** Filter by workbasket id of the Task. This is an exact match. */
+  @Schema(
+      name = "workbasket-id",
+      description = "Filter by workbasket id of the Task. This is an exact match.")
   @JsonProperty("workbasket-id")
   protected final String[] workbasketId;
 
   /** Filter by the task state. This is an exact match. */
+  @Schema(name = "state", description = "Filter by the task state. This is an exact match.")
   @JsonProperty("state")
   protected final TaskState[] state;
 
   /** Filter by the classification category of the Task. This is an exact match. */
+  @Schema(
+      name = "classification-category",
+      description = "Filter by the classification category of the Task. This is an exact match.")
   @JsonProperty("classification-category")
   protected final String[] classificationCategory;
 
   /** Filter by domain of the Task. This is an exact match. */
+  @Schema(name = "domain", description = "Filter by domain of the Task. This is an exact match.")
   @JsonProperty("domain")
   protected final String[] domain;
 
   /** Filter by the classification id of the Task. This is an exact match. */
+  @Schema(
+      name = "classification-id",
+      description = "Filter by the classification id of the Task. This is an exact match.")
   @JsonProperty("classification-id")
   protected final String[] classificationId;
 
   /** Filter by the classification id of the Task. This is an exact match. */
+  @Schema(
+      name = "excluded-classification-id",
+      description = "Filter by the classification id of the Task. This is an exact match.")
   @JsonProperty("excluded-classification-id")
   protected final String[] excludedClassificationId;
 
   /** Filter by the value of the field custom1 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-1",
+      description = "Filter by the value of the field custom1 of the Task. This is an exact match.")
   @JsonProperty("custom-1")
   protected final String[] custom1;
 
@@ -43,14 +284,27 @@ public class ReportFilterParameter {
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-1-like",
+      description =
+          "Filter by the custom1 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-1-like")
   protected final String[] custom1Like;
 
   /** Filter out by values of the field custom1 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-1-not-in",
+      description =
+          "Filter out by values of the field custom1 of the Task. This is an exact match.")
   @JsonProperty("custom-1-not-in")
   protected final String[] custom1NotIn;
 
   /** Filter by the value of the field custom2 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-2",
+      description = "Filter by the value of the field custom2 of the Task. This is an exact match.")
   @JsonProperty("custom-2")
   protected final String[] custom2;
 
@@ -59,14 +313,27 @@ public class ReportFilterParameter {
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-2-like",
+      description =
+          "Filter by the custom2 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-2-like")
   protected final String[] custom2Like;
 
   /** Filter out by values of the field custom2 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-2-not-in",
+      description =
+          "Filter out by values of the field custom2 of the Task. This is an exact match.")
   @JsonProperty("custom-2-not-in")
   protected final String[] custom2NotIn;
 
   /** Filter by the value of the field custom3 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-3",
+      description = "Filter by the value of the field custom3 of the Task. This is an exact match.")
   @JsonProperty("custom-3")
   protected final String[] custom3;
 
@@ -75,14 +342,27 @@ public class ReportFilterParameter {
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-3-like",
+      description =
+          "Filter by the custom3 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-3-like")
   protected final String[] custom3Like;
 
   /** Filter out by values of the field custom3 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-3-not-in",
+      description =
+          "Filter out by values of the field custom3 of the Task. This is an exact match.")
   @JsonProperty("custom-3-not-in")
   protected final String[] custom3NotIn;
 
   /** Filter by the value of the field custom4 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-4",
+      description = "Filter by the value of the field custom4 of the Task. This is an exact match.")
   @JsonProperty("custom-4")
   protected final String[] custom4;
 
@@ -91,14 +371,27 @@ public class ReportFilterParameter {
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-4-like",
+      description =
+          "Filter by the custom4 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-4-like")
   protected final String[] custom4Like;
 
   /** Filter out by values of the field custom4 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-4-not-in",
+      description =
+          "Filter out by values of the field custom4 of the Task. This is an exact match.")
   @JsonProperty("custom-4-not-in")
   protected final String[] custom4NotIn;
 
   /** Filter by the value of the field custom5 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-5",
+      description = "Filter by the value of the field custom5 of the Task. This is an exact match.")
   @JsonProperty("custom-5")
   protected final String[] custom5;
 
@@ -107,14 +400,27 @@ public class ReportFilterParameter {
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-5-like",
+      description =
+          "Filter by the custom5 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-5-like")
   protected final String[] custom5Like;
 
   /** Filter out by values of the field custom5 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-5-not-in",
+      description =
+          "Filter out by values of the field custom5 of the Task. This is an exact match.")
   @JsonProperty("custom-5-not-in")
   protected final String[] custom5NotIn;
 
   /** Filter by the value of the field custom6 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-6",
+      description = "Filter by the value of the field custom6 of the Task. This is an exact match.")
   @JsonProperty("custom-6")
   protected final String[] custom6;
 
@@ -123,14 +429,27 @@ public class ReportFilterParameter {
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-6-like",
+      description =
+          "Filter by the custom6 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-6-like")
   protected final String[] custom6Like;
 
   /** Filter out by values of the field custom6 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-6-not-in",
+      description =
+          "Filter out by values of the field custom6 of the Task. This is an exact match.")
   @JsonProperty("custom-6-not-in")
   protected final String[] custom6NotIn;
 
   /** Filter by the value of the field custom7 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-7",
+      description = "Filter by the value of the field custom7 of the Task. This is an exact match.")
   @JsonProperty("custom-7")
   protected final String[] custom7;
 
@@ -139,14 +458,27 @@ public class ReportFilterParameter {
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-7-like",
+      description =
+          "Filter by the custom7 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-7-like")
   protected final String[] custom7Like;
 
   /** Filter out by values of the field custom7 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-7-not-in",
+      description =
+          "Filter out by values of the field custom7 of the Task. This is an exact match.")
   @JsonProperty("custom-7-not-in")
   protected final String[] custom7NotIn;
 
   /** Filter by the value of the field custom8 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-8",
+      description = "Filter by the value of the field custom8 of the Task. This is an exact match.")
   @JsonProperty("custom-8")
   protected final String[] custom8;
 
@@ -155,14 +487,27 @@ public class ReportFilterParameter {
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-8-like",
+      description =
+          "Filter by the custom8 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-8-like")
   protected final String[] custom8Like;
 
   /** Filter out by values of the field custom8 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-8-not-in",
+      description =
+          "Filter out by values of the field custom8 of the Task. This is an exact match.")
   @JsonProperty("custom-8-not-in")
   protected final String[] custom8NotIn;
 
   /** Filter by the value of the field custom9 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-9",
+      description = "Filter by the value of the field custom9 of the Task. This is an exact match.")
   @JsonProperty("custom-9")
   protected final String[] custom9;
 
@@ -171,14 +516,28 @@ public class ReportFilterParameter {
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-9-like",
+      description =
+          "Filter by the custom9 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-9-like")
   protected final String[] custom9Like;
 
   /** Filter out by values of the field custom9 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-9-not-in",
+      description =
+          "Filter out by values of the field custom9 of the Task. This is an exact match.")
   @JsonProperty("custom-9-not-in")
   protected final String[] custom9NotIn;
 
   /** Filter by the value of the field custom10 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-10",
+      description =
+          "Filter by the value of the field custom10 of the Task. This is an exact match.")
   @JsonProperty("custom-10")
   protected final String[] custom10;
 
@@ -187,14 +546,28 @@ public class ReportFilterParameter {
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-10-like",
+      description =
+          "Filter by the custom10 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-10-like")
   protected final String[] custom10Like;
 
   /** Filter out by values of the field custom10 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-10-not-in",
+      description =
+          "Filter out by values of the field custom10 of the Task. This is an exact match.")
   @JsonProperty("custom-10-not-in")
   protected final String[] custom10NotIn;
 
   /** Filter by the value of the field custom11 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-11",
+      description =
+          "Filter by the value of the field custom11 of the Task. This is an exact match.")
   @JsonProperty("custom-11")
   protected final String[] custom11;
 
@@ -203,14 +576,28 @@ public class ReportFilterParameter {
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-11-like",
+      description =
+          "Filter by the custom11 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-11-like")
   protected final String[] custom11Like;
 
   /** Filter out by values of the field custom11 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-11-not-in",
+      description =
+          "Filter out by values of the field custom11 of the Task. This is an exact match.")
   @JsonProperty("custom-11-not-in")
   protected final String[] custom11NotIn;
 
   /** Filter by the value of the field custom12 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-12",
+      description =
+          "Filter by the value of the field custom12 of the Task. This is an exact match.")
   @JsonProperty("custom-12")
   protected final String[] custom12;
 
@@ -219,14 +606,28 @@ public class ReportFilterParameter {
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-12-like",
+      description =
+          "Filter by the custom12 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-12-like")
   protected final String[] custom12Like;
 
   /** Filter out by values of the field custom12 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-12-not-in",
+      description =
+          "Filter out by values of the field custom12 of the Task. This is an exact match.")
   @JsonProperty("custom-12-not-in")
   protected final String[] custom12NotIn;
 
   /** Filter by the value of the field custom13 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-13",
+      description =
+          "Filter by the value of the field custom13 of the Task. This is an exact match.")
   @JsonProperty("custom-13")
   protected final String[] custom13;
 
@@ -235,14 +636,28 @@ public class ReportFilterParameter {
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-13-like",
+      description =
+          "Filter by the custom13 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-13-like")
   protected final String[] custom13Like;
 
   /** Filter out by values of the field custom13 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-13-not-in",
+      description =
+          "Filter out by values of the field custom13 of the Task. This is an exact match.")
   @JsonProperty("custom-13-not-in")
   protected final String[] custom13NotIn;
 
   /** Filter by the value of the field custom14 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-14",
+      description =
+          "Filter by the value of the field custom14 of the Task. This is an exact match.")
   @JsonProperty("custom-14")
   protected final String[] custom14;
 
@@ -251,14 +666,28 @@ public class ReportFilterParameter {
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-14-like",
+      description =
+          "Filter by the custom14 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-14-like")
   protected final String[] custom14Like;
 
   /** Filter out by values of the field custom14 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-14-not-in",
+      description =
+          "Filter out by values of the field custom14 of the Task. This is an exact match.")
   @JsonProperty("custom-14-not-in")
   protected final String[] custom14NotIn;
 
   /** Filter by the value of the field custom15 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-15",
+      description =
+          "Filter by the value of the field custom15 of the Task. This is an exact match.")
   @JsonProperty("custom-15")
   protected final String[] custom15;
 
@@ -267,14 +696,28 @@ public class ReportFilterParameter {
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-15-like",
+      description =
+          "Filter by the custom15 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-15-like")
   protected final String[] custom15Like;
 
   /** Filter out by values of the field custom15 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-15-not-in",
+      description =
+          "Filter out by values of the field custom15 of the Task. This is an exact match.")
   @JsonProperty("custom-15-not-in")
   protected final String[] custom15NotIn;
 
   /** Filter by the value of the field custom16 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-16",
+      description =
+          "Filter by the value of the field custom16 of the Task. This is an exact match.")
   @JsonProperty("custom-16")
   protected final String[] custom16;
 
@@ -283,10 +726,20 @@ public class ReportFilterParameter {
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-16-like",
+      description =
+          "Filter by the custom16 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-16-like")
   protected final String[] custom16Like;
 
   /** Filter out by values of the field custom16 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-16-not-in",
+      description =
+          "Filter out by values of the field custom16 of the Task. This is an exact match.")
   @JsonProperty("custom-16-not-in")
   protected final String[] custom16NotIn;
 

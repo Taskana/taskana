@@ -1,6 +1,7 @@
 package pro.taskana.common.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import pro.taskana.common.api.BaseQuery;
 import pro.taskana.common.api.BaseQuery.SortDirection;
@@ -12,6 +13,11 @@ public class QuerySortParameter<Q extends BaseQuery<?, ?>, S extends QuerySortBy
   // the javadoc comment for this field is above its getter. This is done to define the type
   // parameter S by overriding that getter and allowing spring-auto-rest-docs to properly detect
   // the type parameter S.
+  @Schema(
+      name = "sort-by",
+      description =
+          "Sort the result by a given field. Multiple sort values can be declared. When the "
+              + "primary sort value is the same, the second one will be used.")
   @JsonProperty("sort-by")
   private final List<S> sortBy;
 
@@ -20,6 +26,13 @@ public class QuerySortParameter<Q extends BaseQuery<?, ?>, S extends QuerySortBy
    * of sort-by and order declarations have to match. Alternatively the value can be omitted. If
    * done so the default sort order (ASCENDING) will be applied to every sort-by value.
    */
+  @Schema(
+      name = "order",
+      description =
+          "The order direction for each sort value. This value requires the use of 'sort-by'. The"
+              + " amount of sort-by and order declarations have to match. Alternatively the value"
+              + " can be omitted. If done so the default sort order (ASCENDING) will be applied to"
+              + " every sort-by value.")
   @JsonProperty("order")
   private final List<SortDirection> order;
 

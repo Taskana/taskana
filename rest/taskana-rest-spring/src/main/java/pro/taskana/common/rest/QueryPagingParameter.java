@@ -2,6 +2,7 @@ package pro.taskana.common.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import java.beans.ConstructorProperties;
 import java.util.List;
@@ -11,12 +12,26 @@ import pro.taskana.common.rest.models.PageMetadata;
 public class QueryPagingParameter<T, Q extends BaseQuery<T, ?>>
     implements QueryParameter<Q, List<T>> {
 
+  public Integer getPage() {
+    return page;
+  }
+
+  public Integer getPageSize() {
+    return pageSize;
+  }
+
   /** Request a specific page. Requires the definition of the 'page-size'. */
+  @Schema(
+      name = "page",
+      description = "Request a specific page. Requires the definition of the 'page-size'.")
   @JsonProperty("page")
   @Min(1)
   private final Integer page;
 
   /** Defines the size for each page. This requires a specific requested 'page'. */
+  @Schema(
+      name = "page-size",
+      description = "Defines the size for each page. This requires a specific requested 'page'.")
   @JsonProperty("page-size")
   @Min(1)
   private final Integer pageSize;

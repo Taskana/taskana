@@ -1,5 +1,6 @@
 package pro.taskana.task.rest.models;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 import org.springframework.hateoas.RepresentationModel;
 import pro.taskana.classification.rest.models.ClassificationSummaryRepresentationModel;
@@ -10,20 +11,30 @@ public class AttachmentSummaryRepresentationModel
     extends RepresentationModel<AttachmentSummaryRepresentationModel> {
 
   /** Unique Id. */
+  @Schema(name = "attachmentId", description = "Unique Id.")
   protected String attachmentId;
   /** the referenced task id. */
+  @Schema(name = "taskId", description = "The referenced task id.")
   protected String taskId;
   /** The creation timestamp in the system. */
+  @Schema(name = "created", description = "The creation timestamp in the system.")
   protected Instant created;
   /** The timestamp of the last modification. */
+  @Schema(name = "modified", description = "The timestamp of the last modification.")
   protected Instant modified;
   /** The timestamp of the entry date. */
+  @Schema(name = "received", description = "The timestamp of the entry date.")
   protected Instant received;
   /** The classification of this attachment. */
+  @Schema(name = "classificationSummary", description = "The classification of this attachment.")
   protected ClassificationSummaryRepresentationModel classificationSummary;
   /** The Objects primary ObjectReference. */
+  @Schema(name = "objectReference", description = "The Objects primary ObjectReference.")
   protected ObjectReferenceRepresentationModel objectReference;
   /** Determines on which channel this attachment was received. */
+  @Schema(
+      name = "channel",
+      description = "Determines on which channel this attachment was received.")
   protected String channel;
 
   public String getAttachmentId() {

@@ -1,6 +1,7 @@
 package pro.taskana.task.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.beans.ConstructorProperties;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -20,22 +21,653 @@ import pro.taskana.task.api.models.ObjectReference;
 
 public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void> {
 
+  public String[] getTaskIdIn() {
+    return taskIdIn;
+  }
+
+  public String[] getExternalIdIn() {
+    return externalIdIn;
+  }
+
+  public String[] getExternalIdNotIn() {
+    return externalIdNotIn;
+  }
+
+  public Instant[] getReceivedWithin() {
+    return receivedWithin;
+  }
+
+  public Instant getReceivedFrom() {
+    return receivedFrom;
+  }
+
+  public Instant getReceivedUntil() {
+    return receivedUntil;
+  }
+
+  public Instant[] getReceivedNotIn() {
+    return receivedNotIn;
+  }
+
+  public Instant getReceivedFromNot() {
+    return receivedFromNot;
+  }
+
+  public Instant getReceivedUntilNot() {
+    return receivedUntilNot;
+  }
+
+  public Instant[] getCreatedWithin() {
+    return createdWithin;
+  }
+
+  public Instant getCreatedFrom() {
+    return createdFrom;
+  }
+
+  public Instant getCreatedUntil() {
+    return createdUntil;
+  }
+
+  public Instant[] getCreatedNotWithin() {
+    return createdNotWithin;
+  }
+
+  public Instant getCreatedFromNot() {
+    return createdFromNot;
+  }
+
+  public Instant getCreatedUntilNot() {
+    return createdUntilNot;
+  }
+
+  public Instant[] getClaimedWithin() {
+    return claimedWithin;
+  }
+
+  public Instant[] getClaimedNotWithin() {
+    return claimedNotWithin;
+  }
+
+  public Instant[] getModifiedWithin() {
+    return modifiedWithin;
+  }
+
+  public Instant[] getModifiedNotWithin() {
+    return modifiedNotWithin;
+  }
+
+  public Instant[] getPlannedWithin() {
+    return plannedWithin;
+  }
+
+  public Instant getPlannedFrom() {
+    return plannedFrom;
+  }
+
+  public Instant getPlannedUntil() {
+    return plannedUntil;
+  }
+
+  public Instant[] getPlannedNotWithin() {
+    return plannedNotWithin;
+  }
+
+  public Instant getPlannedFromNot() {
+    return plannedFromNot;
+  }
+
+  public Instant getPlannedUntilNot() {
+    return plannedUntilNot;
+  }
+
+  public Instant[] getDueWithin() {
+    return dueWithin;
+  }
+
+  public Instant getDueFrom() {
+    return dueFrom;
+  }
+
+  public Instant getDueUntil() {
+    return dueUntil;
+  }
+
+  public Instant[] getDueNotWithin() {
+    return dueNotWithin;
+  }
+
+  public Instant getDueFromNot() {
+    return dueFromNot;
+  }
+
+  public Instant getDueUntilNot() {
+    return dueUntilNot;
+  }
+
+  public Instant[] getCompletedWithin() {
+    return completedWithin;
+  }
+
+  public Instant getCompletedFrom() {
+    return completedFrom;
+  }
+
+  public Instant getCompletedUntil() {
+    return completedUntil;
+  }
+
+  public Instant[] getCompletedNotWithin() {
+    return completedNotWithin;
+  }
+
+  public Instant getCompletedFromNot() {
+    return completedFromNot;
+  }
+
+  public Instant getCompletedUntilNot() {
+    return completedUntilNot;
+  }
+
+  public String[] getNameIn() {
+    return nameIn;
+  }
+
+  public String[] getNameNotIn() {
+    return nameNotIn;
+  }
+
+  public String[] getNameLike() {
+    return nameLike;
+  }
+
+  public String[] getNameNotLike() {
+    return nameNotLike;
+  }
+
+  public String[] getCreatorIn() {
+    return creatorIn;
+  }
+
+  public String[] getCreatorNotIn() {
+    return creatorNotIn;
+  }
+
+  public String[] getCreatorLike() {
+    return creatorLike;
+  }
+
+  public String[] getCreatorNotLike() {
+    return creatorNotLike;
+  }
+
+  public String[] getNoteLike() {
+    return noteLike;
+  }
+
+  public String[] getNoteNotLike() {
+    return noteNotLike;
+  }
+
+  public String[] getDescriptionLike() {
+    return descriptionLike;
+  }
+
+  public String[] getDescriptionNotLike() {
+    return descriptionNotLike;
+  }
+
+  public int[] getPriorityIn() {
+    return priorityIn;
+  }
+
+  public int[] getPriorityNotIn() {
+    return priorityNotIn;
+  }
+
+  public Integer[] getPriorityWithin() {
+    return priorityWithin;
+  }
+
+  public Integer getPriorityFrom() {
+    return priorityFrom;
+  }
+
+  public Integer getPriorityUntil() {
+    return priorityUntil;
+  }
+
+  public Integer[] getPriorityNotWithin() {
+    return priorityNotWithin;
+  }
+
+  public Integer getPriorityNotFrom() {
+    return priorityNotFrom;
+  }
+
+  public Integer getPriorityNotUntil() {
+    return priorityNotUntil;
+  }
+
+  public TaskState[] getStateIn() {
+    return stateIn;
+  }
+
+  public TaskState[] getStateNotIn() {
+    return stateNotIn;
+  }
+
+  public String[] getClassificationIdIn() {
+    return classificationIdIn;
+  }
+
+  public String[] getClassificationIdNotIn() {
+    return classificationIdNotIn;
+  }
+
+  public String[] getClassificationKeyIn() {
+    return classificationKeyIn;
+  }
+
+  public String[] getClassificationKeyNotIn() {
+    return classificationKeyNotIn;
+  }
+
+  public String[] getClassificationKeyLike() {
+    return classificationKeyLike;
+  }
+
+  public String[] getClassificationKeyNotLike() {
+    return classificationKeyNotLike;
+  }
+
+  public String[] getClassificationParentKeyIn() {
+    return classificationParentKeyIn;
+  }
+
+  public String[] getClassificationParentKeyNotIn() {
+    return classificationParentKeyNotIn;
+  }
+
+  public String[] getClassificationParentKeyLike() {
+    return classificationParentKeyLike;
+  }
+
+  public String[] getClassificationParentKeyNotLike() {
+    return classificationParentKeyNotLike;
+  }
+
+  public String[] getClassificationCategoryIn() {
+    return classificationCategoryIn;
+  }
+
+  public String[] getClassificationCategoryNotIn() {
+    return classificationCategoryNotIn;
+  }
+
+  public String[] getClassificationCategoryLike() {
+    return classificationCategoryLike;
+  }
+
+  public String[] getClassificationCategoryNotLike() {
+    return classificationCategoryNotLike;
+  }
+
+  public String[] getClassificationNameIn() {
+    return classificationNameIn;
+  }
+
+  public String[] getClassificationNameNotIn() {
+    return classificationNameNotIn;
+  }
+
+  public String[] getClassificationNameLike() {
+    return classificationNameLike;
+  }
+
+  public String[] getClassificationNameNotLike() {
+    return classificationNameNotLike;
+  }
+
+  public String[] getWorkbasketIdIn() {
+    return workbasketIdIn;
+  }
+
+  public String[] getWorkbasketIdNotIn() {
+    return workbasketIdNotIn;
+  }
+
+  public String[] getWorkbasketKeyIn() {
+    return workbasketKeyIn;
+  }
+
+  public String[] getWorkbasketKeyNotIn() {
+    return workbasketKeyNotIn;
+  }
+
+  public String getDomain() {
+    return domain;
+  }
+
+  public String[] getBusinessProcessIdIn() {
+    return businessProcessIdIn;
+  }
+
+  public String[] getBusinessProcessIdNot() {
+    return businessProcessIdNot;
+  }
+
+  public String[] getBusinessProcessIdLike() {
+    return businessProcessIdLike;
+  }
+
+  public String[] getBusinessProcessIdNotLike() {
+    return businessProcessIdNotLike;
+  }
+
+  public String[] getParentBusinessProcessIdIn() {
+    return parentBusinessProcessIdIn;
+  }
+
+  public String[] getParentBusinessProcessIdNotIn() {
+    return parentBusinessProcessIdNotIn;
+  }
+
+  public String[] getParentBusinessProcessIdLike() {
+    return parentBusinessProcessIdLike;
+  }
+
+  public String[] getParentBusinessProcessIdNotLike() {
+    return parentBusinessProcessIdNotLike;
+  }
+
+  public String[] getOwnerIn() {
+    return ownerIn;
+  }
+
+  public String[] getOwnerNotIn() {
+    return ownerNotIn;
+  }
+
+  public String[] getOwnerLike() {
+    return ownerLike;
+  }
+
+  public String[] getOwnerNotLike() {
+    return ownerNotLike;
+  }
+
+  public String getOwnerNull() {
+    return ownerNull;
+  }
+
+  public ObjectReference[] getPrimaryObjectReferenceIn() {
+    return primaryObjectReferenceIn;
+  }
+
+  public String[] getPorCompanyIn() {
+    return porCompanyIn;
+  }
+
+  public String[] getPorCompanyNotIn() {
+    return porCompanyNotIn;
+  }
+
+  public String[] getPorCompanyLike() {
+    return porCompanyLike;
+  }
+
+  public String[] getPorCompanyNotLike() {
+    return porCompanyNotLike;
+  }
+
+  public String[] getPorSystemIn() {
+    return porSystemIn;
+  }
+
+  public String[] getPorSystemNotIn() {
+    return porSystemNotIn;
+  }
+
+  public String[] getPorSystemLike() {
+    return porSystemLike;
+  }
+
+  public String[] getPorSystemNotLike() {
+    return porSystemNotLike;
+  }
+
+  public String[] getPorInstanceIn() {
+    return porInstanceIn;
+  }
+
+  public String[] getPorInstanceNotIn() {
+    return porInstanceNotIn;
+  }
+
+  public String[] getPorInstanceLike() {
+    return porInstanceLike;
+  }
+
+  public String[] getPorInstanceNotLike() {
+    return porInstanceNotLike;
+  }
+
+  public String[] getPorTypeIn() {
+    return porTypeIn;
+  }
+
+  public String[] getPorTypeNotIn() {
+    return porTypeNotIn;
+  }
+
+  public String[] getPorTypeLike() {
+    return porTypeLike;
+  }
+
+  public String[] getPorTypeNotLike() {
+    return porTypeNotLike;
+  }
+
+  public String[] getPorValueIn() {
+    return porValueIn;
+  }
+
+  public String[] getPorValueNotIn() {
+    return porValueNotIn;
+  }
+
+  public String[] getPorValueLike() {
+    return porValueLike;
+  }
+
+  public String[] getPorValueNotLike() {
+    return porValueNotLike;
+  }
+
+  public ObjectReference[] getSecondaryObjectReferenceIn() {
+    return secondaryObjectReferenceIn;
+  }
+
+  public String[] getSorCompanyIn() {
+    return sorCompanyIn;
+  }
+
+  public String[] getSorCompanyLike() {
+    return sorCompanyLike;
+  }
+
+  public String[] getSorSystemIn() {
+    return sorSystemIn;
+  }
+
+  public String[] getSorSystemLike() {
+    return sorSystemLike;
+  }
+
+  public String[] getSorInstanceIn() {
+    return sorInstanceIn;
+  }
+
+  public String[] getSorInstanceLike() {
+    return sorInstanceLike;
+  }
+
+  public String[] getSorTypeIn() {
+    return sorTypeIn;
+  }
+
+  public String[] getSorTypeLike() {
+    return sorTypeLike;
+  }
+
+  public String[] getSorValueIn() {
+    return sorValueIn;
+  }
+
+  public String[] getSorValueLike() {
+    return sorValueLike;
+  }
+
+  public Boolean getRead() {
+    return isRead;
+  }
+
+  public Boolean getTransferred() {
+    return isTransferred;
+  }
+
+  public String[] getAttachmentClassificationIdIn() {
+    return attachmentClassificationIdIn;
+  }
+
+  public String[] getAttachmentClassificationIdNotIn() {
+    return attachmentClassificationIdNotIn;
+  }
+
+  public String[] getAttachmentClassificationKeyIn() {
+    return attachmentClassificationKeyIn;
+  }
+
+  public String[] getAttachmentClassificationKeyNotIn() {
+    return attachmentClassificationKeyNotIn;
+  }
+
+  public String[] getAttachmentClassificationKeyLike() {
+    return attachmentClassificationKeyLike;
+  }
+
+  public String[] getAttachmentClassificationKeyNotLike() {
+    return attachmentClassificationKeyNotLike;
+  }
+
+  public String[] getAttachmentClassificationNameIn() {
+    return attachmentClassificationNameIn;
+  }
+
+  public String[] getAttachmentClassificationNameNotIn() {
+    return attachmentClassificationNameNotIn;
+  }
+
+  public String[] getAttachmentClassificationNameLike() {
+    return attachmentClassificationNameLike;
+  }
+
+  public String[] getAttachmentClassificationNameNotLike() {
+    return attachmentClassificationNameNotLike;
+  }
+
+  public String[] getAttachmentChannelIn() {
+    return attachmentChannelIn;
+  }
+
+  public String[] getAttachmentChannelNotIn() {
+    return attachmentChannelNotIn;
+  }
+
+  public String[] getAttachmentChannelLike() {
+    return attachmentChannelLike;
+  }
+
+  public String[] getAttachmentChannelNotLike() {
+    return attachmentChannelNotLike;
+  }
+
+  public String[] getAttachmentReferenceIn() {
+    return attachmentReferenceIn;
+  }
+
+  public String[] getAttachmentReferenceNotIn() {
+    return attachmentReferenceNotIn;
+  }
+
+  public String[] getAttachmentReferenceLike() {
+    return attachmentReferenceLike;
+  }
+
+  public String[] getAttachmentReferenceNotLike() {
+    return attachmentReferenceNotLike;
+  }
+
+  public Instant[] getAttachmentReceivedWithin() {
+    return attachmentReceivedWithin;
+  }
+
+  public Instant[] getAttachmentReceivedNotWithin() {
+    return attachmentReceivedNotWithin;
+  }
+
+  public Boolean getWithoutAttachment() {
+    return withoutAttachment;
+  }
+
+  public CallbackState[] getCallbackStateIn() {
+    return callbackStateIn;
+  }
+
+  public CallbackState[] getCallbackStateNotIn() {
+    return callbackStateNotIn;
+  }
+
+  public WildcardSearchField[] getWildcardSearchFieldIn() {
+    return wildcardSearchFieldIn;
+  }
+
+  public String getWildcardSearchValue() {
+    return wildcardSearchValue;
+  }
+
+  public String[] getTaskIdNotIn() {
+    return taskIdNotIn;
+  }
+
   // region id
   /** Filter by task id. This is an exact match. */
+  @Schema(name = "task-id", description = "Filter by task id. This is an exact match.")
   @JsonProperty("task-id")
   private final String[] taskIdIn;
 
   /** Filter by what the task id shouldn't be. This is an exact match. */
+  @Schema(
+      name = "task-id-not",
+      description = "Filter by what the task id shouldn't be. This is an exact match.")
   @JsonProperty("task-id-not")
   private final String[] taskIdNotIn;
 
   // endregion
   // region externalId
   /** Filter by the external id of the Task. This is an exact match. */
+  @Schema(
+      name = "external-id",
+      description = "Filter by the external id of the Task. This is an exact match.")
   @JsonProperty("external-id")
   private final String[] externalIdIn;
 
   /** Filter by what the external id of the Task shouldn't be. This is an exact match. */
+  @Schema(
+      name = "external-id-not",
+      description =
+          "Filter by what the external id of the Task shouldn't be. This is an exact match.")
   @JsonProperty("external-id-not")
   private final String[] externalIdNotIn;
 
@@ -49,6 +681,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'received-from' or 'received-until'.
    */
+  @Schema(
+      name = "received",
+      description =
+          "Filter by a time interval within which the Task was received. To create an open "
+              + "interval you can just leave it blank.<p>The format is ISO-8601.<p>This "
+              + "parameter can't be used together with 'received-from' or 'received-until'.")
   @JsonProperty("received")
   private final Instant[] receivedWithin;
 
@@ -59,6 +697,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'received'.
    */
+  @Schema(
+      name = "receivedFrom",
+      description =
+          "Filter since a given received timestamp.<p>The format is ISO-8601."
+              + "<p>This parameter can't be used together with 'received'.")
   @JsonProperty("received-from")
   private final Instant receivedFrom;
 
@@ -69,6 +712,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'received'.
    */
+  @Schema(
+      name = "received-until",
+      description =
+          "Filter until a given received timestamp.<p>The format is ISO-8601."
+              + "<p>This parameter can't be used together with 'received'.")
   @JsonProperty("received-until")
   private final Instant receivedUntil;
 
@@ -81,6 +729,13 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * <p>This parameter can't be used together with 'received-not-in-from' or
    * 'received-not-in-until'.
    */
+  @Schema(
+      name = "received-not",
+      description =
+          "Filter by a time interval within which the Task wasn't received. To "
+              + "create an open interval you can just leave it blank.<p>The format is ISO-8601."
+              + "<p>This parameter can't be used together with 'received-not-in-from' or "
+              + "'received-not-in-until'.")
   @JsonProperty("received-not")
   private final Instant[] receivedNotIn;
 
@@ -91,6 +746,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'received-not-in'.
    */
+  @Schema(
+      name = "received-from-not",
+      description =
+          "Filter since a given timestamp where it wasn't received.<p>The format is "
+              + "ISO-8601.<p>This parameter can't be used together with 'received-not-in'.")
   @JsonProperty("received-from-not")
   private final Instant receivedFromNot;
 
@@ -101,6 +761,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'received-not-in'.
    */
+  @Schema(
+      name = "received-until-not",
+      description =
+          "Filter until a given timestamp where it wasn't received.<p>The format is "
+              + "ISO-8601.<p>This parameter can't be used together with 'received-not-in'.")
   @JsonProperty("received-until-not")
   private final Instant receivedUntilNot;
 
@@ -114,6 +779,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'created-from' or 'created-until'.
    */
+  @Schema(
+      name = "created",
+      description =
+          "Filter by a time interval within which the Task was created. To create an open "
+              + "interval you can just leave it blank.<p>The format is ISO-8601.<p>This "
+              + "parameter can't be used together with 'created-from' or 'created-until'.")
   @JsonProperty("created")
   private final Instant[] createdWithin;
 
@@ -124,6 +795,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'created'.
    */
+  @Schema(
+      name = "created-from",
+      description =
+          "Filter since a given created timestamp.<p>The format is ISO-8601.<p>This parameter "
+              + "can't be used together with 'created'.")
   @JsonProperty("created-from")
   private final Instant createdFrom;
 
@@ -134,6 +810,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'created'.
    */
+  @Schema(
+      name = "created-until",
+      description =
+          "Filter until a given created timestamp.<p>The format is ISO-8601.<p>This parameter "
+              + "can't be used together with 'created'.")
   @JsonProperty("created-until")
   private final Instant createdUntil;
 
@@ -145,6 +826,13 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'created-not-in-from' or 'created-not-in-until'.
    */
+  @Schema(
+      name = "created-not",
+      description =
+          "Filter by a time interval within which the Task wasn't created. To create an open "
+              + "interval you can just leave it blank.<p>The format is ISO-8601.<p>This "
+              + "parameter can't be used together with 'created-not-in-from' or "
+              + "'created-not-in-until'.")
   @JsonProperty("created-not")
   private final Instant[] createdNotWithin;
 
@@ -155,6 +843,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'created-not-in'.
    */
+  @Schema(
+      name = "created-from-not",
+      description =
+          "Filter not since a given timestamp where it wasn't created.<p>The format is ISO-8601."
+              + "<p>This parameter can't be used together with 'created-not-in'.")
   @JsonProperty("created-from-not")
   private final Instant createdFromNot;
 
@@ -165,6 +858,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'created-not-in'.
    */
+  @Schema(
+      name = "created-until-not",
+      description =
+          "Filter not until a given timestamp where it wasn't created.<p>The format is ISO-8601."
+              + "<p>This parameter can't be used together with 'created-not-in'.")
   @JsonProperty("created-until-not")
   private final Instant createdUntilNot;
 
@@ -176,6 +874,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>The format is ISO-8601.
    */
+  @Schema(
+      name = "claimed",
+      description =
+          "Filter by a time interval within which the Task was claimed. To create an open "
+              + "interval you can just leave it blank.<p>The format is ISO-8601.")
   @JsonProperty("claimed")
   private final Instant[] claimedWithin;
 
@@ -185,6 +888,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>The format is ISO-8601.
    */
+  @Schema(
+      name = "claimed-not",
+      description =
+          "Filter by a time interval within which the Task wasn't claimed. To create an open "
+              + "interval you can just leave it blank.<p>The format is ISO-8601.")
   @JsonProperty("claimed-not")
   private final Instant[] claimedNotWithin;
 
@@ -196,6 +904,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>The format is ISO-8601.
    */
+  @Schema(
+      name = "modified",
+      description =
+          "Filter by a time interval within which the Task was modified. To create an open "
+              + "interval you can just leave it blank.<p>The format is ISO-8601.")
   @JsonProperty("modified")
   private final Instant[] modifiedWithin;
 
@@ -205,6 +918,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>The format is ISO-8601.
    */
+  @Schema(
+      name = "modified-not",
+      description =
+          "Filter by a time interval within which the Task wasn't modified. To create an open "
+              + "interval you can just leave it blank.<p>The format is ISO-8601.")
   @JsonProperty("modified-not")
   private final Instant[] modifiedNotWithin;
 
@@ -218,6 +936,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'planned-from' or 'planned-until'.
    */
+  @Schema(
+      name = "planned",
+      description =
+          "Filter by a time interval within which the Task was planned. To create an open "
+              + "interval you can just leave it blank.<p>The format is ISO-8601.<p>This "
+              + "parameter can't be used together with 'planned-from' or 'planned-until'.")
   @JsonProperty("planned")
   private final Instant[] plannedWithin;
 
@@ -228,6 +952,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'planned'.
    */
+  @Schema(
+      name = "planned-from",
+      description =
+          "Filter since a given planned timestamp.<p>The format is ISO-8601.<p>This parameter "
+              + "can't be used together with 'planned'.")
   @JsonProperty("planned-from")
   private final Instant plannedFrom;
 
@@ -238,6 +967,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'planned'.
    */
+  @Schema(
+      name = "planned-until",
+      description =
+          "Filter until a given planned timestamp.<p>The format is ISO-8601.<p>This parameter "
+              + "can't be used together with 'planned'.")
   @JsonProperty("planned-until")
   private final Instant plannedUntil;
 
@@ -249,6 +983,13 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'planned-not-in-from' or 'planned-not-in-until'.
    */
+  @Schema(
+      name = "planned-not",
+      description =
+          "Filter by a time interval within which the Task was planned. To create an open "
+              + "interval you can just leave it blank.<p>The format is ISO-8601.<p>This "
+              + "parameter can't be used together with 'planned-not-in-from' or "
+              + "'planned-not-in-until'.")
   @JsonProperty("planned-not")
   private final Instant[] plannedNotWithin;
 
@@ -259,6 +1000,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'planned-not-in'.
    */
+  @Schema(
+      name = "planned-from-not",
+      description =
+          "Filter since a given timestamp where it wasn't planned.<p>The format is ISO-8601."
+              + "<p>This parameter can't be used together with 'planned-not-in'.")
   @JsonProperty("planned-from-not")
   private final Instant plannedFromNot;
 
@@ -269,6 +1015,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'planned-not-in'.
    */
+  @Schema(
+      name = "planned-until-not",
+      description =
+          "Filter until a given timestamp where it wasn't planned.<p>The format is ISO-8601."
+              + "<p>This parameter can't be used together with 'planned-not-in'.")
   @JsonProperty("planned-until-not")
   private final Instant plannedUntilNot;
 
@@ -282,6 +1033,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'due-from' or 'due-until'.
    */
+  @Schema(
+      name = "due",
+      description =
+          "Filter by a time interval within which the Task was due. To create an open interval "
+              + "you can just leave it blank.<p>The format is ISO-8601.<p>This parameter can't be"
+              + " used together with 'due-from' or 'due-until'.")
   @JsonProperty("due")
   private final Instant[] dueWithin;
 
@@ -292,6 +1049,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'due'.
    */
+  @Schema(
+      name = "due-from",
+      description =
+          "Filter since a given due timestamp.<p>The format is ISO-8601.<p>This parameter can't "
+              + "be used together with 'due'.")
   @JsonProperty("due-from")
   private final Instant dueFrom;
 
@@ -302,6 +1064,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'due'.
    */
+  @Schema(
+      name = "due-until",
+      description =
+          "Filter until a given due timestamp.<p>The format is ISO-8601.<p>This parameter can't "
+              + "be used together with 'due'.")
   @JsonProperty("due-until")
   private final Instant dueUntil;
 
@@ -313,6 +1080,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'due-not-in-from' or 'due-not-in-until'.
    */
+  @Schema(
+      name = "due-not",
+      description =
+          "Filter by a time interval within which the Task wasn't due. To create an open interval"
+              + " you can just leave it blank.<p>The format is ISO-8601.<p>This parameter can't be"
+              + " used together with 'due-not-in-from' or 'due-not-in-until'.")
   @JsonProperty("due-not")
   private final Instant[] dueNotWithin;
 
@@ -323,6 +1096,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'due-not-in'.
    */
+  @Schema(
+      name = "due-from-not",
+      description =
+          "Filter since a given timestamp where it isn't due.<p>The format is ISO-8601.<p>This "
+              + "parameter can't be used together with 'due-not-in'.")
   @JsonProperty("due-from-not")
   private final Instant dueFromNot;
 
@@ -333,6 +1111,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'due-not-in'.
    */
+  @Schema(
+      name = "due-until-not",
+      description =
+          "Filter until a given timestamp where it isn't due.<p>The format is ISO-8601.<p>This "
+              + "parameter can't be used together with 'due-not-in'.")
   @JsonProperty("due-until-not")
   private final Instant dueUntilNot;
 
@@ -346,6 +1129,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'completed-from' or 'completed-until'.
    */
+  @Schema(
+      name = "completed",
+      description =
+          "Filter by a time interval within which the Task was completed. To create an open "
+              + "interval you can just leave it blank.<p>The format is ISO-8601.<p>This parameter"
+              + " can't be used together with 'completed-from' or 'completed-until'.")
   @JsonProperty("completed")
   private final Instant[] completedWithin;
 
@@ -356,6 +1145,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'completed'.
    */
+  @Schema(
+      name = "completed-from",
+      description =
+          "Filter since a given completed timestamp.<p>The format is ISO-8601.<p>This parameter "
+              + "can't be used together with 'completed'.")
   @JsonProperty("completed-from")
   private final Instant completedFrom;
 
@@ -366,6 +1160,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'completed'.
    */
+  @Schema(
+      name = "completed-until",
+      description =
+          "Filter until a given completed timestamp.<p>The format is ISO-8601.<p>This parameter "
+              + "can't be used together with 'completed'.")
   @JsonProperty("completed-until")
   private final Instant completedUntil;
 
@@ -378,6 +1177,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * <p>This parameter can't be used together with 'completed-not-in-from' or
    * 'completed-not-in-until'.
    */
+  @Schema(
+      name = "completed-not",
+      description =
+          "Filter by a time interval within which the Task wasn't completed. To create an open "
+              + "interval you can just leave it blank.<p>The format is ISO-8601.<p>This parameter "
+              + "can't be used together with 'completed-not-in-from' or 'completed-not-in-until'.")
   @JsonProperty("completed-not")
   private final Instant[] completedNotWithin;
 
@@ -388,6 +1193,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'completed-not-in'.
    */
+  @Schema(
+      name = "completed-from-not",
+      description =
+          "Filter since a given timestamp where it wasn't completed. <p>The format is ISO-8601. "
+              + "<p>This parameter can't be used together with 'completed-not-in'.")
   @JsonProperty("completed-from-not")
   private final Instant completedFromNot;
 
@@ -398,16 +1208,25 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This parameter can't be used together with 'completed-not-in'.
    */
+  @Schema(
+      name = "completed-until-not",
+      description =
+          "Filter until a given timestamp where it wasn't completed. <p>The format is ISO-8601. "
+              + "<p>This parameter can't be used together with 'completed-not-in'.")
   @JsonProperty("completed-until-not")
   private final Instant completedUntilNot;
 
   // endregion
   // region name
   /** Filter by the name of the Task. This is an exact match. */
+  @Schema(name = "name", description = "Filter by the name of the Task. This is an exact match.")
   @JsonProperty("name")
   private final String[] nameIn;
 
   /** Filter by what the name of the Task shouldn't be. This is an exact match. */
+  @Schema(
+      name = "name-not",
+      description = "Filter by what the name of the Task shouldn't be. This is an exact match.")
   @JsonProperty("name-not")
   private final String[] nameNotIn;
 
@@ -416,6 +1235,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
+  @Schema(
+      name = "name-like",
+      description =
+          "Filter by the name of the Task. This results in a substring search (% is appended to "
+              + "the front and end of the requested value). Further SQL \"LIKE\" wildcard "
+              + "characters will be resolved correctly.")
   @JsonProperty("name-like")
   private final String[] nameLike;
 
@@ -424,16 +1249,26 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
+  @Schema(
+      name = "name-not-like",
+      description =
+          "Filter by what the name of the Task shouldn't be. This results in a substring search "
+              + "(% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("name-not-like")
   private final String[] nameNotLike;
 
   // endregion
   // region creator
   /** Filter by creator of the Task. This is an exact match. */
+  @Schema(name = "creator", description = "Filter by creator of the Task. This is an exact match.")
   @JsonProperty("creator")
   private final String[] creatorIn;
 
   /** Filter by what the creator of the Task shouldn't be. This is an exact match. */
+  @Schema(
+      name = "creator-not",
+      description = "Filter by what the creator of the Task shouldn't be. This is an exact match.")
   @JsonProperty("creator-not")
   private final String[] creatorNotIn;
 
@@ -442,6 +1277,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * front and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
+  @Schema(
+      name = "creator-like",
+      description =
+          "Filter by the creator of the Task. This results in a substring search (% is appended to"
+              + " the front and end of the requested value). Further SQL \"LIKE\" wildcard "
+              + "characters will be resolved correctly.")
   @JsonProperty("creator-like")
   private final String[] creatorLike;
 
@@ -450,6 +1291,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
+  @Schema(
+      name = "creator-not-like",
+      description =
+          "Filter by what the creator of the Task shouldn't be. This results in a substring "
+              + "search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("creator-not-like")
   private final String[] creatorNotLike;
 
@@ -460,6 +1307,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
+  @Schema(
+      name = "note-like",
+      description =
+          "Filter by the note of the Task. This results in a substring search (% is appended to"
+              + " the front and end of the requested value). Further SQL \"LIKE\" wildcard "
+              + "characters will be resolved correctly.")
   @JsonProperty("note-like")
   private final String[] noteLike;
 
@@ -468,6 +1321,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
+  @Schema(
+      name = "note-not-like",
+      description =
+          "Filter by what the note of the Task shouldn't be. This results in a substring search "
+              + "(% is appended to the front and end of the requested value). Further SQL \"LIKE\""
+              + " wildcard characters will be resolved correctly.")
   @JsonProperty("note-not-like")
   private final String[] noteNotLike;
 
@@ -478,6 +1337,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * front and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
+  @Schema(
+      name = "description-like",
+      description =
+          "Filter by the description of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("description-like")
   private final String[] descriptionLike;
 
@@ -486,70 +1351,117 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "description-not-like",
+      description =
+          "Filter by what the description of the Task shouldn't be. This results in a substring "
+              + "search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("description-not-like")
   private final String[] descriptionNotLike;
 
   // endregion
   // region priority
   /** Filter by the priority of the Task. This is an exact match. */
+  @Schema(
+      name = "priority",
+      description = "Filter by the priority of the Task. This is an exact match.")
   @JsonProperty("priority")
   private final int[] priorityIn;
 
   /** Filter by what the priority of the Task shouldn't be. This is an exact match. */
+  @Schema(
+      name = "priority-not",
+      description = "Filter by what the priority of the Task shouldn't be. This is an exact match.")
   @JsonProperty("priority-not")
   private final int[] priorityNotIn;
 
   /** Filter by the range of values of the priority field of the Task. */
+  @Schema(
+      name = "priority-within",
+      description = "Filter by the range of values of the priority field of the Task.")
   @JsonProperty("priority-within")
   private final Integer[] priorityWithin;
 
   /** Filter by priority starting from the given value (inclusive). */
+  @Schema(
+      name = "priority-from",
+      description = "Filter by priority starting from the given value (inclusive).")
   @JsonProperty("priority-from")
   private final Integer priorityFrom;
 
   /** Filter by priority up to the given value (inclusive). */
+  @Schema(
+      name = "priority-until",
+      description = "Filter by priority up to the given value (inclusive).")
   @JsonProperty("priority-until")
   private final Integer priorityUntil;
 
   /** Filter by exclusing the range of values of the priority field of the Task. */
+  @Schema(
+      name = "priority-not-within",
+      description = "Filter by exclusing the range of values of the priority field of the Task.")
   @JsonProperty("priority-not-within")
   private final Integer[] priorityNotWithin;
 
   /** Filter by excluding priority starting from the given value (inclusive). */
+  @Schema(
+      name = "priority-not-from",
+      description = "Filter by excluding priority starting from the given value (inclusive).")
   @JsonProperty("priority-not-from")
   private final Integer priorityNotFrom;
 
   /** Filter by excluding priority up to the given value (inclusive). */
+  @Schema(
+      name = "priority-not-until",
+      description = "Filter by excluding priority up to the given value (inclusive).")
   @JsonProperty("priority-not-until")
   private final Integer priorityNotUntil;
 
   // endregion
   // region state
   /** Filter by the Task state. This is an exact match. */
+  @Schema(name = "state", description = "Filter by the Task state. This is an exact match.")
   @JsonProperty("state")
   private final TaskState[] stateIn;
 
   /** Filter by what the Task state shouldn't be. This is an exact match. */
+  @Schema(
+      name = "state-not",
+      description = "Filter by what the Task state shouldn't be. This is an exact match.")
   @JsonProperty("state-not")
   private final TaskState[] stateNotIn;
 
   // endregion
   // region classificationId
   /** Filter by the classification id of the Task. This is an exact match. */
+  @Schema(
+      name = "classification-id",
+      description = "Filter by the classification id of the Task. This is an exact match.")
   @JsonProperty("classification-id")
   private final String[] classificationIdIn;
 
   /** Filter by what the classification id of the Task shouldn't be. This is an exact match. */
+  @Schema(
+      name = "classification-id-not",
+      description =
+          "Filter by what the classification id of the Task shouldn't be. This is an exact match.")
   @JsonProperty("classification-id-not")
   private final String[] classificationIdNotIn;
 
   // endregion
   // region classificationKey
   /** Filter by the classification key of the Task. This is an exact match. */
+  @Schema(
+      name = "classification-key",
+      description = "Filter by the classification key of the Task. This is an exact match.")
   @JsonProperty("classification-key")
   private final String[] classificationKeyIn;
 
   /** Filter by the classification key of the Task. This is an exact match. */
+  @Schema(
+      name = "classification-key-not",
+      description = "Filter by the classification key of the Task. This is an exact match.")
   @JsonProperty("classification-key-not")
   private final String[] classificationKeyNotIn;
 
@@ -558,6 +1470,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * to the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "classification-key-like",
+      description =
+          "Filter by the classification key of the Task. This results in a substring search (% is"
+              + " appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("classification-key-like")
   private final String[] classificationKeyLike;
 
@@ -566,6 +1484,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "classification-key-not-like",
+      description =
+          "Filter by what the classification key of the Task shouldn't be. This results in a "
+              + "substring search (% is appended to the front and end of the requested value). "
+              + "Further SQL \"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("classification-key-not-like")
   private final String[] classificationKeyNotLike;
 
@@ -575,6 +1499,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * Filter by the key of the parent Classification of the Classification of the Task. This is an
    * exact match.
    */
+  @Schema(
+      name = "classification-parent-key",
+      description =
+          "Filter by the key of the parent Classification of the Classification of the Task. This"
+              + " is an exact match.")
   @JsonProperty("classification-parent-key")
   private final String[] classificationParentKeyIn;
 
@@ -582,6 +1511,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * Filter by what the key of the parent Classification of the Classification of the Task shouldn't
    * be. This is an exact match.
    */
+  @Schema(
+      name = "classification-parent-key-not",
+      description =
+          "Filter by what the key of the parent Classification of the Classification of the Task "
+              + "shouldn't be. This is an exact match.")
   @JsonProperty("classification-parent-key-not")
   private final String[] classificationParentKeyNotIn;
 
@@ -590,6 +1524,13 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * in a substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
+  @Schema(
+      name = "classification-parent-key-like",
+      description =
+          "Filter by the key of the parent Classification of the Classification of the Task. This"
+              + " results in a substring search (% is appended to the front and end of the "
+              + "requested value). Further SQL \"LIKE\" wildcard characters will be resolved "
+              + "correctly.")
   @JsonProperty("classification-parent-key-like")
   private final String[] classificationParentKeyLike;
 
@@ -598,18 +1539,33 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * be. This results in a substring search (% is appended to the front and end of the requested
    * value). Further SQL "LIKE" wildcard characters will be resolved correctly.
    */
+  @Schema(
+      name = "classification-parent-key-not-like",
+      description =
+          "Filter by what the key of the parent Classification of the Classification of the Task "
+              + "shouldn't be. This results in a substring search (% is appended to the front and "
+              + "end of the requested value). Further SQL \"LIKE\" wildcard characters will be "
+              + "resolved correctly.")
   @JsonProperty("classification-parent-key-not-like")
   private final String[] classificationParentKeyNotLike;
 
   // endregion
   // region classificationCategory
   /** Filter by the classification category of the Task. This is an exact match. */
+  @Schema(
+      name = "classification-category",
+      description = "Filter by the classification category of the Task. This is an exact match.")
   @JsonProperty("classification-category")
   private final String[] classificationCategoryIn;
 
   /**
    * Filter by what the classification category of the Task shouldn't be. This is an exact match.
    */
+  @Schema(
+      name = "classification-category-not",
+      description =
+          "Filter by what the classification category of the Task shouldn't be. This is an exact "
+              + "match.")
   @JsonProperty("classification-category-not")
   private final String[] classificationCategoryNotIn;
 
@@ -618,6 +1574,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
+  @Schema(
+      name = "classification-category-like",
+      description =
+          "Filter by the classification category of the Task. This results in a substring search "
+              + "(% is appended to the front and end of the requested value). Further SQL \"LIKE\""
+              + " wildcard characters will be resolved correctly.")
   @JsonProperty("classification-category-like")
   private final String[] classificationCategoryLike;
 
@@ -626,16 +1588,30 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
+  @Schema(
+      name = "classification-category-not-like",
+      description =
+          "Filter by what the classification category of the Task shouldn't be. This results in a "
+              + "substring search (% is appended to the front and end of the requested value). "
+              + "Further SQL \"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("classification-category-not-like")
   private final String[] classificationCategoryNotLike;
 
   // endregion
   // region classificationName
   /** Filter by the classification name of the Task. This is an exact match. */
+  @Schema(
+      name = "classification-name",
+      description = "Filter by the classification name of the Task. This is an exact match.")
   @JsonProperty("classification-name")
   private final String[] classificationNameIn;
 
   /** Filter by what the classification name of the Task shouldn't be. This is an exact match. */
+  @Schema(
+      name = "classification-name-not",
+      description =
+          "Filter by what the classification name of the Task shouldn't be. This is an exact "
+              + "match.")
   @JsonProperty("classification-name-not")
   private final String[] classificationNameNotIn;
 
@@ -644,6 +1620,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
+  @Schema(
+      name = "classification-name-like",
+      description =
+          "Filter by the classification name of the Task. This results in a substring search (% "
+              + "is appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("classification-name-like")
   private final String[] classificationNameLike;
 
@@ -652,16 +1634,29 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "classification-name-not-like",
+      description =
+          "Filter by what the classification name of the Task shouldn't be. This results in a "
+              + "substring search (% is appended to the front and end of the requested value). "
+              + "Further SQL \"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("classification-name-not-like")
   private final String[] classificationNameNotLike;
 
   // endregion
   // region workbasketId
   /** Filter by workbasket id of the Task. This is an exact match. */
+  @Schema(
+      name = "workbasket-id",
+      description = "Filter by workbasket id of the Task. This is an exact match.")
   @JsonProperty("workbasket-id")
   private final String[] workbasketIdIn;
 
   /** Filter by what the workbasket id of the Task shouldn't be. This is an exact match. */
+  @Schema(
+      name = "workbasket-id-not",
+      description =
+          "Filter by what the workbasket id of the Task shouldn't be. This is an exact match.")
   @JsonProperty("workbasket-id-not")
   private final String[] workbasketIdNotIn;
 
@@ -671,6 +1666,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * Filter by workbasket keys of the Task. This parameter can only be used in combination with
    * 'domain'
    */
+  @Schema(
+      name = "workbasket-key",
+      description =
+          "Filter by workbasket keys of the Task. This parameter can only be used in combination "
+              + "with 'domain'")
   @JsonProperty("workbasket-key")
   private final String[] workbasketKeyIn;
 
@@ -678,20 +1678,34 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * Filter by what the workbasket keys of the Task aren't. This parameter can only be used in
    * combination with 'domain'
    */
+  @Schema(
+      name = "workbasket-key-not",
+      description =
+          "Filter by what the workbasket keys of the Task aren't. This parameter can only be used "
+              + "in combination with 'domain'")
   @JsonProperty("workbasket-key-not")
   private final String[] workbasketKeyNotIn;
 
   /** Filter by domain of the Task. This is an exact match. */
+  @Schema(name = "domain", description = "Filter by domain of the Task. This is an exact match.")
   @JsonProperty("domain")
   private final String domain;
 
   // endregion
   // region businessProcessId
   /** Filter by the business process id of the Task. This is an exact match. */
+  @Schema(
+      name = "business-process-id",
+      description = "Filter by the business process id of the Task. This is an exact match.")
   @JsonProperty("business-process-id")
   private final String[] businessProcessIdIn;
 
   /** Filter by what the business process id of the Task shouldn't be. This is an exact match. */
+  @Schema(
+      name = "business-process-id-not",
+      description =
+          "Filter by what the business process id of the Task shouldn't be. This is an exact "
+              + "match.")
   @JsonProperty("business-process-id-not")
   private final String[] businessProcessIdNot;
 
@@ -700,6 +1714,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
+  @Schema(
+      name = "business-process-id-like",
+      description =
+          "Filter by the business process id of the Task. This results in a substring search (% is"
+              + " appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("business-process-id-like")
   private final String[] businessProcessIdLike;
 
@@ -708,18 +1728,32 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "business-process-id-not-like",
+      description =
+          "Filter by the business process id of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("business-process-id-not-like")
   private final String[] businessProcessIdNotLike;
 
   // endregion
   // region parentBusinessProcessId
   /** Filter by the parent business process id of the Task. This is an exact match. */
+  @Schema(
+      name = "parent-business-process-id",
+      description = "Filter by the parent business process id of the Task. This is an exact match.")
   @JsonProperty("parent-business-process-id")
   private final String[] parentBusinessProcessIdIn;
 
   /**
    * Filter by what the parent business process id of the Task shouldn't be. This is an exact match.
    */
+  @Schema(
+      name = "parent-business-process-id-not",
+      description =
+          "Filter by what the parent business process id of the Task shouldn't be. This is an "
+              + "exact match.")
   @JsonProperty("parent-business-process-id-not")
   private final String[] parentBusinessProcessIdNotIn;
 
@@ -728,6 +1762,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
+  @Schema(
+      name = "parent-business-process-id-like",
+      description =
+          "Filter by the parent business process id of the Task. This results in a substring "
+              + "search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("parent-business-process-id-like")
   private final String[] parentBusinessProcessIdLike;
 
@@ -736,6 +1776,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "parent-business-process-id-not-like",
+      description =
+          "Filter by the parent business process id of the Task shouldn't be. This results in a "
+              + "substring search (% is appended to the front and end of the requested value). "
+              + "Further SQL \"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("parent-business-process-id-not-like")
   private final String[] parentBusinessProcessIdNotLike;
 
@@ -746,6 +1792,9 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   private final String[] ownerIn;
 
   /** Filter by what the owner of the Task shouldn't be. This is an exact match. */
+  @Schema(
+      name = "owner-not",
+      description = "Filter by what the owner of the Task shouldn't be. This is an exact match.")
   @JsonProperty("owner-not")
   private final String[] ownerNotIn;
 
@@ -754,6 +1803,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * and end of the requested value). Further SQL "LIKE" wildcard characters will be resolved
    * correctly.
    */
+  @Schema(
+      name = "owner-like",
+      description =
+          "Filter by the owner of the Task. This results in a substring search (% is appended to "
+              + "the front and end of the requested value). Further SQL \"LIKE\" wildcard "
+              + "characters will be resolved correctly.")
   @JsonProperty("owner-like")
   private final String[] ownerLike;
 
@@ -762,6 +1817,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
+  @Schema(
+      name = "owner-not-like",
+      description =
+          "Filter by what the owner of the Task shouldn't be. This results in a substring search "
+              + "(% is appended to the front and end of the requested value). Further SQL \"LIKE\""
+              + " wildcard characters will be resolved correctly.")
   @JsonProperty("owner-not-like")
   private final String[] ownerNotLike;
 
@@ -769,6 +1830,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * Filter by tasks that have no owner. The parameter should exactly be "owner-is-null" without
    * being followed by "=..."
    */
+  @Schema(
+      name = "owner-is-null",
+      description =
+          "Filter by tasks that have no owner. The parameter should exactly be \"owner-is-null\" "
+              + "without being followed by \"=...\"")
   @JsonProperty("owner-is-null")
   private final String ownerNull;
 
@@ -780,12 +1846,24 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * specified according to the description of complex parameters in the overview, e.g.
    * por={"value":"exampleValue"}
    */
+  @Schema(
+      name = "por",
+      description =
+          "Filter by the primary object reference of the Task. This is an exact match. \"por\" is"
+              + " a parameter of complex type. Its following attributes from por[].id to "
+              + "por[].value can be specified according to the description of complex parameters "
+              + "in the overview, e.g. por={\"value\":\"exampleValue\"}")
   @JsonProperty("por")
   private final ObjectReference[] primaryObjectReferenceIn;
 
   // endregion
   // region primaryObjectReferenceCompany
   /** Filter by the company of the primary object reference of the Task. This is an exact match. */
+  @Schema(
+      name = "por-company",
+      description =
+          "Filter by the company of the primary object reference of the Task. This is an exact "
+              + "match.")
   @JsonProperty("por-company")
   private final String[] porCompanyIn;
 
@@ -793,6 +1871,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * Filter by what the company of the primary object reference of the Task shouldn't be. This is an
    * exact match.
    */
+  @Schema(
+      name = "por-company-not",
+      description =
+          "Filter by what the company of the primary object reference of the Task shouldn't be. "
+              + "This is an exact match.")
   @JsonProperty("por-company-not")
   private final String[] porCompanyNotIn;
 
@@ -801,6 +1884,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "por-company-like",
+      description =
+          "Filter by the company of the primary object reference of the Task. This results in a "
+              + "substring search (% is appended to the front and end of the requested value). "
+              + "Further SQL \"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("por-company-like")
   private final String[] porCompanyLike;
 
@@ -809,12 +1898,24 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * results in a substring search (% is appended to the front and end of the requested value).
    * Further SQL "LIKE" wildcard characters will be resolved correctly.
    */
+  @Schema(
+      name = "por-company-not-like",
+      description =
+          "Filter by what the company of the primary object reference of the Task shouldn't be. "
+              + "This results in a substring search (% is appended to the front and end of the "
+              + "requested value). Further SQL \"LIKE\" wildcard characters will be resolved "
+              + "correctly.")
   @JsonProperty("por-company-not-like")
   private final String[] porCompanyNotLike;
 
   // endregion
   // region primaryObjectReferenceSystem
   /** Filter by the system of the primary object reference of the Task. This is an exact match. */
+  @Schema(
+      name = "por-system",
+      description =
+          "Filter by the system of the primary object reference of the Task. This is an exact "
+              + "match.")
   @JsonProperty("por-system")
   private final String[] porSystemIn;
 
@@ -822,6 +1923,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * Filter by what the system of the primary object reference of the Task shouldn't be. This is an
    * exact match.
    */
+  @Schema(
+      name = "por-system-not",
+      description =
+          "Filter by what the system of the primary object reference of the Task shouldn't be. "
+              + "This is an exact match.")
   @JsonProperty("por-system-not")
   private final String[] porSystemNotIn;
 
@@ -830,6 +1936,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "por-system-like",
+      description =
+          "Filter by the system of the primary object reference of the Task. This results in a "
+              + "substring search (% is appended to the front and end of the requested value). "
+              + "Further SQL \"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("por-system-like")
   private final String[] porSystemLike;
 
@@ -838,6 +1950,13 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * results in a substring search (% is appended to the front and end of the requested value).
    * Further SQL "LIKE" wildcard characters will be resolved correctly.
    */
+  @Schema(
+      name = "por-system-not-like",
+      description =
+          "Filter by what the system of the primary object reference of the Task shouldn't be. "
+              + "This results in a substring search (% is appended to the front and end of the "
+              + "requested value). Further SQL \"LIKE\" wildcard characters will be resolved "
+              + "correctly.")
   @JsonProperty("por-system-not-like")
   private final String[] porSystemNotLike;
 
@@ -847,6 +1966,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * Filter by the system instance of the primary object reference of the Task. This is an exact
    * match.
    */
+  @Schema(
+      name = "por-instance",
+      description =
+          "Filter by the system instance of the primary object reference of the Task. This is an "
+              + "exact match.")
   @JsonProperty("por-instance")
   private final String[] porInstanceIn;
 
@@ -854,6 +1978,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * Filter by what the system instance of the primary object reference of the Task shouldn't be.
    * This is an exact match.
    */
+  @Schema(
+      name = "por-instance-not",
+      description =
+          "Filter by what the system instance of the primary object reference of the Task "
+              + "shouldn't be. This is an exact match.")
   @JsonProperty("por-instance-not")
   private final String[] porInstanceNotIn;
 
@@ -862,6 +1991,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
+  @Schema(
+      name = "por-instance-like",
+      description =
+          "Filter by the system instance of the primary object reference of the Task. This results"
+              + " in a substring search (% is appended to the front and end of the requested "
+              + "value). Further SQL \"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("por-instance-like")
   private final String[] porInstanceLike;
 
@@ -870,12 +2005,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * This results in a substring search (% is appended to the front and end of the requested value).
    * Further SQL "LIKE" wildcard characters will be resolved correctly.
    */
+  @Schema(
+      name = "por-instance-not-like",
+      description =
+          "Filter by what the system instance of the primary object reference of the Task "
+              + "shouldn't be. This results in a substring search (% is appended to the front and"
+              + " end of the requested value). Further SQL \"LIKE\" wildcard characters will be "
+              + "resolved correctly.")
   @JsonProperty("por-instance-not-like")
   private final String[] porInstanceNotLike;
 
   // endregion
   // region primaryObjectReferenceSystemType
   /** Filter by the type of the primary object reference of the Task. This is an exact match. */
+  @Schema(
+      name = "por-type",
+      description =
+          "Filter by the type of the primary object reference of the Task. This is an exact match.")
   @JsonProperty("por-type")
   private final String[] porTypeIn;
 
@@ -883,6 +2029,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * Filter by what the type of the primary object reference of the Task shouldn't be. This is an
    * exact match.
    */
+  @Schema(
+      name = "por-type-not",
+      description =
+          "Filter by what the type of the primary object reference of the Task shouldn't be. This "
+              + "is an exact match.")
   @JsonProperty("por-type-not")
   private final String[] porTypeNotIn;
 
@@ -891,6 +2042,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "por-type-like",
+      description =
+          "Filter by the type of the primary object reference of the Task. This results in a "
+              + "substring search (% is appended to the front and end of the requested value)."
+              + " Further SQL \"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("por-type-like")
   private final String[] porTypeLike;
 
@@ -899,12 +2056,24 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * in a substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
+  @Schema(
+      name = "por-type-not-like",
+      description =
+          "Filter by what the type of the primary object reference of the Task shouldn't be. This "
+              + "results in a substring search (% is appended to the front and end of the "
+              + "requested value). Further SQL \"LIKE\" wildcard characters will be resolved "
+              + "correctly.")
   @JsonProperty("por-type-not-like")
   private final String[] porTypeNotLike;
 
   // endregion
   // region primaryObjectReferenceSystemValue
   /** Filter by the value of the primary object reference of the Task. This is an exact match. */
+  @Schema(
+      name = "por-value",
+      description =
+          "Filter by the value of the primary object reference of the Task. This is an exact "
+              + "match.")
   @JsonProperty("por-value")
   private final String[] porValueIn;
 
@@ -912,6 +2081,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * Filter by what the value of the primary object reference of the Task shouldn't be. This is an
    * exact match.
    */
+  @Schema(
+      name = "por-value-not",
+      description =
+          "Filter by what the value of the primary object reference of the Task shouldn't be. This"
+              + " is an exact match.")
   @JsonProperty("por-value-not")
   private final String[] porValueNotIn;
 
@@ -920,6 +2094,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "por-value-like",
+      description =
+          "Filter by the value of the primary object reference of the Task. This results in a "
+              + "substring search (% is appended to the front and end of the requested value). "
+              + "Further SQL \"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("por-value-like")
   private final String[] porValueLike;
 
@@ -928,6 +2108,13 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * in a substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
+  @Schema(
+      name = "por-value-not-like",
+      description =
+          "Filter by what the value of the primary object reference of the Task shouldn't be. This"
+              + " results in a substring search (% is appended to the front and end of the "
+              + "requested value). Further SQL \"LIKE\" wildcard characters will be resolved "
+              + "correctly.")
   @JsonProperty("por-value-not-like")
   private final String[] porValueNotLike;
 
@@ -939,6 +2126,13 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * specified according to the description of complex parameters in the overview, e.g.
    * sor={"value":"exampleValue"}
    */
+  @Schema(
+      name = "sor",
+      description =
+          "Filter by the primary object reference of the Task. This is an exact match. \"sor\" is"
+              + " a parameter of complex type. Its following attributes from sor[].id to "
+              + "sor[].value can be specified according to the description of complex parameters"
+              + " in the overview, e.g. sor={\"value\":\"exampleValue\"}")
   @JsonProperty("sor")
   private final ObjectReference[] secondaryObjectReferenceIn;
 
@@ -947,6 +2141,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /**
    * Filter by the company of the secondary object reference of the Task. This is an exact match.
    */
+  @Schema(
+      name = "sor-company",
+      description =
+          "Filter by the company of the secondary object reference of the Task. This is an exact "
+              + "match.")
   @JsonProperty("sor-company")
   private final String[] sorCompanyIn;
 
@@ -955,12 +2154,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
+  @Schema(
+      name = "sor-company-like",
+      description =
+          "Filter by the company of the secondary object references of the Task. This results in a"
+              + " substring search (% is appended to the front and end of the requested value). "
+              + "Further SQL \"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("sor-company-like")
   private final String[] sorCompanyLike;
 
   // endregion
   // region secondaryObjectReferenceSystem
   /** Filter by the system of the secondary object reference of the Task. This is an exact match. */
+  @Schema(
+      name = "sor-system",
+      description =
+          "Filter by the system of the secondary object reference of the Task. This is an exact "
+              + "match.")
   @JsonProperty("sor-system")
   private final String[] sorSystemIn;
 
@@ -969,6 +2179,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "sor-system-like",
+      description =
+          "Filter by the system of the secondary object reference of the Task. This results in a "
+              + "substring search (% is appended to the front and end of the requested value). "
+              + "Further SQL \"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("sor-system-like")
   private final String[] sorSystemLike;
 
@@ -978,6 +2194,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * Filter by the system instance of the secondary object reference of the Task. This is an exact
    * match.
    */
+  @Schema(
+      name = "sor-instance",
+      description =
+          "Filter by the system instance of the secondary object reference of the Task. This is "
+              + "an exact match.")
   @JsonProperty("sor-instance")
   private final String[] sorInstanceIn;
 
@@ -986,12 +2207,24 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
+  @Schema(
+      name = "sor-instance-like",
+      description =
+          "Filter by the system instance of the secondary object reference of the Task. This "
+              + "results in a substring search (% is appended to the front and end of the "
+              + "requested value). Further SQL \"LIKE\" wildcard characters will be resolved "
+              + "correctly.")
   @JsonProperty("sor-instance-like")
   private final String[] sorInstanceLike;
 
   // endregion
   // region secondaryObjectReferenceSystemType
   /** Filter by the type of the secondary object reference of the Task. This is an exact match. */
+  @Schema(
+      name = "sor-type",
+      description =
+          "Filter by the type of the secondary object reference of the Task. This is an exact "
+              + "match.")
   @JsonProperty("sor-type")
   private final String[] sorTypeIn;
 
@@ -1000,12 +2233,23 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "sor-type-like",
+      description =
+          "Filter by the type of the secondary object reference of the Task. This results in a "
+              + "substring search (% is appended to the front and end of the requested value). "
+              + "Further SQL \"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("sor-type-like")
   private final String[] sorTypeLike;
 
   // endregion
   // region primaryObjectReferenceSystemValue
   /** Filter by the value of the secondary object reference of the Task. This is an exact match. */
+  @Schema(
+      name = "sor-value",
+      description =
+          "Filter by the value of the secondary object reference of the Task. This is an exact "
+              + "match.")
   @JsonProperty("sor-value")
   private final String[] sorValueIn;
 
@@ -1014,24 +2258,40 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "sor-value-like",
+      description =
+          "Filter by the value of the secondary object reference of the Task. This results in a "
+              + "substring search (% is appended to the front and end of the requested value). "
+              + "Further SQL \"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("sor-value-like")
   private final String[] sorValueLike;
 
   // endregion
   // region read
   /** Filter by the is read flag of the Task. This is an exact match. */
+  @Schema(
+      name = "is-read",
+      description = "Filter by the is read flag of the Task. This is an exact match.")
   @JsonProperty("is-read")
   private final Boolean isRead;
 
   // endregion
   // region transferred
   /** Filter by the is transferred flag of the Task. This is an exact match. */
+  @Schema(
+      name = "is-transferred",
+      description = "Filter by the is transferred flag of the Task. This is an exact match.")
   @JsonProperty("is-transferred")
   private final Boolean isTransferred;
 
   // endregion
   // region attachmentClassificationId
   /** Filter by the attachment classification id of the Task. This is an exact match. */
+  @Schema(
+      name = "attachment-classification-id",
+      description =
+          "Filter by the attachment classification id of the Task. This is an exact match.")
   @JsonProperty("attachment-classification-id")
   private final String[] attachmentClassificationIdIn;
 
@@ -1039,12 +2299,21 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * Filter by what the attachment classification id of the Task shouldn't be. This is an exact
    * match.
    */
+  @Schema(
+      name = "attachment-classification-id-not",
+      description =
+          "Filter by what the attachment classification id of the Task shouldn't be. This is an "
+              + "exact match.")
   @JsonProperty("attachment-classification-id-not")
   private final String[] attachmentClassificationIdNotIn;
 
   // endregion
   // region attachmentClassificationKey
   /** Filter by the attachment classification key of the Task. This is an exact match. */
+  @Schema(
+      name = "attachment-classification-key",
+      description =
+          "Filter by the attachment classification key of the Task. This is an exact match.")
   @JsonProperty("attachment-classification-key")
   private final String[] attachmentClassificationKeyIn;
 
@@ -1052,6 +2321,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * Filter by what the attachment classification key of the Task shouldn't be. This is an exact
    * match.
    */
+  @Schema(
+      name = "attachment-classification-key-not",
+      description =
+          "Filter by what the attachment classification key of the Task shouldn't be. This is an "
+              + "exact match.")
   @JsonProperty("attachment-classification-key-not")
   private final String[] attachmentClassificationKeyNotIn;
 
@@ -1060,6 +2334,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "attachment-classification-key-like",
+      description =
+          "Filter by the attachment classification key of the Task. This results in a substring "
+              + "search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("attachment-classification-key-like")
   private final String[] attachmentClassificationKeyLike;
 
@@ -1068,12 +2348,22 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
+  @Schema(
+      name = "attachment-classification-key-not-like",
+      description =
+          "Filter by what the attachment classification key of the Task shouldn't be. This results"
+              + " in a substring search (% is appended to the front and end of the requested "
+              + "value). Further SQL \"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("attachment-classification-key-not-like")
   private final String[] attachmentClassificationKeyNotLike;
 
   // endregion
   // region attachmentClassificationName
   /** Filter by the attachment classification name of the Task. This is an exact match. */
+  @Schema(
+      name = "attachment-classification-name",
+      description =
+          "Filter by the attachment classification name of the Task. This is an exact match.")
   @JsonProperty("attachment-classification-name")
   private final String[] attachmentClassificationNameIn;
 
@@ -1081,6 +2371,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * Filter by what the attachment classification name of the Task shouldn't be. This is an exact
    * match.
    */
+  @Schema(
+      name = "attachment-classification-name-not",
+      description =
+          "Filter by what the attachment classification name of the Task shouldn't be. This is an "
+              + "exact match.")
   @JsonProperty("attachment-classification-name-not")
   private final String[] attachmentClassificationNameNotIn;
 
@@ -1089,6 +2384,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "attachment-classification-name-like",
+      description =
+          "Filter by the attachment classification name of the Task. This results in a substring "
+              + "search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("attachment-classification-name-like")
   private final String[] attachmentClassificationNameLike;
 
@@ -1097,16 +2398,31 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * substring search (% is appended to the front and end of the requested value). Further SQL
    * "LIKE" wildcard characters will be resolved correctly.
    */
+  @Schema(
+      name = "attachment-classification-name-not-like",
+      description =
+          "Filter by what the attachment classification name of the Task shouldn't be. This "
+              + "results in a substring search (% is appended to the front and end of the "
+              + "requested value). Further SQL \"LIKE\" wildcard characters will be resolved "
+              + "correctly.")
   @JsonProperty("attachment-classification-name-not-like")
   private final String[] attachmentClassificationNameNotLike;
 
   // endregion
   // region attachmentChannel
   /** Filter by the attachment channel of the Task. This is an exact match. */
+  @Schema(
+      name = "attachment-channel",
+      description = "Filter by the attachment channel of the Task. This is an exact match.")
   @JsonProperty("attachment-channel")
   private final String[] attachmentChannelIn;
 
   /** Filter by what the attachment channel of the Task shouldn't be. This is an exact match. */
+  @Schema(
+      name = "attachment-channel-not",
+      description =
+          "Filter by what the attachment channel of the Task shouldn't be. This is an exact "
+              + "match.")
   @JsonProperty("attachment-channel-not")
   private final String[] attachmentChannelNotIn;
 
@@ -1115,6 +2431,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * to the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "attachment-channel-like",
+      description =
+          "Filter by the attachment channel of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("attachment-channel-like")
   private final String[] attachmentChannelLike;
 
@@ -1123,16 +2445,30 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "attachment-channel-not-like",
+      description =
+          "Filter by what the attachment channel of the Task shouldn't be. This results in a "
+              + "substring search (% is appended to the front and end of the requested value). "
+              + "Further SQL \"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("attachment-channel-not-like")
   private final String[] attachmentChannelNotLike;
 
   // endregion
   // region attachmentReferenceValue
   /** Filter by the attachment reference of the Task. This is an exact match. */
+  @Schema(
+      name = "attachment-reference",
+      description = "Filter by the attachment reference of the Task. This is an exact match.")
   @JsonProperty("attachment-reference")
   private final String[] attachmentReferenceIn;
 
   /** Filter by what the attachment reference of the Task shouldn't be. This is an exact match. */
+  @Schema(
+      name = "attachment-reference-not",
+      description =
+          "Filter by what the attachment reference of the Task shouldn't be. This is an exact "
+              + "match.")
   @JsonProperty("attachment-reference-not")
   private final String[] attachmentReferenceNotIn;
 
@@ -1141,6 +2477,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * appended to the front and end of the requested value). Further SQL "LIKE" wildcard characters
    * will be resolved correctly.
    */
+  @Schema(
+      name = "attachment-reference-like",
+      description =
+          "Filter by the attachment reference of the Task. This results in a substring search (% "
+              + "is appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("attachment-reference-like")
   private final String[] attachmentReferenceLike;
 
@@ -1149,6 +2491,12 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * search (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "attachment-reference-not-like",
+      description =
+          "Filter by what the attachment reference of the Task shouldn't be. This results in a "
+              + "substring search (% is appended to the front and end of the requested value). "
+              + "Further SQL \"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("attachment-reference-not-like")
   private final String[] attachmentReferenceNotLike;
 
@@ -1160,6 +2508,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>The format is ISO-8601.
    */
+  @Schema(
+      name = "attachment-received",
+      description =
+          "Filter by a time interval within which the attachment of the Task was received. To "
+              + "create an open interval you can just leave it blank. <p>The format is ISO-8601.")
   @JsonProperty("attachment-received")
   private final Instant[] attachmentReceivedWithin;
 
@@ -1169,6 +2522,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>The format is ISO-8601.
    */
+  @Schema(
+      name = "attachment-received-not",
+      description =
+          "Filter by a time interval within which the attachment of the Task wasn't received. To "
+              + "create an open interval you can just leave it blank. <p>The format is ISO-8601.")
   @JsonProperty("attachment-received-not")
   private final Instant[] attachmentReceivedNotWithin;
 
@@ -1178,16 +2536,28 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    * In order to filter Tasks that don't have any Attachments, set 'without-attachment' to 'true'.
    * Any other value for 'without-attachment' is invalid.
    */
+  @Schema(
+      name = "without-attachment",
+      description =
+          "In order to filter Tasks that don't have any Attachments, set 'without-attachment' to "
+              + "'true'. Any other value for 'without-attachment' is invalid.")
   @JsonProperty("without-attachment")
   private final Boolean withoutAttachment;
 
   // endregion
   // region callbackState
   /** Filter by the callback state of the Task. This is an exact match. */
+  @Schema(
+      name = "callback-state",
+      description = "Filter by the callback state of the Task. This is an exact match.")
   @JsonProperty("callback-state")
   private final CallbackState[] callbackStateIn;
 
   /** Filter by what the callback state of the Task shouldn't be. This is an exact match. */
+  @Schema(
+      name = "callback-state-not",
+      description =
+          "Filter by what the callback state of the Task shouldn't be. This is an exact match.")
   @JsonProperty("callback-state-not")
   private final CallbackState[] callbackStateNotIn;
 
@@ -1198,6 +2568,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This must be used in combination with 'wildcard-search-value'
    */
+  @Schema(
+      name = "wildcard-search-fields",
+      description =
+          "Filter by wildcard search field of the Task. <p>This must be used in combination with "
+              + "'wildcard-search-value'")
   @JsonProperty("wildcard-search-fields")
   private final WildcardSearchField[] wildcardSearchFieldIn;
 
@@ -1206,6 +2581,11 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    *
    * <p>This must be used in combination with 'wildcard-search-fields'
    */
+  @Schema(
+      name = "wildcard-search-value",
+      description =
+          "Filter by wildcard search field of the Task. This is an exact match. <p>This must be"
+              + " used in combination with 'wildcard-search-fields'")
   @JsonProperty("wildcard-search-value")
   private final String wildcardSearchValue;
 

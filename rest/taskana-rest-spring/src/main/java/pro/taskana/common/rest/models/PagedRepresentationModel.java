@@ -1,6 +1,7 @@
 package pro.taskana.common.rest.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Collection;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -8,6 +9,7 @@ public abstract class PagedRepresentationModel<T extends RepresentationModel<? s
     extends CollectionRepresentationModel<T> {
 
   /** the page meta data for a paged request. */
+  @Schema(name = "page", description = "the page meta data for a paged request.")
   @JsonProperty("page")
   private final PageMetadata pageMetadata;
 
