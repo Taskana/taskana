@@ -2,6 +2,12 @@ package pro.taskana.task.rest;
 
 import static java.util.function.Predicate.not;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.beans.ConstructorProperties;
 import java.util.HashSet;
@@ -10,7 +16,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.HttpStatus;
@@ -95,6 +103,61 @@ public class TaskController {
    *     multiple times without using the task-methods
    * @title Create a new Task
    */
+  @Operation(
+      summary = "Create a new Task",
+      description = "This endpoint creates a persistent Task.",
+      requestBody =
+          @io.swagger.v3.oas.annotations.parameters.RequestBody(
+              description = "the Task which should be created.",
+              content =
+                  @Content(
+                      mediaType = MediaTypes.HAL_JSON_VALUE,
+                      schema = @Schema(implementation = TaskRepresentationModel.class),
+                      examples =
+                          @ExampleObject(
+                              value =
+                                  "{"
+                                      + "\"priority\" : 0,"
+                                      + "\"manualPriority\" : -1,"
+                                      + "\"classificationSummary\" : {"
+                                      + "\"key\" : \"L11010\","
+                                      + "\"priority\" : 0"
+                                      + "},"
+                                      + "\"workbasketSummary\" : {"
+                                      + "\"workbasketId\" : "
+                                      + "\"WBI:100000000000000000000000000000000004\","
+                                      + "\"markedForDeletion\" : false"
+                                      + "},"
+                                      + "\"primaryObjRef\" : {"
+                                      + "\"company\" : \"MyCompany1\","
+                                      + "\"system\" : \"MySystem1\","
+                                      + "\"systemInstance\" : \"MyInstance1\","
+                                      + "\"type\" : \"MyType1\","
+                                      + "\"value\" : \"00000001\""
+                                      + "},"
+                                      + "\"secondaryObjectReferences\" : [ {"
+                                      + "\"company\" : \"company\","
+                                      + "\"system\" : \"system\","
+                                      + "\"systemInstance\" : \"systemInstance\","
+                                      + "\"type\" : \"type\","
+                                      + "\"value\" : \"value\""
+                                      + "} ],"
+                                      + "\"customAttributes\" : [ ],"
+                                      + "\"callbackInfo\" : [ ],"
+                                      + "\"attachments\" : [ ],"
+                                      + "\"read\" : false,"
+                                      + "\"transferred\" : false"
+                                      + "}"))),
+      responses = {
+        @ApiResponse(
+            responseCode = "201",
+            description = "the created Task",
+            content = {
+              @Content(
+                  mediaType = MediaTypes.HAL_JSON_VALUE,
+                  schema = @Schema(implementation = TaskRepresentationModel.class))
+            })
+      })
   @PostMapping(path = RestEndpoints.URL_TASKS)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> createTask(
@@ -140,16 +203,34 @@ public class TaskController {
    * @param pagingParameter the paging parameters
    * @return the Tasks with the given filter, sort and paging options.
    */
+  @Operation(
+      summary = "Get a list of all Tasks",
+      description = "This endpoint retrieves a list of existing Tasks. Filters can be applied.",
+      parameters = {
+        @Parameter(name = "por-type", example = "VNR"),
+        @Parameter(name = "por-value", example = "22334455"),
+        @Parameter(name = "sort-by", example = "NAME")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the Tasks with the given filter, sort and paging options.",
+            content = {
+              @Content(
+                  mediaType = MediaTypes.HAL_JSON_VALUE,
+                  schema = @Schema(implementation = TaskSummaryPagedRepresentationModel.class))
+            })
+      })
   @GetMapping(path = RestEndpoints.URL_TASKS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskSummaryPagedRepresentationModel> getTasks(
       HttpServletRequest request,
-      TaskQueryFilterParameter filterParameter,
-      TaskQueryFilterCustomFields filterCustomFields,
-      TaskQueryFilterCustomIntFields filterCustomIntFields,
-      TaskQueryGroupByParameter groupByParameter,
-      TaskQuerySortParameter sortParameter,
-      QueryPagingParameter<TaskSummary, TaskQuery> pagingParameter) {
+      @ParameterObject TaskQueryFilterParameter filterParameter,
+      @ParameterObject TaskQueryFilterCustomFields filterCustomFields,
+      @ParameterObject TaskQueryFilterCustomIntFields filterCustomIntFields,
+      @ParameterObject TaskQueryGroupByParameter groupByParameter,
+      @ParameterObject TaskQuerySortParameter sortParameter,
+      @ParameterObject QueryPagingParameter<TaskSummary, TaskQuery> pagingParameter) {
     QueryParamsValidator.validateParams(
         request,
         TaskQueryFilterParameter.class,
@@ -184,6 +265,26 @@ public class TaskController {
    *     requested Task.
    * @title Get a single Task
    */
+  @Operation(
+      summary = "Get a single Task",
+      description = "This endpoint retrieves a specific Task.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            required = true,
+            description = "the Id of the requested Task",
+            example = "TKI:100000000000000000000000000000000000")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the requested Task",
+            content = {
+              @Content(
+                  mediaType = MediaTypes.HAL_JSON_VALUE,
+                  schema = @Schema(implementation = TaskRepresentationModel.class))
+            })
+      })
   @GetMapping(path = RestEndpoints.URL_TASKS_ID)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> getTask(@PathVariable("taskId") String taskId)
@@ -210,6 +311,26 @@ public class TaskController {
    *     requested Task.
    * @title Claim a Task
    */
+  @Operation(
+      summary = "Claim a Task",
+      description = "This endpoint claims a Task if possible.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            required = true,
+            description = "the Id of the Task which should be claimed",
+            example = "TKI:000000000000000000000000000000000003")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the claimed Task",
+            content = {
+              @Content(
+                  mediaType = MediaTypes.HAL_JSON_VALUE,
+                  schema = @Schema(implementation = TaskRepresentationModel.class))
+            })
+      })
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> claimTask(
@@ -236,6 +357,28 @@ public class TaskController {
    *     requested Task.
    * @title Force claim a Task
    */
+  @Operation(
+      summary = "Force claim a Task",
+      description =
+          "This endpoint force claims a Task if possible even if it is already claimed by someone "
+              + "else.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            description = "the Id of the Task which should be force claimed",
+            required = true,
+            example = "TKI:000000000000000000000000000000000003")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the force claimed Task",
+            content = {
+              @Content(
+                  mediaType = MediaTypes.HAL_JSON_VALUE,
+                  schema = @Schema(implementation = TaskRepresentationModel.class))
+            })
+      })
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM_FORCE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> forceClaimTask(
@@ -262,13 +405,32 @@ public class TaskController {
    *     Workbasket the Task is in
    * @title Select and claim a Task
    */
+  @Operation(
+      summary = "Select and claim a Task",
+      description =
+          "This endpoint selects the first Task returned by the Task Query and claims it.",
+      parameters = {@Parameter(name = "custom14", example = "abc")},
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the claimed Task",
+            content = {
+              @Content(
+                  mediaType = MediaTypes.HAL_JSON_VALUE,
+                  schema = @Schema(implementation = TaskRepresentationModel.class))
+            }),
+        @ApiResponse(
+            responseCode = "404",
+            description = "if no Task is found",
+            content = {@Content(schema = @Schema())})
+      })
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_SELECT_AND_CLAIM)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> selectAndClaimTask(
-      TaskQueryFilterParameter filterParameter,
-      TaskQueryFilterCustomFields filterCustomFields,
-      TaskQueryFilterCustomIntFields filterCustomIntFields,
-      TaskQuerySortParameter sortParameter)
+      @ParameterObject TaskQueryFilterParameter filterParameter,
+      @ParameterObject TaskQueryFilterCustomFields filterCustomFields,
+      @ParameterObject TaskQueryFilterCustomIntFields filterCustomIntFields,
+      @ParameterObject TaskQuerySortParameter sortParameter)
       throws InvalidOwnerException, NotAuthorizedOnWorkbasketException {
     TaskQuery query = taskService.createTaskQuery();
 
@@ -298,6 +460,31 @@ public class TaskController {
    *     Workbasket the Task is in
    * @title Cancel a claimed Task
    */
+  @Operation(
+      summary = "Cancel a claimed Task",
+      description =
+          "This endpoint cancels the claim of an existing Task if it was claimed by the current "
+              + "user before.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            description = "the Id of the requested Task.",
+            required = true,
+            example = "TKI:000000000000000000000000000000000002"),
+        @Parameter(
+            name = "keepOwner",
+            description = "flag whether or not to keep the owner despite the cancel claim")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the unclaimed Task",
+            content = {
+              @Content(
+                  mediaType = MediaTypes.HAL_JSON_VALUE,
+                  schema = @Schema(implementation = TaskRepresentationModel.class))
+            })
+      })
   @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> cancelClaimTask(
@@ -325,6 +512,28 @@ public class TaskController {
    *     Workbasket the Task is in
    * @title Force cancel a claimed Task
    */
+  @Operation(
+      summary = "Force cancel a claimed Task",
+      description = "This endpoint force cancels the claim of an existing Task.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            description = "the Id of the requested Task.",
+            required = true,
+            example = "TKI:000000000000000000000000000000000002"),
+        @Parameter(
+            name = "keepOwner",
+            description = "flag whether or not to keep the owner despite the cancel claim.")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the unclaimed Task.",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = TaskRepresentationModel.class)))
+      })
   @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_CLAIM_FORCE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> forceCancelClaimTask(
@@ -350,6 +559,25 @@ public class TaskController {
    *     Workbasket the Task is in
    * @title Request a review on a Task
    */
+  @Operation(
+      summary = "Request a review on a Task",
+      description = "This endpoint requests a review on the specified Task.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            description = "the id of the relevant Task",
+            required = true,
+            example = "TKI:000000000000000000000000000000000032")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the Task after a review has been requested",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = TaskRepresentationModel.class))),
+      })
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_REQUEST_REVIEW)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> requestReview(
@@ -374,6 +602,25 @@ public class TaskController {
    *     Workbasket the Task is in
    * @title Force request a review on a Task
    */
+  @Operation(
+      summary = "Force request a review on a Task",
+      description = "This endpoint force requests a review on the specified Task.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            description = "the id of the relevant Task",
+            required = true,
+            example = "TKI:000000000000000000000000000000000101")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the Task after a review has been requested",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = TaskRepresentationModel.class)))
+      })
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_REQUEST_REVIEW_FORCE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> forceRequestReview(
@@ -398,6 +645,25 @@ public class TaskController {
    *     Workbasket the Task is in
    * @title Request changes on a Task
    */
+  @Operation(
+      summary = "Request changes on a Task",
+      description = "This endpoint requests changes on the specified Task.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            description = "the id of the relevant Task",
+            required = true,
+            example = "TKI:000000000000000000000000000000000136")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Changes requested successfully",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = TaskRepresentationModel.class))),
+      })
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_REQUEST_CHANGES)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> requestChanges(
@@ -422,6 +688,25 @@ public class TaskController {
    *     Workbasket the Task is in
    * @title Force request changes on a Task
    */
+  @Operation(
+      summary = "Force request changes on a Task",
+      description = "This endpoint force requests changes on the specified Task.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            description = "the Id of the Task on which a review should be requested",
+            required = true,
+            example = "TKI:000000000000000000000000000000000100")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the change requested Task",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = TaskRepresentationModel.class))),
+      })
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_REQUEST_CHANGES_FORCE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> forceRequestChanges(
@@ -446,10 +731,28 @@ public class TaskController {
    *     Workbasket the Task is in
    * @title Complete a Task
    */
+  @Operation(
+      summary = "Complete a Task",
+      description = "This endpoint completes a Task.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            description = "Id of the requested Task to complete.",
+            example = "TKI:000000000000000000000000000000000003",
+            required = true)
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the completed Task",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = TaskRepresentationModel.class)))
+      })
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_COMPLETE)
   @Transactional(rollbackFor = Exception.class)
-  public ResponseEntity<TaskRepresentationModel> completeTask(
-      @PathVariable("taskId") String taskId)
+  public ResponseEntity<TaskRepresentationModel> completeTask(@PathVariable("taskId") String taskId)
       throws TaskNotFoundException,
           InvalidOwnerException,
           InvalidTaskStateException,
@@ -473,6 +776,25 @@ public class TaskController {
    *     Workbasket the Task is in
    * @title Force complete a Task
    */
+  @Operation(
+      summary = "Force complete a Task",
+      description = "This endpoint force completes a Task.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            description = "Id of the requested Task to force complete.",
+            example = "TKI:000000000000000000000000000000000003",
+            required = true)
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the force completed Task",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = TaskRepresentationModel.class)))
+      })
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_COMPLETE_FORCE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> forceCompleteTask(
@@ -499,6 +821,27 @@ public class TaskController {
    *     Workbasket the Task is in
    * @title Cancel a Task
    */
+  @Operation(
+      summary = "Cancel a Task",
+      description =
+          "This endpoint cancels a Task. Cancellation marks a Task as obsolete. The actual work "
+              + "the Task was referring to is no longer required",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            description = "Id of the requested Task to cancel.",
+            example = "TKI:000000000000000000000000000000000026",
+            required = true)
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the cancelled Task",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = TaskRepresentationModel.class)))
+      })
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_CANCEL)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> cancelTask(@PathVariable("taskId") String taskId)
@@ -520,6 +863,27 @@ public class TaskController {
    * @throws NotAuthorizedOnWorkbasketException if the current user has not correct permissions
    * @title Terminate a Task
    */
+  @Operation(
+      summary = "Terminate a Task",
+      description =
+          "This endpoint terminates a Task. Termination is an administrative action to complete a "
+              + "Task.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            description = "Id of the requested Task to terminate.",
+            required = true,
+            example = "TKI:000000000000000000000000000000000000")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the terminated Task",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = TaskRepresentationModel.class)))
+      })
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_TERMINATE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> terminateTask(
@@ -548,6 +912,37 @@ public class TaskController {
    *     the Task.
    * @throws InvalidTaskStateException if the Task is in a state which does not allow transferring.
    */
+  @Operation(
+      summary = "Transfer a Task to another Workbasket",
+      description = "This endpoint transfers a Task to a given Workbasket, if possible.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            description = "the Id of the Task which should be transferred",
+            example = "TKI:000000000000000000000000000000000004",
+            required = true),
+        @Parameter(
+            name = "workbasketId",
+            description = "the Id of the destination Workbasket",
+            example = "WBI:100000000000000000000000000000000001",
+            required = true)
+      },
+      requestBody =
+          @io.swagger.v3.oas.annotations.parameters.RequestBody(
+              description = "sets the tansfer flag of the task (default: true)",
+              content =
+                  @Content(
+                      schema = @Schema(implementation = TaskRepresentationModel.class),
+                      examples = @ExampleObject(value = "{\"setTransferFlag\": false}"))),
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the successfully transferred Task.",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = TaskRepresentationModel.class)))
+      })
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_TRANSFER_WORKBASKET_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> transferTask(
@@ -584,6 +979,122 @@ public class TaskController {
    *     Task is not in state READY.
    * @title Update a Task
    */
+  @Operation(
+      summary = "Update a Task",
+      description = "This endpoint updates a requested Task.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            description = "the Id of the Task which should be updated",
+            example = "TKI:000000000000000000000000000000000003",
+            required = true)
+      },
+      requestBody =
+          @io.swagger.v3.oas.annotations.parameters.RequestBody(
+              description = "the new Task for the requested id.",
+              content =
+                  @Content(
+                      schema = @Schema(implementation = TaskRepresentationModel.class),
+                      examples =
+                          @ExampleObject(
+                              value =
+                                  "{\n"
+                                      + "  \"taskId\": "
+                                      + "\"TKI:000000000000000000000000000000000003\",\n"
+                                      + "  \"externalId\": "
+                                      + "\"ETI:000000000000000000000000000000000003\",\n"
+                                      + "  \"created\": \"2018-02-01T12:00:00.000Z\",\n"
+                                      + "  \"modified\": \"2018-02-01T12:00:00.000Z\",\n"
+                                      + "  \"planned\": \"2024-05-27T15:27:56.595Z\",\n"
+                                      + "  \"received\": \"2024-05-29T15:27:56.595Z\",\n"
+                                      + "  \"due\": \"2024-05-29T15:27:56.595Z\",\n"
+                                      + "  \"name\": \"Widerruf\",\n"
+                                      + "  \"creator\": \"creator_user_id\",\n"
+                                      + "  \"description\": \"new description\",\n"
+                                      + "  \"priority\": 2,\n"
+                                      + "  \"manualPriority\": -1,\n"
+                                      + "  \"state\": \"READY\",\n"
+                                      + "  \"classificationSummary\": {\n"
+                                      + "    \"classificationId\": "
+                                      + "\"CLI:100000000000000000000000000000000003\",\n"
+                                      + "    \"key\": \"L1050\",\n"
+                                      + "    \"applicationEntryPoint\": \"\",\n"
+                                      + "    \"category\": \"EXTERNAL\",\n"
+                                      + "    \"domain\": \"DOMAIN_A\",\n"
+                                      + "    \"name\": \"Widerruf\",\n"
+                                      + "    \"parentId\": \"\",\n"
+                                      + "    \"parentKey\": \"\",\n"
+                                      + "    \"priority\": 1,\n"
+                                      + "    \"serviceLevel\": \"P13D\",\n"
+                                      + "    \"type\": \"TASK\",\n"
+                                      + "    \"custom1\": \"VNR,RVNR,KOLVNR\",\n"
+                                      + "    \"custom2\": \"\",\n"
+                                      + "    \"custom3\": \"\",\n"
+                                      + "    \"custom4\": \"\",\n"
+                                      + "    \"custom5\": \"\",\n"
+                                      + "    \"custom6\": \"\",\n"
+                                      + "    \"custom7\": \"\",\n"
+                                      + "    \"custom8\": \"\"\n"
+                                      + "  },\n"
+                                      + "  \"workbasketSummary\": {\n"
+                                      + "    \"workbasketId\": "
+                                      + "\"WBI:100000000000000000000000000000000001\",\n"
+                                      + "    \"key\": \"GPK_KSC\",\n"
+                                      + "    \"name\": \"Gruppenpostkorb KSC\",\n"
+                                      + "    \"domain\": \"DOMAIN_A\",\n"
+                                      + "    \"type\": \"GROUP\",\n"
+                                      + "    \"description\": \"Gruppenpostkorb KSC\",\n"
+                                      + "    \"owner\": \"teamlead-1\",\n"
+                                      + "    \"custom1\": \"ABCQVW\",\n"
+                                      + "    \"custom2\": \"\",\n"
+                                      + "    \"custom3\": \"xyz4\",\n"
+                                      + "    \"custom4\": \"\",\n"
+                                      + "    \"custom5\": \"\",\n"
+                                      + "    \"custom6\": \"\",\n"
+                                      + "    \"custom7\": \"\",\n"
+                                      + "    \"custom8\": \"\",\n"
+                                      + "    \"orgLevel1\": \"\",\n"
+                                      + "    \"orgLevel2\": \"\",\n"
+                                      + "    \"orgLevel3\": \"\",\n"
+                                      + "    \"orgLevel4\": \"\",\n"
+                                      + "    \"markedForDeletion\": false\n"
+                                      + "  },\n"
+                                      + "  \"businessProcessId\": \"PI_0000000000003\",\n"
+                                      + "  \"parentBusinessProcessId\": "
+                                      + "\"DOC_0000000000000000003\",\n"
+                                      + "  \"primaryObjRef\": {\n"
+                                      + "    \"company\": \"00\",\n"
+                                      + "    \"system\": \"PASystem\",\n"
+                                      + "    \"systemInstance\": \"00\",\n"
+                                      + "    \"type\": \"VNR\",\n"
+                                      + "    \"value\": \"11223344\"\n"
+                                      + "  },\n"
+                                      + "  \"custom1\": \"efg\",\n"
+                                      + "  \"custom14\": \"abc\",\n"
+                                      + "  \"customInt1\": 1,\n"
+                                      + "  \"customInt2\": 2,\n"
+                                      + "  \"customInt3\": 3,\n"
+                                      + "  \"customInt4\": 4,\n"
+                                      + "  \"customInt5\": 5,\n"
+                                      + "  \"customInt6\": 6,\n"
+                                      + "  \"customInt7\": 7,\n"
+                                      + "  \"customInt8\": 8,\n"
+                                      + "  \"secondaryObjectReferences\": [],\n"
+                                      + "  \"customAttributes\": [],\n"
+                                      + "  \"callbackInfo\": [],\n"
+                                      + "  \"attachments\": [],\n"
+                                      + "  \"read\": false,\n"
+                                      + "  \"transferred\": false\n"
+                                      + "}"))),
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the updated Task",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = TaskRepresentationModel.class)))
+      })
   @PutMapping(path = RestEndpoints.URL_TASKS_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> updateTask(
@@ -630,6 +1141,33 @@ public class TaskController {
    *     Workbasket the Task is in
    * @title Set a Task read or unread
    */
+  @Operation(
+      summary = "Set a Task read or unread",
+      description = "This endpoint sets the 'isRead' property of a Task.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            description = "Id of the requested Task to set read or unread.",
+            example = "TKI:000000000000000000000000000000000025",
+            required = true)
+      },
+      requestBody =
+          @io.swagger.v3.oas.annotations.parameters.RequestBody(
+              description =
+                  "if true, the Task property isRead is set to true, else it's set to false",
+              content =
+                  @Content(
+                      schema = @Schema(implementation = TaskRepresentationModel.class),
+                      examples = @ExampleObject(value = "{\"is-read\": true}"))),
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the updated Task",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = TaskRepresentationModel.class)))
+      })
   @PostMapping(path = RestEndpoints.URL_TASKS_ID_SET_READ)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> setTaskRead(
@@ -657,6 +1195,17 @@ public class TaskController {
    * @throws NotAuthorizedOnWorkbasketException if the current user has not correct permissions
    * @throws InvalidCallbackStateException some comment
    */
+  @Operation(
+      summary = "Delete a Task",
+      description = "This endpoint deletes a Task.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            description = "the Id of the Task which should be deleted.",
+            required = true,
+            example = "TKI:000000000000000000000000000000000039")
+      },
+      responses = {@ApiResponse(responseCode = "204", content = @Content(schema = @Schema()))})
   @DeleteMapping(path = RestEndpoints.URL_TASKS_ID)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> deleteTask(@PathVariable("taskId") String taskId)
@@ -683,6 +1232,17 @@ public class TaskController {
    * @throws NotAuthorizedOnWorkbasketException if the current user has not correct
    * @throws InvalidCallbackStateException some comment
    */
+  @Operation(
+      summary = "Force delete a Task",
+      description = "This endpoint force deletes a Task.",
+      parameters = {
+        @Parameter(
+            name = "taskId",
+            description = "the Id of the Task which should be force deleted.",
+            example = "TKI:000000000000000000000000000000000005",
+            required = true)
+      },
+      responses = {@ApiResponse(responseCode = "204", content = @Content(schema = @Schema()))})
   @DeleteMapping(path = RestEndpoints.URL_TASKS_ID_FORCE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<TaskRepresentationModel> forceDeleteTask(
@@ -710,12 +1270,36 @@ public class TaskController {
    * @throws NotAuthorizedException if the current user is not authorized to delete the requested
    *     Tasks.
    */
+  @Operation(
+      summary = "Delete multiple Tasks",
+      description =
+          "This endpoint deletes an aggregation of Tasks and returns the deleted Tasks. Filters "
+              + "can be applied.",
+      parameters = {
+        @Parameter(
+            name = "task-id",
+            examples = {
+              @ExampleObject(value = "TKI:000000000000000000000000000000000036"),
+              @ExampleObject(value = "TKI:000000000000000000000000000000000037"),
+              @ExampleObject(value = "TKI:000000000000000000000000000000000038")
+            })
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the deleted task summaries",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema =
+                        @Schema(implementation = TaskSummaryCollectionRepresentationModel.class)))
+      })
   @DeleteMapping(path = RestEndpoints.URL_TASKS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskSummaryCollectionRepresentationModel> deleteTasks(
-      TaskQueryFilterParameter filterParameter,
-      TaskQueryFilterCustomFields filterCustomFields,
-      TaskQueryFilterCustomIntFields filterCustomIntFields)
+      @ParameterObject TaskQueryFilterParameter filterParameter,
+      @ParameterObject TaskQueryFilterCustomFields filterCustomFields,
+      @ParameterObject TaskQueryFilterCustomIntFields filterCustomIntFields)
       throws InvalidArgumentException, NotAuthorizedException {
     TaskQuery query = taskService.createTaskQuery();
     filterParameter.apply(query);

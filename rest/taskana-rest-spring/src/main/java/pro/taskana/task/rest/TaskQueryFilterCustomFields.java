@@ -20,6 +20,7 @@ import static pro.taskana.task.api.TaskCustomField.CUSTOM_8;
 import static pro.taskana.task.api.TaskCustomField.CUSTOM_9;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.beans.ConstructorProperties;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -28,11 +29,271 @@ import pro.taskana.common.rest.QueryParameter;
 import pro.taskana.task.api.TaskQuery;
 
 public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Void> {
+  public String[] getCustom1In() {
+    return custom1In;
+  }
+
+  public String[] getCustom1NotIn() {
+    return custom1NotIn;
+  }
+
+  public String[] getCustom1Like() {
+    return custom1Like;
+  }
+
+  public String[] getCustom1NotLike() {
+    return custom1NotLike;
+  }
+
+  public String[] getCustom2In() {
+    return custom2In;
+  }
+
+  public String[] getCustom2NotIn() {
+    return custom2NotIn;
+  }
+
+  public String[] getCustom2Like() {
+    return custom2Like;
+  }
+
+  public String[] getCustom2NotLike() {
+    return custom2NotLike;
+  }
+
+  public String[] getCustom3In() {
+    return custom3In;
+  }
+
+  public String[] getCustom3NotIn() {
+    return custom3NotIn;
+  }
+
+  public String[] getCustom3Like() {
+    return custom3Like;
+  }
+
+  public String[] getCustom3NotLike() {
+    return custom3NotLike;
+  }
+
+  public String[] getCustom4In() {
+    return custom4In;
+  }
+
+  public String[] getCustom4NotIn() {
+    return custom4NotIn;
+  }
+
+  public String[] getCustom4Like() {
+    return custom4Like;
+  }
+
+  public String[] getCustom4NotLike() {
+    return custom4NotLike;
+  }
+
+  public String[] getCustom5In() {
+    return custom5In;
+  }
+
+  public String[] getCustom5NotIn() {
+    return custom5NotIn;
+  }
+
+  public String[] getCustom5Like() {
+    return custom5Like;
+  }
+
+  public String[] getCustom5NotLike() {
+    return custom5NotLike;
+  }
+
+  public String[] getCustom6In() {
+    return custom6In;
+  }
+
+  public String[] getCustom6NotIn() {
+    return custom6NotIn;
+  }
+
+  public String[] getCustom6Like() {
+    return custom6Like;
+  }
+
+  public String[] getCustom6NotLike() {
+    return custom6NotLike;
+  }
+
+  public String[] getCustom7In() {
+    return custom7In;
+  }
+
+  public String[] getCustom7NotIn() {
+    return custom7NotIn;
+  }
+
+  public String[] getCustom7Like() {
+    return custom7Like;
+  }
+
+  public String[] getCustom7NotLike() {
+    return custom7NotLike;
+  }
+
+  public String[] getCustom8In() {
+    return custom8In;
+  }
+
+  public String[] getCustom8NotIn() {
+    return custom8NotIn;
+  }
+
+  public String[] getCustom8Like() {
+    return custom8Like;
+  }
+
+  public String[] getCustom8NotLike() {
+    return custom8NotLike;
+  }
+
+  public String[] getCustom9In() {
+    return custom9In;
+  }
+
+  public String[] getCustom9NotIn() {
+    return custom9NotIn;
+  }
+
+  public String[] getCustom9Like() {
+    return custom9Like;
+  }
+
+  public String[] getCustom9NotLike() {
+    return custom9NotLike;
+  }
+
+  public String[] getCustom10In() {
+    return custom10In;
+  }
+
+  public String[] getCustom10NotIn() {
+    return custom10NotIn;
+  }
+
+  public String[] getCustom10Like() {
+    return custom10Like;
+  }
+
+  public String[] getCustom10NotLike() {
+    return custom10NotLike;
+  }
+
+  public String[] getCustom11In() {
+    return custom11In;
+  }
+
+  public String[] getCustom11NotIn() {
+    return custom11NotIn;
+  }
+
+  public String[] getCustom11Like() {
+    return custom11Like;
+  }
+
+  public String[] getCustom11NotLike() {
+    return custom11NotLike;
+  }
+
+  public String[] getCustom12In() {
+    return custom12In;
+  }
+
+  public String[] getCustom12NotIn() {
+    return custom12NotIn;
+  }
+
+  public String[] getCustom12Like() {
+    return custom12Like;
+  }
+
+  public String[] getCustom12NotLike() {
+    return custom12NotLike;
+  }
+
+  public String[] getCustom13In() {
+    return custom13In;
+  }
+
+  public String[] getCustom13NotIn() {
+    return custom13NotIn;
+  }
+
+  public String[] getCustom13Like() {
+    return custom13Like;
+  }
+
+  public String[] getCustom13NotLike() {
+    return custom13NotLike;
+  }
+
+  public String[] getCustom14In() {
+    return custom14In;
+  }
+
+  public String[] getCustom14NotIn() {
+    return custom14NotIn;
+  }
+
+  public String[] getCustom14Like() {
+    return custom14Like;
+  }
+
+  public String[] getCustom14NotLike() {
+    return custom14NotLike;
+  }
+
+  public String[] getCustom15In() {
+    return custom15In;
+  }
+
+  public String[] getCustom15NotIn() {
+    return custom15NotIn;
+  }
+
+  public String[] getCustom15Like() {
+    return custom15Like;
+  }
+
+  public String[] getCustom15NotLike() {
+    return custom15NotLike;
+  }
+
+  public String[] getCustom16In() {
+    return custom16In;
+  }
+
+  public String[] getCustom16NotIn() {
+    return custom16NotIn;
+  }
+
+  public String[] getCustom16Like() {
+    return custom16Like;
+  }
+
+  public String[] getCustom16NotLike() {
+    return custom16NotLike;
+  }
+
   /** Filter by the value of the field custom1 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-1",
+      description = "Filter by the value of the field custom1 of the Task. This is an exact match.")
   @JsonProperty("custom-1")
   private final String[] custom1In;
 
   /** Exclude values of the field custom1 of the Task. */
+  @Schema(name = "custom-1-not", description = "Exclude values of the field custom1 of the Task.")
   @JsonProperty("custom-1-not")
   private final String[] custom1NotIn;
 
@@ -41,6 +302,12 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-1-like",
+      description =
+          "Filter by the custom1 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-1-like")
   private final String[] custom1Like;
 
@@ -49,14 +316,27 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "custom-1-not-like",
+      description =
+          "Filter by what the custom1 field of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("custom-1-not-like")
   private final String[] custom1NotLike;
 
   /** Filter by the value of the field custom2 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-2",
+      description = "Filter by the value of the field custom2 of the Task. This is an exact match.")
   @JsonProperty("custom-2")
   private final String[] custom2In;
 
   /** Filter out by values of the field custom2 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-2-not",
+      description =
+          "Filter out by values of the field custom2 of the Task. This is an exact match.")
   @JsonProperty("custom-2-not")
   private final String[] custom2NotIn;
 
@@ -65,6 +345,12 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-2-like",
+      description =
+          "Filter by the custom2 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-2-like")
   private final String[] custom2Like;
 
@@ -73,14 +359,27 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "custom-2-not-like",
+      description =
+          "Filter by what the custom2 field of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("custom-2-not-like")
   private final String[] custom2NotLike;
 
   /** Filter by the value of the field custom3 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-3",
+      description = "Filter by the value of the field custom3 of the Task. This is an exact match.")
   @JsonProperty("custom-3")
   private final String[] custom3In;
 
   /** Filter out by values of the field custom3 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-3-not",
+      description =
+          "Filter out by values of the field custom3 of the Task. This is an exact match.")
   @JsonProperty("custom-3-not")
   private final String[] custom3NotIn;
 
@@ -89,6 +388,12 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-3-like",
+      description =
+          "Filter by the custom3 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-3-like")
   private final String[] custom3Like;
 
@@ -97,14 +402,27 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "custom-3-not-like",
+      description =
+          "Filter by what the custom3 field of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("custom-3-not-like")
   private final String[] custom3NotLike;
 
   /** Filter by the value of the field custom4 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-4",
+      description = "Filter by the value of the field custom4 of the Task. This is an exact match.")
   @JsonProperty("custom-4")
   private final String[] custom4In;
 
   /** Filter out by values of the field custom4 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-4-not",
+      description =
+          "Filter out by values of the field custom4 of the Task. This is an exact match.")
   @JsonProperty("custom-4-not")
   private final String[] custom4NotIn;
 
@@ -113,6 +431,12 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-4-like",
+      description =
+          "Filter by the custom4 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-4-like")
   private final String[] custom4Like;
 
@@ -121,14 +445,27 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "custom-4-not-like",
+      description =
+          "Filter by what the custom4 field of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("custom-4-not-like")
   private final String[] custom4NotLike;
 
   /** Filter by the value of the field custom5 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-5",
+      description = "Filter by the value of the field custom5 of the Task. This is an exact match.")
   @JsonProperty("custom-5")
   private final String[] custom5In;
 
   /** Filter out by values of the field custom5 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-5-not",
+      description =
+          "Filter out by values of the field custom5 of the Task. This is an exact match.")
   @JsonProperty("custom-5-not")
   private final String[] custom5NotIn;
 
@@ -137,6 +474,12 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-5-like",
+      description =
+          "Filter by the custom5 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-5-like")
   private final String[] custom5Like;
 
@@ -145,14 +488,27 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "custom-5-not-like",
+      description =
+          "Filter by what the custom5 field of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("custom-5-not-like")
   private final String[] custom5NotLike;
 
   /** Filter by the value of the field custom6 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-6",
+      description = "Filter by the value of the field custom6 of the Task. This is an exact match.")
   @JsonProperty("custom-6")
   private final String[] custom6In;
 
   /** Filter out by values of the field custom6 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-6-not",
+      description =
+          "Filter out by values of the field custom6 of the Task. This is an exact match.")
   @JsonProperty("custom-6-not")
   private final String[] custom6NotIn;
 
@@ -161,6 +517,12 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-6-like",
+      description =
+          "Filter by the custom6 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-6-like")
   private final String[] custom6Like;
 
@@ -169,14 +531,27 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "custom-6-not-like",
+      description =
+          "Filter by what the custom6 field of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("custom-6-not-like")
   private final String[] custom6NotLike;
 
   /** Filter by the value of the field custom7 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-7",
+      description = "Filter by the value of the field custom7 of the Task. This is an exact match.")
   @JsonProperty("custom-7")
   private final String[] custom7In;
 
   /** Filter out by values of the field custom7 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-7-not",
+      description =
+          "Filter out by values of the field custom7 of the Task. This is an exact match.")
   @JsonProperty("custom-7-not")
   private final String[] custom7NotIn;
 
@@ -185,6 +560,12 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-7-like",
+      description =
+          "Filter by the custom7 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-7-like")
   private final String[] custom7Like;
 
@@ -193,14 +574,27 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "custom-7-not-like",
+      description =
+          "Filter by what the custom7 field of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("custom-7-not-like")
   private final String[] custom7NotLike;
 
   /** Filter by the value of the field custom8 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-8",
+      description = "Filter by the value of the field custom8 of the Task. This is an exact match.")
   @JsonProperty("custom-8")
   private final String[] custom8In;
 
   /** Filter out by values of the field custom8 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-8-not",
+      description =
+          "Filter out by values of the field custom8 of the Task. This is an exact match.")
   @JsonProperty("custom-8-not")
   private final String[] custom8NotIn;
 
@@ -209,6 +603,12 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-8-like",
+      description =
+          "Filter by the custom8 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-8-like")
   private final String[] custom8Like;
 
@@ -217,14 +617,27 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "custom-8-not-like",
+      description =
+          "Filter by what the custom8 field of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("custom-8-not-like")
   private final String[] custom8NotLike;
 
   /** Filter by the value of the field custom9 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-9",
+      description = "Filter by the value of the field custom9 of the Task. This is an exact match.")
   @JsonProperty("custom-9")
   private final String[] custom9In;
 
   /** Filter out by values of the field custom9 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-9-not",
+      description =
+          "Filter out by values of the field custom9 of the Task. This is an exact match.")
   @JsonProperty("custom-9-not")
   private final String[] custom9NotIn;
 
@@ -233,6 +646,12 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-9-like",
+      description =
+          "Filter by the custom9 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-9-like")
   private final String[] custom9Like;
 
@@ -241,14 +660,28 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "custom-9-not-like",
+      description =
+          "Filter by what the custom9 field of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("custom-9-not-like")
   private final String[] custom9NotLike;
 
   /** Filter by the value of the field custom10 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-10",
+      description =
+          "Filter by the value of the field custom10 of the Task. This is an exact match.")
   @JsonProperty("custom-10")
   private final String[] custom10In;
 
   /** Filter out by values of the field custom10 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-10-not",
+      description =
+          "Filter out by values of the field custom10 of the Task. This is an exact match.")
   @JsonProperty("custom-10-not")
   private final String[] custom10NotIn;
 
@@ -257,6 +690,12 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-10-like",
+      description =
+          "Filter by the custom10 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-10-like")
   private final String[] custom10Like;
 
@@ -265,14 +704,28 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "custom-10-not-like",
+      description =
+          "Filter by what the custom10 field of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("custom-10-not-like")
   private final String[] custom10NotLike;
 
   /** Filter by the value of the field custom11 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-11",
+      description =
+          "Filter by the value of the field custom11 of the Task. This is an exact match.")
   @JsonProperty("custom-11")
   private final String[] custom11In;
 
   /** Filter out by values of the field custom11 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-11-not",
+      description =
+          "Filter out by values of the field custom11 of the Task. This is an exact match.")
   @JsonProperty("custom-11-not")
   private final String[] custom11NotIn;
 
@@ -281,6 +734,12 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-11-like",
+      description =
+          "Filter by the custom11 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-11-like")
   private final String[] custom11Like;
 
@@ -289,14 +748,28 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "custom-11-not-like",
+      description =
+          "Filter by what the custom11 field of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("custom-11-not-like")
   private final String[] custom11NotLike;
 
   /** Filter by the value of the field custom12 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-12",
+      description =
+          "Filter by the value of the field custom12 of the Task. This is an exact match.")
   @JsonProperty("custom-12")
   private final String[] custom12In;
 
   /** Filter out by values of the field custom12 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-12-not",
+      description =
+          "Filter out by values of the field custom12 of the Task. This is an exact match.")
   @JsonProperty("custom-12-not")
   private final String[] custom12NotIn;
 
@@ -305,6 +778,12 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-12-like",
+      description =
+          "Filter by the custom12 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-12-like")
   private final String[] custom12Like;
 
@@ -313,14 +792,28 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "custom-12-not-like",
+      description =
+          "Filter by what the custom12 field of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("custom-12-not-like")
   private final String[] custom12NotLike;
 
   /** Filter by the value of the field custom13 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-13",
+      description =
+          "Filter by the value of the field custom13 of the Task. This is an exact match.")
   @JsonProperty("custom-13")
   private final String[] custom13In;
 
   /** Filter out by values of the field custom13 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-13-not",
+      description =
+          "Filter out by values of the field custom13 of the Task. This is an exact match.")
   @JsonProperty("custom-13-not")
   private final String[] custom13NotIn;
 
@@ -329,6 +822,12 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-13-like",
+      description =
+          "Filter by the custom13 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-13-like")
   private final String[] custom13Like;
 
@@ -337,14 +836,28 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "custom-13-not-like",
+      description =
+          "Filter by what the custom13 field of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("custom-13-not-like")
   private final String[] custom13NotLike;
 
   /** Filter by the value of the field custom14 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-14",
+      description =
+          "Filter by the value of the field custom14 of the Task. This is an exact match.")
   @JsonProperty("custom-14")
   private final String[] custom14In;
 
   /** Filter out by values of the field custom14 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-14-not",
+      description =
+          "Filter out by values of the field custom14 of the Task. This is an exact match.")
   @JsonProperty("custom-14-not")
   private final String[] custom14NotIn;
 
@@ -353,6 +866,12 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-14-like",
+      description =
+          "Filter by the custom14 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-14-like")
   private final String[] custom14Like;
 
@@ -361,14 +880,28 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "custom-14-not-like",
+      description =
+          "Filter by what the custom14 field of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("custom-14-not-like")
   private final String[] custom14NotLike;
 
   /** Filter by the value of the field custom15 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-15",
+      description =
+          "Filter by the value of the field custom15 of the Task. This is an exact match.")
   @JsonProperty("custom-15")
   private final String[] custom15In;
 
   /** Filter out by values of the field custom15 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-15-not",
+      description =
+          "Filter out by values of the field custom15 of the Task. This is an exact match.")
   @JsonProperty("custom-15-not")
   private final String[] custom15NotIn;
 
@@ -377,6 +910,12 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-15-like",
+      description =
+          "Filter by the custom15 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-15-like")
   private final String[] custom15Like;
 
@@ -385,21 +924,42 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "custom-15-not-like",
+      description =
+          "Filter by what the custom15 field of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("custom-15-not-like")
   private final String[] custom15NotLike;
 
   /** Filter by the value of the field custom16 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-16",
+      description =
+          "Filter by the value of the field custom16 of the Task. This is an exact match.")
   @JsonProperty("custom-16")
   private final String[] custom16In;
 
   /** Filter out by values of the field custom16 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-16-not",
+      description =
+          "Filter out by values of the field custom16 of the Task. This is an exact match.")
   @JsonProperty("custom-16-not")
   private final String[] custom16NotIn;
+
   /**
    * Filter by the custom16 field of the Task. This results in a substring search (% is appended to
    * the front and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "custom-16-like",
+      description =
+          "Filter by the custom16 field of the Task. This results in a substring search (% is "
+              + "appended to the front and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-16-like")
   private final String[] custom16Like;
 
@@ -408,6 +968,12 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
    * (% is appended to the front and end of the requested value). Further SQL "LIKE" wildcard
    * characters will be resolved correctly.
    */
+  @Schema(
+      name = "custom-16-not-like",
+      description =
+          "Filter by what the custom16 field of the Task shouldn't be. This results in a substring"
+              + " search (% is appended to the front and end of the requested value). Further SQL "
+              + "\"LIKE\" wildcard characters will be resolved correctly.")
   @JsonProperty("custom-16-not-like")
   private final String[] custom16NotLike;
 

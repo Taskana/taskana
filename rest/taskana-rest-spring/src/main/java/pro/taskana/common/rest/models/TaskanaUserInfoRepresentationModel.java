@@ -1,5 +1,6 @@
 package pro.taskana.common.rest.models;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.hateoas.RepresentationModel;
@@ -11,10 +12,22 @@ public class TaskanaUserInfoRepresentationModel
     extends RepresentationModel<TaskanaUserInfoRepresentationModel> {
 
   /** The user Id of the current user. */
+  @Schema(
+          name = "userId",
+          description = "The user Id of the current user."
+  )
   private String userId;
   /** All groups the current user is a member of. */
+  @Schema(
+          name = "groupIds",
+          description = "All groups the current user is a member of."
+  )
   private List<String> groupIds = new ArrayList<>();
   /** All taskana roles the current user fulfills. */
+  @Schema(
+          name = "roles",
+          description = "All taskana roles the current user fulfills."
+  )
   private List<TaskanaRole> roles = new ArrayList<>();
 
   public String getUserId() {

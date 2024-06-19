@@ -1,6 +1,7 @@
 package pro.taskana.classification.rest.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.beans.ConstructorProperties;
 import java.util.Collection;
@@ -17,6 +18,7 @@ public class ClassificationSummaryPagedRepresentationModel
   }
 
   /** the embedded classifications. */
+  @Schema(name = "classifications", description = "the embedded classifications.")
   @Override
   @JsonProperty("classifications")
   public @NotNull Collection<ClassificationSummaryRepresentationModel> getContent() {

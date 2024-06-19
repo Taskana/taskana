@@ -3,6 +3,7 @@ package pro.taskana.task.rest;
 import static pro.taskana.common.internal.util.CheckedConsumer.wrap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.beans.ConstructorProperties;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,17 +18,285 @@ import pro.taskana.task.api.TaskCustomIntField;
 import pro.taskana.task.api.TaskQuery;
 
 public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery, Void> {
+  public Integer[] getCustomInt1In() {
+    return customInt1In;
+  }
+
+  public Integer[] getCustomInt1NotIn() {
+    return customInt1NotIn;
+  }
+
+  public Integer[] getCustomInt1Within() {
+    return customInt1Within;
+  }
+
+  public Integer[] getCustomInt1NotWithin() {
+    return customInt1NotWithin;
+  }
+
+  public Integer getCustomInt1From() {
+    return customInt1From;
+  }
+
+  public Integer getCustomInt1FromNot() {
+    return customInt1FromNot;
+  }
+
+  public Integer getCustomInt1To() {
+    return customInt1To;
+  }
+
+  public Integer getCustomInt1ToNot() {
+    return customInt1ToNot;
+  }
+
+  public Integer[] getCustomInt2In() {
+    return customInt2In;
+  }
+
+  public Integer[] getCustomInt2NotIn() {
+    return customInt2NotIn;
+  }
+
+  public Integer[] getCustomInt2Within() {
+    return customInt2Within;
+  }
+
+  public Integer[] getCustomInt2NotWithin() {
+    return customInt2NotWithin;
+  }
+
+  public Integer getCustomInt2From() {
+    return customInt2From;
+  }
+
+  public Integer getCustomInt2FromNot() {
+    return customInt2FromNot;
+  }
+
+  public Integer getCustomInt2To() {
+    return customInt2To;
+  }
+
+  public Integer getCustomInt2ToNot() {
+    return customInt2ToNot;
+  }
+
+  public Integer[] getCustomInt3In() {
+    return customInt3In;
+  }
+
+  public Integer[] getCustomInt3NotIn() {
+    return customInt3NotIn;
+  }
+
+  public Integer[] getCustomInt3Within() {
+    return customInt3Within;
+  }
+
+  public Integer[] getCustomInt3NotWithin() {
+    return customInt3NotWithin;
+  }
+
+  public Integer getCustomInt3From() {
+    return customInt3From;
+  }
+
+  public Integer getCustomInt3FromNot() {
+    return customInt3FromNot;
+  }
+
+  public Integer getCustomInt3To() {
+    return customInt3To;
+  }
+
+  public Integer getCustomInt3ToNot() {
+    return customInt3ToNot;
+  }
+
+  public Integer[] getCustomInt4In() {
+    return customInt4In;
+  }
+
+  public Integer[] getCustomInt4NotIn() {
+    return customInt4NotIn;
+  }
+
+  public Integer[] getCustomInt4Within() {
+    return customInt4Within;
+  }
+
+  public Integer[] getCustomInt4NotWithin() {
+    return customInt4NotWithin;
+  }
+
+  public Integer getCustomInt4From() {
+    return customInt4From;
+  }
+
+  public Integer getCustomInt4FromNot() {
+    return customInt4FromNot;
+  }
+
+  public Integer getCustomInt4To() {
+    return customInt4To;
+  }
+
+  public Integer getCustomInt4ToNot() {
+    return customInt4ToNot;
+  }
+
+  public Integer[] getCustomInt5In() {
+    return customInt5In;
+  }
+
+  public Integer[] getCustomInt5NotIn() {
+    return customInt5NotIn;
+  }
+
+  public Integer[] getCustomInt5Within() {
+    return customInt5Within;
+  }
+
+  public Integer[] getCustomInt5NotWithin() {
+    return customInt5NotWithin;
+  }
+
+  public Integer getCustomInt5From() {
+    return customInt5From;
+  }
+
+  public Integer getCustomInt5FromNot() {
+    return customInt5FromNot;
+  }
+
+  public Integer getCustomInt5To() {
+    return customInt5To;
+  }
+
+  public Integer getCustomInt5ToNot() {
+    return customInt5ToNot;
+  }
+
+  public Integer[] getCustomInt6In() {
+    return customInt6In;
+  }
+
+  public Integer[] getCustomInt6NotIn() {
+    return customInt6NotIn;
+  }
+
+  public Integer[] getCustomInt6Within() {
+    return customInt6Within;
+  }
+
+  public Integer[] getCustomInt6NotWithin() {
+    return customInt6NotWithin;
+  }
+
+  public Integer getCustomInt6From() {
+    return customInt6From;
+  }
+
+  public Integer getCustomInt6FromNot() {
+    return customInt6FromNot;
+  }
+
+  public Integer getCustomInt6To() {
+    return customInt6To;
+  }
+
+  public Integer getCustomInt6ToNot() {
+    return customInt6ToNot;
+  }
+
+  public Integer[] getCustomInt7In() {
+    return customInt7In;
+  }
+
+  public Integer[] getCustomInt7NotIn() {
+    return customInt7NotIn;
+  }
+
+  public Integer[] getCustomInt7Within() {
+    return customInt7Within;
+  }
+
+  public Integer[] getCustomInt7NotWithin() {
+    return customInt7NotWithin;
+  }
+
+  public Integer getCustomInt7From() {
+    return customInt7From;
+  }
+
+  public Integer getCustomInt7FromNot() {
+    return customInt7FromNot;
+  }
+
+  public Integer getCustomInt7To() {
+    return customInt7To;
+  }
+
+  public Integer getCustomInt7ToNot() {
+    return customInt7ToNot;
+  }
+
+  public Integer[] getCustomInt8In() {
+    return customInt8In;
+  }
+
+  public Integer[] getCustomInt8NotIn() {
+    return customInt8NotIn;
+  }
+
+  public Integer[] getCustomInt8Within() {
+    return customInt8Within;
+  }
+
+  public Integer[] getCustomInt8NotWithin() {
+    return customInt8NotWithin;
+  }
+
+  public Integer getCustomInt8From() {
+    return customInt8From;
+  }
+
+  public Integer getCustomInt8FromNot() {
+    return customInt8FromNot;
+  }
+
+  public Integer getCustomInt8To() {
+    return customInt8To;
+  }
+
+  public Integer getCustomInt8ToNot() {
+    return customInt8ToNot;
+  }
 
   /** Filter by the value of the field customInt1 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-int-1",
+      description =
+          "Filter by the value of the field customInt1 of the Task. This is an exact match.")
   @JsonProperty("custom-int-1")
   private final Integer[] customInt1In;
   /** Exclude values of the field customInt1 of the Task. */
+  @Schema(
+      name = "custom-int-1-not",
+      description = "Exclude values of the field customInt1 of the Task.")
   @JsonProperty("custom-int-1-not")
   private final Integer[] customInt1NotIn;
   /** Filter by the range of value of the field customInt1 of the Task. */
+  @Schema(
+      name = "custom-int-1-within",
+      description = "Filter by the range of value of the field customInt1 of the Task.")
   @JsonProperty("custom-int-1-within")
   private final Integer[] customInt1Within;
   /** Exclude range of values of the field customInt1 of the Task. */
+  @Schema(
+      name = "custom-int-1-not-within",
+      description = "Exclude range of values of the field customInt1 of the Task.")
   @JsonProperty("custom-int-1-not-within")
   private final Integer[] customInt1NotWithin;
 
@@ -36,9 +305,17 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
    *
    * <p>This parameter can't be used together with 'custom-int-1-within'.
    */
+  @Schema(
+      name = "custom-int-1-from",
+      description =
+          "Filter by lower bound of customInt1. <p>This parameter can't be used together with "
+              + "'custom-int-1-within'.")
   @JsonProperty("custom-int-1-from")
   private final Integer customInt1From;
   /** Exclude values from a lower bound of the field customInt1 of the Task. */
+  @Schema(
+      name = "custom-int-1-from-not",
+      description = "Exclude values from a lower bound of the field customInt1 of the Task.")
   @JsonProperty("custom-int-1-from-not")
   private final Integer customInt1FromNot;
   /**
@@ -46,24 +323,45 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
    *
    * <p>This parameter can't be used together with 'custom-int-1-within'.
    */
+  @Schema(
+      name = "custom-int-1-to",
+      description =
+          "Filter by upper bound of customInt1. <p>This parameter can't be used together with "
+              + "'custom-int-1-within'.")
   @JsonProperty("custom-int-1-to")
   private final Integer customInt1To;
 
   /** Exclude values to an upper bound of the field customInt1 of the Task. */
+  @Schema(
+      name = "custom-int-1-to-not",
+      description = "Exclude values to an upper bound of the field customInt1 of the Task.")
   @JsonProperty("custom-int-1-to-not")
   private final Integer customInt1ToNot;
 
   /** Filter by the value of the field customInt2 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-int-2",
+      description =
+          "Filter by the value of the field customInt2 of the Task. This is an exact match.")
   @JsonProperty("custom-int-2")
   private final Integer[] customInt2In;
 
   /** Exclude values of the field customInt2 of the Task. */
+  @Schema(
+      name = "custom-int-2-not",
+      description = "Exclude values of the field customInt2 of the Task.")
   @JsonProperty("custom-int-2-not")
   private final Integer[] customInt2NotIn;
   /** Filter by the range of value of the field customInt2 of the Task. */
+  @Schema(
+      name = "custom-int-2-within",
+      description = "Filter by the range of value of the field customInt2 of the Task.")
   @JsonProperty("custom-int-2-within")
   private final Integer[] customInt2Within;
   /** Exclude range of values of the field customInt2 of the Task. */
+  @Schema(
+      name = "custom-int-2-not-within",
+      description = "Exclude range of values of the field customInt2 of the Task.")
   @JsonProperty("custom-int-2-not-within")
   private final Integer[] customInt2NotWithin;
   /**
@@ -71,9 +369,17 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
    *
    * <p>This parameter can't be used together with 'custom-int-2-within'.
    */
+  @Schema(
+      name = "custom-int-2-from",
+      description =
+          "Filter by lower bound of customInt2. <p>This parameter can't be used together with "
+              + "'custom-int-2-within'.")
   @JsonProperty("custom-int-2-from")
   private final Integer customInt2From;
   /** Exclude values from a lower bound of the field customInt2 of the Task. */
+  @Schema(
+      name = "custom-int-2-from-not",
+      description = "Exclude values from a lower bound of the field customInt2 of the Task.")
   @JsonProperty("custom-int-2-from-not")
   private final Integer customInt2FromNot;
   /**
@@ -81,22 +387,43 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
    *
    * <p>This parameter can't be used together with 'custom-int-2-within'.
    */
+  @Schema(
+      name = "custom-int-2-to",
+      description =
+          "Filter by upper bound of customInt2. <p>This parameter can't be used together with "
+              + "'custom-int-2-within'.")
   @JsonProperty("custom-int-2-to")
   private final Integer customInt2To;
   /** Exclude values to an upper bound of the field customInt2 of the Task. */
+  @Schema(
+      name = "custom-int-2-to-not",
+      description = "Exclude values to an upper bound of the field customInt2 of the Task.")
   @JsonProperty("custom-int-2-to-not")
   private final Integer customInt2ToNot;
   /** Filter by the value of the field customInt3 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-int-3",
+      description =
+          "Filter by the value of the field customInt3 of the Task. This is an exact match.")
   @JsonProperty("custom-int-3")
   private final Integer[] customInt3In;
 
   /** Exclude values of the field customInt3 of the Task. */
+  @Schema(
+      name = "custom-int-3-not",
+      description = "Exclude values of the field customInt3 of the Task.")
   @JsonProperty("custom-int-3-not")
   private final Integer[] customInt3NotIn;
   /** Filter by the range of value of the field customInt3 of the Task. */
+  @Schema(
+      name = "custom-int-3-within",
+      description = "Filter by the range of value of the field customInt3 of the Task.")
   @JsonProperty("custom-int-3-within")
   private final Integer[] customInt3Within;
   /** Exclude range of values of the field customInt3 of the Task. */
+  @Schema(
+      name = "custom-int-3-not-within",
+      description = "Exclude range of values of the field customInt3 of the Task.")
   @JsonProperty("custom-int-3-not-within")
   private final Integer[] customInt3NotWithin;
   /**
@@ -104,9 +431,17 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
    *
    * <p>This parameter can't be used together with 'custom-int-3-within'.
    */
+  @Schema(
+      name = "custom-int-3-from",
+      description =
+          "Filter by lower bound of customInt3. <p>This parameter can't be used together with "
+              + "'custom-int-3-within'.")
   @JsonProperty("custom-int-3-from")
   private final Integer customInt3From;
   /** Exclude values from a lower bound of the field customInt3 of the Task. */
+  @Schema(
+      name = "custom-int-3-from-not",
+      description = "Exclude values from a lower bound of the field customInt3 of the Task.")
   @JsonProperty("custom-int-3-from-not")
   private final Integer customInt3FromNot;
   /**
@@ -114,22 +449,43 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
    *
    * <p>This parameter can't be used together with 'custom-int-3-within'.
    */
+  @Schema(
+      name = "custom-int-3-to",
+      description =
+          "Filter by upper bound of customInt3. <p>This parameter can't be used together with "
+              + "'custom-int-3-within'.")
   @JsonProperty("custom-int-3-to")
   private final Integer customInt3To;
   /** Exclude values to an upper bound of the field customInt3 of the Task. */
+  @Schema(
+      name = "custom-int-3-to-not",
+      description = "Exclude values to an upper bound of the field customInt3 of the Task.")
   @JsonProperty("custom-int-3-to-not")
   private final Integer customInt3ToNot;
   /** Filter by the value of the field customInt4 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-int-4",
+      description =
+          "Filter by the value of the field customInt4 of the Task. This is an exact match.")
   @JsonProperty("custom-int-4")
   private final Integer[] customInt4In;
 
   /** Exclude values of the field customInt4 of the Task. */
+  @Schema(
+      name = "custom-int-4-not",
+      description = "Exclude values of the field customInt4 of the Task.")
   @JsonProperty("custom-int-4-not")
   private final Integer[] customInt4NotIn;
   /** Filter by the range of value of the field customInt4 of the Task. */
+  @Schema(
+      name = "custom-int-4-within",
+      description = "Filter by the range of value of the field customInt4 of the Task.")
   @JsonProperty("custom-int-4-within")
   private final Integer[] customInt4Within;
   /** Exclude range of values of the field customInt4 of the Task. */
+  @Schema(
+      name = "custom-int-4-not-within",
+      description = "Exclude range of values of the field customInt4 of the Task.")
   @JsonProperty("custom-int-4-not-within")
   private final Integer[] customInt4NotWithin;
   /**
@@ -137,9 +493,17 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
    *
    * <p>This parameter can't be used together with 'custom-int-4-within'.
    */
+  @Schema(
+      name = "custom-int-4-from",
+      description =
+          "Filter by lower bound of customInt4. <p>This parameter can't be used together with "
+              + "'custom-int-4-within'.")
   @JsonProperty("custom-int-4-from")
   private final Integer customInt4From;
   /** Exclude values from a lower bound of the field customInt4 of the Task. */
+  @Schema(
+      name = "custom-int-4-from-not",
+      description = "Exclude values from a lower bound of the field customInt4 of the Task.")
   @JsonProperty("custom-int-4-from-not")
   private final Integer customInt4FromNot;
   /**
@@ -147,22 +511,43 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
    *
    * <p>This parameter can't be used together with 'custom-int-4-within'.
    */
+  @Schema(
+      name = "custom-int-4-to",
+      description =
+          "Filter by upper bound of customInt4. <p>This parameter can't be used together with "
+              + "'custom-int-4-within'.")
   @JsonProperty("custom-int-4-to")
   private final Integer customInt4To;
   /** Exclude values to an upper bound of the field customInt4 of the Task. */
+  @Schema(
+      name = "custom-int-4-to-not",
+      description = "Exclude values to an upper bound of the field customInt4 of the Task.")
   @JsonProperty("custom-int-4-to-not")
   private final Integer customInt4ToNot;
   /** Filter by the value of the field customInt5 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-int-5",
+      description =
+          "Filter by the value of the field customInt5 of the Task. This is an exact match.")
   @JsonProperty("custom-int-5")
   private final Integer[] customInt5In;
 
   /** Exclude values of the field customInt5 of the Task. */
+  @Schema(
+      name = "custom-int-5-not",
+      description = "Exclude values of the field customInt5 of the Task.")
   @JsonProperty("custom-int-5-not")
   private final Integer[] customInt5NotIn;
   /** Filter by the range of value of the field customInt5 of the Task. */
+  @Schema(
+      name = "custom-int-5-within",
+      description = "Filter by the range of value of the field customInt5 of the Task.")
   @JsonProperty("custom-int-5-within")
   private final Integer[] customInt5Within;
   /** Exclude range of values of the field customInt5 of the Task. */
+  @Schema(
+      name = "custom-int-5-not-within",
+      description = "Exclude range of values of the field customInt5 of the Task.")
   @JsonProperty("custom-int-5-not-within")
   private final Integer[] customInt5NotWithin;
   /**
@@ -170,9 +555,17 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
    *
    * <p>This parameter can't be used together with 'custom-int-5-within'.
    */
+  @Schema(
+      name = "custom-int-5-from",
+      description =
+          "Filter by lower bound of customInt5. <p>This parameter can't be used together with "
+              + "'custom-int-5-within'.")
   @JsonProperty("custom-int-5-from")
   private final Integer customInt5From;
   /** Exclude values from a lower bound of the field customInt5 of the Task. */
+  @Schema(
+      name = "custom-int-5-from-not",
+      description = "Exclude values from a lower bound of the field customInt5 of the Task.")
   @JsonProperty("custom-int-5-from-not")
   private final Integer customInt5FromNot;
   /**
@@ -180,22 +573,43 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
    *
    * <p>This parameter can't be used together with 'custom-int-5-within'.
    */
+  @Schema(
+      name = "custom-int-5-to",
+      description =
+          "Filter by upper bound of customInt5. <p>This parameter can't be used together with "
+              + "'custom-int-5-within'.")
   @JsonProperty("custom-int-5-to")
   private final Integer customInt5To;
   /** Exclude values to an upper bound of the field customInt5 of the Task. */
+  @Schema(
+      name = "custom-int-5-to-not",
+      description = "Exclude values to an upper bound of the field customInt5 of the Task.")
   @JsonProperty("custom-int-5-to-not")
   private final Integer customInt5ToNot;
   /** Filter by the value of the field customInt6 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-int-6",
+      description =
+          "Filter by the value of the field customInt6 of the Task. This is an exact match.")
   @JsonProperty("custom-int-6")
   private final Integer[] customInt6In;
 
   /** Exclude values of the field customInt6 of the Task. */
+  @Schema(
+      name = "custom-int-6-not",
+      description = "Exclude values of the field customInt6 of the Task.")
   @JsonProperty("custom-int-6-not")
   private final Integer[] customInt6NotIn;
   /** Filter by the range of value of the field customInt6 of the Task. */
+  @Schema(
+      name = "custom-int-6-within",
+      description = "Filter by the range of value of the field customInt6 of the Task.")
   @JsonProperty("custom-int-6-within")
   private final Integer[] customInt6Within;
   /** Exclude range of values of the field customInt6 of the Task. */
+  @Schema(
+      name = "custom-int-6-not-within",
+      description = "Exclude range of values of the field customInt6 of the Task.")
   @JsonProperty("custom-int-6-not-within")
   private final Integer[] customInt6NotWithin;
   /**
@@ -203,9 +617,17 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
    *
    * <p>This parameter can't be used together with 'custom-int-6-within'.
    */
+  @Schema(
+      name = "custom-int-6-from",
+      description =
+          "Filter by lower bound of customInt6. <p>This parameter can't be used together with "
+              + "'custom-int-6-within'.")
   @JsonProperty("custom-int-6-from")
   private final Integer customInt6From;
   /** Exclude values from a lower bound of the field customInt6 of the Task. */
+  @Schema(
+      name = "custom-int-6-from-not",
+      description = "Exclude values from a lower bound of the field customInt6 of the Task.")
   @JsonProperty("custom-int-6-from-not")
   private final Integer customInt6FromNot;
   /**
@@ -213,22 +635,43 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
    *
    * <p>This parameter can't be used together with 'custom-int-6-within'.
    */
+  @Schema(
+      name = "custom-int-6-to",
+      description =
+          "Filter by upper bound of customInt6. <p>This parameter can't be used together with "
+              + "'custom-int-6-within'.")
   @JsonProperty("custom-int-6-to")
   private final Integer customInt6To;
   /** Exclude values to an upper bound of the field customInt6 of the Task. */
+  @Schema(
+      name = "custom-int-6-to-not",
+      description = "Exclude values to an upper bound of the field customInt6 of the Task.")
   @JsonProperty("custom-int-6-to-not")
   private final Integer customInt6ToNot;
   /** Filter by the value of the field customInt7 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-int-7",
+      description =
+          "Filter by the value of the field customInt7 of the Task. This is an exact match.")
   @JsonProperty("custom-int-7")
   private final Integer[] customInt7In;
 
   /** Exclude values of the field customInt7 of the Task. */
+  @Schema(
+      name = "custom-int-7-not",
+      description = "Exclude values of the field customInt7 of the Task.")
   @JsonProperty("custom-int-7-not")
   private final Integer[] customInt7NotIn;
   /** Filter by the range of value of the field customInt7 of the Task. */
+  @Schema(
+      name = "custom-int-7-within",
+      description = "Filter by the range of value of the field customInt7 of the Task.")
   @JsonProperty("custom-int-7-within")
   private final Integer[] customInt7Within;
   /** Exclude range of values of the field customInt7 of the Task. */
+  @Schema(
+      name = "custom-int-7-not-within",
+      description = "Exclude range of values of the field customInt7 of the Task.")
   @JsonProperty("custom-int-7-not-within")
   private final Integer[] customInt7NotWithin;
   /**
@@ -236,9 +679,17 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
    *
    * <p>This parameter can't be used together with 'custom-int-7-within'.
    */
+  @Schema(
+      name = "custom-int-7-from",
+      description =
+          "Filter by lower bound of customInt7. <p>This parameter can't be used together with "
+              + "'custom-int-7-within'.")
   @JsonProperty("custom-int-7-from")
   private final Integer customInt7From;
   /** Exclude values from a lower bound of the field customInt7 of the Task. */
+  @Schema(
+      name = "custom-int-7-from-not",
+      description = "Exclude values from a lower bound of the field customInt7 of the Task.")
   @JsonProperty("custom-int-7-from-not")
   private final Integer customInt7FromNot;
   /**
@@ -246,22 +697,43 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
    *
    * <p>This parameter can't be used together with 'custom-int-7-within'.
    */
+  @Schema(
+      name = "custom-int-7-to",
+      description =
+          "Filter by upper bound of customInt7. <p>This parameter can't be used together with "
+              + "'custom-int-7-within'.")
   @JsonProperty("custom-int-7-to")
   private final Integer customInt7To;
   /** Exclude values to an upper bound of the field customInt7 of the Task. */
+  @Schema(
+      name = "custom-int-7-to-not",
+      description = "Exclude values to an upper bound of the field customInt7 of the Task.")
   @JsonProperty("custom-int-7-to-not")
   private final Integer customInt7ToNot;
   /** Filter by the value of the field customInt8 of the Task. This is an exact match. */
+  @Schema(
+      name = "custom-int-8",
+      description =
+          "Filter by the value of the field customInt8 of the Task. This is an exact match.")
   @JsonProperty("custom-int-8")
   private final Integer[] customInt8In;
 
   /** Exclude values of the field customInt8 of the Task. */
+  @Schema(
+      name = "custom-int-8-not",
+      description = "Exclude values of the field customInt8 of the Task.")
   @JsonProperty("custom-int-8-not")
   private final Integer[] customInt8NotIn;
   /** Filter by the range of value of the field customInt8 of the Task. */
+  @Schema(
+      name = "custom-int-8-within",
+      description = "Filter by the range of value of the field customInt8 of the Task.")
   @JsonProperty("custom-int-8-within")
   private final Integer[] customInt8Within;
   /** Exclude range of values of the field customInt8 of the Task. */
+  @Schema(
+      name = "custom-int-8-not-within",
+      description = "Exclude range of values of the field customInt8 of the Task.")
   @JsonProperty("custom-int-8-not-within")
   private final Integer[] customInt8NotWithin;
   /**
@@ -269,9 +741,17 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
    *
    * <p>This parameter can't be used together with 'custom-int-8-within'.
    */
+  @Schema(
+      name = "custom-int-8-from",
+      description =
+          "Filter by lower bound of customInt8. <p>This parameter can't be used together with "
+              + "'custom-int-8-within'.")
   @JsonProperty("custom-int-8-from")
   private final Integer customInt8From;
   /** Exclude values from a lower bound of the field customInt8 of the Task. */
+  @Schema(
+      name = "custom-int-8-from-not",
+      description = "Exclude values from a lower bound of the field customInt8 of the Task.")
   @JsonProperty("custom-int-8-from-not")
   private final Integer customInt8FromNot;
   /**
@@ -279,9 +759,17 @@ public class TaskQueryFilterCustomIntFields implements QueryParameter<TaskQuery,
    *
    * <p>This parameter can't be used together with 'custom-int-8-within'.
    */
+  @Schema(
+      name = "custom-int-8-to",
+      description =
+          "Filter by upper bound of customInt8. <p>This parameter can't be used together with "
+              + "'custom-int-8-within'.")
   @JsonProperty("custom-int-8-to")
   private final Integer customInt8To;
   /** Exclude values to an upper bound of the field customInt8 of the Task. */
+  @Schema(
+      name = "custom-int-8-to-not",
+      description = "Exclude values to an upper bound of the field customInt8 of the Task.")
   @JsonProperty("custom-int-8-to-not")
   private final Integer customInt8ToNot;
 

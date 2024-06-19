@@ -1,6 +1,7 @@
 package pro.taskana.task.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.beans.ConstructorProperties;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -22,11 +23,25 @@ public class TaskQueryGroupByParameter implements QueryParameter<TaskQuery, Void
     }
   }
 
+  public String getGroupBySor() {
+    return groupBySor;
+  }
+
+  public TaskQueryGroupBy getGroupByPor() {
+    return groupByPor;
+  }
+
   // region groupBy
   @JsonProperty("group-by")
+  @Schema(
+          name = "group-by"
+  )
   private final TaskQueryGroupBy groupByPor;
 
   @JsonProperty("group-by-sor")
+  @Schema(
+          name = "group-by-sor"
+  )
   private final String groupBySor;
   // endregion
 

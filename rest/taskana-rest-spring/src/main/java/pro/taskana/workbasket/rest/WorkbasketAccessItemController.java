@@ -1,10 +1,17 @@
 package pro.taskana.workbasket.rest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.function.BiConsumer;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -56,12 +63,35 @@ public class WorkbasketAccessItemController {
    * @return the Workbasket Access Items with the given filter, sort and paging options.
    * @throws NotAuthorizedException if the user is not authorized.
    */
+  @Operation(
+      summary = "Get a list of all Workbasket Access Items",
+      description =
+          "This endpoint retrieves a list of existing Workbasket Access Items. Filters can be "
+              + "applied.",
+      parameters = {
+        @Parameter(name = "sort-by", example = "WORKBASKET_KEY"),
+        @Parameter(name = "order", example = "ASCENDING"),
+        @Parameter(name = "access-id", example = "user-2-2")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description =
+                "the Workbasket Access Items with the given filter, sort and paging options.",
+            content = {
+              @Content(
+                  mediaType = MediaTypes.HAL_JSON_VALUE,
+                  schema =
+                      @Schema(implementation = WorkbasketAccessItemPagedRepresentationModel.class))
+            })
+      })
   @GetMapping(path = RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS)
   public ResponseEntity<WorkbasketAccessItemPagedRepresentationModel> getWorkbasketAccessItems(
       HttpServletRequest request,
-      WorkbasketAccessItemQueryFilterParameter filterParameter,
-      WorkbasketAccessItemQuerySortParameter sortParameter,
-      QueryPagingParameter<WorkbasketAccessItem, WorkbasketAccessItemQuery> pagingParameter)
+      @ParameterObject WorkbasketAccessItemQueryFilterParameter filterParameter,
+      @ParameterObject WorkbasketAccessItemQuerySortParameter sortParameter,
+      @ParameterObject
+          QueryPagingParameter<WorkbasketAccessItem, WorkbasketAccessItemQuery> pagingParameter)
       throws NotAuthorizedException {
 
     QueryParamsValidator.validateParams(
@@ -91,6 +121,21 @@ public class WorkbasketAccessItemController {
    * @throws NotAuthorizedException if the user is not authorized.
    * @throws InvalidArgumentException if some argument is invalid.
    */
+  @Operation(
+      summary = "Delete a Workbasket Access Item",
+      description = "This endpoint deletes all Workbasket Access Items for a provided Access Id.",
+      parameters = {
+        @Parameter(
+            name = "accessId",
+            description = "the Access Id whose Workbasket Access Items should be removed",
+            example = "user-2-1",
+            required = true)
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "204",
+            content = {@Content(schema = @Schema())})
+      })
   @DeleteMapping(path = RestEndpoints.URL_WORKBASKET_ACCESS_ITEMS)
   public ResponseEntity<Void> removeWorkbasketAccessItems(
       @RequestParam("access-id") String accessId)

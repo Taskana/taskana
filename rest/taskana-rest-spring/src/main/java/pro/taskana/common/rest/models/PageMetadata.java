@@ -1,5 +1,7 @@
 package pro.taskana.common.rest.models;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.beans.ConstructorProperties;
 import java.util.Objects;
 
@@ -11,12 +13,23 @@ import java.util.Objects;
 public class PageMetadata {
 
   /** The element size of the page. */
+  @Parameter(hidden = true)
+  @Schema(name = "size", description = "The element size of the page.")
   private final long size;
+
   /** The total number of elements available. */
+  @Parameter(hidden = true)
+  @Schema(name = "totalElements", description = "The total number of elements available.")
   private final long totalElements;
+
   /** Amount of pages that are available in total. */
+  @Parameter(hidden = true)
+  @Schema(name = "totalPages", description = "Amount of pages that are available in total.")
   private final long totalPages;
+
   /** The current page number. */
+  @Parameter(hidden = true)
+  @Schema(name = "number", description = "The current page number.")
   private final long number;
 
   @ConstructorProperties({"size", "totalElements", "totalPages", "number"})
