@@ -4,6 +4,7 @@ import static pro.taskana.common.api.SharedConstants.MASTER_DOMAIN;
 import static pro.taskana.common.internal.util.CheckedConsumer.wrap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.beans.ConstructorProperties;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -15,7 +16,66 @@ import pro.taskana.common.rest.QueryParameter;
 public class ClassificationQueryFilterParameter
     implements QueryParameter<ClassificationQuery, Void> {
 
+  public String[] getName() {
+    return name;
+  }
+
+  public String[] getNameLike() {
+    return nameLike;
+  }
+
+  public String[] getKey() {
+    return key;
+  }
+
+  public String[] getCategory() {
+    return category;
+  }
+
+  public String[] getDomain() {
+    return domain;
+  }
+
+  public String[] getType() {
+    return type;
+  }
+
+  public String[] getCustom1Like() {
+    return custom1Like;
+  }
+
+  public String[] getCustom2Like() {
+    return custom2Like;
+  }
+
+  public String[] getCustom3Like() {
+    return custom3Like;
+  }
+
+  public String[] getCustom4Like() {
+    return custom4Like;
+  }
+
+  public String[] getCustom5Like() {
+    return custom5Like;
+  }
+
+  public String[] getCustom6Like() {
+    return custom6Like;
+  }
+
+  public String[] getCustom7Like() {
+    return custom7Like;
+  }
+
+  public String[] getCustom8Like() {
+    return custom8Like;
+  }
+
   /** Filter by the name of the Classification. This is an exact match. */
+  @Schema(
+      name = "name",
+      description = "Filter by the name of the Classification. This is an exact match.")
   @JsonProperty("name")
   private final String[] name;
 
@@ -24,22 +84,40 @@ public class ClassificationQueryFilterParameter
    * the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will be
    * resolved correctly.
    */
+  @Schema(
+      name = "name-like",
+      description =
+          "Filter by the name of the Classification. This results in a substring search. (% is "
+              + "appended to the beginning and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("name-like")
   private final String[] nameLike;
 
   /** Filter by the key of the Classification. This is an exact match. */
+  @Schema(
+      name = "key",
+      description = "Filter by the key of the Classification. This is an exact match.")
   @JsonProperty("key")
   private final String[] key;
 
   /** Filter by the category of the Classification. This is an exact match. */
+  @Schema(
+      name = "category",
+      description = "Filter by the category of the Classification. This is an exact match.")
   @JsonProperty("category")
   private final String[] category;
 
   /** Filter by the domain of the Classification. This is an exact match. */
+  @Schema(
+      name = "domain",
+      description = "Filter by the domain of the Classification. This is an exact match.")
   @JsonProperty("domain")
   private final String[] domain;
 
   /** Filter by the type of the Classification. This is an exact match. */
+  @Schema(
+      name = "type",
+      description = "Filter by the type of the Classification. This is an exact match.")
   @JsonProperty("type")
   private final String[] type;
 
@@ -48,6 +126,12 @@ public class ClassificationQueryFilterParameter
    * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will
    * be resolved correctly.
    */
+  @Schema(
+      name = "custom-1-like",
+      description =
+          "Filter by the value of the field custom1. This results in a substring search.. (% is "
+              + "appended to the beginning and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-1-like")
   private final String[] custom1Like;
 
@@ -56,6 +140,12 @@ public class ClassificationQueryFilterParameter
    * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will
    * be resolved correctly.
    */
+  @Schema(
+      name = "custom-2-like",
+      description =
+          "Filter by the value of the field custom2. This results in a substring search.. (% is "
+              + "appended to the beginning and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-2-like")
   private final String[] custom2Like;
 
@@ -64,6 +154,12 @@ public class ClassificationQueryFilterParameter
    * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will
    * be resolved correctly.
    */
+  @Schema(
+      name = "custom-3-like",
+      description =
+          "Filter by the value of the field custom3. This results in a substring search.. (% is "
+              + "appended to the beginning and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-3-like")
   private final String[] custom3Like;
 
@@ -72,6 +168,12 @@ public class ClassificationQueryFilterParameter
    * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will
    * be resolved correctly.
    */
+  @Schema(
+      name = "custom-4-like",
+      description =
+          "Filter by the value of the field custom4. This results in a substring search.. (% is "
+              + "appended to the beginning and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-4-like")
   private final String[] custom4Like;
 
@@ -80,6 +182,12 @@ public class ClassificationQueryFilterParameter
    * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will
    * be resolved correctly.
    */
+  @Schema(
+      name = "custom-5-like",
+      description =
+          "Filter by the value of the field custom5. This results in a substring search.. (% is "
+              + "appended to the beginning and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-5-like")
   private final String[] custom5Like;
 
@@ -88,6 +196,12 @@ public class ClassificationQueryFilterParameter
    * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will
    * be resolved correctly.
    */
+  @Schema(
+      name = "custom-6-like",
+      description =
+          "Filter by the value of the field custom6. This results in a substring search.. (% is "
+              + "appended to the beginning and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-6-like")
   private final String[] custom6Like;
   /**
@@ -95,6 +209,12 @@ public class ClassificationQueryFilterParameter
    * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will
    * be resolved correctly.
    */
+  @Schema(
+      name = "custom-7-like",
+      description =
+          "Filter by the value of the field custom7. This results in a substring search.. (% is "
+              + "appended to the beginning and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-7-like")
   private final String[] custom7Like;
 
@@ -103,6 +223,12 @@ public class ClassificationQueryFilterParameter
    * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will
    * be resolved correctly.
    */
+  @Schema(
+      name = "custom-8-like",
+      description =
+          "Filter by the value of the field custom8. This results in a substring search.. (% is "
+              + "appended to the beginning and end of the requested value). Further SQL \"LIKE\" "
+              + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-8-like")
   private final String[] custom8Like;
 

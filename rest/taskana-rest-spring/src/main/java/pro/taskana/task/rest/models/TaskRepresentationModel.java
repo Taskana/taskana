@@ -1,6 +1,7 @@
 package pro.taskana.task.rest.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,12 +14,15 @@ public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
 
   // All objects have to be serializable
   /** Additional information of the task. */
+  @Schema(name = "customAttributes", description = "Additional information of the task.")
   private List<CustomAttribute> customAttributes = Collections.emptyList();
 
   /** Callback Information of the task. */
+  @Schema(name = "callbackInfo", description = "Callback Information of the task.")
   private List<CustomAttribute> callbackInfo = Collections.emptyList();
 
   /** Attachments of the task. */
+  @Schema(name = "attachments", description = "Attachments of the task.")
   private List<AttachmentRepresentationModel> attachments = new ArrayList<>();
 
   public List<CustomAttribute> getCustomAttributes() {
@@ -52,8 +56,10 @@ public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
   public static class CustomAttribute {
 
     /** the key of the custom attribute. */
+    @Schema(name = "key", description = "the key of the custom attribute.")
     private String key;
     /** the value of the custom attribute. */
+    @Schema(name = "value", description = "the value of the custom attribute.")
     private String value;
 
     public static CustomAttribute of(Entry<String, String> entry) {

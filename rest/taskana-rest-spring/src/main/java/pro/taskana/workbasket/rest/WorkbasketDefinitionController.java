@@ -4,6 +4,11 @@ import static pro.taskana.common.internal.util.CheckedFunction.wrap;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +20,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -79,6 +86,26 @@ public class WorkbasketDefinitionController {
    * @param domain Filter the export for a specific domain.
    * @return all workbaskets.
    */
+  @Operation(
+      summary = "Export Workbaskets",
+      description =
+          "This endpoint exports all Workbaskets with the corresponding Workbasket Access Items "
+              + "and Distribution Targets. We call this data structure Workbasket Definition.",
+      parameters = {
+        @Parameter(name = "domain", description = "Filter the export for a specific domain.")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "all workbaskets.",
+            content = {
+              @Content(
+                  mediaType = MediaTypes.HAL_JSON_VALUE,
+                  schema =
+                      @Schema(
+                          implementation = WorkbasketDefinitionCollectionRepresentationModel.class))
+            })
+      })
   @GetMapping(path = RestEndpoints.URL_WORKBASKET_DEFINITIONS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<WorkbasketDefinitionCollectionRepresentationModel> exportWorkbaskets(
@@ -123,7 +150,30 @@ public class WorkbasketDefinitionController {
    * @throws ConcurrencyException if Workbasket was updated by an other user
    * @throws NotAuthorizedOnWorkbasketException if the current user has not correct permissions
    */
-  @PostMapping(path = RestEndpoints.URL_WORKBASKET_DEFINITIONS)
+  @Operation(
+      summary = "Import Workbaskets",
+      description =
+          "This endpoint imports a list of Workbasket Definitions.<p>This does not exactly match "
+              + "the REST norm, but we want to have an option to import all settings at once. When"
+              + " a logical equal (key and domain are equal) Workbasket already exists an update "
+              + "will be executed. Otherwise a new Workbasket will be created.",
+      requestBody =
+          @io.swagger.v3.oas.annotations.parameters.RequestBody(
+              description =
+                  "the list of Workbasket Definitions which will be imported to the current system."
+                      + " To get an example file containing Workbasket Definitions, go to the "
+                      + "[TASKANA UI](http://localhost:8080/taskana/index.html) and export the"
+                      + "Workbaskets",
+              required = true,
+              content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)),
+      responses = {
+        @ApiResponse(
+            responseCode = "204",
+            content = {@Content(schema = @Schema())})
+      })
+  @PostMapping(
+      path = RestEndpoints.URL_WORKBASKET_DEFINITIONS,
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Transactional(rollbackFor = Exception.class)
   public ResponseEntity<Void> importWorkbaskets(@RequestParam("file") MultipartFile file)
       throws IOException,

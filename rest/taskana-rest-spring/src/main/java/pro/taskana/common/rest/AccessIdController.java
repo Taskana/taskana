@@ -1,8 +1,14 @@
 package pro.taskana.common.rest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
 import javax.naming.InvalidNameException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +47,25 @@ public class AccessIdController {
    * @throws InvalidNameException if name is not a valid dn.
    * @title Search for Access Id (users and groups and permissions)
    */
+  @Operation(
+      summary = "Search for Access Id (users and groups)",
+      description = "This endpoint searches a provided access Id in the configured ldap.",
+      parameters = {
+        @Parameter(
+            name = "search-for",
+            description = "the Access Id which should be searched for.",
+            example = "max",
+            required = true)
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "a list of all found Access Ids",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = AccessIdRepresentationModel[].class)))
+      })
   @GetMapping(path = RestEndpoints.URL_ACCESS_ID)
   public ResponseEntity<List<AccessIdRepresentationModel>> searchUsersAndGroupsAndPermissions(
       @RequestParam("search-for") String searchFor)
@@ -67,6 +92,34 @@ public class AccessIdController {
    *     or ADMIN
    * @title Search for Access Id (users) in TASKANA user role
    */
+  @Operation(
+      summary = "Search for Access Id (users) in TASKANA user role",
+      description =
+          "This endpoint searches AccessIds for a provided name or Access Id. It will only search "
+              + "and return users and members of groups which are configured with the requested "
+              + "TASKANA role. This search will only work if the users in the configured LDAP have"
+              + " an attribute that shows their group memberships, e.g. \"memberOf\"",
+      parameters = {
+        @Parameter(
+            name = "search-for",
+            description = "the name or Access Id which should be searched for.",
+            example = "user-1",
+            required = true),
+        @Parameter(
+            name = "role",
+            description = "the role for which all users should be searched for",
+            example = "user",
+            required = true)
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "a list of all found Access Ids (users)",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = AccessIdRepresentationModel[].class)))
+      })
   @GetMapping(path = RestEndpoints.URL_ACCESS_ID_WITH_NAME)
   public ResponseEntity<List<AccessIdRepresentationModel>> searchUsersByNameOrAccessIdForRole(
       @RequestParam("search-for") String nameOrAccessId, @RequestParam("role") String role)
@@ -94,6 +147,25 @@ public class AccessIdController {
    * @throws InvalidNameException if name is not a valid dn.
    * @title Get groups for Access Id
    */
+  @Operation(
+      summary = "Get groups for Access Id",
+      description = "This endpoint retrieves all groups a given Access Id belongs to.",
+      parameters = {
+        @Parameter(
+            name = "access-id",
+            description = "the Access Id whose groups should be determined.",
+            example = "teamlead-1",
+            required = true)
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "a list of the group Access Ids the requested Access Id belongs to",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = AccessIdRepresentationModel[].class)))
+      })
   @GetMapping(path = RestEndpoints.URL_ACCESS_ID_GROUPS)
   public ResponseEntity<List<AccessIdRepresentationModel>> getGroupsByAccessId(
       @RequestParam("access-id") String accessId)

@@ -1,5 +1,6 @@
 package pro.taskana.classification.rest.models;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.hateoas.RepresentationModel;
 import pro.taskana.classification.api.models.ClassificationSummary;
@@ -9,55 +10,106 @@ public class ClassificationSummaryRepresentationModel
     extends RepresentationModel<ClassificationSummaryRepresentationModel> {
 
   /** Unique Id. */
-  @NotNull protected String classificationId;
+  @Schema(name = "classificationId", description = "Unique Id.")
+  @NotNull
+  protected String classificationId;
   /**
    * The key of the Classification. This is typically an externally known code or abbreviation of
    * the Classification.
    */
-  @NotNull protected String key;
+  @Schema(
+      name = "key",
+      description =
+          "The key of the Classification. This is typically an externally known code or "
+              + "abbreviation of the Classification.")
+  @NotNull
+  protected String key;
   /**
    * The logical name of the entry point. This is needed by the task list application to determine
    * the redirect to work on a task of this Classification.
    */
+  @Schema(
+      name = "applicationEntryPoint",
+      description =
+          "The logical name of the entry point. This is needed by the task list application to "
+              + "determine the redirect to work on a task of this Classification.")
   protected String applicationEntryPoint;
   /**
    * The category of the classification. Categories can be configured in the file
    * 'taskana.properties'.
    */
-  @NotNull protected String category;
+  @Schema(
+      name = "category",
+      description =
+          "The category of the classification. Categories can be configured in the file "
+              + "'taskana.properties'.")
+  @NotNull
+  protected String category;
   /** The domain for which this classification is specified. */
+  @Schema(name = "domain", description = "The domain for which this classification is specified.")
   protected String domain;
   /** The name of the classification. */
-  @NotNull protected String name;
+  @Schema(name = "name", description = "The name of the classification.")
+  @NotNull
+  protected String name;
   /** The Id of the parent classification. Empty string ("") if this is a root classification. */
+  @Schema(
+      name = "parentId",
+      description =
+          "The Id of the parent classification. Empty string (\"\") if this is a root "
+              + "classification.")
   protected String parentId;
   /** The key of the parent classification. Empty string ("") if this is a root classification. */
+  @Schema(
+      name = "parentKey",
+      description =
+          "The key of the parent classification. Empty string (\"\") if this is a root "
+              + "classification.")
   protected String parentKey;
   /** The priority of the classification. */
-  @NotNull protected int priority;
+  @Schema(name = "priority", description = "The priority of the classification.")
+  @NotNull
+  protected int priority;
   /**
    * The service level of the classification.
    *
    * <p>This is stated according to ISO 8601.
    */
-  @NotNull protected String serviceLevel;
+  @Schema(
+      name = "serviceLevel",
+      description =
+          "The service level of the classification.<p>This is stated according to ISO 8601.")
+  @NotNull
+  protected String serviceLevel;
   /** The type of classification. Types can be configured in the file 'taskana.properties'. */
+  @Schema(
+      name = "type",
+      description =
+          "The type of classification. Types can be configured in the file 'taskana.properties'.")
   protected String type;
   /** A custom property with name "1". */
+  @Schema(name = "custom1", description = "A custom property with name \"1\".")
   protected String custom1;
   /** A custom property with name "2". */
+  @Schema(name = "custom2", description = "A custom property with name \"2\".")
   protected String custom2;
   /** A custom property with name "3". */
+  @Schema(name = "custom3", description = "A custom property with name \"3\".")
   protected String custom3;
   /** A custom property with name "4". */
+  @Schema(name = "custom4", description = "A custom property with name \"4\".")
   protected String custom4;
   /** A custom property with name "5". */
+  @Schema(name = "custom5", description = "A custom property with name \"5\".")
   protected String custom5;
   /** A custom property with name "6". */
+  @Schema(name = "custom6", description = "A custom property with name \"6\".")
   protected String custom6;
   /** A custom property with name "7". */
+  @Schema(name = "custom7", description = "A custom property with name \"7\".")
   protected String custom7;
   /** A custom property with name "8". */
+  @Schema(name = "custom8", description = "A custom property with name \"8\".")
   protected String custom8;
 
   public String getClassificationId() {

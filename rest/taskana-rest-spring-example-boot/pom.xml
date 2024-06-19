@@ -50,6 +50,11 @@
       <artifactId>taskana-rest-spring-example-common</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <version>${version.spring-openapi}</version>
+    </dependency>
   </dependencies>
 
   <profiles>

@@ -78,7 +78,11 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <version>${version.spring-openapi}</version>
+    </dependency>
     <!-- test dependencies -->
     <dependency>
       <groupId>pro.taskana</groupId>

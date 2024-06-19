@@ -1,9 +1,17 @@
 package pro.taskana.monitor.rest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,10 +77,36 @@ public class MonitorController {
    * @throws NotAuthorizedException if the current user is not authorized to compute the Report
    * @throws InvalidArgumentException TODO: this is never thrown ...
    */
+  @Operation(
+      summary = "Compute a Workbasket Report",
+      description =
+          "This endpoint generates a Workbasket Report.<p>Each Row represents a Workbasket.<p>Each "
+              + "Column Header represents a Time Interval.",
+      parameters = {
+        @Parameter(
+            name = "task-timestamp",
+            description = "Determine which Task Timestamp should be used for comparison"),
+        @Parameter(
+            name = "state",
+            examples = {
+              @ExampleObject(value = "READY"),
+              @ExampleObject(value = "CLAIMED"),
+              @ExampleObject(value = "COMPLETED")
+            })
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "The computed Report",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = ReportRepresentationModel.class))),
+      })
   @GetMapping(path = RestEndpoints.URL_MONITOR_WORKBASKET_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> computeWorkbasketReport(
-      TimeIntervalReportFilterParameter filterParameter,
+      @ParameterObject TimeIntervalReportFilterParameter filterParameter,
       @RequestParam(name = "task-timestamp", required = false) TaskTimestamp taskTimestamp)
       throws NotAuthorizedException, InvalidArgumentException {
     if (taskTimestamp == null) {
@@ -104,10 +138,31 @@ public class MonitorController {
    * @throws NotAuthorizedException if the current user is not authorized to compute the Report
    * @throws InvalidArgumentException if topicWorkbaskets or useDefaultValues are false
    */
+  @Operation(
+      summary = "Compute a Workbasket Priority Report",
+      description =
+          "This endpoint generates a Workbasket Priority Report.<p>Each Row represents a "
+              + "Workbasket.<p>Each Column Header represents a priority range.",
+      parameters = {
+        @Parameter(
+            name = "workbasket-type",
+            description = "Determine the WorkbasketTypes to include in the report",
+            example = "GROUP"),
+        @Parameter(name = "columnHeader", description = "The column headers for the report")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "The computed Report",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = ReportRepresentationModel.class)))
+      })
   @GetMapping(path = RestEndpoints.URL_MONITOR_WORKBASKET_PRIORITY_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> computePriorityWorkbasketReport(
-      PriorityReportFilterParameter filterParameter,
+      @ParameterObject PriorityReportFilterParameter filterParameter,
       @RequestParam(name = "workbasket-type", required = false) WorkbasketType[] workbasketTypes,
       @RequestParam(name = "columnHeader", required = false)
           PriorityColumnHeaderRepresentationModel[] columnHeaders)
@@ -146,10 +201,29 @@ public class MonitorController {
    * @throws NotAuthorizedException if the current user is not authorized to compute the Report
    * @throws InvalidArgumentException TODO: this is never thrown ...
    */
+  @Operation(
+      summary = "Compute a Classification Category Report",
+      description =
+          "This endpoint generates a Classification Category Report.<p>Each Row represents a "
+              + "Classification category.<p>Each Column Header represents a Time Interval.",
+      parameters = {
+        @Parameter(
+            name = "task-timestamp",
+            description = "Determine which Task Timestamp should be used for comparison")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "The computed Report",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = ReportRepresentationModel.class)))
+      })
   @GetMapping(path = RestEndpoints.URL_MONITOR_CLASSIFICATION_CATEGORY_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> computeClassificationCategoryReport(
-      TimeIntervalReportFilterParameter filterParameter,
+      @ParameterObject TimeIntervalReportFilterParameter filterParameter,
       @RequestParam(name = "task-timestamp", required = false) TaskTimestamp taskTimestamp)
       throws InvalidArgumentException, NotAuthorizedException {
     if (taskTimestamp == null) {
@@ -181,10 +255,29 @@ public class MonitorController {
    * @throws NotAuthorizedException if the current user is not authorized to compute the Report
    * @throws InvalidArgumentException TODO: this is never thrown
    */
+  @Operation(
+      summary = "Compute a Classification Report",
+      description =
+          "This endpoint generates a Classification Report.<p>Each Row represents a Classification."
+              + "<p>Each Column Header represents a Time Interval.",
+      parameters = {
+        @Parameter(
+            name = "task-timestamp",
+            description = "Determine which Task Timestamp should be used for comparison")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "The computed Report",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = ReportRepresentationModel.class)))
+      })
   @GetMapping(path = RestEndpoints.URL_MONITOR_CLASSIFICATION_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> computeClassificationReport(
-      TimeIntervalReportFilterParameter filterParameter,
+      @ParameterObject TimeIntervalReportFilterParameter filterParameter,
       @RequestParam(name = "task-timestamp", required = false) TaskTimestamp taskTimestamp)
       throws NotAuthorizedException, InvalidArgumentException {
     if (taskTimestamp == null) {
@@ -216,10 +309,30 @@ public class MonitorController {
    * @throws NotAuthorizedException if the current user is not authorized to compute the Report
    * @throws InvalidArgumentException TODO: this is never thrown
    */
+  @Operation(
+      summary = "Compute a Detailed Classification Report",
+      description =
+          "This endpoint generates a Detailed Classification Report.<p>Each Foldable Row represents"
+              + " a Classification and can be expanded to show the Classification of Attachments."
+              + "<p>Each Column Header represents a Time Interval.",
+      parameters = {
+        @Parameter(
+            name = "task-timestamp",
+            description = "Determine which Task Timestamp should be used for comparison")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "The computed Report",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = ReportRepresentationModel.class)))
+      })
   @GetMapping(path = RestEndpoints.URL_MONITOR_DETAILED_CLASSIFICATION_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> computeDetailedClassificationReport(
-      TimeIntervalReportFilterParameter filterParameter,
+      @ParameterObject TimeIntervalReportFilterParameter filterParameter,
       @RequestParam(name = "task-timestamp", required = false) TaskTimestamp taskTimestamp)
       throws NotAuthorizedException, InvalidArgumentException {
     if (taskTimestamp == null) {
@@ -251,11 +364,36 @@ public class MonitorController {
    * @throws NotAuthorizedException if the current user is not authorized to compute the Report
    * @throws InvalidArgumentException TODO: this is never thrown
    */
+  @Operation(
+      summary = "Compute a Detailed Classification Report",
+      description =
+          "This endpoint generates a Task Custom Field Value Report.<p>Each Row represents a value "
+              + "of the requested Task Custom Field.<p>Each Column Header represents a Time "
+              + "Interval.",
+      parameters = {
+        @Parameter(
+            name = "custom-field",
+            description = "The Task Custom Field whose values are of interest",
+            example = "CUSTOM_14",
+            required = true),
+        @Parameter(
+            name = "task-timestamp",
+            description = "Determine which Task Timestamp should be used for comparison")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "The computed Report",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = ReportRepresentationModel.class)))
+      })
   @GetMapping(path = RestEndpoints.URL_MONITOR_TASK_CUSTOM_FIELD_VALUE_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> computeTaskCustomFieldValueReport(
       @RequestParam(name = "custom-field") TaskCustomField customField,
-      TimeIntervalReportFilterParameter filterParameter,
+      @ParameterObject TimeIntervalReportFilterParameter filterParameter,
       @RequestParam(name = "task-timestamp", required = false) TaskTimestamp taskTimestamp)
       throws NotAuthorizedException, InvalidArgumentException {
     if (taskTimestamp == null) {
@@ -288,6 +426,38 @@ public class MonitorController {
    * @return the computed Report
    * @throws NotAuthorizedException if the current user is not authorized to compute the Report
    */
+  @Operation(
+      summary = "Compute a Task Status Report",
+      description =
+          "This endpoint generates a Task Status Report.<p>Each Row represents a Workbasket.<p>"
+              + "Each Column Header represents a Task State.",
+      parameters = {
+        @Parameter(
+            name = "domain",
+            description = "Filter the report values by domains",
+            required = false),
+        @Parameter(
+            name = "state",
+            description = "Filter the report values by Task states",
+            required = false),
+        @Parameter(
+            name = "workbasket-id",
+            description = "Filter the report values by Workbasket Ids",
+            required = false),
+        @Parameter(
+            name = "priority-minimum",
+            description = "Filter the report values by a minimum priority",
+            required = false)
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "The computed Report",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = ReportRepresentationModel.class)))
+      })
   @GetMapping(path = RestEndpoints.URL_MONITOR_TASK_STATUS_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> computeTaskStatusReport(
@@ -331,10 +501,30 @@ public class MonitorController {
    * @throws NotAuthorizedException if the current user is not authorized to compute the report
    * @throws InvalidArgumentException TODO: this is never thrown
    */
+  @Operation(
+      summary = "Compute a Timestamp Report",
+      description =
+          "This endpoint generates a Timestamp Report.<p>Each Foldable Row represents a "
+              + "TaskTimestamp and can be expanded to display the four organization levels of the "
+              + "corresponding Workbasket.<p>Each Column Header represents a TimeInterval.",
+      parameters = {
+        @Parameter(
+            name = "task-timestamp",
+            description = "Filter by the Task Timestamp of the task")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "The computed Report",
+            content =
+                @Content(
+                    mediaType = MediaTypes.HAL_JSON_VALUE,
+                    schema = @Schema(implementation = ReportRepresentationModel.class)))
+      })
   @GetMapping(path = RestEndpoints.URL_MONITOR_TIMESTAMP_REPORT)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<ReportRepresentationModel> computeTimestampReport(
-      TimeIntervalReportFilterParameter filterParameter,
+      @ParameterObject TimeIntervalReportFilterParameter filterParameter,
       @RequestParam(name = "task-timestamp", required = false) TaskTimestamp[] timestamps)
       throws NotAuthorizedException, InvalidArgumentException {
 

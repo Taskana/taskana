@@ -1,6 +1,7 @@
 package pro.taskana.workbasket.rest.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -12,11 +13,16 @@ public class WorkbasketDefinitionRepresentationModel
     extends RepresentationModel<WorkbasketDefinitionRepresentationModel> {
 
   /** The workbasket which is represented. */
+  @Schema(name = "workbasket", description = "The workbasket which is represented.")
   @JsonIgnoreProperties("_links")
   private WorkbasketRepresentationModel workbasket;
   /** The workbasket authorizations. */
+  @Schema(name = "authorizations", description = "The workbasket authorizations.")
   private Collection<WorkbasketAccessItemRepresentationModel> authorizations = new ArrayList<>();
   /** The distribution targets for this workbasket. */
+  @Schema(
+      name = "distributionTargets",
+      description = "The distribution targets for this workbasket.")
   private Set<String> distributionTargets = new HashSet<>();
 
   public Set<String> getDistributionTargets() {
