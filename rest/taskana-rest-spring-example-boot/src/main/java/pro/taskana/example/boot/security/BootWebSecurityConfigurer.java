@@ -66,7 +66,8 @@ public class BootWebSecurityConfigurer {
                 authorizeHttpRequests
                     .requestMatchers("/css/**", "/img/**")
                     .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/docs/**")
+                    .requestMatchers(
+                        HttpMethod.GET, "/docs/**", "/api-docs*")
                     .permitAll())
         .cors(Customizer.withDefaults())
         .addFilter(jaasApiIntegrationFilter())

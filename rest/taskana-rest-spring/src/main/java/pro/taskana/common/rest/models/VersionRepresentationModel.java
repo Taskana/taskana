@@ -1,5 +1,6 @@
 package pro.taskana.common.rest.models;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.lang.NonNull;
@@ -8,7 +9,9 @@ import org.springframework.lang.NonNull;
 public class VersionRepresentationModel extends RepresentationModel<VersionRepresentationModel> {
 
   /** The current TASKANA version of the REST Service. */
-  @NotNull private String version;
+  @Schema(name = "version", description = "The current TASKANA version of the REST Service.")
+  @NotNull
+  private String version;
 
   public String getVersion() {
     return version;

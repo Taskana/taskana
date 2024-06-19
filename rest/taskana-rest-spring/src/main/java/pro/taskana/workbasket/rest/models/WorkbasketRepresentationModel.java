@@ -1,5 +1,6 @@
 package pro.taskana.workbasket.rest.models;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 import pro.taskana.workbasket.api.models.Workbasket;
 
@@ -11,12 +12,21 @@ public class WorkbasketRepresentationModel extends WorkbasketSummaryRepresentati
    *
    * <p>The format is ISO-8601.
    */
+  @Schema(
+      name = "created",
+      description =
+          "The creation timestamp of the workbasket in the system. The format is ISO-8601.")
   private Instant created;
+
   /**
    * The timestamp of the last modification.
    *
    * <p>The format is ISO-8601.
    */
+  @Schema(
+      name = "modified",
+      description =
+          "The timestamp of the last modification. The format is ISO-8601.")
   private Instant modified;
 
   public Instant getCreated() {

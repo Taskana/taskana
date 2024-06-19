@@ -2,6 +2,7 @@ package pro.taskana.task.rest.models;
 
 import static pro.taskana.task.api.models.TaskSummary.DEFAULT_MANUAL_PRIORITY;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -15,123 +16,210 @@ public class TaskSummaryRepresentationModel
     extends RepresentationModel<TaskSummaryRepresentationModel> {
 
   /** Unique Id. */
+  @Schema(name = "taskId", description = "Unique Id.")
   protected String taskId;
   /**
    * External Id. Can be used to enforce idempotence at task creation. Can identify an external
    * task.
    */
+  @Schema(
+      name = "externalId",
+      description =
+          "External Id. Can be used to enforce idempotence at task creation. Can identify an "
+              + "external task.")
   protected String externalId;
   /** The creation timestamp in the system. */
+  @Schema(name = "created", description = "The creation timestamp in the system.")
   protected Instant created;
   /** The timestamp of the last claim-operation. */
+  @Schema(name = "claimed", description = "The timestamp of the last claim-operation.")
   protected Instant claimed;
   /** The timestamp of the completion. */
+  @Schema(name = "completed", description = "The timestamp of the completion.")
   protected Instant completed;
   /** The timestamp of the last modification. */
+  @Schema(name = "modified", description = "The timestamp of the last modification.")
   protected Instant modified;
   /**
    * Planned start of the task. The actual completion of the task should be between PLANNED and DUE.
    */
+  @Schema(
+      name = "planned",
+      description =
+          "Planned start of the task. The actual completion of the task should be between PLANNED"
+              + " and DUE.")
   protected Instant planned;
   /**
    * Timestamp when the task has been received. It notes when the surrounding process started and
    * not just when the actual task was created.
    */
+  @Schema(
+      name = "received",
+      description =
+          "Timestamp when the task has been received. It notes when the surrounding process started"
+              + " and not just when the actual task was created.")
   protected Instant received;
   /**
    * Timestamp when the task is due. The actual completion of the task should be between PLANNED and
    * DUE.
    */
+  @Schema(
+      name = "due",
+      description =
+          "Timestamp when the task is due. The actual completion of the task should be between "
+              + "PLANNED and DUE.")
   protected Instant due;
   /** The name of the task. */
+  @Schema(name = "name", description = "The name of the task.")
   protected String name;
   /** the creator of the task. */
+  @Schema(name = "creator", description = "the creator of the task.")
   protected String creator;
   /** note. */
+  @Schema(name = "note", description = "note.")
   protected String note;
   /** The description of the task. */
+  @Schema(name = "description", description = "The description of the task.")
   protected String description;
   /** The priority of the task. */
+  @Schema(name = "priority", description = "The priority of the task.")
   protected int priority;
   /**
    * The manual priority of the task. If the value of manualPriority is zero or greater, the
    * priority is automatically set to manualPriority. In this case, all computations of priority are
    * disabled. If the value of manualPriority is negative, Tasks are not prioritized manually.
    */
+  @Schema(
+      name = "manualPriority",
+      description =
+          "The manual priority of the task. If the value of manualPriority is zero or greater, the "
+              + "priority is automatically set to manualPriority. In this case, all computations of"
+              + " priority are disabled. If the value of manualPriority is negative, Tasks are not"
+              + " prioritized manually.")
   protected int manualPriority = DEFAULT_MANUAL_PRIORITY;
   /** The current task state. */
+  @Schema(
+      name = "state",
+      description =
+          "The manual priority of the task. If the value of manualPriority is zero or greater, the "
+              + "priority is automatically set to manualPriority. In this case, all computations of"
+              + " priority are disabled. If the value of manualPriority is negative, Tasks are not "
+              + "prioritized manually.")
   protected TaskState state;
   /** The classification of this task. */
-  @NotNull protected ClassificationSummaryRepresentationModel classificationSummary;
+  @Schema(name = "classificationSummary", description = "The classification of this task.")
+  @NotNull
+  protected ClassificationSummaryRepresentationModel classificationSummary;
   /** The workbasket this task resides in. */
-  @NotNull protected WorkbasketSummaryRepresentationModel workbasketSummary;
+  @Schema(name = "workbasketSummary", description = "The workbasket this task resides in.")
+  @NotNull
+  protected WorkbasketSummaryRepresentationModel workbasketSummary;
   /** The business process id. */
+  @Schema(name = "businessProcessId", description = "The classification of this task.")
   protected String businessProcessId;
   /** the parent business process id. */
+  @Schema(name = "parentBusinessProcessId", description = "the parent business process id.")
   protected String parentBusinessProcessId;
   /** The owner of the task. The owner is set upon claiming of the task. */
+  @Schema(
+      name = "owner",
+      description = "The owner of the task. The owner is set upon claiming of the task.")
   protected String owner;
   /** The long name of the task owner. */
+  @Schema(name = "ownerLongName", description = "The long name of the task owner.")
   protected String ownerLongName;
   /** The Objects primary ObjectReference. */
   @NotNull protected ObjectReferenceRepresentationModel primaryObjRef;
   /** Indicator if the task has been read. */
+  @Schema(name = "isRead", description = "The Objects primary ObjectReference.")
   protected boolean isRead;
   /** Indicator if the task has been transferred. */
+  @Schema(name = "isTransferred", description = "Indicator if the task has been transferred.")
   protected boolean isTransferred;
   /** Number of Tasks that are grouped together with this Task during a groupBy. */
+  @Schema(
+      name = "groupByCount",
+      description = "Number of Tasks that are grouped together with this Task during a groupBy.")
   protected Integer groupByCount;
   /** A custom property with name "1". */
+  @Schema(name = "custom1", description = "A custom property with name \"1\".")
   protected String custom1;
   /** A custom property with name "2". */
+  @Schema(name = "custom2", description = "A custom property with name \"2\".")
   protected String custom2;
   /** A custom property with name "3". */
+  @Schema(name = "custom3", description = "A custom property with name \"3\".")
   protected String custom3;
   /** A custom property with name "4". */
+  @Schema(name = "custom4", description = "A custom property with name \"4\".")
   protected String custom4;
   /** A custom property with name "5". */
+  @Schema(name = "custom5", description = "A custom property with name \"5\".")
   protected String custom5;
   /** A custom property with name "6". */
+  @Schema(name = "custom6", description = "A custom property with name \"6\".")
   protected String custom6;
   /** A custom property with name "7". */
+  @Schema(name = "custom7", description = "A custom property with name \"7\".")
   protected String custom7;
   /** A custom property with name "8". */
+  @Schema(name = "custom8", description = "A custom property with name \"8\".")
   protected String custom8;
   /** A custom property with name "9". */
+  @Schema(name = "custom9", description = "A custom property with name \"9\".")
   protected String custom9;
   /** A custom property with name "10". */
+  @Schema(name = "custom10", description = "A custom property with name \"10\".")
   protected String custom10;
   /** A custom property with name "11". */
+  @Schema(name = "custom11", description = "A custom property with name \"11\".")
   protected String custom11;
   /** A custom property with name "12". */
+  @Schema(name = "custom12", description = "A custom property with name \"12\".")
   protected String custom12;
   /** A custom property with name "13". */
+  @Schema(name = "custom13", description = "A custom property with name \"13\".")
   protected String custom13;
   /** A custom property with name "14". */
+  @Schema(name = "custom14", description = "A custom property with name \"14\".")
   protected String custom14;
   /** A custom property with name "15". */
+  @Schema(name = "custom15", description = "A custom property with name \"15\".")
   protected String custom15;
   /** A custom property with name "16". */
+  @Schema(name = "custom16", description = "A custom property with name \"16\".")
   protected String custom16;
   /** A custom int property with name "1". */
+  @Schema(name = "customInt1", description = "A custom int property with name \"1\".")
   protected Integer customInt1;
   /** A custom int property with name "2". */
+  @Schema(name = "customInt2", description = "A custom int property with name \"2\".")
   protected Integer customInt2;
   /** A custom int property with name "3". */
+  @Schema(name = "customInt3", description = "A custom int property with name \"3\".")
   protected Integer customInt3;
   /** A custom int property with name "4". */
+  @Schema(name = "customInt4", description = "A custom int property with name \"4\".")
   protected Integer customInt4;
   /** A custom int property with name "5". */
+  @Schema(name = "customInt5", description = "A custom int property with name \"5\".")
   protected Integer customInt5;
   /** A custom int property with name "6". */
+  @Schema(name = "customInt6", description = "A custom int property with name \"6\".")
   protected Integer customInt6;
   /** A custom int property with name "7". */
+  @Schema(name = "customInt7", description = "A custom int property with name \"7\".")
   protected Integer customInt7;
   /** A custom int property with name "8". */
+  @Schema(name = "customInt8", description = "A custom int property with name \"8\".")
   protected Integer customInt8;
   /** Secondary object references of the task. */
+  @Schema(
+      name = "secondaryObjectReferences",
+      description = "Secondary object references of the task.")
   protected List<ObjectReferenceRepresentationModel> secondaryObjectReferences = new ArrayList<>();
   /** The attachment summaries of this task. */
+  @Schema(name = "attachmentSummaries", description = "The attachment summaries of this task.")
   private List<AttachmentSummaryRepresentationModel> attachmentSummaries = new ArrayList<>();
 
   public String getTaskId() {

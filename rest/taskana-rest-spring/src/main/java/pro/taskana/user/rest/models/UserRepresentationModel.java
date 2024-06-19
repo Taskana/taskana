@@ -1,5 +1,6 @@
 package pro.taskana.user.rest.models;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.Objects;
@@ -11,10 +12,13 @@ import pro.taskana.user.api.models.User;
 public class UserRepresentationModel extends RepresentationModel<UserRepresentationModel> {
 
   /** Unique Id. */
+  @Schema(name = "userId", description = "Unique Id.")
   @NotNull private String userId;
   /** The groups of the User. */
+  @Schema(name = "groups", description = "The groups of the User.")
   private Set<String> groups;
   /** The permissions of the User. */
+  @Schema(name = "permissions", description = "The permissions of the User.")
   private Set<String> permissions;
   /**
    * The domains of the User.
@@ -24,28 +28,43 @@ public class UserRepresentationModel extends RepresentationModel<UserRepresentat
    */
   private Set<String> domains = Collections.emptySet();
   /** The first name of the User. */
+  @Schema(name = "firstName", description = "The first name of the User.")
   private String firstName;
   /** The last name of the User. */
+  @Schema(name = "lastName", description = "The last name of the User.")
   private String lastName;
   /** The full name of the User. */
+  @Schema(name = "fullName", description = "The full name of the User.")
   private String fullName;
   /** The long name of the User. */
+  @Schema(name = "longName", description = "The long name of the User.")
   private String longName;
   /** The email of the User. */
+  @Schema(name = "email", description = "The email of the User.")
   private String email;
   /** The phone number of the User. */
+  @Schema(name = "phone", description = "The phone number of the User.")
   private String phone;
   /** The mobile phone number of the User. */
+  @Schema(name = "mobilePhone", description = "The mobile phone number of the User.")
   private String mobilePhone;
   /** The fourth organisation level of the User. */
+  @Schema(name = "orgLevel4", description = "The fourth organisation level of the User.")
   private String orgLevel4;
   /** The third organisation level of the User. */
+  @Schema(name = "orgLevel3", description = "The third organisation level of the User.")
   private String orgLevel3;
   /** The second organisation level of the User. */
+  @Schema(name = "orgLevel2", description = "The second organisation level of the User.")
   private String orgLevel2;
   /** The first organisation level of the User. */
+  @Schema(name = "orgLevel1", description = "The first organisation level of the User.")
   private String orgLevel1;
   /** The data of the User. This field is used for additional information about the User. */
+  @Schema(
+      name = "data",
+      description =
+          "The data of the User. This field is used for additional information about the User.")
   private String data;
 
   public String getUserId() {
