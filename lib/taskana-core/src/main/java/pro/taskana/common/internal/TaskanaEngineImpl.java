@@ -112,7 +112,9 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   protected Connection connection;
 
   protected TaskanaEngineImpl(
-      TaskanaConfiguration taskanaConfiguration, ConnectionManagementMode connectionManagementMode)
+      TaskanaConfiguration taskanaConfiguration,
+      ConnectionManagementMode connectionManagementMode,
+      TransactionFactory transactionFactory)
       throws SQLException {
     LOGGER.info(
         "initializing TASKANA with this configuration: {} and this mode: {}",
@@ -146,7 +148,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
 
     currentUserContext =
         new CurrentUserContextImpl(TaskanaConfiguration.shouldUseLowerCaseForAccessIds());
-    createTransactionFactory(taskanaConfiguration.isUseManagedTransactions());
+    if (transactionFactory == null) {
+      createTransactionFactory(taskanaConfiguration.isUseManagedTransactions());
+    } else {
+      this.transactionFactory = transactionFactory;
+    }
     sessionManager = createSqlSessionManager();
 
     initializeDbSchema(taskanaConfiguration);
@@ -156,7 +162,8 @@ public class TaskanaEngineImpl implements TaskanaEngine {
           new TaskanaConfiguration.Builder(this.taskanaConfiguration)
               .jobSchedulerEnabled(false)
               .build();
-      TaskanaEngine taskanaEngine = TaskanaEngine.buildTaskanaEngine(configuration, EXPLICIT);
+      TaskanaEngine taskanaEngine =
+          TaskanaEngine.buildTaskanaEngine(configuration, EXPLICIT, transactionFactory);
       RealClock clock =
           new RealClock(
               this.taskanaConfiguration.getJobSchedulerInitialStartDelay(),
@@ -186,9 +193,12 @@ public class TaskanaEngineImpl implements TaskanaEngine {
   }
 
   public static TaskanaEngine createTaskanaEngine(
-      TaskanaConfiguration taskanaConfiguration, ConnectionManagementMode connectionManagementMode)
+      TaskanaConfiguration taskanaConfiguration,
+      ConnectionManagementMode connectionManagementMode,
+      TransactionFactory transactionFactory)
       throws SQLException {
-    return new TaskanaEngineImpl(taskanaConfiguration, connectionManagementMode);
+    return new TaskanaEngineImpl(
+        taskanaConfiguration, connectionManagementMode, transactionFactory);
   }
 
   @Override
@@ -246,7 +256,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
       connection.setAutoCommit(false);
       connection.setSchema(taskanaConfiguration.getSchemaName());
       mode = EXPLICIT;
-      sessionManager.startManagedSession(connection);
+      if (transactionFactory.getClass().getSimpleName().equals("SpringManagedTransactionFactory")) {
+        sessionManager.startManagedSession();
+      } else {
+        sessionManager.startManagedSession(connection);
+      }
     } else if (this.connection != null) {
       closeConnection();
     }

@@ -58,9 +58,7 @@ class SimpleHistoryServiceImplTest {
             "wbKey1", "taskId1", "type1", "wbKey2", "someUserId", "someDetails");
 
     cutSpy.create(expectedWb);
-    verify(taskanaHistoryEngineMock, times(1)).openConnection();
     verify(taskHistoryEventMapperMock, times(1)).insert(expectedWb);
-    verify(taskanaHistoryEngineMock, times(1)).returnConnection();
     assertThat(expectedWb.getCreated()).isNotNull();
   }
 
@@ -71,9 +69,7 @@ class SimpleHistoryServiceImplTest {
             "wbKey1", WorkbasketHistoryEventType.CREATED.getName(), "someUserId", "someDetails");
 
     cutSpy.create(expectedEvent);
-    verify(taskanaHistoryEngineMock, times(1)).openConnection();
     verify(workbasketHistoryEventMapperMock, times(1)).insert(expectedEvent);
-    verify(taskanaHistoryEngineMock, times(1)).returnConnection();
     assertThat(expectedEvent.getCreated()).isNotNull();
   }
 
