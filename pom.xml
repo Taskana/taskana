@@ -86,7 +86,7 @@
     <version.archunit>1.3.0</version.archunit>
     <version.equalsverifier>3.16.1</version.equalsverifier>
     <version.openpojo>0.9.1</version.openpojo>
-    <version.jacoco>0.8.11</version.jacoco>
+    <version.jacoco>0.8.12</version.jacoco>
     <version.slf4j-test>3.0.1</version.slf4j-test>
     <version.auto-restdocs>2.0.11</version.auto-restdocs>
     <version.testcontainers>1.19.8</version.testcontainers>
