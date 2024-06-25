@@ -72,9 +72,18 @@ public class TaskQuerySqlProvider {
         + "<if test='selectAndClaim == true'> "
         + "FETCH FIRST ROW ONLY FOR UPDATE "
         + "</if>"
-        + "<if test=\"_databaseId == 'db2' and selectAndClaim \">WITH RS USE "
+        + "<if test='lockResults and lockResults != 0'> "
+        + "FETCH FIRST ${lockResults} ROWS ONLY FOR UPDATE "
+        + "<if test=\"_databaseId == 'postgres'\">"
+        + "SKIP LOCKED "
+        + "</if>"
+        + "<if test=\"_databaseId == 'db2'\">"
+        + "SKIP LOCKED DATA "
+        + "</if>"
+        + "</if>"
+        + "<if test=\"_databaseId == 'db2' and (selectAndClaim or lockResults != 0) \">WITH RS USE "
         + "AND KEEP UPDATE LOCKS </if>"
-        + "<if test=\"_databaseId == 'db2' and !selectAndClaim \">WITH UR </if>"
+        + "<if test=\"_databaseId == 'db2' and !selectAndClaim and lockResults==0 \">WITH UR </if>"
         + CLOSING_SCRIPT_TAG;
   }
 
@@ -143,10 +152,7 @@ public class TaskQuerySqlProvider {
         + "<if test='!orderByOuter.isEmpty()'>"
         + "ORDER BY <foreach item='item' collection='orderByOuter' separator=',' >${item}</foreach>"
         + "</if> "
-        + "<if test='selectAndClaim == true'>"
-        + "FETCH FIRST ROW ONLY FOR UPDATE WITH RS USE AND KEEP UPDATE LOCKS"
-        + "</if>"
-        + "<if test='selectAndClaim == false'> with UR</if>"
+        + "with UR "
         + CLOSING_SCRIPT_TAG;
   }
 

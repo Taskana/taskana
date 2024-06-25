@@ -662,6 +662,8 @@ public class TaskServiceImpl implements TaskService {
               Optional.ofNullable(taskQuery.single())
                   .map(TaskSummary::getId)
                   .map(wrap(this::claim)));
+    } catch (IllegalArgumentException e) {
+      throw e;
     } catch (Exception e) {
       return Optional.empty();
     }

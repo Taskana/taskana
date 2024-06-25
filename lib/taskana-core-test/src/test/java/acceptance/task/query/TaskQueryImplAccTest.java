@@ -2,16 +2,23 @@ package acceptance.task.query;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static pro.taskana.task.api.CallbackState.CALLBACK_PROCESSING_REQUIRED;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestClassification;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestObjectReference;
 import static pro.taskana.testapi.DefaultTestEntities.defaultTestWorkbasket;
 
+import java.security.PrivilegedAction;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.security.auth.Subject;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
@@ -26,8 +33,13 @@ import pro.taskana.classification.api.models.ClassificationSummary;
 import pro.taskana.common.api.IntInterval;
 import pro.taskana.common.api.KeyDomain;
 import pro.taskana.common.api.TimeInterval;
+import pro.taskana.common.api.exceptions.SystemException;
 import pro.taskana.common.api.security.CurrentUserContext;
+import pro.taskana.common.api.security.UserPrincipal;
+import pro.taskana.common.internal.InternalTaskanaEngine;
+import pro.taskana.common.internal.util.CheckedConsumer;
 import pro.taskana.common.internal.util.Pair;
+import pro.taskana.common.test.util.ParallelThreadHelper;
 import pro.taskana.task.api.CallbackState;
 import pro.taskana.task.api.TaskCustomField;
 import pro.taskana.task.api.TaskCustomIntField;
@@ -54,6 +66,7 @@ import pro.taskana.workbasket.api.models.WorkbasketSummary;
 class TaskQueryImplAccTest {
 
   @TaskanaInject TaskService taskService;
+  @TaskanaInject InternalTaskanaEngine internalTaskanaEngine;
   @TaskanaInject WorkbasketService workbasketService;
   @TaskanaInject CurrentUserContext currentUserContext;
   @TaskanaInject ClassificationService classificationService;
@@ -96,6 +109,104 @@ class TaskQueryImplAccTest {
         .permission(WorkbasketPermission.APPEND)
         .permission(WorkbasketPermission.READTASKS)
         .buildAndStore(workbasketService, "businessadmin");
+  }
+
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  class LockResultsEqualsTest {
+    private static final Integer LOCK_RESULTS_EQUALS = 2;
+    WorkbasketSummary wb1;
+    TaskSummary taskSummary1;
+    TaskSummary taskSummary2;
+    TaskSummary taskSummary3;
+    TaskSummary taskSummary4;
+
+    @WithAccessId(user = "user-1-1")
+    @BeforeAll
+    void setup() throws Exception {
+      wb1 = createWorkbasketWithPermission();
+
+      taskSummary1 = taskInWorkbasket(wb1).state(TaskState.READY)
+          .buildAndStoreAsSummary(taskService);
+      taskSummary2 = taskInWorkbasket(wb1).state(TaskState.READY)
+          .buildAndStoreAsSummary(taskService);
+      taskSummary3 =
+          taskInWorkbasket(wb1).state(TaskState.READY)
+              .buildAndStoreAsSummary(taskService);
+      taskSummary4 = taskInWorkbasket(wb1).state(TaskState.READY)
+          .buildAndStoreAsSummary(taskService);
+
+    }
+
+    @Test
+    void should_ReturnDifferentTasks_For_LockResultsEqualsTwo() throws Exception {
+      if (System.getenv("DB") != null && (System.getenv("DB").equals("POSTGRES")
+          || System.getenv("DB").equals("DB2"))) {
+
+        List<TaskSummary> returnedTasks = Collections.synchronizedList(new ArrayList<>());
+        List<String> accessIds =
+            Collections.synchronizedList(
+                Stream.of("admin", "admin")
+                    .collect(Collectors.toList()));
+
+        ParallelThreadHelper.runInThread(
+            getRunnableTest(returnedTasks, accessIds), accessIds.size());
+
+        assertThat(returnedTasks)
+            .extracting(TaskSummary::getId)
+            .containsExactlyInAnyOrder(
+                taskSummary1.getId(), taskSummary2.getId(), taskSummary3.getId(),
+                taskSummary4.getId());
+      }
+    }
+
+    @Test
+    void should_ThrowException_When_UsingLockResultsWithSelectAndClaim() {
+      ThrowingCallable call = () -> taskService.selectAndClaim(taskService
+            .createTaskQuery()
+            .workbasketIdIn(wb1.getId())
+            .stateIn(TaskState.READY)
+            .lockResultsEquals(LOCK_RESULTS_EQUALS));
+      IllegalArgumentException e = catchThrowableOfType(IllegalArgumentException.class, call);
+      assertThat(e).isNotNull();
+      assertThat(e.getMessage()).isEqualTo("The params \"lockResultsEquals\" and "
+          + "\"selectAndClaim\" cannot be used together!");
+    }
+
+    private Runnable getRunnableTest(List<TaskSummary> listedTasks, List<String> accessIds) {
+      return () -> {
+        Subject subject = new Subject();
+        subject.getPrincipals().add(new UserPrincipal(accessIds.remove(0)));
+
+        Consumer<TaskService> consumer =
+            CheckedConsumer.wrap(
+                taskService -> {
+                  internalTaskanaEngine.executeInDatabaseConnection(() -> {
+                    List<TaskSummary> results = taskService
+                        .createTaskQuery()
+                        .workbasketIdIn(wb1.getId())
+                        .stateIn(TaskState.READY)
+                        .lockResultsEquals(LOCK_RESULTS_EQUALS).list();
+                    listedTasks.addAll(results);
+                    for (TaskSummary task : results) {
+                      try {
+                        taskService.claim(task.getId());
+                      } catch (Exception e) {
+                        throw new SystemException(e.getMessage());
+                      }
+                    }
+                  });
+                });
+
+
+        PrivilegedAction<Void> action =
+            () -> {
+              consumer.accept(taskService);
+              return null;
+            };
+        Subject.doAs(subject, action);
+      };
+    }
   }
 
   @Nested

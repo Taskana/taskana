@@ -1905,4 +1905,15 @@ public interface TaskQuery extends BaseQuery<TaskSummary, TaskQueryColumnName> {
    * @return the query
    */
   TaskQuery orderByWorkbasketName(SortDirection sortDirection);
+
+  /**
+   * This method locks the returned rows until the end of the transaction using the FOR UPDATE lock.
+   * It cannot be used together with selectAndClaim.
+   *
+   * @param lockResults determines the number of returned and locked results;
+   *                    if zero, no results are locked, but the number of returned results is not
+   *                    limited
+   * @return the query
+   */
+  TaskQuery lockResultsEquals(Integer lockResults);
 }

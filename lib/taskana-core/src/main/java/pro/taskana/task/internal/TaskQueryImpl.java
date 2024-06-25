@@ -337,6 +337,7 @@ public class TaskQueryImpl implements TaskQuery {
   private CallbackState[] callbackStateNotIn;
   private WildcardSearchField[] wildcardSearchFieldIn;
   private String wildcardSearchValueLike;
+  private Integer lockResults;
 
   TaskQueryImpl(InternalTaskanaEngine taskanaEngine) {
     this.taskanaEngine = taskanaEngine;
@@ -345,6 +346,7 @@ public class TaskQueryImpl implements TaskQuery {
     this.orderByInner = new ArrayList<>();
     this.filterByAccessIdIn = true;
     this.withoutAttachment = false;
+    this.lockResults = 0;
     this.joinWithUserInfo = taskanaEngine.getEngine().getConfiguration().isAddAdditionalUserInfo();
   }
 
@@ -2076,6 +2078,7 @@ public class TaskQueryImpl implements TaskQuery {
     TaskSummary result;
     try {
       taskanaEngine.openConnection();
+      checkForIllegalParamCombinations();
       checkOpenReadAndReadTasksPermissionForSpecifiedWorkbaskets();
       setupAccessIds();
       setupJoinAndOrderParameters();
@@ -2116,11 +2119,17 @@ public class TaskQueryImpl implements TaskQuery {
     return this;
   }
 
+  public TaskQuery lockResultsEquals(Integer lockResults) {
+    this.lockResults = lockResults;
+    return this;
+  }
+
   // optimized query for db2 can't be used for now in case of selectAndClaim because of temporary
   // tables and the "for update" clause clashing in db2
   private String getLinkToMapperScript() {
     if (DB.DB2 == getDB()
         && !selectAndClaim
+        && lockResults == 0
         && taskanaEngine.getEngine().getConfiguration().isUseSpecificDb2Taskquery()) {
       return LINK_TO_MAPPER_DB2;
     } else if (selectAndClaim && DB.ORACLE == getDB()) {
@@ -2158,6 +2167,11 @@ public class TaskQueryImpl implements TaskQuery {
       throw new IllegalArgumentException(
           "The params \"wildcardSearchFieldIn\" and \"wildcardSearchValueLike\""
               + " must be used together!");
+    }
+    if (selectAndClaim && lockResults != null && lockResults != 0) {
+      throw new IllegalArgumentException(
+          "The params \"lockResultsEquals\" and \"selectAndClaim\""
+              + " cannot be used together!");
     }
     if (withoutAttachment
         && (attachmentChannelIn != null
@@ -2810,8 +2824,8 @@ public class TaskQueryImpl implements TaskQuery {
         + Arrays.toString(wildcardSearchFieldIn)
         + ", wildcardSearchValueLike="
         + wildcardSearchValueLike
-        + ", joinWithUserInfo="
-        + joinWithUserInfo
+        + ", lockResults="
+        + lockResults
         + "]";
   }
 }
