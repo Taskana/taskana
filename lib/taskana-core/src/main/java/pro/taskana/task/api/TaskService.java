@@ -191,6 +191,8 @@ public interface TaskService {
 
   /**
    * Selects and claims the first {@linkplain Task} which is returned by the {@linkplain TaskQuery}.
+   * It cannot be used together with the {@linkplain TaskQuery#lockResultsEquals(Integer)}
+   * parameter of the query.
    *
    * @param taskQuery the {@linkplain TaskQuery}
    * @return the {@linkplain Task} that got selected and claimed
