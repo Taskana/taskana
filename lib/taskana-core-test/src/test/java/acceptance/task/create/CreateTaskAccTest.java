@@ -253,7 +253,7 @@ class CreateTaskAccTest {
     task2.setExternalId("MyExternalId");
 
     ThrowingCallable call = () -> taskService.createTask(task2);
-    TaskAlreadyExistException e = catchThrowableOfType(call, TaskAlreadyExistException.class);
+    TaskAlreadyExistException e = catchThrowableOfType(TaskAlreadyExistException.class, call);
     assertThat(e.getExternalId()).isEqualTo("MyExternalId");
   }
 
@@ -505,7 +505,7 @@ class CreateTaskAccTest {
     task.setOwner("user-1-2");
 
     ThrowingCallable call = () -> taskService.createTask(task);
-    WorkbasketNotFoundException e = catchThrowableOfType(call, WorkbasketNotFoundException.class);
+    WorkbasketNotFoundException e = catchThrowableOfType(WorkbasketNotFoundException.class, call);
     assertThat(e.getId()).isEqualTo("UNKNOWN");
   }
 
@@ -523,7 +523,7 @@ class CreateTaskAccTest {
     ThrowingCallable call = () -> taskService.createTask(task);
 
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-1");
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());
     assertThat(e.getRequiredPermissions()).contains(WorkbasketPermission.APPEND);
@@ -613,7 +613,7 @@ class CreateTaskAccTest {
 
     ThrowingCallable call = () -> taskService.createTask(task);
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());
     assertThat(e.getCurrentUserId()).isEqualTo(null);
     assertThat(e.getRequiredPermissions()).containsExactly(WorkbasketPermission.READ);
@@ -636,7 +636,7 @@ class CreateTaskAccTest {
 
     ThrowingCallable call = () -> taskService.createTask(task);
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-1");
     assertThat(e.getRequiredPermissions()).containsExactly(WorkbasketPermission.READ);
@@ -669,7 +669,7 @@ class CreateTaskAccTest {
     workbasketService.deleteWorkbasket(newWorkbasketSummary.getId());
     ThrowingCallable call = () -> taskService.createTask(testTask);
 
-    WorkbasketNotFoundException e = catchThrowableOfType(call, WorkbasketNotFoundException.class);
+    WorkbasketNotFoundException e = catchThrowableOfType(WorkbasketNotFoundException.class, call);
     assertThat(e.getId()).isEqualTo(newWorkbasketSummary.getId());
   }
 
@@ -729,7 +729,7 @@ class CreateTaskAccTest {
 
     ThrowingCallable call = () -> taskService.createTask(task);
     ClassificationNotFoundException e =
-        catchThrowableOfType(call, ClassificationNotFoundException.class);
+        catchThrowableOfType(ClassificationNotFoundException.class, call);
     assertThat(e.getClassificationKey()).isEqualTo("NOT_EXISTING");
     assertThat(e.getDomain()).isEqualTo(defaultClassificationSummary.getDomain());
   }

@@ -136,7 +136,7 @@ class CancelTaskAccTest {
     ThrowingCallable call = () -> taskService.cancelTask(task.getId());
 
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
     assertThat(e.getRequiredPermissions())
         .containsExactly(WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
     assertThat(e.getCurrentUserId()).isEqualTo("user-taskrouter");
@@ -176,7 +176,7 @@ class CancelTaskAccTest {
         t -> {
           ThrowingCallable call = () -> taskService.cancelTask(t.getMiddle().getId());
 
-          InvalidTaskStateException e = catchThrowableOfType(call, InvalidTaskStateException.class);
+          InvalidTaskStateException e = catchThrowableOfType(InvalidTaskStateException.class, call);
           assertThat(e.getRequiredTaskStates())
               .containsExactlyInAnyOrder(
                   TaskState.READY,

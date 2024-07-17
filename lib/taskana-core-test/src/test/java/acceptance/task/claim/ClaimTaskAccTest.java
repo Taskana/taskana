@@ -178,7 +178,7 @@ class ClaimTaskAccTest implements TaskanaConfigurationModifier {
 
     ThrowingCallable call = () -> taskService.claim(task.getId());
 
-    InvalidOwnerException e = catchThrowableOfType(call, InvalidOwnerException.class);
+    InvalidOwnerException e = catchThrowableOfType(InvalidOwnerException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-2");
     assertThat(e.getTaskId()).isEqualTo(task.getId());
   }
@@ -198,7 +198,7 @@ class ClaimTaskAccTest implements TaskanaConfigurationModifier {
 
     ThrowingCallable call = () -> taskService.claim(task.getId());
 
-    InvalidOwnerException e = catchThrowableOfType(call, InvalidOwnerException.class);
+    InvalidOwnerException e = catchThrowableOfType(InvalidOwnerException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-2");
     assertThat(e.getTaskId()).isEqualTo(task.getId());
   }
@@ -315,7 +315,7 @@ class ClaimTaskAccTest implements TaskanaConfigurationModifier {
           ThrowingCallable call = () -> taskService.forceClaim(task.getId());
 
           NotAuthorizedOnWorkbasketException e =
-              catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+              catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
 
           if (t.getRight() != WorkbasketPermission.EDITTASKS) {
             assertThat(e.getRequiredPermissions())
@@ -345,7 +345,7 @@ class ClaimTaskAccTest implements TaskanaConfigurationModifier {
     ThrowingCallable call = () -> taskService.claim(task.getId());
 
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo("user-taskrouter");
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());
     assertThat(e.getRequiredPermissions())
@@ -459,7 +459,7 @@ class ClaimTaskAccTest implements TaskanaConfigurationModifier {
 
     ThrowingCallable call = () -> taskService.cancelClaim(claimedTask.getId());
 
-    InvalidOwnerException e = catchThrowableOfType(call, InvalidOwnerException.class);
+    InvalidOwnerException e = catchThrowableOfType(InvalidOwnerException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-2");
     assertThat(e.getTaskId()).isEqualTo(claimedTask.getId());
   }
@@ -479,7 +479,7 @@ class ClaimTaskAccTest implements TaskanaConfigurationModifier {
 
     ThrowingCallable call = () -> taskService.cancelClaim(claimedTask.getId());
 
-    InvalidOwnerException e = catchThrowableOfType(call, InvalidOwnerException.class);
+    InvalidOwnerException e = catchThrowableOfType(InvalidOwnerException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo("taskadmin");
     assertThat(e.getTaskId()).isEqualTo(claimedTask.getId());
   }
@@ -514,7 +514,7 @@ class ClaimTaskAccTest implements TaskanaConfigurationModifier {
           ThrowingCallable call = () -> taskService.cancelClaim(task.getId());
 
           NotAuthorizedOnWorkbasketException e =
-              catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+              catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
 
           if (t.getRight() != WorkbasketPermission.EDITTASKS) {
             assertThat(e.getRequiredPermissions())
@@ -603,7 +603,7 @@ class ClaimTaskAccTest implements TaskanaConfigurationModifier {
           ThrowingCallable call = () -> taskService.forceCancelClaim(task.getId());
 
           NotAuthorizedOnWorkbasketException e =
-              catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+              catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
 
           if (t.getRight() != WorkbasketPermission.EDITTASKS) {
             assertThat(e.getRequiredPermissions())
@@ -686,7 +686,7 @@ class ClaimTaskAccTest implements TaskanaConfigurationModifier {
           ThrowingCallable call = () -> taskService.claim(task.getId());
 
           NotAuthorizedOnWorkbasketException e =
-              catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+              catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
 
           if (t.getRight() != WorkbasketPermission.EDITTASKS) {
             assertThat(e.getRequiredPermissions())

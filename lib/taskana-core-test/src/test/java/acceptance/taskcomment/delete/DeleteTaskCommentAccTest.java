@@ -98,7 +98,7 @@ class DeleteTaskCommentAccTest {
             .buildAndStore(taskService, "user-1-1");
     ThrowingCallable call = () -> taskService.deleteTaskComment(comment1.getId());
     NotAuthorizedOnTaskCommentException e =
-        catchThrowableOfType(call, NotAuthorizedOnTaskCommentException.class);
+        catchThrowableOfType(NotAuthorizedOnTaskCommentException.class, call);
     assertThat(e.getTaskCommentId()).isEqualTo(comment1.getId());
     assertThat(e.getCurrentUserId()).isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
 
@@ -168,7 +168,7 @@ class DeleteTaskCommentAccTest {
   void should_FailToDeleteTaskComment_When_CommentIdDoesNotExist() throws Exception {
 
     ThrowingCallable call = () -> taskService.deleteTaskComment("non existing task comment id");
-    TaskCommentNotFoundException e = catchThrowableOfType(call, TaskCommentNotFoundException.class);
+    TaskCommentNotFoundException e = catchThrowableOfType(TaskCommentNotFoundException.class, call);
     assertThat(e.getTaskCommentId()).isEqualTo("non existing task comment id");
   }
 }

@@ -141,7 +141,7 @@ class GetWorkbasketAccTest {
   void should_ThrowException_When_ProvidingAnInvalidId() {
     ThrowingCallable call = () -> workbasketService.getWorkbasket("INVALID_ID");
 
-    WorkbasketNotFoundException e = catchThrowableOfType(call, WorkbasketNotFoundException.class);
+    WorkbasketNotFoundException e = catchThrowableOfType(WorkbasketNotFoundException.class, call);
 
     assertThat(e.getId()).isEqualTo("INVALID_ID");
   }
@@ -159,7 +159,7 @@ class GetWorkbasketAccTest {
               () -> workbasketService.getWorkbasket(t.getMiddle(), t.getRight());
 
           WorkbasketNotFoundException e =
-              catchThrowableOfType(call, WorkbasketNotFoundException.class);
+              catchThrowableOfType(WorkbasketNotFoundException.class, call);
 
           assertThat(e.getKey()).isEqualTo(t.getMiddle());
           assertThat(e.getDomain()).isEqualTo(t.getRight());
@@ -172,7 +172,7 @@ class GetWorkbasketAccTest {
     ThrowingCallable call = () -> workbasketService.getWorkbasket(defaultWorkbasketSummary.getId());
 
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
 
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());
     assertThat(e.getCurrentUserId()).isNull();
@@ -184,7 +184,7 @@ class GetWorkbasketAccTest {
     ThrowingCallable call = () -> workbasketService.getWorkbasket("USER-1-2", "DOMAIN_A");
 
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
 
     assertThat(e.getWorkbasketKey()).isEqualTo("USER-1-2");
     assertThat(e.getDomain()).isEqualTo("DOMAIN_A");
@@ -197,7 +197,7 @@ class GetWorkbasketAccTest {
   void should_ThrowException_When_TryingToGetWithAnInvalidId() {
     ThrowingCallable call = () -> workbasketService.getWorkbasket("NOT EXISTING ID");
 
-    WorkbasketNotFoundException e = catchThrowableOfType(call, WorkbasketNotFoundException.class);
+    WorkbasketNotFoundException e = catchThrowableOfType(WorkbasketNotFoundException.class, call);
 
     assertThat(e.getId()).isEqualTo("NOT EXISTING ID");
   }

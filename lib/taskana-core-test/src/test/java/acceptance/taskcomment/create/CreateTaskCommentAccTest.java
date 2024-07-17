@@ -102,7 +102,7 @@ class CreateTaskCommentAccTest {
     ThrowingCallable call = () -> taskService.createTaskComment(taskCommentToCreate);
 
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-2");
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasket.getId());
     assertThat(e.getRequiredPermissions())
@@ -132,11 +132,11 @@ class CreateTaskCommentAccTest {
     newTaskCommentForTaskIdNull.setTextField("a newly created taskComment");
 
     ThrowingCallable call = () -> taskService.createTaskComment(newTaskCommentForNonExistingTask);
-    TaskNotFoundException e = catchThrowableOfType(call, TaskNotFoundException.class);
+    TaskNotFoundException e = catchThrowableOfType(TaskNotFoundException.class, call);
     assertThat(e.getTaskId()).isEqualTo("Definitely non existing ID");
 
     call = () -> taskService.createTaskComment(newTaskCommentForTaskIdNull);
-    e = catchThrowableOfType(call, TaskNotFoundException.class);
+    e = catchThrowableOfType(TaskNotFoundException.class, call);
     assertThat(e.getTaskId()).isNull();
   }
 }

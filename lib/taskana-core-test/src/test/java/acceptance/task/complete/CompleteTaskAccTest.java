@@ -262,7 +262,7 @@ class CompleteTaskAccTest implements TaskanaConfigurationModifier {
           ThrowingCallable call = () -> taskService.forceCompleteTask(task.getId());
 
           NotAuthorizedOnWorkbasketException e =
-              catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+              catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
 
           if (t.getRight() != WorkbasketPermission.EDITTASKS) {
             assertThat(e.getRequiredPermissions())
@@ -299,7 +299,7 @@ class CompleteTaskAccTest implements TaskanaConfigurationModifier {
     ThrowingCallable call = () -> taskService.completeTask(claimedTask.getId());
 
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo(currentUserContext.getUserid());
     WorkbasketSummary workbasket = claimedTask.getWorkbasketSummary();
     assertThat(e.getWorkbasketId()).isEqualTo(workbasket.getId());
@@ -314,7 +314,7 @@ class CompleteTaskAccTest implements TaskanaConfigurationModifier {
 
     ThrowingCallable call = () -> taskService.completeTask(task.getId());
 
-    InvalidTaskStateException e = catchThrowableOfType(call, InvalidTaskStateException.class);
+    InvalidTaskStateException e = catchThrowableOfType(InvalidTaskStateException.class, call);
     assertThat(e.getTaskId()).isEqualTo(task.getId());
     assertThat(e.getTaskState()).isEqualTo(task.getState());
     assertThat(e.getRequiredTaskStates())
@@ -328,7 +328,7 @@ class CompleteTaskAccTest implements TaskanaConfigurationModifier {
 
     ThrowingCallable call = () -> taskService.completeTask(task.getId());
 
-    InvalidOwnerException e = catchThrowableOfType(call, InvalidOwnerException.class);
+    InvalidOwnerException e = catchThrowableOfType(InvalidOwnerException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-1");
     assertThat(e.getTaskId()).isEqualTo(task.getId());
   }
@@ -408,7 +408,7 @@ class CompleteTaskAccTest implements TaskanaConfigurationModifier {
 
     ThrowingCallable call = () -> taskService.forceClaim(task.getId());
 
-    InvalidTaskStateException e = catchThrowableOfType(call, InvalidTaskStateException.class);
+    InvalidTaskStateException e = catchThrowableOfType(InvalidTaskStateException.class, call);
     assertThat(e.getTaskId()).isEqualTo(task.getId());
     assertThat(e.getTaskState()).isEqualTo(task.getState());
     assertThat(e.getRequiredTaskStates())
@@ -422,7 +422,7 @@ class CompleteTaskAccTest implements TaskanaConfigurationModifier {
 
     ThrowingCallable call = () -> taskService.claim(task.getId());
 
-    InvalidOwnerException e = catchThrowableOfType(call, InvalidOwnerException.class);
+    InvalidOwnerException e = catchThrowableOfType(InvalidOwnerException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-1");
     assertThat(e.getTaskId()).isEqualTo(task.getId());
   }
@@ -438,7 +438,7 @@ class CompleteTaskAccTest implements TaskanaConfigurationModifier {
 
     ThrowingCallable call = () -> taskService.forceCancelClaim(task.getId());
 
-    InvalidTaskStateException e = catchThrowableOfType(call, InvalidTaskStateException.class);
+    InvalidTaskStateException e = catchThrowableOfType(InvalidTaskStateException.class, call);
     assertThat(e.getTaskId()).isEqualTo(task.getId());
     assertThat(e.getTaskState()).isEqualTo(task.getState());
     assertThat(e.getRequiredTaskStates())
@@ -479,7 +479,7 @@ class CompleteTaskAccTest implements TaskanaConfigurationModifier {
 
     ThrowingCallable call = () -> taskService.cancelClaim(task.getId());
 
-    InvalidOwnerException e = catchThrowableOfType(call, InvalidOwnerException.class);
+    InvalidOwnerException e = catchThrowableOfType(InvalidOwnerException.class, call);
     assertThat(e.getTaskId()).isEqualTo(task.getId());
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-1");
   }
@@ -803,7 +803,7 @@ class CompleteTaskAccTest implements TaskanaConfigurationModifier {
           ThrowingCallable call = () -> taskService.completeTask(task.getId());
 
           NotAuthorizedOnWorkbasketException e =
-              catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+              catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
 
           if (t.getRight() != WorkbasketPermission.EDITTASKS) {
             assertThat(e.getRequiredPermissions())

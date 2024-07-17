@@ -82,9 +82,9 @@
     <version.arquillian.managed.wildfly>5.0.1.Final</version.arquillian.managed.wildfly>
 
     <!-- test dependencies -->
-    <version.assertj>3.25.3</version.assertj>
     <version.archunit>1.3.0</version.archunit>
     <version.equalsverifier>3.16.1</version.equalsverifier>
+    <version.assertj>3.26.3</version.assertj>
     <version.openpojo>0.9.1</version.openpojo>
     <version.jacoco>0.8.12</version.jacoco>
     <version.slf4j-test>3.0.1</version.slf4j-test>
@@ -120,9 +120,7 @@
     <sonar.sources>src/main/java</sonar.sources>
     <sonar.tests>src/test/java</sonar.tests>
     <sonar.exclusions>
-      org/camunda/bpm/dmn/**/*,
-      **/example/**/*,
-      **/*Example*
+      org/camunda/bpm/dmn/**/*, **/example/**/*, **/*Example*
     </sonar.exclusions>
   </properties>
 

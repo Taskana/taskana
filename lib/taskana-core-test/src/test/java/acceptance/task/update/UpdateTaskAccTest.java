@@ -283,7 +283,7 @@ public class UpdateTaskAccTest {
     ThrowingCallable call = () -> taskService.updateTask(task);
 
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo("user-taskrouter");
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());
     assertThat(e.getRequiredPermissions())
@@ -403,7 +403,7 @@ public class UpdateTaskAccTest {
 
     ThrowingCallable call = () -> taskService.setTaskRead("INVALID", true);
 
-    TaskNotFoundException e = catchThrowableOfType(call, TaskNotFoundException.class);
+    TaskNotFoundException e = catchThrowableOfType(TaskNotFoundException.class, call);
     assertThat(e.getTaskId()).isEqualTo("INVALID");
   }
 
@@ -695,7 +695,7 @@ public class UpdateTaskAccTest {
           ThrowingCallable call = () -> taskService.updateTask(task);
 
           NotAuthorizedOnWorkbasketException e =
-              catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+              catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
 
           if (t.getRight() != WorkbasketPermission.EDITTASKS) {
             assertThat(e.getRequiredPermissions())

@@ -132,7 +132,7 @@ class DeleteTaskAccTest {
   void should_ThrowException_When_UserIsNotInAdminRoleButTriesToBulkDeleteTasks() {
     ThrowingCallable call = () -> taskService.deleteTasks(List.of(task1.getId(), task2.getId()));
 
-    NotAuthorizedException e = catchThrowableOfType(call, NotAuthorizedException.class);
+    NotAuthorizedException e = catchThrowableOfType(NotAuthorizedException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
     assertThat(e.getRoles()).containsExactly(TaskanaRole.ADMIN);
   }
@@ -145,7 +145,7 @@ class DeleteTaskAccTest {
 
     ThrowingCallable call = () -> taskService.getTask(task1.getId());
 
-    TaskNotFoundException e = catchThrowableOfType(call, TaskNotFoundException.class);
+    TaskNotFoundException e = catchThrowableOfType(TaskNotFoundException.class, call);
     assertThat(e.getTaskId()).isEqualTo(task1.getId());
   }
 
@@ -156,7 +156,7 @@ class DeleteTaskAccTest {
   void should_ThrowException_When_UserIsNotInAdminRole() {
     ThrowingCallable call = () -> taskService.deleteTask(task1.getId());
 
-    NotAuthorizedException e = catchThrowableOfType(call, NotAuthorizedException.class);
+    NotAuthorizedException e = catchThrowableOfType(NotAuthorizedException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo(taskanaEngine.getCurrentUserContext().getUserid());
     assertThat(e.getRoles()).containsExactly(TaskanaRole.ADMIN);
   }
@@ -174,7 +174,7 @@ class DeleteTaskAccTest {
 
     ThrowingCallable call = () -> taskService.deleteTask(taskNotComplete.getId());
 
-    InvalidTaskStateException e = catchThrowableOfType(call, InvalidTaskStateException.class);
+    InvalidTaskStateException e = catchThrowableOfType(InvalidTaskStateException.class, call);
     assertThat(e.getTaskId()).isEqualTo(taskNotComplete.getId());
     assertThat(e.getTaskState()).isEqualTo(TaskState.READY);
     assertThat(e.getRequiredTaskStates())
@@ -195,7 +195,7 @@ class DeleteTaskAccTest {
     taskService.forceDeleteTask(taskNotComplete.getId());
     ThrowingCallable call = () -> taskService.getTask(taskNotComplete.getId());
 
-    TaskNotFoundException e = catchThrowableOfType(call, TaskNotFoundException.class);
+    TaskNotFoundException e = catchThrowableOfType(TaskNotFoundException.class, call);
     assertThat(e.getTaskId()).isEqualTo(taskNotComplete.getId());
   }
 
@@ -210,11 +210,11 @@ class DeleteTaskAccTest {
     assertThat(results.containsErrors()).isFalse();
 
     ThrowingCallable call = () -> taskService.getTask(task1.getId());
-    TaskNotFoundException e = catchThrowableOfType(call, TaskNotFoundException.class);
+    TaskNotFoundException e = catchThrowableOfType(TaskNotFoundException.class, call);
     assertThat(e.getTaskId()).isEqualTo(task1.getId());
 
     ThrowingCallable call2 = () -> taskService.getTask(task2.getId());
-    TaskNotFoundException e2 = catchThrowableOfType(call2, TaskNotFoundException.class);
+    TaskNotFoundException e2 = catchThrowableOfType(TaskNotFoundException.class, call2);
     assertThat(e2.getTaskId()).isEqualTo(task2.getId());
   }
 
@@ -245,10 +245,10 @@ class DeleteTaskAccTest {
     Task notDeletedTask = taskService.getTask(taskNotComplete.getId());
     assertThat(notDeletedTask).isNotNull();
     ThrowingCallable call = () -> taskService.getTask(task1.getId());
-    TaskNotFoundException e = catchThrowableOfType(call, TaskNotFoundException.class);
+    TaskNotFoundException e = catchThrowableOfType(TaskNotFoundException.class, call);
     assertThat(e.getTaskId()).isEqualTo(task1.getId());
     ThrowingCallable call2 = () -> taskService.getTask(task2.getId());
-    TaskNotFoundException e2 = catchThrowableOfType(call2, TaskNotFoundException.class);
+    TaskNotFoundException e2 = catchThrowableOfType(TaskNotFoundException.class, call2);
     assertThat(e2.getTaskId()).isEqualTo(task2.getId());
   }
 
