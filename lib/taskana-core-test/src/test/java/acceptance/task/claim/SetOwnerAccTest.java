@@ -116,7 +116,7 @@ class SetOwnerAccTest {
     ThrowingCallable call2 = () -> setOwner(taskReadyForReview, anyUserName);
 
     NotAuthorizedOnWorkbasketException e2 =
-        catchThrowableOfType(call2, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call2);
     assertThat(e2.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());
     assertThat(e2.getCurrentUserId()).isEqualTo("user-1-1");
     assertThat(e2.getRequiredPermissions())
@@ -138,7 +138,7 @@ class SetOwnerAccTest {
 
     ThrowingCallable call = () -> setOwner(taskClaimed, anyUserName);
 
-    InvalidTaskStateException e = catchThrowableOfType(call, InvalidTaskStateException.class);
+    InvalidTaskStateException e = catchThrowableOfType(InvalidTaskStateException.class, call);
     assertThat(e.getTaskId()).isEqualTo(taskClaimed.getId());
     assertThat(e.getTaskState()).isEqualTo(TaskState.CLAIMED);
     assertThat(e.getRequiredTaskStates())

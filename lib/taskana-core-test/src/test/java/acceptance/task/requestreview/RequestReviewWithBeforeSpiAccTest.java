@@ -215,7 +215,7 @@ public class RequestReviewWithBeforeSpiAccTest {
 
       ThrowingCallable call = () -> taskService.requestReview(task.getId());
 
-      InvalidOwnerException ex = catchThrowableOfType(call, InvalidOwnerException.class);
+      InvalidOwnerException ex = catchThrowableOfType(InvalidOwnerException.class, call);
       assertThat(ex.getTaskId()).isEqualTo(task.getId());
       assertThat(ex.getCurrentUserId()).isEqualTo("user-1-1");
     }

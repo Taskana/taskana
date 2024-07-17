@@ -62,7 +62,7 @@ class DeleteClassificationAccTest {
     ThrowingCallable call = () -> classificationService.getClassification(classification.getId());
 
     ClassificationNotFoundException e =
-        catchThrowableOfType(call, ClassificationNotFoundException.class);
+        catchThrowableOfType(ClassificationNotFoundException.class, call);
     assertThat(e.getClassificationId()).isEqualTo(classification.getId());
   }
 
@@ -79,7 +79,7 @@ class DeleteClassificationAccTest {
             classificationService.deleteClassification(
                 classification.getKey(), classification.getDomain());
 
-    NotAuthorizedException e = catchThrowableOfType(call, NotAuthorizedException.class);
+    NotAuthorizedException e = catchThrowableOfType(NotAuthorizedException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-1");
     assertThat(e.getRoles())
         .containsExactlyInAnyOrder(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
@@ -95,7 +95,7 @@ class DeleteClassificationAccTest {
     ThrowingCallable call =
         () -> classificationService.deleteClassification(classification.getId());
 
-    NotAuthorizedException e = catchThrowableOfType(call, NotAuthorizedException.class);
+    NotAuthorizedException e = catchThrowableOfType(NotAuthorizedException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-1");
     assertThat(e.getRoles())
         .containsExactlyInAnyOrder(TaskanaRole.BUSINESS_ADMIN, TaskanaRole.ADMIN);
@@ -115,7 +115,7 @@ class DeleteClassificationAccTest {
     ThrowingCallable call =
         () -> classificationService.deleteClassification(classification.getId());
 
-    ClassificationInUseException e = catchThrowableOfType(call, ClassificationInUseException.class);
+    ClassificationInUseException e = catchThrowableOfType(ClassificationInUseException.class, call);
     assertThat(e.getClassificationKey()).isEqualTo(classification.getKey());
     assertThat(e.getDomain()).isEqualTo(classification.getDomain());
   }
@@ -134,7 +134,7 @@ class DeleteClassificationAccTest {
     ThrowingCallable call =
         () -> classificationService.deleteClassification(classification.getKey(), MASTER_DOMAIN);
 
-    ClassificationInUseException e = catchThrowableOfType(call, ClassificationInUseException.class);
+    ClassificationInUseException e = catchThrowableOfType(ClassificationInUseException.class, call);
     assertThat(e.getClassificationKey()).isEqualTo(classification.getKey());
     assertThat(e.getDomain()).isEqualTo(classification.getDomain());
   }
@@ -156,7 +156,7 @@ class DeleteClassificationAccTest {
     ThrowingCallable call = () -> classificationService.getClassification(child.getId());
 
     ClassificationNotFoundException e =
-        catchThrowableOfType(call, ClassificationNotFoundException.class);
+        catchThrowableOfType(ClassificationNotFoundException.class, call);
     assertThat(e.getClassificationId()).isEqualTo(child.getId());
   }
 
@@ -173,7 +173,7 @@ class DeleteClassificationAccTest {
                 classification.getKey(), classification.getDomain());
 
     ClassificationNotFoundException e =
-        catchThrowableOfType(call, ClassificationNotFoundException.class);
+        catchThrowableOfType(ClassificationNotFoundException.class, call);
     assertThat(e.getClassificationKey()).isEqualTo(classification.getKey());
     assertThat(e.getDomain()).isEqualTo(classification.getDomain());
   }
@@ -201,7 +201,7 @@ class DeleteClassificationAccTest {
     ThrowingCallable call =
         () -> classificationService.deleteClassification(attachmentClassification.getId());
 
-    ClassificationInUseException e = catchThrowableOfType(call, ClassificationInUseException.class);
+    ClassificationInUseException e = catchThrowableOfType(ClassificationInUseException.class, call);
     assertThat(e.getClassificationKey()).isEqualTo(attachmentClassification.getKey());
     assertThat(e.getDomain()).isEqualTo(attachmentClassification.getDomain());
   }
@@ -223,7 +223,7 @@ class DeleteClassificationAccTest {
 
     ThrowingCallable call = () -> classificationService.deleteClassification(parent.getId());
 
-    ClassificationInUseException e = catchThrowableOfType(call, ClassificationInUseException.class);
+    ClassificationInUseException e = catchThrowableOfType(ClassificationInUseException.class, call);
     assertThat(e.getClassificationKey()).isEqualTo(child.getKey());
     assertThat(e.getDomain()).isEqualTo(child.getDomain());
     Classification rollback =
@@ -252,7 +252,7 @@ class DeleteClassificationAccTest {
     ThrowingCallable call =
         () -> classificationService.deleteClassification(parent.getKey(), MASTER_DOMAIN);
 
-    ClassificationInUseException e = catchThrowableOfType(call, ClassificationInUseException.class);
+    ClassificationInUseException e = catchThrowableOfType(ClassificationInUseException.class, call);
     assertThat(e.getClassificationKey()).isEqualTo(child.getKey());
     assertThat(e.getDomain()).isEqualTo(child.getDomain());
     Classification rollbackMaster =
@@ -272,7 +272,7 @@ class DeleteClassificationAccTest {
                 "not existing classification key", MASTER_DOMAIN);
 
     ClassificationNotFoundException e =
-        catchThrowableOfType(call, ClassificationNotFoundException.class);
+        catchThrowableOfType(ClassificationNotFoundException.class, call);
     assertThat(e.getClassificationKey()).isEqualTo("not existing classification key");
     assertThat(e.getDomain()).isEqualTo(MASTER_DOMAIN);
   }
@@ -288,7 +288,7 @@ class DeleteClassificationAccTest {
         () -> classificationService.deleteClassification(classification.getKey(), "DOMAIN_B");
 
     ClassificationNotFoundException e =
-        catchThrowableOfType(call, ClassificationNotFoundException.class);
+        catchThrowableOfType(ClassificationNotFoundException.class, call);
     assertThat(e.getClassificationKey()).isEqualTo(classification.getKey());
     assertThat(e.getDomain()).isEqualTo("DOMAIN_B");
   }

@@ -132,7 +132,7 @@ class GetTaskCommentAccTest {
   void should_FailToReturnTaskComments_When_TaskIsNotVisible() {
     ThrowingCallable call = () -> taskService.getTaskComments(task1.getId());
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
 
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-2");
     assertThat(e.getRequiredPermissions())
@@ -153,7 +153,7 @@ class GetTaskCommentAccTest {
 
     ThrowingCallable call = () -> taskService.getTaskComment(comment.getId());
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
 
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-2");
     assertThat(e.getRequiredPermissions())
@@ -183,7 +183,7 @@ class GetTaskCommentAccTest {
     String nonExistingId = "Definately Non Existing Task Comment Id";
 
     ThrowingCallable call = () -> taskService.getTaskComment(nonExistingId);
-    TaskCommentNotFoundException e = catchThrowableOfType(call, TaskCommentNotFoundException.class);
+    TaskCommentNotFoundException e = catchThrowableOfType(TaskCommentNotFoundException.class, call);
 
     assertThat(e.getTaskCommentId()).isEqualTo(nonExistingId);
   }

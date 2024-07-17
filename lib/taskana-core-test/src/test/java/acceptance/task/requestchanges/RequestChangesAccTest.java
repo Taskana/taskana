@@ -113,7 +113,7 @@ class RequestChangesAccTest {
 
     ThrowingCallable call = () -> taskService.requestChanges(task.getId());
 
-    InvalidOwnerException e = catchThrowableOfType(call, InvalidOwnerException.class);
+    InvalidOwnerException e = catchThrowableOfType(InvalidOwnerException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-1");
     assertThat(e.getTaskId()).isEqualTo(task.getId());
   }
@@ -128,7 +128,7 @@ class RequestChangesAccTest {
           Task task = createDefaultTask().state(state).buildAndStore(taskService);
           ThrowingCallable call = () -> taskService.requestChanges(task.getId());
 
-          InvalidTaskStateException e = catchThrowableOfType(call, InvalidTaskStateException.class);
+          InvalidTaskStateException e = catchThrowableOfType(InvalidTaskStateException.class, call);
           assertThat(e.getRequiredTaskStates()).containsExactly(TaskState.IN_REVIEW);
           assertThat(e.getTaskState()).isEqualTo(state);
           assertThat(e.getTaskId()).isEqualTo(task.getId());
@@ -143,7 +143,7 @@ class RequestChangesAccTest {
     ThrowingCallable call = () -> taskService.requestChanges(task.getId());
 
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
     assertThat(e.getRequiredPermissions())
         .containsExactly(WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-2");
@@ -162,7 +162,7 @@ class RequestChangesAccTest {
           Task task = createDefaultTask().state(state).buildAndStore(taskService);
           ThrowingCallable call = () -> taskService.forceRequestChanges(task.getId());
 
-          InvalidTaskStateException e = catchThrowableOfType(call, InvalidTaskStateException.class);
+          InvalidTaskStateException e = catchThrowableOfType(InvalidTaskStateException.class, call);
           assertThat(e.getRequiredTaskStates())
               .containsExactlyInAnyOrder(EnumUtil.allValuesExceptFor(TaskState.END_STATES));
           assertThat(e.getTaskState()).isEqualTo(state);

@@ -224,7 +224,7 @@ class GetTaskAccTest {
     ThrowingCallable call = () -> taskService.getTask(task2.getId());
 
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
 
     assertThat(e.getRequiredPermissions())
         .containsExactlyInAnyOrder(WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
@@ -238,7 +238,7 @@ class GetTaskAccTest {
     ThrowingCallable call = () -> taskService.getTask(task3.getId());
 
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
 
     assertThat(e.getRequiredPermissions())
         .containsExactlyInAnyOrder(WorkbasketPermission.READ, WorkbasketPermission.READTASKS);
@@ -251,7 +251,7 @@ class GetTaskAccTest {
   void should_ThrowException_When_RequestedTaskByIdIsNotExisting() {
     ThrowingCallable call = () -> taskService.getTask("INVALID");
 
-    TaskNotFoundException e = catchThrowableOfType(call, TaskNotFoundException.class);
+    TaskNotFoundException e = catchThrowableOfType(TaskNotFoundException.class, call);
     assertThat(e.getTaskId()).isEqualTo("INVALID");
   }
 
@@ -269,7 +269,7 @@ class GetTaskAccTest {
     ThrowingCallable getTaskCall = () -> taskService.getTask(task.getId());
 
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(getTaskCall, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, getTaskCall);
     assertThat(e.getCurrentUserId()).isEqualTo("user-1-2");
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());
     assertThat(e.getRequiredPermissions()).contains(WorkbasketPermission.READ);
@@ -281,7 +281,7 @@ class GetTaskAccTest {
     ThrowingCallable call = () -> taskService.getTask(task.getId());
 
     NotAuthorizedOnWorkbasketException e =
-        catchThrowableOfType(call, NotAuthorizedOnWorkbasketException.class);
+        catchThrowableOfType(NotAuthorizedOnWorkbasketException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo("user-taskrouter");
     assertThat(e.getWorkbasketId()).isEqualTo(defaultWorkbasketSummary.getId());
     assertThat(e.getRequiredPermissions()).contains(WorkbasketPermission.READ);

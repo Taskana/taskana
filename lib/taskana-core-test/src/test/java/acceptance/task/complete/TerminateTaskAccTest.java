@@ -113,7 +113,7 @@ class TerminateTaskAccTest {
 
     ThrowingCallable call = () -> taskService.terminateTask(task.getId());
 
-    NotAuthorizedException e = catchThrowableOfType(call, NotAuthorizedException.class);
+    NotAuthorizedException e = catchThrowableOfType(NotAuthorizedException.class, call);
     assertThat(e.getCurrentUserId()).isEqualTo(currentUserContext.getUserid());
     assertThat(e.getRoles()).containsExactlyInAnyOrder(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN);
   }
@@ -151,7 +151,7 @@ class TerminateTaskAccTest {
         t -> {
           ThrowingCallable call = () -> taskService.terminateTask(t.getMiddle().getId());
 
-          InvalidTaskStateException e = catchThrowableOfType(call, InvalidTaskStateException.class);
+          InvalidTaskStateException e = catchThrowableOfType(InvalidTaskStateException.class, call);
           assertThat(e.getRequiredTaskStates())
               .containsExactlyInAnyOrder(
                   TaskState.READY,
