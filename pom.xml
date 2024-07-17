@@ -46,17 +46,17 @@
     <!-- build dependencies -->
     <version.checkstyle>10.14.0</version.checkstyle>
     <version.google-java-format>1.20.0</version.google-java-format>
-    <version.maven.checkstyle>3.3.1</version.maven.checkstyle>
+    <version.maven.checkstyle>3.4.0</version.maven.checkstyle>
     <version.maven.jar>3.4.2</version.maven.jar>
     <version.maven.war>3.4.0</version.maven.war>
     <version.maven.compiler>3.13.0</version.maven.compiler>
     <version.maven.source>3.3.1</version.maven.source>
     <version.maven.javadoc>3.7.0</version.maven.javadoc>
     <version.maven.resources>3.3.1</version.maven.resources>
-    <version.maven.surefire>3.3.0</version.maven.surefire>
+    <version.maven.surefire>3.3.1</version.maven.surefire>
     <version.maven.asciidoctor>3.0.0</version.maven.asciidoctor>
     <version.maven.clean>3.2.0</version.maven.clean>
-    <version.maven.dependency>3.6.1</version.maven.dependency>
+    <version.maven.dependency>3.7.1</version.maven.dependency>
     <version.maven.sonar>3.11.0.3922</version.maven.sonar>
 
     <!-- release dependencies -->
@@ -86,7 +86,7 @@
     <version.archunit>1.3.0</version.archunit>
     <version.equalsverifier>3.16.1</version.equalsverifier>
     <version.openpojo>0.9.1</version.openpojo>
-    <version.jacoco>0.8.11</version.jacoco>
+    <version.jacoco>0.8.12</version.jacoco>
     <version.slf4j-test>3.0.1</version.slf4j-test>
     <version.auto-restdocs>2.0.11</version.auto-restdocs>
     <version.testcontainers>1.19.8</version.testcontainers>
