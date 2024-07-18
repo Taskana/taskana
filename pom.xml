@@ -121,9 +121,7 @@
     <sonar.sources>src/main/java</sonar.sources>
     <sonar.tests>src/test/java</sonar.tests>
     <sonar.exclusions>
-      org/camunda/bpm/dmn/**/*,
-      **/example/**/*,
-      **/*Example*
+      org/camunda/bpm/dmn/**/*, **/example/**/*, **/*Example*
     </sonar.exclusions>
   </properties>
 
@@ -359,7 +357,8 @@
         </dependencies>
         <configuration>
           <configLocation>qa/checkstyle/checkstyle.xml</configLocation>
-          <encoding>UTF-8</encoding>
+          <inputEncoding>UTF-8</inputEncoding>
+          <outputEncoding>UTF-8</outputEncoding>
           <consoleOutput>true</consoleOutput>
           <failsOnError>true</failsOnError>
           <failOnViolation>true</failOnViolation>
