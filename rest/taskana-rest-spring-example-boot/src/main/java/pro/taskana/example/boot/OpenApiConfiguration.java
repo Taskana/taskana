@@ -1,7 +1,10 @@
 package pro.taskana.example.boot;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.StringSchema;
@@ -18,8 +21,7 @@ import org.springframework.context.annotation.Configuration;
             title = "TASKANA RESTful API Documentation",
             version = "8.2.0",
             description =
-                ""
-                    + "<h1>Overview</h1>"
+                "<h1>Overview</h1>"
                     + "<p>"
                     + "This is the REST documentation for [TASKANA](http://taskana.pro) - the "
                     + "world’s first open source solution for Enterprise Task Management."
@@ -340,7 +342,9 @@ import org.springframework.context.annotation.Configuration;
                     + "<td>String</td>"
                     + "</tr>"
                     + "</tbody>"
-                    + "</table>"))
+                    + "</table>"),
+    security = {@SecurityRequirement(name = "basicAuth")})
+@SecurityScheme(name = "basicAuth", type = SecuritySchemeType.HTTP, scheme = "basic")
 public class OpenApiConfiguration {
   @Bean
   public OpenApiCustomizer openApiCustomizer() {
