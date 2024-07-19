@@ -78,7 +78,7 @@
     <!-- java ee dependencies -->
     <version.jakartaee-api>10.0.0</version.jakartaee-api>
     <version.jakarta.servlet>6.1.0</version.jakarta.servlet>
-    <version.arquillian>1.7.2.Final</version.arquillian>
+    <version.arquillian>1.9.0.Final</version.arquillian>
     <version.arquillian.managed.wildfly>5.0.1.Final</version.arquillian.managed.wildfly>
 
     <!-- test dependencies -->
