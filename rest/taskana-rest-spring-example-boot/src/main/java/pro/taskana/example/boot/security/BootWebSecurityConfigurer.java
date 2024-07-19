@@ -76,7 +76,11 @@ public class BootWebSecurityConfigurer {
                     .requestMatchers(HttpMethod.GET, "/docs/**")
                     .permitAll()
                     .requestMatchers(
-                        HttpMethod.GET, "/api-docs", "/api-docs/**", "swagger-ui", "/swagger-ui/**")
+                        HttpMethod.GET,
+                        "/api-docs",
+                        "/api-docs/**",
+                        "/swagger-ui",
+                        "/swagger-ui/**")
                     .permitAll())
         .cors(Customizer.withDefaults())
         .addFilter(jaasApiIntegrationFilter())
