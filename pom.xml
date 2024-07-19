@@ -356,7 +356,8 @@
         </dependencies>
         <configuration>
           <configLocation>qa/checkstyle/checkstyle.xml</configLocation>
-          <encoding>UTF-8</encoding>
+          <inputEncoding>UTF-8</inputEncoding>
+          <outputEncoding>UTF-8</outputEncoding>
           <consoleOutput>true</consoleOutput>
           <failsOnError>true</failsOnError>
           <failOnViolation>true</failOnViolation>
