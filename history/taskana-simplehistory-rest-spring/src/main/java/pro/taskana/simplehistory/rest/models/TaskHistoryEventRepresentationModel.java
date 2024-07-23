@@ -1,5 +1,6 @@
 package pro.taskana.simplehistory.rest.models;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 import org.springframework.hateoas.RepresentationModel;
 import pro.taskana.spi.history.api.events.task.TaskHistoryEvent;
@@ -9,60 +10,101 @@ public class TaskHistoryEventRepresentationModel
     extends RepresentationModel<TaskHistoryEventRepresentationModel> {
 
   /** Unique Id. */
+  @Schema(name = "taskHistoryId", description = "Unique Id.")
   private String taskHistoryId;
   /** The Id of the business process. */
+  @Schema(name = "businessProcessId", description = "The Id of the business process.")
   private String businessProcessId;
   /** The Id of the parent business process. */
+  @Schema(name = "parentBusinessProcessId", description = "The Id of the parent business process.")
   private String parentBusinessProcessId;
   /** The Id of the task. */
+  @Schema(name = "taskId", description = "The Id of the task.")
   private String taskId;
   /** The type of the event. */
+  @Schema(name = "eventType", description = "The type of the event.")
   private String eventType;
   /**
    * The time of event creation.
    *
    * <p>The format is ISO-8601.
    */
+  @Schema(name = "created", description = "The time of event creation.<p>The format is ISO-8601.")
   private Instant created;
   /** The Id of the user. */
+  @Schema(name = "userId", description = "The Id of the user.")
   private String userId;
   /** The long name of the user. */
+  @Schema(name = "userLongName", description = "The long name of the user.")
   private String userLongName;
   /** Domain. */
+  @Schema(name = "domain", description = "Domain.")
   private String domain;
   /** The key of the Workbasket. */
+  @Schema(name = "workbasketKey", description = "The key of the Workbasket.")
   private String workbasketKey;
   /** The company the referenced primary object belongs to. */
+  @Schema(
+      name = "porCompany",
+      description = "The company the referenced primary object belongs to.")
   private String porCompany;
   /** The type of the referenced primary object (contract, claim, policy, customer, ...). */
+  @Schema(
+      name = "porType",
+      description =
+          "The type of the referenced primary object (contract, claim, policy, customer, ...).")
   private String porType;
   /** The (kind of) system, the referenced primary object resides in (e.g. SAP, MySystem A, ...). */
+  @Schema(
+      name = "porSystem",
+      description =
+          "The (kind of) system, the referenced primary object resides in (e.g. SAP, MySystem A, "
+              + "...).")
   private String porSystem;
   /** The instance of the system where the referenced primary object is located. */
+  @Schema(
+      name = "porInstance",
+      description = "The instance of the system where the referenced primary object is located.")
   private String porInstance;
   /** The value of the primary object reference. */
+  @Schema(name = "porValue", description = "The value of the primary object reference.")
   private String porValue;
   /** The long name of the task owner. */
+  @Schema(name = "taskOwnerLongName", description = "The long name of the task owner.")
   private String taskOwnerLongName;
   /** The key of the task's classification. */
+  @Schema(name = "taskClassificationKey", description = "The key of the task's classification.")
   private String taskClassificationKey;
   /** The category of the task's classification. */
+  @Schema(
+      name = "taskClassificationCategory",
+      description = "The category of the task's classification.")
   private String taskClassificationCategory;
   /** The classification key of the task's attachment. */
+  @Schema(
+      name = "attachmentClassificationKey",
+      description = "The classification key of the task's attachment.")
   private String attachmentClassificationKey;
   /** The old value. */
+  @Schema(name = "oldValue", description = "The old value.")
   private String oldValue;
   /** The new value. */
+  @Schema(name = "newValue", description = "The new value.")
   private String newValue;
   /** A custom property with name "1". */
+  @Schema(name = "custom1", description = "A custom property with name '1'.")
   private String custom1;
   /** A custom property with name "2". */
+  @Schema(name = "custom2", description = "A custom property with name '2'.")
   private String custom2;
   /** A custom property with name "3". */
+  @Schema(name = "custom3", description = "A custom property with name '3'.")
   private String custom3;
   /** A custom property with name "4". */
+  @Schema(name = "custom4", description = "A custom property with name '4'.")
   private String custom4;
   /** details of changes within the task. */
+  @Schema(name = "details", description = "details of changes within the task.")
   private String details;
 
   public String getTaskHistoryId() {

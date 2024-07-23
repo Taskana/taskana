@@ -1,9 +1,15 @@
 package pro.taskana.simplehistory.rest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.function.BiConsumer;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
@@ -57,13 +63,31 @@ public class TaskHistoryEventController {
    * @param pagingParameter the paging parameters
    * @return the Task History Events with the given filter, sort and paging options.
    */
+  @Operation(
+      summary = "Get a list of all Task History Events",
+      description =
+          "This endpoint retrieves a list of existing Task History Events. Filters can be applied.",
+      parameters = {
+        @Parameter(name = "page", example = "1"),
+        @Parameter(name = "page-size", example = "3")
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the Task History Events with the given filter, sort and paging options.",
+            content = {
+              @Content(
+                  mediaType = MediaTypes.HAL_JSON_VALUE,
+                  schema = @Schema(implementation = TaskHistoryEventPagedRepresentationModel.class))
+            })
+      })
   @GetMapping(path = HistoryRestEndpoints.URL_HISTORY_EVENTS, produces = MediaTypes.HAL_JSON_VALUE)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskHistoryEventPagedRepresentationModel> getTaskHistoryEvents(
       HttpServletRequest request,
-      TaskHistoryQueryFilterParameter filterParameter,
-      TaskHistoryQuerySortParameter sortParameter,
-      QueryPagingParameter<TaskHistoryEvent, TaskHistoryQuery> pagingParameter) {
+      @ParameterObject TaskHistoryQueryFilterParameter filterParameter,
+      @ParameterObject TaskHistoryQuerySortParameter sortParameter,
+      @ParameterObject QueryPagingParameter<TaskHistoryEvent, TaskHistoryQuery> pagingParameter) {
 
     QueryParamsValidator.validateParams(
         request,
@@ -92,6 +116,26 @@ public class TaskHistoryEventController {
    * @throws TaskanaHistoryEventNotFoundException If a Task History Event can't be found by the
    *     provided historyEventId
    */
+  @Operation(
+      summary = "Get a single Task History Event",
+      description = "This endpoint retrieves a single Task History Event.",
+      parameters = {
+        @Parameter(
+            name = "historyEventId",
+            description = "the Id of the requested Task History Event.",
+            example = "THI:000000000000000000000000000000000000",
+            required = true),
+      },
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "the requested Task History Event",
+            content = {
+              @Content(
+                  mediaType = MediaTypes.HAL_JSON_VALUE,
+                  schema = @Schema(implementation = TaskHistoryEventRepresentationModel.class))
+            })
+      })
   @GetMapping(path = HistoryRestEndpoints.URL_HISTORY_EVENTS_ID)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
   public ResponseEntity<TaskHistoryEventRepresentationModel> getTaskHistoryEvent(
