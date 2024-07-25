@@ -94,7 +94,10 @@ public class UserController {
     }
 
     if (currentUser != null) {
-      QueryParamsValidator.checkExactParam(request, "current-user");
+      if (QueryParamsValidator.hasQueryParameterValues(request, "current-user")) {
+        throw new InvalidArgumentException(
+            "It is prohibited to use the param current-user with values.");
+      }
       users.add(userService.getUser(this.currentUserContext.getUserid()));
     }
 

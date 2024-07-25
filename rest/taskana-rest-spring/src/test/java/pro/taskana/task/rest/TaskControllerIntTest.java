@@ -61,7 +61,6 @@ import pro.taskana.workbasket.rest.models.WorkbasketSummaryRepresentationModel;
 @TaskanaSpringBootTest
 class TaskControllerIntTest {
 
-  @Autowired TaskanaConfiguration taskanaConfiguration;
   private static final ParameterizedTypeReference<TaskSummaryPagedRepresentationModel>
       TASK_SUMMARY_PAGE_MODEL_TYPE = new ParameterizedTypeReference<>() {};
   private static final ParameterizedTypeReference<TaskSummaryCollectionRepresentationModel>
@@ -71,6 +70,7 @@ class TaskControllerIntTest {
   private final RestHelper restHelper;
   private final DataSource dataSource;
   private final String schemaName;
+  @Autowired TaskanaConfiguration taskanaConfiguration;
 
   @Autowired
   TaskControllerIntTest(
@@ -149,16 +149,16 @@ class TaskControllerIntTest {
 
   private AttachmentRepresentationModel getAttachmentResourceSample() {
     AttachmentRepresentationModel attachmentRepresentationModel =
-            new AttachmentRepresentationModel();
+        new AttachmentRepresentationModel();
     attachmentRepresentationModel.setAttachmentId("A11010");
     attachmentRepresentationModel.setObjectReference(getObjectReferenceResourceSample());
     ClassificationSummaryRepresentationModel classificationSummaryRepresentationModel =
-            new ClassificationSummaryRepresentationModel();
-    classificationSummaryRepresentationModel
-            .setClassificationId("CLI:100000000000000000000000000000000004");
+        new ClassificationSummaryRepresentationModel();
+    classificationSummaryRepresentationModel.setClassificationId(
+        "CLI:100000000000000000000000000000000004");
     classificationSummaryRepresentationModel.setKey("L11010");
-    attachmentRepresentationModel
-            .setClassificationSummary(classificationSummaryRepresentationModel);
+    attachmentRepresentationModel.setClassificationSummary(
+        classificationSummaryRepresentationModel);
     return attachmentRepresentationModel;
   }
 
@@ -1195,8 +1195,11 @@ class TaskControllerIntTest {
     @CsvSource({
       "owner=user-1-1, 10",
       "owner-is-null, 65",
+      "owner-is-null=true, 65",
       "owner-is-null&owner=user-1-1, 75",
+      "owner-is-null=TRUE&owner=user-1-1, 75",
       "state=READY&owner-is-null&owner=user-1-1, 56",
+      "state=READY&owner-is-null=TrUe&owner=user-1-1, 56",
     })
     void should_ReturnTasksWithVariousOwnerParameters_When_GettingTasks(
         String queryParams, int expectedSize) {
@@ -1215,7 +1218,9 @@ class TaskControllerIntTest {
       List<Pair<String, String>> list =
           List.of(
               Pair.of("When owner-is-null=", "?owner-is-null="),
-              Pair.of("When owner-is-null=anyValue", "?owner-is-null=anyValue1,anyValue2"));
+              Pair.of("When owner-is-null=owner-is-null", "?owner-is-null=owner-is-null"),
+              Pair.of(
+                  "When owner-is-null=anyValue1,anyValue2", "?owner-is-null=anyValue1,anyValue2"));
       ThrowingConsumer<Pair<String, String>> testOwnerIsNull =
           t -> {
             String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + t.getRight();
@@ -1550,16 +1555,16 @@ class TaskControllerIntTest {
 
       String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
       HttpEntity<TaskRepresentationModel> auth =
-              new HttpEntity<>(
-                      taskRepresentationModel, RestHelper.generateHeadersForUser("teamlead-1"));
+          new HttpEntity<>(
+              taskRepresentationModel, RestHelper.generateHeadersForUser("teamlead-1"));
 
       ThrowingCallable httpCall =
-              () -> TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+          () -> TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
 
       assertThatThrownBy(httpCall)
-              .extracting(HttpStatusCodeException.class::cast)
-              .extracting(HttpStatusCodeException::getStatusCode)
-              .isEqualTo(HttpStatus.BAD_REQUEST);
+          .extracting(HttpStatusCodeException.class::cast)
+          .extracting(HttpStatusCodeException::getStatusCode)
+          .isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -1789,13 +1794,12 @@ class TaskControllerIntTest {
     @Test
     void should_ThrowError_When_UpdatingTaskWithBadAttachment() {
       String url =
-              restHelper.toUrl(RestEndpoints.URL_TASKS_ID,
-                      "TKI:100000000000000000000000000000000000");
+          restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:100000000000000000000000000000000000");
       HttpEntity<Object> httpEntityWithoutBody =
-              new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+          new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
       ResponseEntity<TaskRepresentationModel> responseGet =
-              TEMPLATE.exchange(url, HttpMethod.GET, httpEntityWithoutBody, TASK_MODEL_TYPE);
+          TEMPLATE.exchange(url, HttpMethod.GET, httpEntityWithoutBody, TASK_MODEL_TYPE);
 
       final TaskRepresentationModel originalTask = responseGet.getBody();
 
@@ -1803,17 +1807,16 @@ class TaskControllerIntTest {
       attachmentRepresentationModel.setTaskId(originalTask.getTaskId() + "wrongId");
       originalTask.setAttachments(Lists.newArrayList(attachmentRepresentationModel));
 
-
       HttpEntity<TaskRepresentationModel> httpEntity =
-              new HttpEntity<>(originalTask, RestHelper.generateHeadersForUser("teamlead-1"));
+          new HttpEntity<>(originalTask, RestHelper.generateHeadersForUser("teamlead-1"));
 
       ThrowingCallable httpCall =
-              () -> TEMPLATE.exchange(url, HttpMethod.PUT, httpEntity, TASK_MODEL_TYPE);
+          () -> TEMPLATE.exchange(url, HttpMethod.PUT, httpEntity, TASK_MODEL_TYPE);
 
       assertThatThrownBy(httpCall)
-              .extracting(HttpStatusCodeException.class::cast)
-              .extracting(HttpStatusCodeException::getStatusCode)
-              .isEqualTo(HttpStatus.BAD_REQUEST);
+          .extracting(HttpStatusCodeException.class::cast)
+          .extracting(HttpStatusCodeException::getStatusCode)
+          .isEqualTo(HttpStatus.BAD_REQUEST);
     }
   }
 
