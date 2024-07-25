@@ -28,6 +28,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Filter by what the task id shouldn't be. This is an exact match. */
   @JsonProperty("task-id-not")
   private final String[] taskIdNotIn;
+
   // endregion
   // region externalId
   /** Filter by the external id of the Task. This is an exact match. */
@@ -37,6 +38,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Filter by what the external id of the Task shouldn't be. This is an exact match. */
   @JsonProperty("external-id-not")
   private final String[] externalIdNotIn;
+
   // endregion
   // region received
   /**
@@ -101,6 +103,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("received-until-not")
   private final Instant receivedUntilNot;
+
   // endregion
   // region created
   /**
@@ -164,6 +167,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("created-until-not")
   private final Instant createdUntilNot;
+
   // endregion
   // region claimed
   /**
@@ -183,6 +187,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("claimed-not")
   private final Instant[] claimedNotWithin;
+
   // endregion
   // region modified
   /**
@@ -202,6 +207,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("modified-not")
   private final Instant[] modifiedNotWithin;
+
   // endregion
   // region planned
   /**
@@ -265,6 +271,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("planned-until-not")
   private final Instant plannedUntilNot;
+
   // endregion
   // region due
   /**
@@ -328,6 +335,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("due-until-not")
   private final Instant dueUntilNot;
+
   // endregion
   // region completed
   /**
@@ -392,6 +400,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("completed-until-not")
   private final Instant completedUntilNot;
+
   // endregion
   // region name
   /** Filter by the name of the Task. This is an exact match. */
@@ -417,6 +426,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("name-not-like")
   private final String[] nameNotLike;
+
   // endregion
   // region creator
   /** Filter by creator of the Task. This is an exact match. */
@@ -442,6 +452,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("creator-not-like")
   private final String[] creatorNotLike;
+
   // endregion
   // region note
   /**
@@ -459,6 +470,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("note-not-like")
   private final String[] noteNotLike;
+
   // endregion
   // region description
   /**
@@ -476,6 +488,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("description-not-like")
   private final String[] descriptionNotLike;
+
   // endregion
   // region priority
   /** Filter by the priority of the Task. This is an exact match. */
@@ -509,6 +522,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Filter by excluding priority up to the given value (inclusive). */
   @JsonProperty("priority-not-until")
   private final Integer priorityNotUntil;
+
   // endregion
   // region state
   /** Filter by the Task state. This is an exact match. */
@@ -518,6 +532,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Filter by what the Task state shouldn't be. This is an exact match. */
   @JsonProperty("state-not")
   private final TaskState[] stateNotIn;
+
   // endregion
   // region comments
   /** Filter by the has comments flag of the Task. This is an exact match. */
@@ -532,6 +547,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Filter by what the classification id of the Task shouldn't be. This is an exact match. */
   @JsonProperty("classification-id-not")
   private final String[] classificationIdNotIn;
+
   // endregion
   // region classificationKey
   /** Filter by the classification key of the Task. This is an exact match. */
@@ -557,6 +573,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("classification-key-not-like")
   private final String[] classificationKeyNotLike;
+
   // endregion
   // region classificationParentKey
   /**
@@ -588,6 +605,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("classification-parent-key-not-like")
   private final String[] classificationParentKeyNotLike;
+
   // endregion
   // region classificationCategory
   /** Filter by the classification category of the Task. This is an exact match. */
@@ -615,6 +633,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("classification-category-not-like")
   private final String[] classificationCategoryNotLike;
+
   // endregion
   // region classificationName
   /** Filter by the classification name of the Task. This is an exact match. */
@@ -640,6 +659,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("classification-name-not-like")
   private final String[] classificationNameNotLike;
+
   // endregion
   // region workbasketId
   /** Filter by workbasket id of the Task. This is an exact match. */
@@ -649,6 +669,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Filter by what the workbasket id of the Task shouldn't be. This is an exact match. */
   @JsonProperty("workbasket-id-not")
   private final String[] workbasketIdNotIn;
+
   // endregion
   // region workbasketKeyDomain
   /**
@@ -668,6 +689,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Filter by domain of the Task. This is an exact match. */
   @JsonProperty("domain")
   private final String domain;
+
   // endregion
   // region businessProcessId
   /** Filter by the business process id of the Task. This is an exact match. */
@@ -754,6 +776,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("owner-is-null")
   private final String ownerNull;
+
   // endregion
   // region primaryObjectReference
   /**
@@ -764,6 +787,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("por")
   private final ObjectReference[] primaryObjectReferenceIn;
+
   // endregion
   // region primaryObjectReferenceCompany
   /** Filter by the company of the primary object reference of the Task. This is an exact match. */
@@ -792,6 +816,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("por-company-not-like")
   private final String[] porCompanyNotLike;
+
   // endregion
   // region primaryObjectReferenceSystem
   /** Filter by the system of the primary object reference of the Task. This is an exact match. */
@@ -820,6 +845,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("por-system-not-like")
   private final String[] porSystemNotLike;
+
   // endregion
   // region primaryObjectReferenceSystemInstance
   /**
@@ -851,6 +877,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("por-instance-not-like")
   private final String[] porInstanceNotLike;
+
   // endregion
   // region primaryObjectReferenceSystemType
   /** Filter by the type of the primary object reference of the Task. This is an exact match. */
@@ -879,6 +906,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("por-type-not-like")
   private final String[] porTypeNotLike;
+
   // endregion
   // region primaryObjectReferenceSystemValue
   /** Filter by the value of the primary object reference of the Task. This is an exact match. */
@@ -907,6 +935,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("por-value-not-like")
   private final String[] porValueNotLike;
+
   // endregion
   // region secondaryObjectReference
   /**
@@ -917,6 +946,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("sor")
   private final ObjectReference[] secondaryObjectReferenceIn;
+
   // endregion
   // region secondaryObjectReferenceCompany
   /**
@@ -997,11 +1027,13 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Filter by the is read flag of the Task. This is an exact match. */
   @JsonProperty("is-read")
   private final Boolean isRead;
+
   // endregion
   // region transferred
   /** Filter by the is transferred flag of the Task. This is an exact match. */
   @JsonProperty("is-transferred")
   private final Boolean isTransferred;
+
   // endregion
   // region attachmentClassificationId
   /** Filter by the attachment classification id of the Task. This is an exact match. */
@@ -1014,6 +1046,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("attachment-classification-id-not")
   private final String[] attachmentClassificationIdNotIn;
+
   // endregion
   // region attachmentClassificationKey
   /** Filter by the attachment classification key of the Task. This is an exact match. */
@@ -1042,6 +1075,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("attachment-classification-key-not-like")
   private final String[] attachmentClassificationKeyNotLike;
+
   // endregion
   // region attachmentClassificationName
   /** Filter by the attachment classification name of the Task. This is an exact match. */
@@ -1070,6 +1104,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("attachment-classification-name-not-like")
   private final String[] attachmentClassificationNameNotLike;
+
   // endregion
   // region attachmentChannel
   /** Filter by the attachment channel of the Task. This is an exact match. */
@@ -1095,6 +1130,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("attachment-channel-not-like")
   private final String[] attachmentChannelNotLike;
+
   // endregion
   // region attachmentReferenceValue
   /** Filter by the attachment reference of the Task. This is an exact match. */
@@ -1120,6 +1156,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("attachment-reference-not-like")
   private final String[] attachmentReferenceNotLike;
+
   // endregion
   // region attachmentReceived
   /**
@@ -1139,6 +1176,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("attachment-received-not")
   private final Instant[] attachmentReceivedNotWithin;
+
   // endregion
   // region withoutAttachment
   /**
@@ -1147,6 +1185,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("without-attachment")
   private final Boolean withoutAttachment;
+
   // endregion
   // region callbackState
   /** Filter by the callback state of the Task. This is an exact match. */
@@ -1156,6 +1195,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   /** Filter by what the callback state of the Task shouldn't be. This is an exact match. */
   @JsonProperty("callback-state-not")
   private final CallbackState[] callbackStateNotIn;
+
   // endregion
   // region wildcardSearchValue
   /**
@@ -1173,6 +1213,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
    */
   @JsonProperty("wildcard-search-value")
   private final String wildcardSearchValue;
+
   // endregion
 
   // region constructor
@@ -2213,7 +2254,7 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
       return this.ownerIn;
     }
     if (this.ownerIn == null) {
-      return new String[]{null};
+      return new String[] {null};
     }
     List<String> ownerInAsList = new ArrayList<>(Arrays.asList(this.ownerIn));
     ownerInAsList.add(null);
