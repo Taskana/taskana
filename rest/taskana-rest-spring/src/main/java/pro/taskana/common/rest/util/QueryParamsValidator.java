@@ -1,15 +1,14 @@
 package pro.taskana.common.rest.util;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
-import pro.taskana.common.api.exceptions.InvalidArgumentException;
 
 public class QueryParamsValidator {
 
@@ -35,21 +34,57 @@ public class QueryParamsValidator {
     if (!providedParams.isEmpty()) {
       throw new IllegalArgumentException("Unknown request parameters found: " + providedParams);
     }
-    checkExactParam(request, "owner-is-null");
   }
 
-  public static void checkExactParam(HttpServletRequest request, String queryParameter) {
-    String queryString = request.getQueryString();
-    boolean containParam = queryString != null && queryString.contains(queryParameter);
-    if (containParam) {
-      Pattern pattern = Pattern.compile("\\b" + queryParameter + "(&|$)");
-      Matcher matcher = pattern.matcher(queryString);
+  public static boolean hasQueryParameterValues(HttpServletRequest request, String queryParameter) {
 
-      boolean hasExactParam = matcher.find();
-      if (!hasExactParam) {
-        throw new InvalidArgumentException(
-            "It is prohibited to use the param " + queryParameter + " with values.");
-      }
+    Map<String, String[]> queryParametersMap = request.getParameterMap();
+
+    if (queryParametersMap.isEmpty()) {
+      return false;
     }
+
+    String[] queryParameterValues = queryParametersMap.get(queryParameter);
+
+    if (queryParameterValues == null) {
+      return false;
+    }
+
+    boolean hasQueryParameterNotEmptyValues =
+        Arrays.stream(queryParameterValues).anyMatch(value -> !value.isBlank());
+
+    /* Workaround to manage the case "query-param=".
+    It should be safe enough to use because we have checked all other possibilities before. */
+    boolean hasQueryParameterEmptyValues = request.getQueryString().contains(queryParameter + "=");
+
+    return hasQueryParameterNotEmptyValues || hasQueryParameterEmptyValues;
+  }
+
+  public static boolean hasQueryParameterValuesOrIsNotTrue(
+      HttpServletRequest request, String queryParameter) {
+
+    Map<String, String[]> queryParametersMap = request.getParameterMap();
+
+    if (queryParametersMap.isEmpty()) {
+      return false;
+    }
+
+    String[] queryParameterValues = queryParametersMap.get(queryParameter);
+
+    if (queryParameterValues == null) {
+      return false;
+    }
+
+    boolean hasQueryParameterProhibitedValues =
+        Arrays.stream(queryParameterValues)
+            .anyMatch(value -> !value.isBlank() && !Boolean.parseBoolean(value));
+
+    /* Workaround to manage the case "query-param=".
+    It should be safe enough to use because we have checked all other possibilities before. */
+    boolean hasQueryParameterEmptyValues =
+        Arrays.stream(queryParameterValues).allMatch(String::isBlank)
+            && request.getQueryString().contains(queryParameter + "=");
+
+    return hasQueryParameterProhibitedValues || hasQueryParameterEmptyValues;
   }
 }

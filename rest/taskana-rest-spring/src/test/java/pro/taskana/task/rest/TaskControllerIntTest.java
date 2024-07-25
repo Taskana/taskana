@@ -148,16 +148,16 @@ class TaskControllerIntTest {
 
   private AttachmentRepresentationModel getAttachmentResourceSample() {
     AttachmentRepresentationModel attachmentRepresentationModel =
-            new AttachmentRepresentationModel();
+        new AttachmentRepresentationModel();
     attachmentRepresentationModel.setAttachmentId("A11010");
     attachmentRepresentationModel.setObjectReference(getObjectReferenceResourceSample());
     ClassificationSummaryRepresentationModel classificationSummaryRepresentationModel =
-            new ClassificationSummaryRepresentationModel();
-    classificationSummaryRepresentationModel
-            .setClassificationId("CLI:100000000000000000000000000000000004");
+        new ClassificationSummaryRepresentationModel();
+    classificationSummaryRepresentationModel.setClassificationId(
+        "CLI:100000000000000000000000000000000004");
     classificationSummaryRepresentationModel.setKey("L11010");
-    attachmentRepresentationModel
-            .setClassificationSummary(classificationSummaryRepresentationModel);
+    attachmentRepresentationModel.setClassificationSummary(
+        classificationSummaryRepresentationModel);
     return attachmentRepresentationModel;
   }
 
@@ -1194,8 +1194,11 @@ class TaskControllerIntTest {
     @CsvSource({
       "owner=user-1-1, 10",
       "owner-is-null, 65",
+      "owner-is-null=true, 65",
       "owner-is-null&owner=user-1-1, 75",
+      "owner-is-null=TRUE&owner=user-1-1, 75",
       "state=READY&owner-is-null&owner=user-1-1, 56",
+      "state=READY&owner-is-null=TrUe&owner=user-1-1, 56",
     })
     void should_ReturnTasksWithVariousOwnerParameters_When_GettingTasks(
         String queryParams, int expectedSize) {
@@ -1214,7 +1217,9 @@ class TaskControllerIntTest {
       List<Pair<String, String>> list =
           List.of(
               Pair.of("When owner-is-null=", "?owner-is-null="),
-              Pair.of("When owner-is-null=anyValue", "?owner-is-null=anyValue1,anyValue2"));
+              Pair.of("When owner-is-null=owner-is-null", "?owner-is-null=owner-is-null"),
+              Pair.of(
+                  "When owner-is-null=anyValue1,anyValue2", "?owner-is-null=anyValue1,anyValue2"));
       ThrowingConsumer<Pair<String, String>> testOwnerIsNull =
           t -> {
             String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + t.getRight();
@@ -1382,9 +1387,7 @@ class TaskControllerIntTest {
 
     @Test
     void should_GetAllTasksWithComments_When_FilteringByHasCommentsIsSetToTrue() {
-      String url =
-          restHelper.toUrl(RestEndpoints.URL_TASKS)
-              + "?has-comments=true";
+      String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + "?has-comments=true";
       HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
       ResponseEntity<TaskSummaryPagedRepresentationModel> response =
@@ -1393,7 +1396,8 @@ class TaskControllerIntTest {
       assertThat(response.getBody()).isNotNull();
       assertThat(response.getBody().getContent())
           .extracting(TaskSummaryRepresentationModel::getTaskId)
-          .containsExactlyInAnyOrder("TKI:000000000000000000000000000000000000",
+          .containsExactlyInAnyOrder(
+              "TKI:000000000000000000000000000000000000",
               "TKI:000000000000000000000000000000000001",
               "TKI:000000000000000000000000000000000002",
               "TKI:000000000000000000000000000000000004",
@@ -1404,9 +1408,7 @@ class TaskControllerIntTest {
 
     @Test
     void should_GetAllTasksWithoutComments_When_FilteringByHasCommentsIsSetToFalse() {
-      String url =
-          restHelper.toUrl(RestEndpoints.URL_TASKS)
-              + "?has-comments=false";
+      String url = restHelper.toUrl(RestEndpoints.URL_TASKS) + "?has-comments=false";
       HttpEntity<String> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
       ResponseEntity<TaskSummaryPagedRepresentationModel> response =
@@ -1415,7 +1417,8 @@ class TaskControllerIntTest {
       assertThat(response.getBody()).isNotNull();
       assertThat(response.getBody().getContent())
           .extracting(TaskSummaryRepresentationModel::getTaskId)
-          .doesNotContain("TKI:000000000000000000000000000000000000",
+          .doesNotContain(
+              "TKI:000000000000000000000000000000000000",
               "TKI:000000000000000000000000000000000001",
               "TKI:000000000000000000000000000000000002",
               "TKI:000000000000000000000000000000000004",
@@ -1587,16 +1590,16 @@ class TaskControllerIntTest {
 
       String url = restHelper.toUrl(RestEndpoints.URL_TASKS);
       HttpEntity<TaskRepresentationModel> auth =
-              new HttpEntity<>(
-                      taskRepresentationModel, RestHelper.generateHeadersForUser("teamlead-1"));
+          new HttpEntity<>(
+              taskRepresentationModel, RestHelper.generateHeadersForUser("teamlead-1"));
 
       ThrowingCallable httpCall =
-              () -> TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+          () -> TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
 
       assertThatThrownBy(httpCall)
-              .extracting(HttpStatusCodeException.class::cast)
-              .extracting(HttpStatusCodeException::getStatusCode)
-              .isEqualTo(HttpStatus.BAD_REQUEST);
+          .extracting(HttpStatusCodeException.class::cast)
+          .extracting(HttpStatusCodeException::getStatusCode)
+          .isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -1826,13 +1829,12 @@ class TaskControllerIntTest {
     @Test
     void should_ThrowError_When_UpdatingTaskWithBadAttachment() {
       String url =
-              restHelper.toUrl(RestEndpoints.URL_TASKS_ID,
-                      "TKI:100000000000000000000000000000000000");
+          restHelper.toUrl(RestEndpoints.URL_TASKS_ID, "TKI:100000000000000000000000000000000000");
       HttpEntity<Object> httpEntityWithoutBody =
-              new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
+          new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
       ResponseEntity<TaskRepresentationModel> responseGet =
-              TEMPLATE.exchange(url, HttpMethod.GET, httpEntityWithoutBody, TASK_MODEL_TYPE);
+          TEMPLATE.exchange(url, HttpMethod.GET, httpEntityWithoutBody, TASK_MODEL_TYPE);
 
       final TaskRepresentationModel originalTask = responseGet.getBody();
 
@@ -1840,17 +1842,16 @@ class TaskControllerIntTest {
       attachmentRepresentationModel.setTaskId(originalTask.getTaskId() + "wrongId");
       originalTask.setAttachments(Lists.newArrayList(attachmentRepresentationModel));
 
-
       HttpEntity<TaskRepresentationModel> httpEntity =
-              new HttpEntity<>(originalTask, RestHelper.generateHeadersForUser("teamlead-1"));
+          new HttpEntity<>(originalTask, RestHelper.generateHeadersForUser("teamlead-1"));
 
       ThrowingCallable httpCall =
-              () -> TEMPLATE.exchange(url, HttpMethod.PUT, httpEntity, TASK_MODEL_TYPE);
+          () -> TEMPLATE.exchange(url, HttpMethod.PUT, httpEntity, TASK_MODEL_TYPE);
 
       assertThatThrownBy(httpCall)
-              .extracting(HttpStatusCodeException.class::cast)
-              .extracting(HttpStatusCodeException::getStatusCode)
-              .isEqualTo(HttpStatus.BAD_REQUEST);
+          .extracting(HttpStatusCodeException.class::cast)
+          .extracting(HttpStatusCodeException::getStatusCode)
+          .isEqualTo(HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -2048,8 +2049,7 @@ class TaskControllerIntTest {
     }
 
     @TestFactory
-    Stream<DynamicTest>
-        should_ReturnFailedTasks_When_TransferringTasks() {
+    Stream<DynamicTest> should_ReturnFailedTasks_When_TransferringTasks() {
 
       Iterator<Pair<Boolean, String>> iterator =
           Arrays.asList(Pair.of(true, "user-1-1"), Pair.of(false, "user-1-2")).iterator();

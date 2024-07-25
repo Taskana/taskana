@@ -118,11 +118,12 @@ public class TaskController {
           NotAuthorizedOnWorkbasketException {
 
     if (!taskRepresentationModel.getAttachments().stream()
-            .filter(att -> Objects.nonNull(att.getTaskId()))
-            .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
-            .collect(Collectors.toList()).isEmpty()) {
+        .filter(att -> Objects.nonNull(att.getTaskId()))
+        .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
+        .collect(Collectors.toList())
+        .isEmpty()) {
       throw new InvalidArgumentException(
-              "An attachments' taskId must be empty or equal to the id of the task it belongs to");
+          "An attachments' taskId must be empty or equal to the id of the task it belongs to");
     }
 
     Task fromResource = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
@@ -148,6 +149,7 @@ public class TaskController {
    * @param sortParameter the sort parameters
    * @param pagingParameter the paging parameters
    * @return the Tasks with the given filter, sort and paging options.
+   * @throws InvalidArgumentException if the query parameter "owner-is-null" has values
    */
   @GetMapping(path = RestEndpoints.URL_TASKS)
   @Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -167,6 +169,12 @@ public class TaskController {
         TaskQueryGroupByParameter.class,
         QuerySortParameter.class,
         QueryPagingParameter.class);
+
+    if (QueryParamsValidator.hasQueryParameterValuesOrIsNotTrue(request, "owner-is-null")) {
+      throw new InvalidArgumentException(
+          "It is prohibited to use the param owner-is-null with values.");
+    }
+
     TaskQuery query = taskService.createTaskQuery();
 
     filterParameter.apply(query);
@@ -653,11 +661,12 @@ public class TaskController {
     }
 
     if (!taskRepresentationModel.getAttachments().stream()
-            .filter(att -> Objects.nonNull(att.getTaskId()))
-            .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
-            .collect(Collectors.toList()).isEmpty()) {
+        .filter(att -> Objects.nonNull(att.getTaskId()))
+        .filter(att -> !att.getTaskId().equals(taskRepresentationModel.getTaskId()))
+        .collect(Collectors.toList())
+        .isEmpty()) {
       throw new InvalidArgumentException(
-              "An attachments' taskId must be empty or equal to the id of the task it belongs to");
+          "An attachments' taskId must be empty or equal to the id of the task it belongs to");
     }
 
     Task task = taskRepresentationModelAssembler.toEntityModel(taskRepresentationModel);
