@@ -246,6 +246,9 @@ public interface TaskanaEngine {
    */
   CurrentUserContext getCurrentUserContext();
 
+  /** Clears the cache of the underlying local SQL session. */
+  void clearSqlSessionCache();
+
   /**
    * Connection management mode. Controls the connection handling of taskana
    *
