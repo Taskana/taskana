@@ -371,6 +371,11 @@ public class TaskanaEngineImpl implements TaskanaEngine {
     return currentUserContext;
   }
 
+  @Override
+  public void clearSqlSessionCache() {
+    sessionManager.clearCache();
+  }
+
   /**
    * This method creates the sqlSessionManager of myBatis. It integrates all the SQL mappers and
    * sets the databaseId attribute.
