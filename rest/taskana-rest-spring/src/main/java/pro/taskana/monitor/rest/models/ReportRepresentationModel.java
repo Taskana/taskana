@@ -6,19 +6,15 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.hateoas.RepresentationModel;
-import pro.taskana.monitor.api.reports.Report;
 import pro.taskana.monitor.api.reports.row.SingleRow;
 
-/** EntityModel class for {@link Report}. */
+@Schema(description = "EntityModel class for Report.")
 public class ReportRepresentationModel extends RepresentationModel<ReportRepresentationModel> {
 
-  /** Object holding meta info on the report. */
   @Schema(name = "meta", description = "Object holding meta info on the report.")
   private final MetaInformation meta;
-  /** Array holding the rows of the report. */
   @Schema(name = "rows", description = "Array holding the rows of the report.")
   private final List<RowRepresentationModel> rows;
-  /** Array holding the sums in the columns over all rows. */
   @Schema(name = "sumRow", description = "Array holding the sums in the columns over all rows.")
   private final List<RowRepresentationModel> sumRow;
 
@@ -45,24 +41,20 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
   }
 
   /** EntityModel class for {@link SingleRow}. */
+  @Schema(description = "EntityModel class for SingleRow.")
   public static class RowRepresentationModel {
 
-    /** Array holding all the cell values of the given row. */
     @Schema(name = "cells", description = "Array holding all the cell values of the given row.")
     private final int[] cells;
-    /** Sum of all values of the given row. */
     @Schema(name = "cells", description = "Sum of all values of the given row.")
     private final int total;
-    /** Depth of the row. If the depth is > 0, then this row is a sub-row of a prior row */
     @Schema(
         name = "depth",
         description =
             "Depth of the row. If the depth is > 0, then this row is a sub-row of a prior row")
     private final int depth;
-    /** Array containing description of the row. */
     @Schema(name = "desc", description = "Array containing description of the row.")
     private final String[] desc;
-    /** Boolean identifying if the given row should be initially displayed or not. */
     @Schema(
         name = "display",
         description = "Boolean identifying if the given row should be initially displayed or not.")
@@ -114,22 +106,17 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
     }
   }
 
-  /** Meta Information about this ReportResource. */
+  @Schema(description = "Meta Information about this ReportResource.")
   public static class MetaInformation {
 
-    /** Name of the report. */
     @Schema(name = "name", description = "Name of the report.")
     private final String name;
-    /** Date of the report creation. */
     @Schema(name = "date", description = "Date of the report creation.")
     private final Instant date;
-    /** Column headers of the report. */
     @Schema(name = "header", description = "Column headers of the report.")
     private final String[] header;
-    /** Descriptions for the rows of the report. */
     @Schema(name = "rowDesc", description = "Descriptions for the rows of the report.")
     private final String[] rowDesc;
-    /** Description for the sum column. */
     @Schema(name = "sumRowDesc", description = "Description for the sum column.")
     private final String sumRowDesc;
 

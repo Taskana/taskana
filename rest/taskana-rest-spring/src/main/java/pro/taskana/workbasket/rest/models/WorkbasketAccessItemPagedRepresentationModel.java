@@ -16,7 +16,6 @@ public class WorkbasketAccessItemPagedRepresentationModel
     super(content, pageMetadata);
   }
 
-  /** the embedded access items. */
   @Schema(name = "accessItems", description = "the embedded access items.")
   @JsonProperty("accessItems")
   @Override

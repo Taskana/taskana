@@ -1,5 +1,6 @@
 package pro.taskana.common.rest.models;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.lang.NonNull;
 
@@ -7,10 +8,16 @@ import org.springframework.lang.NonNull;
 public class AccessIdRepresentationModel extends RepresentationModel<AccessIdRepresentationModel> {
 
   /** The name of this Access Id. */
+  @Schema(name = "name", description = "The name of this Access Id.")
   private String name;
   /**
    * The value of the Access Id. This value will be used to determine the access to a workbasket.
    */
+  @Schema(
+      name = "accessId",
+      description =
+          "The value of the Access Id. This value will be used to determine the access to a "
+              + "workbasket.")
   private String accessId;
 
   public AccessIdRepresentationModel() {}

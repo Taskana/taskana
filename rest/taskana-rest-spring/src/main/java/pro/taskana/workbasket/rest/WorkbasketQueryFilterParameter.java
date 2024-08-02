@@ -11,18 +11,12 @@ import pro.taskana.workbasket.api.WorkbasketType;
 
 public class WorkbasketQueryFilterParameter implements QueryParameter<WorkbasketQuery, Void> {
 
-  /** Filter by the name of the Workbasket. This is an exact match. */
   @Schema(
       name = "name",
       description = "Filter by the name of the Workbasket. This is an exact match.")
   @JsonProperty("name")
   private final String[] name;
 
-  /**
-   * Filter by the name of the Workbasket. This results in a substring search. (% is appended to the
-   * beginning and end of the requested value). Further SQL "LIKE" wildcard characters will be
-   * resolved correctly.
-   */
   @Schema(
       name = "name-like",
       description =
@@ -32,18 +26,12 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
   @JsonProperty("name-like")
   private final String[] nameLike;
 
-  /** Filter by the key of the Workbasket. This is an exact match. */
   @Schema(
       name = "key",
       description = "Filter by the key of the Workbasket. This is an exact match.")
   @JsonProperty("key")
   private final String[] key;
 
-  /**
-   * Filter by the key of the Workbasket. This results in a substring search.. (% is appended to the
-   * beginning and end of the requested value). Further SQL "LIKE" wildcard characters will be
-   * resolved correctly.
-   */
   @Schema(
       name = "key-like",
       description =
@@ -53,18 +41,12 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
   @JsonProperty("key-like")
   private final String[] keyLike;
 
-  /** Filter by the owner of the Workbasket. This is an exact match. */
   @Schema(
       name = "owner",
       description = "Filter by the owner of the Workbasket. This is an exact match.")
   @JsonProperty("owner")
   private final String[] owner;
 
-  /**
-   * Filter by the owner of the Workbasket. This results in a substring search.. (% is appended to
-   * the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will be
-   * resolved correctly.
-   */
   @Schema(
       name = "owner-like",
       description =
@@ -74,11 +56,6 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
   @JsonProperty("owner-like")
   private final String[] ownerLike;
 
-  /**
-   * Filter by the description of the Workbasket. This results in a substring search.. (% is
-   * appended to the beginning and end of the requested value). Further SQL "LIKE" wildcard
-   * characters will be resolved correctly.
-   */
   @Schema(
       name = "description-like",
       description =
@@ -88,21 +65,18 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
   @JsonProperty("description-like")
   private final String[] descriptionLike;
 
-  /** Filter by the domain of the Workbasket. This is an exact match. */
   @Schema(
       name = "domain",
       description = "Filter by the domain of the Workbasket. This is an exact match.")
   @JsonProperty("domain")
   private final String[] domain;
 
-  /** Filter by the type of the Workbasket. This is an exact match. */
   @Schema(
       name = "type",
       description = "Filter by the type of the Workbasket. This is an exact match.")
   @JsonProperty("type")
   private final WorkbasketType[] type;
 
-  /** Filter by the required permission for the Workbasket. */
   @Schema(
       name = "required-permission",
       description = "Filter by the required permission for the Workbasket.")

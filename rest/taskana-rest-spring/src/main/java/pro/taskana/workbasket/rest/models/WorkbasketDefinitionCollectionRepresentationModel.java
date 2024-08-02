@@ -15,7 +15,6 @@ public class WorkbasketDefinitionCollectionRepresentationModel
     super(content);
   }
 
-  /** the embedded workbasket definitions. */
   @Schema(name = "workbasketDefinitions", description = "the embedded workbasket definitions.")
   @JsonProperty("workbasketDefinitions")
   @Override

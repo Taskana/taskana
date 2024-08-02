@@ -1164,7 +1164,7 @@ public class TaskController {
                   "if true, the Task property isRead is set to true, else it's set to false",
               content =
                   @Content(
-                      schema = @Schema(implementation = TaskRepresentationModel.class),
+                      schema = @Schema(implementation = IsReadRepresentationModel.class),
                       examples = @ExampleObject(value = "{\"is-read\": true}"))),
       responses = {
         @ApiResponse(

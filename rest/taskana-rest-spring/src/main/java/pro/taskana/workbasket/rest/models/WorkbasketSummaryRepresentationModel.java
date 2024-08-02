@@ -3,40 +3,29 @@ package pro.taskana.workbasket.rest.models;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.hateoas.RepresentationModel;
 import pro.taskana.workbasket.api.WorkbasketType;
-import pro.taskana.workbasket.api.models.WorkbasketSummary;
 
-/** EntityModel class for {@link WorkbasketSummary}. */
+@Schema(description = "EntityModel class for WorkbasketSummary.")
 public class WorkbasketSummaryRepresentationModel
     extends RepresentationModel<WorkbasketSummaryRepresentationModel> {
 
-  /** Unique Id. */
   @Schema(name = "workbasketId", description = "Unique Id.")
   protected String workbasketId;
 
-  /** the professional key for the workbasket. */
   @Schema(name = "key", description = "the professional key for the workbasket.")
   protected String key;
 
-  /** The name of the workbasket. */
   @Schema(name = "name", description = "The name of the workbasket.")
   protected String name;
 
-  /** The domain the workbasket belongs to. */
   @Schema(name = "domain", description = "The domain the workbasket belongs to.")
   protected String domain;
 
-  /** The type of the workbasket. */
   @Schema(name = "type", description = "The type of the workbasket.")
   protected WorkbasketType type;
 
-  /** the description of the workbasket. */
   @Schema(name = "description", description = "the description of the workbasket.")
   protected String description;
 
-  /**
-   * The owner of the workbasket. The owner is responsible for the on-time completion of all tasks
-   * in the workbasket.
-   */
   @Schema(
       name = "owner",
       description =
@@ -44,45 +33,30 @@ public class WorkbasketSummaryRepresentationModel
               + "all tasks in the workbasket.")
   protected String owner;
 
-  /** A custom property with name "1". */
   @Schema(name = "custom1", description = "A custom property with name \"1\".")
   protected String custom1;
 
-  /** A custom property with name "2". */
   @Schema(name = "custom2", description = "A custom property with name \"2\".")
   protected String custom2;
 
-  /** A custom property with name "3". */
   @Schema(name = "custom3", description = "A custom property with name \"3\".")
   protected String custom3;
 
-  /** A custom property with name "4". */
   @Schema(name = "custom4", description = "A custom property with name \"4\".")
   protected String custom4;
 
-  /** A custom property with name "5". */
   @Schema(name = "custom5", description = "A custom property with name \"5\".")
   protected String custom5;
 
-  /** A custom property with name "6". */
   @Schema(name = "custom6", description = "A custom property with name \"6\".")
   protected String custom6;
 
-  /** A custom property with name "7". */
   @Schema(name = "custom7", description = "A custom property with name \"7\".")
   protected String custom7;
 
-  /** A custom property with name "8". */
   @Schema(name = "custom8", description = "A custom property with name \"8\".")
   protected String custom8;
 
-  /**
-   * The first Org Level (the top one).
-   *
-   * <p>The Org Level is an association with an org hierarchy level in the organization. The values
-   * are used for monitoring and statistical purposes and should reflect who is responsible of the
-   * tasks in the workbasket.
-   */
   @Schema(
       name = "orgLevel1",
       description =
@@ -92,19 +66,18 @@ public class WorkbasketSummaryRepresentationModel
               + " workbasket.")
   protected String orgLevel1;
 
-  /** The second Org Level. */
   @Schema(name = "orgLevel2", description = "The second Org Level.")
   protected String orgLevel2;
 
-  /** The third Org Level. */
   @Schema(name = "orgLevel3", description = "The third Org Level.")
   protected String orgLevel3;
 
-  /** The fourth Org Level (the lowest one). */
   @Schema(name = "orgLevel4", description = "The fourth Org Level.")
   protected String orgLevel4;
-
-  /** Identifier to tell if this workbasket can be deleted. */
+  
+  @Schema(
+      name = "markedForDeletion",
+      description = "Identifier to tell if this workbasket can be " + "deleted.")
   private boolean markedForDeletion;
 
   public String getWorkbasketId() {

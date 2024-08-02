@@ -7,13 +7,11 @@ import org.springframework.hateoas.RepresentationModel;
 public class RoutingUploadResultRepresentationModel
     extends RepresentationModel<RoutingUploadResultRepresentationModel> {
 
-  /** The total amount of imported rows from the provided excel sheet. */
   @Schema(
       name = "amountOfImportedRows",
       description = "The total amount of imported rows from the provided excel sheet.")
   protected int amountOfImportedRows;
 
-  /** A human readable String that contains the amount of imported rows. */
   @Schema(
       name = "result",
       description = "A human readable String that contains the amount of imported rows.")

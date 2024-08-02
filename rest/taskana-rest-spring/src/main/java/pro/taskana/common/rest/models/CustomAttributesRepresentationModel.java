@@ -8,7 +8,6 @@ import org.springframework.hateoas.RepresentationModel;
 public class CustomAttributesRepresentationModel
     extends RepresentationModel<CustomAttributesRepresentationModel> {
 
-  /** The custom configuration attributes. */
   @Schema(
           name = "customAttributes",
           description = "The custom configuration attributes."

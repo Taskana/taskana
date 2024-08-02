@@ -13,7 +13,6 @@ public class UserCollectionRepresentationModel
     super(content);
   }
 
-  /** The embedded users. */
   @Schema(name = "users", description = "The embedded users.")
   @JsonProperty("users")
   @Override

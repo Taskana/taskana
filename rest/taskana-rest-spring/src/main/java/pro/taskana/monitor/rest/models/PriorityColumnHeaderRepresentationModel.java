@@ -9,13 +9,11 @@ import org.springframework.hateoas.RepresentationModel;
 public class PriorityColumnHeaderRepresentationModel
     extends RepresentationModel<PriorityColumnHeaderRepresentationModel> {
 
-  /** Determine the lower priority for this column header. This value is inclusive. */
   @Schema(
       name = "lowerBound",
       description = "Determine the lower priority for this column header. This value is inclusive.")
   private final int lowerBound;
 
-  /** Determine the upper priority for this column header. This value is inclusive. */
   @Schema(
       name = "upperBound",
       description = "Determine the upper priority for this column header. This value is inclusive.")

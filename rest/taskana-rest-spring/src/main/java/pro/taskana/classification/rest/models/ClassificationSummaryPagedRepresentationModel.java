@@ -17,7 +17,6 @@ public class ClassificationSummaryPagedRepresentationModel
     super(content, pageMetadata);
   }
 
-  /** the embedded classifications. */
   @Schema(name = "classifications", description = "the embedded classifications.")
   @Override
   @JsonProperty("classifications")

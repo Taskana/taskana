@@ -7,6 +7,7 @@ import static pro.taskana.rest.test.RestHelper.TEMPLATE;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -221,5 +222,117 @@ class MonitorControllerIntTest {
                 ParameterizedTypeReference.forType(ReportRepresentationModel.class));
 
     assertThatThrownBy(httpCall).isInstanceOf(BadRequest.class);
+  }
+
+  @Test
+  void should_ComputeClassificationCategoryReport() {
+    String url = restHelper.toUrl(RestEndpoints.URL_MONITOR_CLASSIFICATION_CATEGORY_REPORT);
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+    ResponseEntity<ReportRepresentationModel> response =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(ReportRepresentationModel.class));
+
+    String[][] descArray = {{"AUTOMATIC"}, {"EXTERN"}, {"MANUAL"}};
+    assertThat(response.getBody()).isNotNull();
+    assertThat(
+            response.getBody().getRows().stream()
+                .map(RowRepresentationModel::getDesc)
+                .collect(Collectors.toList()))
+        .hasSize(3)
+        .containsExactlyInAnyOrder(descArray);
+  }
+
+  @Test
+  void should_ComputeClassificationReport() {
+    String url = restHelper.toUrl(RestEndpoints.URL_MONITOR_CLASSIFICATION_REPORT);
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+    ResponseEntity<ReportRepresentationModel> response =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(ReportRepresentationModel.class));
+
+    assertThat(response.getBody()).isNotNull();
+    assertThat(
+            response.getBody().getRows().stream()
+                .map(RowRepresentationModel::getDesc)
+                .collect(Collectors.toList()))
+        .hasSize(6);
+  }
+
+  @Test
+  void should_ComputeDetailedClassificationReport() {
+    String url = restHelper.toUrl(RestEndpoints.URL_MONITOR_DETAILED_CLASSIFICATION_REPORT);
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+    ResponseEntity<ReportRepresentationModel> response =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(ReportRepresentationModel.class));
+
+    assertThat(response.getBody()).isNotNull();
+  }
+
+  @Test
+  void should_ComputeTaskStatusReport() {
+    String url = restHelper.toUrl(RestEndpoints.URL_MONITOR_TASK_STATUS_REPORT);
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+    ResponseEntity<ReportRepresentationModel> response =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(ReportRepresentationModel.class));
+
+    assertThat(response.getBody()).isNotNull();
+  }
+
+  @Test
+  void should_ComputeTimestampReport() {
+    String url = restHelper.toUrl(RestEndpoints.URL_MONITOR_TIMESTAMP_REPORT);
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+    ResponseEntity<ReportRepresentationModel> response =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(ReportRepresentationModel.class));
+
+    assertThat(response.getBody()).isNotNull();
+  }
+
+  @Test
+  void should_ComputeTaskCustomFieldValueReport() {
+    String url =
+        restHelper.toUrl(
+            RestEndpoints.URL_MONITOR_TASK_CUSTOM_FIELD_VALUE_REPORT + "?custom-field=CUSTOM_14");
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+    ResponseEntity<ReportRepresentationModel> response =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(ReportRepresentationModel.class));
+
+    String[][] descArray = {{"abc"}, {"dde"}, {"ert"}};
+
+    assertThat(response.getBody()).isNotNull();
+    assertThat(
+            response.getBody().getRows().stream()
+                .map(RowRepresentationModel::getDesc)
+                .collect(Collectors.toList()))
+        .hasSize(3)
+        .containsExactlyInAnyOrder(descArray);
   }
 }

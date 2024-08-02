@@ -8,18 +8,19 @@ import java.util.HashSet;
 import java.util.Set;
 import org.springframework.hateoas.RepresentationModel;
 
-/** this class represents a workbasket including its distro targets and authorisations. */
+@Schema(
+    description =
+        "this class represents a workbasket including its distro targets and " + "authorisations.")
 public class WorkbasketDefinitionRepresentationModel
     extends RepresentationModel<WorkbasketDefinitionRepresentationModel> {
 
-  /** The workbasket which is represented. */
   @Schema(name = "workbasket", description = "The workbasket which is represented.")
   @JsonIgnoreProperties("_links")
   private WorkbasketRepresentationModel workbasket;
-  /** The workbasket authorizations. */
+
   @Schema(name = "authorizations", description = "The workbasket authorizations.")
   private Collection<WorkbasketAccessItemRepresentationModel> authorizations = new ArrayList<>();
-  /** The distribution targets for this workbasket. */
+
   @Schema(
       name = "distributionTargets",
       description = "The distribution targets for this workbasket.")
