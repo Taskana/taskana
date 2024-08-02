@@ -42,7 +42,6 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
   private InternalTaskanaEngine internalTaskanaEngine;
 
   public void initialize(TaskanaEngine taskanaEngine) {
-
     LOGGER.info(
         "Simple history service implementation initialized with schemaName: {} ",
         taskanaEngine.getConfiguration().getSchemaName());
@@ -153,16 +152,19 @@ public class SimpleHistoryServiceImpl implements TaskanaHistory {
   public void deleteHistoryEventsByTaskIds(List<String> taskIds)
       throws InvalidArgumentException, NotAuthorizedException {
 
-    internalTaskanaEngine.openConnection();
     internalTaskanaEngine.getEngine().checkRoleMembership(TaskanaRole.ADMIN);
 
     if (taskIds == null) {
       throw new InvalidArgumentException("List of taskIds must not be null.");
     }
 
-    taskHistoryEventMapper.deleteMultipleByTaskIds(taskIds);
+    try {
+      internalTaskanaEngine.openConnection();
+      taskHistoryEventMapper.deleteMultipleByTaskIds(taskIds);
+    } finally {
 
-    internalTaskanaEngine.returnConnection();
+      internalTaskanaEngine.returnConnection();
+    }
   }
 
   public TaskHistoryEvent getTaskHistoryEvent(String historyEventId)
