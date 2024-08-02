@@ -67,36 +67,6 @@
           <version>${project.version}</version>
         </dependency>
       </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-resources-plugin</artifactId>
-            <version>${version.maven.resources}</version>
-            <executions>
-              <execution>
-                <id>copy-history-rest-documentation-to-static-folder</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>copy-resources</goal>
-                </goals>
-                <configuration>
-                  <outputDirectory>
-                    ${project.build.outputDirectory}/static/docs/rest
-                  </outputDirectory>
-                  <resources>
-                    <resource>
-                      <directory>
-                        ../../history/taskana-simplehistory-rest-spring/target/generated-docs
-                      </directory>
-                    </resource>
-                  </resources>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
     <profile>
       <id>historyLogging.plugin</id>
@@ -156,36 +126,6 @@
           <version>${project.version}</version>
         </dependency>
       </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-resources-plugin</artifactId>
-            <version>${version.maven.resources}</version>
-            <executions>
-              <execution>
-                <id>copy-routing-rest-documentation-to-static-folder</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>copy-resources</goal>
-                </goals>
-                <configuration>
-                  <outputDirectory>
-                    ${project.build.outputDirectory}/static/docs/rest
-                  </outputDirectory>
-                  <resources>
-                    <resource>
-                      <directory>
-                        ../../routing/taskana-routing-rest/target/generated-docs
-                      </directory>
-                    </resource>
-                  </resources>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
   </profiles>
 
@@ -214,25 +154,6 @@
         <artifactId>maven-resources-plugin</artifactId>
         <version>${version.maven.resources}</version>
         <executions>
-          <execution>
-            <id>copy-rest-documentation-to-static-folder</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>
-                ${project.build.outputDirectory}/static/docs/rest
-              </outputDirectory>
-              <resources>
-                <resource>
-                  <directory>
-                    ../taskana-rest-spring/target/generated-docs
-                  </directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
           <execution>
             <id>copy-taskana-core-docs</id>
             <phase>prepare-package</phase>

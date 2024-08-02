@@ -15,7 +15,6 @@ public class TaskCommentCollectionRepresentationModel
     super(content);
   }
 
-  /** The embedded task comments. */
   @Schema(name = "taskComments", description = "The embedded task comments.")
   @JsonProperty("taskComments")
   @Override

@@ -10,9 +10,6 @@ import pro.taskana.common.api.exceptions.InvalidArgumentException;
 public class QuerySortParameter<Q extends BaseQuery<?, ?>, S extends QuerySortBy<Q>>
     implements QueryParameter<Q, Void> {
 
-  // the javadoc comment for this field is above its getter. This is done to define the type
-  // parameter S by overriding that getter and allowing spring-auto-rest-docs to properly detect
-  // the type parameter S.
   @Schema(
       name = "sort-by",
       description =
@@ -21,11 +18,6 @@ public class QuerySortParameter<Q extends BaseQuery<?, ?>, S extends QuerySortBy
   @JsonProperty("sort-by")
   private final List<S> sortBy;
 
-  /**
-   * The order direction for each sort value. This value requires the use of 'sort-by'. The amount
-   * of sort-by and order declarations have to match. Alternatively the value can be omitted. If
-   * done so the default sort order (ASCENDING) will be applied to every sort-by value.
-   */
   @Schema(
       name = "order",
       description =
@@ -77,12 +69,6 @@ public class QuerySortParameter<Q extends BaseQuery<?, ?>, S extends QuerySortBy
     }
   }
 
-  /**
-   * Sort the result by a given field. Multiple sort values can be declared. When the primary sort
-   * value is the same, the second one will be used.
-   *
-   * @return the sort values
-   */
   @JsonProperty("sort-by")
   public List<S> getSortBy() {
     return sortBy;

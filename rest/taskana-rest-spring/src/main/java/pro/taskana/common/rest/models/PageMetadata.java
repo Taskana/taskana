@@ -5,29 +5,25 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.beans.ConstructorProperties;
 import java.util.Objects;
 
-/**
- * This is copied from {@link org.springframework.hateoas.PagedModel.PageMetadata}. Reason: The
- * Spring Auto REST Docs Doclet only parses our code to check for JavaDoc comments. Since we want
- * this class to be documented we had to copy it.
- */
+@Schema(
+    description =
+        "This is copied from org.springframework.hateoas.PagedModel.PageMetadata. Reason: The "
+            + "Spring OpenAPI only parses our code to check for OpenAPI notations. Since we want "
+            + "this class to be documented we had to copy it.")
 public class PageMetadata {
 
-  /** The element size of the page. */
   @Parameter(hidden = true)
   @Schema(name = "size", description = "The element size of the page.")
   private final long size;
 
-  /** The total number of elements available. */
   @Parameter(hidden = true)
   @Schema(name = "totalElements", description = "The total number of elements available.")
   private final long totalElements;
 
-  /** Amount of pages that are available in total. */
   @Parameter(hidden = true)
   @Schema(name = "totalPages", description = "Amount of pages that are available in total.")
   private final long totalPages;
 
-  /** The current page number. */
   @Parameter(hidden = true)
   @Schema(name = "number", description = "The current page number.")
   private final long number;

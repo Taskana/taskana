@@ -16,7 +16,6 @@ public class WorkbasketSummaryPagedRepresentationModel
     super(content, pageMetadata);
   }
 
-  /** the embedded workbaskets. */
   @Schema(name = "workbaskets", description = "the embedded workbaskets.")
   @JsonProperty("workbaskets")
   @Override

@@ -54,7 +54,6 @@
     <version.maven.javadoc>3.8.0</version.maven.javadoc>
     <version.maven.resources>3.3.1</version.maven.resources>
     <version.maven.surefire>3.3.1</version.maven.surefire>
-    <version.maven.asciidoctor>3.0.0</version.maven.asciidoctor>
     <version.maven.clean>3.2.0</version.maven.clean>
     <version.maven.dependency>3.7.1</version.maven.dependency>
     <version.maven.sonar>3.11.0.3922</version.maven.sonar>
@@ -88,7 +87,6 @@
     <version.openpojo>0.9.1</version.openpojo>
     <version.jacoco>0.8.12</version.jacoco>
     <version.slf4j-test>3.0.1</version.slf4j-test>
-    <version.auto-restdocs>2.0.11</version.auto-restdocs>
     <version.testcontainers>1.20.0</version.testcontainers>
     <version.spring-openapi>2.5.0</version.spring-openapi>
 

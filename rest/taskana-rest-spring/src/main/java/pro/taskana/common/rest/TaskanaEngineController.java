@@ -48,11 +48,6 @@ public class TaskanaEngineController {
     this.configurationService = configurationService;
   }
 
-  /**
-   * This endpoint retrieves all configured Domains.
-   *
-   * @return An array with the domain-names as strings
-   */
   @Operation(
       summary = "This endpoint retrieves all configured Domains.",
       responses =
@@ -69,14 +64,6 @@ public class TaskanaEngineController {
     return ResponseEntity.ok(taskanaConfiguration.getDomains());
   }
 
-  /**
-   * This endpoint retrieves the configured classification categories for a specific classification
-   * type.
-   *
-   * @param type the classification type whose categories should be determined. If not specified all
-   *     classification categories will be returned.
-   * @return the classification categories for the requested type.
-   */
   @Operation(
       summary =
           "This endpoint retrieves the configured classification categories for a specific "
@@ -105,11 +92,6 @@ public class TaskanaEngineController {
     return ResponseEntity.ok(taskanaConfiguration.getAllClassificationCategories());
   }
 
-  /**
-   * This endpoint retrieves the configured classification types.
-   *
-   * @return the configured classification types.
-   */
   @Operation(
       summary = "This endpoint retrieves the configured classification types.",
       responses =
@@ -126,12 +108,6 @@ public class TaskanaEngineController {
     return ResponseEntity.ok(taskanaConfiguration.getClassificationTypes());
   }
 
-  /**
-   * This endpoint retrieves all configured classification categories grouped by each classification
-   * type.
-   *
-   * @return the configured classification categories
-   */
   @Operation(
       summary =
           "This endpoint retrieves all configured classification categories grouped by each "
@@ -150,11 +126,6 @@ public class TaskanaEngineController {
     return ResponseEntity.ok(taskanaConfiguration.getClassificationCategoriesByType());
   }
 
-  /**
-   * This endpoint computes all information of the current user.
-   *
-   * @return the information of the current user.
-   */
   @Operation(
       summary = "This endpoint computes all information of the current user.",
       responses =
@@ -177,11 +148,6 @@ public class TaskanaEngineController {
     return ResponseEntity.ok(resource);
   }
 
-  /**
-   * This endpoint checks if the history module is in use.
-   *
-   * @return true, when the history is enabled, otherwise false
-   */
   @Operation(
       summary = "This endpoint checks if the history module is in use.",
       responses =
@@ -198,12 +164,6 @@ public class TaskanaEngineController {
     return ResponseEntity.ok(taskanaEngine.isHistoryEnabled());
   }
 
-  /**
-   * This endpoint retrieves the saved custom configuration.
-   *
-   * @title Get custom configuration
-   * @return custom configuration
-   */
   @Operation(
       summary = "Get custom configuration",
       description = "This endpoint retrieves the saved custom configuration.",
@@ -223,13 +183,6 @@ public class TaskanaEngineController {
     return ResponseEntity.ok(new CustomAttributesRepresentationModel(allCustomAttributes));
   }
 
-  /**
-   * This endpoint overrides the custom configuration.
-   *
-   * @param customAttributes the new custom configuration
-   * @title Set all custom configuration
-   * @return the new custom configuration
-   */
   @Operation(
       summary = "Set all custom configuration",
       description = "This endpoint overrides the custom configuration.",
@@ -280,11 +233,6 @@ public class TaskanaEngineController {
     return ResponseEntity.ok(customAttributes);
   }
 
-  /**
-   * Get the current application version.
-   *
-   * @return The current version.
-   */
   @Operation(
       summary = "Get the current application version",
       responses =

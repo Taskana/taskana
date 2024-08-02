@@ -8,7 +8,6 @@ import org.springframework.hateoas.RepresentationModel;
 public abstract class PagedRepresentationModel<T extends RepresentationModel<? super T>>
     extends CollectionRepresentationModel<T> {
 
-  /** the page meta data for a paged request. */
   @Schema(name = "page", description = "the page meta data for a paged request.")
   @JsonProperty("page")
   private final PageMetadata pageMetadata;

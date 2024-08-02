@@ -14,7 +14,6 @@ public class ClassificationCollectionRepresentationModel
     super(content);
   }
 
-  /** the embedded classifications. */
   @Override
   @JsonProperty("classifications")
   public Collection<ClassificationRepresentationModel> getContent() {

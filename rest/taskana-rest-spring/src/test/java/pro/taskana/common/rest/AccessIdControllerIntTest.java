@@ -277,4 +277,19 @@ class AccessIdControllerIntTest {
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.FORBIDDEN);
   }
+
+  @Test
+  void should_ReturnAccessIds_When_SearchingUsersByNameOrAccessId() {
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_WITH_NAME) + "?search-for=user-1&role=user";
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+    ResponseEntity<List<AccessIdRepresentationModel>> response =
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);
+
+    assertThat(response.getBody())
+        .isNotNull()
+        .extracting(AccessIdRepresentationModel::getAccessId)
+        .containsExactlyInAnyOrder("user-1-1", "user-1-2");
+  }
 }

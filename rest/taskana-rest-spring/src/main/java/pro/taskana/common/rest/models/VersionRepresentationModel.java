@@ -5,10 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.lang.NonNull;
 
-/** EntityModel class for version information. */
+@Schema(description = "EntityModel class for version information.")
 public class VersionRepresentationModel extends RepresentationModel<VersionRepresentationModel> {
 
-  /** The current TASKANA version of the REST Service. */
   @Schema(name = "version", description = "The current TASKANA version of the REST Service.")
   @NotNull
   private String version;

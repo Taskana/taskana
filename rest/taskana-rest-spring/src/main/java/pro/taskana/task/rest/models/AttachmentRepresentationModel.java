@@ -1,10 +1,10 @@
 package pro.taskana.task.rest.models;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.HashMap;
 import java.util.Map;
-import pro.taskana.task.api.models.Attachment;
 
-/** EntityModel class for {@link Attachment}. */
+@Schema(description = "EntityModel class for Attachment")
 public class AttachmentRepresentationModel extends AttachmentSummaryRepresentationModel {
 
   /** All additional information of the Attachment. */

@@ -1,11 +1,12 @@
 package pro.taskana.task.rest.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.beans.ConstructorProperties;
 
 public class IsReadRepresentationModel {
 
-  /** The value to set the Task property isRead. */
+  @Schema(name = "is-read", description = "The value to set the Task property isRead.")
   @JsonProperty("is-read")
   private final boolean isRead;
 

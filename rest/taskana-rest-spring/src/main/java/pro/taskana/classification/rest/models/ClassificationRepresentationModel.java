@@ -5,34 +5,23 @@ import java.time.Instant;
 import pro.taskana.classification.api.models.Classification;
 
 /** EntityModel class for {@link Classification}. */
+@Schema(description = "EntityModel class for Classification")
 public class ClassificationRepresentationModel extends ClassificationSummaryRepresentationModel {
 
-  /** True, if this classification to objects in this domain. */
   @Schema(
       name = "isValidInDomain",
       description = "True, if this classification to objects in this domain.")
   private Boolean isValidInDomain;
-  /**
-   * The creation timestamp of the classification in the system.
-   *
-   * <p>The format is ISO-8601.
-   */
   @Schema(
       name = "created",
       description =
           "The creation timestamp of the classification in the system.<p>The format is ISO-8601.")
   private Instant created;
-  /**
-   * The timestamp of the last modification.
-   *
-   * <p>The format is ISO-8601.
-   */
   @Schema(
           name = "modified",
           description = "The timestamp of the last modification.<p>The format is ISO-8601."
   )
   private Instant modified;
-  /** The description of the classification. */
   @Schema(name = "description", description = "The description of the classification.")
   private String description;
 

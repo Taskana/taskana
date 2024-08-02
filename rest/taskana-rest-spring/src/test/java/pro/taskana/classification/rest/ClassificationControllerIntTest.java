@@ -481,4 +481,34 @@ class ClassificationControllerIntTest {
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
   }
+
+  @Test
+  void should_UpdateClassification_When_NameIsChanged() {
+    String url =
+        restHelper.toUrl(
+            RestEndpoints.URL_CLASSIFICATIONS_ID, "CLI:000000000000000000000000000000000004");
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+    ResponseEntity<ClassificationRepresentationModel> responseGet =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
+
+    final ClassificationRepresentationModel originalClassification = responseGet.getBody();
+    originalClassification.setName("new name");
+    HttpEntity<ClassificationRepresentationModel> httpEntity =
+        new HttpEntity<>(originalClassification, RestHelper.generateHeadersForUser("admin"));
+
+    ResponseEntity<ClassificationRepresentationModel> responseUpdate =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.PUT,
+            httpEntity,
+            ParameterizedTypeReference.forType(ClassificationRepresentationModel.class));
+
+    ClassificationRepresentationModel updatedClassification = responseUpdate.getBody();
+    assertThat(updatedClassification).isNotNull();
+    assertThat(updatedClassification.getName()).isEqualTo("new name");
+  }
 }

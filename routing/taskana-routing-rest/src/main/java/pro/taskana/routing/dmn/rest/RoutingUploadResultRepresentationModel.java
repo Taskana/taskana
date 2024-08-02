@@ -6,10 +6,8 @@ import org.springframework.hateoas.RepresentationModel;
 public class RoutingUploadResultRepresentationModel
     extends RepresentationModel<RoutingUploadResultRepresentationModel> {
 
-  /** The total amount of imported rows from the provided excel sheet. */
   protected int amountOfImportedRows;
 
-  /** A human readable String that contains the amount of imported rows. */
   protected String result;
 
   public int getAmountOfImportedRows() {

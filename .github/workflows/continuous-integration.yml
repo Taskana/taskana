@@ -54,7 +54,7 @@ jobs:
       - name: Change versions to match tag
         run: ci/change_version.sh -m .
       - name: Compile & build
-        run: ./mvnw -B install -DskipTests -Dasciidoctor.skip -Djacoco.skip
+        run: ./mvnw -B install -DskipTests -Djacoco.skip
       - name: Populate cache
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
@@ -319,9 +319,6 @@ jobs:
         run: |
           ci/change_version.sh -m .
           ci/update_taskana_dependency_for_wildfly.sh
-      - name: Generate JavaDoc for Rest Documentation
-        if: matrix.module == 'taskana-simplehistory-rest-spring'
-        run: ./mvnw -B validate -pl :taskana-rest-spring
       - name: Test
         run: ./mvnw -B verify -pl :${{matrix.module}} -Dcheckstyle.skip
         env:
@@ -386,7 +383,7 @@ jobs:
       - name: Release artifacts to OSS Sonatype
         run: |
           ./mvnw -B deploy -P $([[ "$GITHUB_REF" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo "release" || echo "snapshot") \
-          --settings ci/mvnsettings.xml -DskipTests -Dcheckstyle.skip -Dasciidoctor.skip -Djacoco.skip \
+          --settings ci/mvnsettings.xml -DskipTests -Dcheckstyle.skip -Djacoco.skip \
           -pl :taskana-parent,\
           :taskana-common-parent,:taskana-common-logging,:taskana-common,:taskana-common-security,\
           :taskana-common-data,:taskana-common-test,\
@@ -444,8 +441,6 @@ jobs:
         run: ./mvnw -B install -pl :taskana-web
       - name: Generate Javadoc
         run: ./mvnw -B clean javadoc:jar -pl :taskana-core,:taskana-cdi,:taskana-spring
-      - name: Generate Rest Documentation
-        run: ./mvnw -B test asciidoctor:process-asciidoc -Dtest=*DocTest -pl :taskana-rest-spring,:taskana-simplehistory-rest-spring,:taskana-routing-rest -Dcheckstyle.skip -Djacoco.skip
       - name: Build Example Application
         run: ./mvnw -B install -P history.plugin -P dmn-routing.plugin -pl :taskana-rest-spring-example-boot -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip -Djacoco.skip
       - name: Verify Example Application contains documentation
@@ -503,7 +498,7 @@ jobs:
           pattern: ${{ env.ARTIFACTS_JACOCO_REPORTS_NAME }}-*
           merge-multiple: true
       - name: Install taskana
-        run: ./mvnw -B install -DskipTests -Dcheckstyle.skip -Dasciidoctor.skip -Dmaven.javadoc.skip
+        run: ./mvnw -B install -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip
       - name: Upload SonarQube analysis
         run: ./mvnw -B sonar:sonar
         env:

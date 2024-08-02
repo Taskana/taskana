@@ -2315,6 +2315,23 @@ class TaskControllerIntTest {
       assertThat(claimedTaskRepresentationModel.getOwner()).isEqualTo("user-1-1");
       assertThat(claimedTaskRepresentationModel.getState()).isEqualTo(TaskState.CLAIMED);
     }
+
+    @Test
+    void should_SelectAndClaimTasks() {
+      String url = restHelper.toUrl(RestEndpoints.URL_TASKS_ID_SELECT_AND_CLAIM + "?custom14=abc");
+      HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+      ResponseEntity<TaskRepresentationModel> response =
+          TEMPLATE.exchange(url, HttpMethod.POST, auth, TASK_MODEL_TYPE);
+
+      assertThat(response.getBody()).isNotNull();
+
+      String url2 = restHelper.toUrl(RestEndpoints.URL_TASKS_ID, response.getBody().getTaskId());
+      ResponseEntity<TaskRepresentationModel> responseGetTask =
+          TEMPLATE.exchange(url2, HttpMethod.GET, auth, TASK_MODEL_TYPE);
+      assertThat(responseGetTask).isNotNull();
+      assertThat(responseGetTask.getBody().getOwner()).isEqualTo("admin");
+    }
   }
 
   @Nested
