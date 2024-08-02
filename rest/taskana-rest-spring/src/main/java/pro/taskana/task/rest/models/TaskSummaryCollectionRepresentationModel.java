@@ -15,7 +15,6 @@ public class TaskSummaryCollectionRepresentationModel
     super(content);
   }
 
-  /** The embedded tasks. */
   @Schema(name = "tasks", description = "The embedded tasks.")
   @JsonProperty("tasks")
   @Override

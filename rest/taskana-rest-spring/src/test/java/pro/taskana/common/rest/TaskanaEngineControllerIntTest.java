@@ -3,6 +3,7 @@ package pro.taskana.common.rest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.rest.models.CustomAttributesRepresentationModel;
 import pro.taskana.common.rest.models.TaskanaUserInfoRepresentationModel;
+import pro.taskana.common.rest.models.VersionRepresentationModel;
 import pro.taskana.rest.test.RestHelper;
 import pro.taskana.rest.test.TaskanaSpringBootTest;
 
@@ -162,5 +164,71 @@ class TaskanaEngineControllerIntTest {
             ParameterizedTypeReference.forType(CustomAttributesRepresentationModel.class));
 
     assertThat(response.getBody()).isNotNull();
+  }
+
+  @Test
+  void should_ReturnFalse_When_NoHistoryProvider() {
+    String url = restHelper.toUrl(RestEndpoints.URL_HISTORY_ENABLED);
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+    ResponseEntity<Boolean> response =
+        TEMPLATE.exchange(
+            url, HttpMethod.GET, auth, ParameterizedTypeReference.forType(Boolean.class));
+    assertThat(response.getBody()).isFalse();
+  }
+
+  @Test
+  void should_ReturnCurrentVersion() {
+    String url = restHelper.toUrl(RestEndpoints.URL_VERSION);
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+    ResponseEntity<VersionRepresentationModel> response =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(VersionRepresentationModel.class));
+    assertThat(response.getBody().getVersion()).isNull();
+  }
+
+  @Test
+  void should_SetCustomConfigurationAttributes() {
+    String url = restHelper.toUrl(RestEndpoints.URL_CUSTOM_ATTRIBUTES);
+    CustomAttributesRepresentationModel customAttributes =
+        new CustomAttributesRepresentationModel(
+            Map.of(
+                "filter",
+                "{ \"Tasks with state READY\": { \"state\": [\"READY\"]}, "
+                    + "\"Tasks with state CLAIMED\": {\"state\": [\"CLAIMED\"] }}",
+                "schema",
+                Map.of(
+                    "Filter",
+                    Map.of(
+                        "displayName",
+                        "Filter for Task-Priority-Report",
+                        "members",
+                        Map.of(
+                            "filter",
+                            Map.of("displayName", "Filter values", "type", "json", "min", "1"))))));
+    HttpEntity<CustomAttributesRepresentationModel> auth =
+        new HttpEntity<>(customAttributes, RestHelper.generateHeadersForUser("admin"));
+    ResponseEntity<CustomAttributesRepresentationModel> response =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.PUT,
+            auth,
+            ParameterizedTypeReference.forType(CustomAttributesRepresentationModel.class));
+    assertThat(response.getBody()).isEqualTo(customAttributes);
+  }
+
+  @Test
+  void should_GetClassificationCategoriesByType() {
+    String url = restHelper.toUrl(RestEndpoints.URL_CLASSIFICATION_CATEGORIES_BY_TYPES);
+    HttpEntity<?> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+    ResponseEntity<Map<String, List<String>>> response =
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, ParameterizedTypeReference.forType(Map.class));
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody()).hasSize(2);
+    assertThat(response.getBody().get("TASK"))
+        .containsExactlyInAnyOrder("EXTERNAL", "MANUAL", "AUTOMATIC", "PROCESS");
+    assertThat(response.getBody().get("DOCUMENT")).containsExactlyInAnyOrder("EXTERNAL");
   }
 }

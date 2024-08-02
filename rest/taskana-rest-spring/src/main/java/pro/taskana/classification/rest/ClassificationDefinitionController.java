@@ -65,13 +65,6 @@ public class ClassificationDefinitionController {
     this.assembler = assembler;
   }
 
-  /**
-   * This endpoint exports all configured Classifications.
-   *
-   * @title Export Classifications
-   * @param domain Filter the export by domain
-   * @return the configured Classifications.
-   */
   @Operation(
       summary = "Export Classifications",
       description = "This endpoint exports all configured Classifications.",
@@ -108,23 +101,6 @@ public class ClassificationDefinitionController {
     return ResponseEntity.ok(collectionModel);
   }
 
-  /**
-   * This endpoint imports all Classifications. Existing Classifications will not be removed.
-   * Existing Classifications with the same key/domain will be overridden.
-   *
-   * @title Import Classifications
-   * @param file the file containing the Classifications which should be imported.
-   * @return nothing
-   * @throws InvalidArgumentException if any Classification within the import file is invalid
-   * @throws NotAuthorizedException if the current user is not authorized to import Classifications
-   * @throws ConcurrencyException TODO: this makes no sense
-   * @throws ClassificationNotFoundException TODO: this makes no sense
-   * @throws ClassificationAlreadyExistException TODO: this makes no sense
-   * @throws DomainNotFoundException if the domain for a specific Classification does not exist
-   * @throws IOException if the import file could not be parsed
-   * @throws MalformedServiceLevelException if the {@code serviceLevel} property does not comply *
-   *     with the ISO 8601 specification
-   */
   @Operation(
       summary = "Import Classifications",
       description =

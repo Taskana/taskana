@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.beans.ConstructorProperties;
 import java.util.List;
 import java.util.function.BiConsumer;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
@@ -145,9 +146,9 @@ public class TaskCommentController {
   public ResponseEntity<TaskCommentCollectionRepresentationModel> getTaskComments(
       @PathVariable("taskId") String taskId,
       HttpServletRequest request,
-      TaskCommentQueryFilterParameter filterParameter,
-      TaskCommentQuerySortParameter sortParameter,
-      QueryPagingParameter<TaskComment, TaskCommentQuery> pagingParameter) {
+      @ParameterObject TaskCommentQueryFilterParameter filterParameter,
+      @ParameterObject TaskCommentQuerySortParameter sortParameter,
+      @ParameterObject QueryPagingParameter<TaskComment, TaskCommentQuery> pagingParameter) {
 
     QueryParamsValidator.validateParams(
         request,

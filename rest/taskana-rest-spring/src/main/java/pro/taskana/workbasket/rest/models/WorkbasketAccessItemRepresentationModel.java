@@ -2,102 +2,75 @@ package pro.taskana.workbasket.rest.models;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.hateoas.RepresentationModel;
-import pro.taskana.workbasket.api.models.WorkbasketAccessItem;
 
-/** EntityModel class for {@link WorkbasketAccessItem}. */
+@Schema(description = "EntityModel class for WorkbasketAccessItem")
 public class WorkbasketAccessItemRepresentationModel
     extends RepresentationModel<WorkbasketAccessItemRepresentationModel> {
 
-  /** Unique Id. */
   @Schema(name = "accessItemId", description = "Unique Id.")
   private String accessItemId;
-  /** The workbasket Id. */
   @Schema(name = "workbasketId", description = "The workbasket Id.")
   private String workbasketId;
-  /** The Access Id. This could be either a user Id or a full qualified group Id. */
   @Schema(
       name = "accessId",
       description = "The Access Id. This could be either a user Id or a full qualified group Id.")
   private String accessId;
-  /** The workbasket key. */
   @Schema(name = "workbasketKey", description = "The workbasket key.")
   private String workbasketKey;
-  /** The name. */
   @Schema(name = "accessName", description = "The name.")
   private String accessName;
-  /** The permission to read the information about the workbasket. */
   @Schema(
       name = "permRead",
       description = "The permission to read the information about the workbasket.")
   private boolean permRead;
-  /** The permission to access a task from the workbasket. */
   @Schema(
       name = "permReadTasks",
       description = "The permission to access a task from the workbasket.")
   private boolean permReadTasks;
-  /** The permission to view the content (the tasks) of a workbasket. */
   @Schema(
       name = "permOpen",
       description = "The permission to view the content (the tasks) of a workbasket.")
   private boolean permOpen;
-  /**
-   * The permission to add tasks to the workbasket. Required for creation and transferring of tasks.
-   */
   @Schema(
       name = "permAppend",
       description =
           "The permission to add tasks to the workbasket. Required for creation and transferring "
               + "of tasks.")
   private boolean permAppend;
-  /** The permission to edit a task from the workbasket. */
   @Schema(
       name = "permEditTasks",
       description = "The permission to edit a task from the workbasket.")
   private boolean permEditTasks;
-  /** The permission to transfer tasks (out of the current workbasket). */
   @Schema(
       name = "permTransfer",
       description = "The permission to transfer tasks (out of the current workbasket).")
   private boolean permTransfer;
-  /** The permission to distribute tasks from the workbasket. */
   @Schema(
       name = "permDistribute",
       description = "The permission to distribute tasks from the workbasket.")
   private boolean permDistribute;
-  /** The custom permission with the name "1". */
   @Schema(name = "permCustom1", description = "The custom permission with the name '1'.")
   private boolean permCustom1;
-  /** The custom permission with the name "2". */
   @Schema(name = "permCustom2", description = "The custom permission with the name '2'.")
   private boolean permCustom2;
-  /** The custom permission with the name "3". */
   @Schema(name = "permCustom3", description = "The custom permission with the name '3'.")
   private boolean permCustom3;
-  /** The custom permission with the name "4". */
   @Schema(name = "permCustom4", description = "The custom permission with the name '4'.")
   private boolean permCustom4;
-  /** The custom permission with the name "5". */
   @Schema(name = "permCustom5", description = "The custom permission with the name '5'.")
   private boolean permCustom5;
-  /** The custom permission with the name "6". */
   @Schema(name = "permCustom6", description = "The custom permission with the name '6'.")
   private boolean permCustom6;
-  /** The custom permission with the name "7". */
   @Schema(name = "permCustom7", description = "The custom permission with the name '7'.")
   private boolean permCustom7;
-  /** The custom permission with the name "8". */
   @Schema(name = "permCustom8", description = "The custom permission with the name '8'.")
   private boolean permCustom8;
-  /** The custom permission with the name "9". */
   @Schema(name = "permCustom9", description = "The custom permission with the name '9'.")
   private boolean permCustom9;
-  /** The custom permission with the name "10". */
   @Schema(name = "permCustom10", description = "The custom permission with the name '10'.")
   private boolean permCustom10;
-  /** The custom permission with the name "11". */
   @Schema(name = "permCustom11", description = "The custom permission with the name '11'.")
   private boolean permCustom11;
-  /** The custom permission with the name "12". */
   @Schema(name = "permCustom12", description = "The custom permission with the name '12'.")
   private boolean permCustom12;
 

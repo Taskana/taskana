@@ -16,7 +16,6 @@ public class TaskSummaryPagedRepresentationModel
     super(content, pageMetadata);
   }
 
-  /** The embedded tasks. */
   @Schema(name = "tasks", description = "The embedded tasks.")
   @JsonProperty("tasks")
   @Override

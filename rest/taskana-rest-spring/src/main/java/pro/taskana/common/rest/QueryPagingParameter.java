@@ -20,7 +20,6 @@ public class QueryPagingParameter<T, Q extends BaseQuery<T, ?>>
     return pageSize;
   }
 
-  /** Request a specific page. Requires the definition of the 'page-size'. */
   @Schema(
       name = "page",
       description = "Request a specific page. Requires the definition of the 'page-size'.")
@@ -28,7 +27,6 @@ public class QueryPagingParameter<T, Q extends BaseQuery<T, ?>>
   @Min(1)
   private final Integer page;
 
-  /** Defines the size for each page. This requires a specific requested 'page'. */
   @Schema(
       name = "page-size",
       description = "Defines the size for each page. This requires a specific requested 'page'.")

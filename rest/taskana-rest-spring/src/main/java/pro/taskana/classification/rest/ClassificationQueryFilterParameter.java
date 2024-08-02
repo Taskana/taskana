@@ -72,18 +72,12 @@ public class ClassificationQueryFilterParameter
     return custom8Like;
   }
 
-  /** Filter by the name of the Classification. This is an exact match. */
   @Schema(
       name = "name",
       description = "Filter by the name of the Classification. This is an exact match.")
   @JsonProperty("name")
   private final String[] name;
 
-  /**
-   * Filter by the name of the Classification. This results in a substring search. (% is appended to
-   * the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will be
-   * resolved correctly.
-   */
   @Schema(
       name = "name-like",
       description =
@@ -93,39 +87,30 @@ public class ClassificationQueryFilterParameter
   @JsonProperty("name-like")
   private final String[] nameLike;
 
-  /** Filter by the key of the Classification. This is an exact match. */
   @Schema(
       name = "key",
       description = "Filter by the key of the Classification. This is an exact match.")
   @JsonProperty("key")
   private final String[] key;
 
-  /** Filter by the category of the Classification. This is an exact match. */
   @Schema(
       name = "category",
       description = "Filter by the category of the Classification. This is an exact match.")
   @JsonProperty("category")
   private final String[] category;
 
-  /** Filter by the domain of the Classification. This is an exact match. */
   @Schema(
       name = "domain",
       description = "Filter by the domain of the Classification. This is an exact match.")
   @JsonProperty("domain")
   private final String[] domain;
 
-  /** Filter by the type of the Classification. This is an exact match. */
   @Schema(
       name = "type",
       description = "Filter by the type of the Classification. This is an exact match.")
   @JsonProperty("type")
   private final String[] type;
 
-  /**
-   * Filter by the value of the field custom1. This results in a substring search.. (% is appended
-   * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will
-   * be resolved correctly.
-   */
   @Schema(
       name = "custom-1-like",
       description =
@@ -135,11 +120,6 @@ public class ClassificationQueryFilterParameter
   @JsonProperty("custom-1-like")
   private final String[] custom1Like;
 
-  /**
-   * Filter by the value of the field custom2. This results in a substring search.. (% is appended
-   * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will
-   * be resolved correctly.
-   */
   @Schema(
       name = "custom-2-like",
       description =
@@ -149,11 +129,6 @@ public class ClassificationQueryFilterParameter
   @JsonProperty("custom-2-like")
   private final String[] custom2Like;
 
-  /**
-   * Filter by the value of the field custom3. This results in a substring search.. (% is appended
-   * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will
-   * be resolved correctly.
-   */
   @Schema(
       name = "custom-3-like",
       description =
@@ -163,11 +138,6 @@ public class ClassificationQueryFilterParameter
   @JsonProperty("custom-3-like")
   private final String[] custom3Like;
 
-  /**
-   * Filter by the value of the field custom4. This results in a substring search.. (% is appended
-   * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will
-   * be resolved correctly.
-   */
   @Schema(
       name = "custom-4-like",
       description =
@@ -177,11 +147,6 @@ public class ClassificationQueryFilterParameter
   @JsonProperty("custom-4-like")
   private final String[] custom4Like;
 
-  /**
-   * Filter by the value of the field custom5. This results in a substring search.. (% is appended
-   * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will
-   * be resolved correctly.
-   */
   @Schema(
       name = "custom-5-like",
       description =
@@ -191,11 +156,6 @@ public class ClassificationQueryFilterParameter
   @JsonProperty("custom-5-like")
   private final String[] custom5Like;
 
-  /**
-   * Filter by the value of the field custom6. This results in a substring search.. (% is appended
-   * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will
-   * be resolved correctly.
-   */
   @Schema(
       name = "custom-6-like",
       description =
@@ -204,11 +164,6 @@ public class ClassificationQueryFilterParameter
               + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-6-like")
   private final String[] custom6Like;
-  /**
-   * Filter by the value of the field custom7. This results in a substring search.. (% is appended
-   * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will
-   * be resolved correctly.
-   */
   @Schema(
       name = "custom-7-like",
       description =
@@ -218,11 +173,6 @@ public class ClassificationQueryFilterParameter
   @JsonProperty("custom-7-like")
   private final String[] custom7Like;
 
-  /**
-   * Filter by the value of the field custom8. This results in a substring search.. (% is appended
-   * to the beginning and end of the requested value). Further SQL "LIKE" wildcard characters will
-   * be resolved correctly.
-   */
   @Schema(
       name = "custom-8-like",
       description =

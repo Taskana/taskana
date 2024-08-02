@@ -25,18 +25,12 @@ public class WorkbasketAccessItemQueryFilterParameter
     return accessIdLike;
   }
 
-  /** Filter by the key of the Workbasket. This is an exact match. */
   @Schema(
       name = "workbasket-key",
       description = "Filter by the key of the Workbasket. This is an exact match.")
   @JsonProperty("workbasket-key")
   private final String[] workbasketKey;
 
-  /**
-   * Filter by the key of the Workbasket. This results in a substring search.. (% is appended to the
-   * beginning and end of the requested value). Further SQL "LIKE" wildcard characters will be
-   * resolved correctly.
-   */
   @Schema(
       name = "workbasket-key-like",
       description =
@@ -46,18 +40,12 @@ public class WorkbasketAccessItemQueryFilterParameter
   @JsonProperty("workbasket-key-like")
   private final String[] workbasketKeyLike;
 
-  /** Filter by the name of the access id. This is an exact match. */
   @Schema(
       name = "access-id",
       description = "Filter by the name of the access id. This is an exact match.")
   @JsonProperty("access-id")
   private final String[] accessId;
 
-  /**
-   * Filter by the name of the access id. This results in a substring search.. (% is appended to the
-   * beginning and end of the requested value). Further SQL "LIKE" wildcard characters will be
-   * resolved correctly.
-   */
   @Schema(
       name = "access-id-like",
       description =

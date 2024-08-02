@@ -15,7 +15,6 @@ public class WorkbasketAccessItemCollectionRepresentationModel
     super(content);
   }
 
-  /** the embedded access items. */
   @JsonProperty("accessItems")
   @Schema(name = "accessItems", description = "the embedded access items.")
   @Override

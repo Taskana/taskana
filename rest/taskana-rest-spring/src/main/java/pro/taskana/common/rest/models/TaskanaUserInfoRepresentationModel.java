@@ -7,17 +7,15 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.lang.NonNull;
 import pro.taskana.common.api.TaskanaRole;
 
-/** EntityModel class for user information. */
+@Schema(description = "EntityModel class for user information")
 public class TaskanaUserInfoRepresentationModel
     extends RepresentationModel<TaskanaUserInfoRepresentationModel> {
 
-  /** The user Id of the current user. */
   @Schema(
           name = "userId",
           description = "The user Id of the current user."
   )
   private String userId;
-  /** All groups the current user is a member of. */
   @Schema(
           name = "groupIds",
           description = "All groups the current user is a member of."

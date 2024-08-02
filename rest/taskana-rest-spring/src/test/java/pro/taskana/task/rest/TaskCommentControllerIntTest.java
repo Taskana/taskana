@@ -40,6 +40,23 @@ class TaskCommentControllerIntTest {
   }
 
   @Test
+  void should_ReturnTaskComment_When_GivenTaskCommentId() {
+    String url =
+        restHelper.toUrl(
+            RestEndpoints.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000000");
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+    ResponseEntity<TaskCommentRepresentationModel> response =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.GET,
+            auth,
+            ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
+
+    assertThat(response.getBody()).isNotNull();
+  }
+
+  @Test
   void should_FailToReturnTaskComment_When_TaskCommentIsNotExisting() {
     String url = restHelper.toUrl(RestEndpoints.URL_TASK_COMMENT, "Non existing task comment Id");
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
@@ -162,6 +179,37 @@ class TaskCommentControllerIntTest {
   }
 
   @Test
+  void should_CreateTaskComment_When_TaskIsVisible() {
+    TaskCommentRepresentationModel taskCommentRepresentationModelToCreate =
+        new TaskCommentRepresentationModel();
+    taskCommentRepresentationModelToCreate.setTaskId("TKI:000000000000000000000000000000000004");
+    taskCommentRepresentationModelToCreate.setTextField("newly created task comment");
+    String url =
+        restHelper.toUrl(
+            RestEndpoints.URL_TASK_COMMENTS, "TKI:000000000000000000000000000000000004");
+    HttpEntity<TaskCommentRepresentationModel> auth =
+        new HttpEntity<>(
+            taskCommentRepresentationModelToCreate, RestHelper.generateHeadersForUser("admin"));
+
+    ResponseEntity<TaskCommentRepresentationModel> response =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.POST,
+            auth,
+            ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
+
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().getTaskCommentId()).isNotNull();
+    assertThat(response.getBody().getCreator()).isEqualTo("admin");
+    assertThat(response.getBody().getTaskId())
+        .isEqualTo("TKI:000000000000000000000000000000000004");
+    assertThat(response.getBody().getTextField()).isEqualTo("newly created task comment");
+    assertThat(response.getBody().getCreated()).isNotNull();
+    assertThat(response.getBody().getModified()).isNotNull();
+    assertThat(response.getBody().getLink(IanaLinkRelations.SELF)).isNotNull();
+  }
+
+  @Test
   void should_FailToCreateTaskComment_When_TaskIsNotVisible() {
     TaskCommentRepresentationModel taskCommentRepresentationModelToCreate =
         new TaskCommentRepresentationModel();
@@ -205,6 +253,32 @@ class TaskCommentControllerIntTest {
         .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.NOT_FOUND);
+  }
+
+  @Test
+  void should_UpdateTaskComment() {
+    String url =
+        restHelper.toUrl(
+            RestEndpoints.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000003");
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+    ResponseEntity<TaskCommentRepresentationModel> getTaskCommentResponse =
+        TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_COMMENT_TYPE);
+    TaskCommentRepresentationModel taskCommentToUpdate = getTaskCommentResponse.getBody();
+    assertThat(taskCommentToUpdate).isNotNull();
+    assertThat(taskCommentToUpdate.getLink(IanaLinkRelations.SELF)).isNotNull();
+    assertThat(taskCommentToUpdate.getCreator()).isEqualTo("user-1-2");
+    assertThat(taskCommentToUpdate.getTextField()).isEqualTo("some text in textfield");
+
+    taskCommentToUpdate.setTextField("updated text in textfield");
+    HttpEntity<TaskCommentRepresentationModel> auth2 =
+        new HttpEntity<>(taskCommentToUpdate, RestHelper.generateHeadersForUser("admin"));
+
+    ResponseEntity<TaskCommentRepresentationModel> responseUpdate =
+        TEMPLATE.exchange(url, HttpMethod.PUT, auth2, TASK_COMMENT_TYPE);
+
+    assertThat(responseUpdate.getBody()).isNotNull();
+    assertThat(responseUpdate.getBody().getTextField()).isEqualTo("updated text in textfield");
   }
 
   @Test
@@ -295,6 +369,33 @@ class TaskCommentControllerIntTest {
         .extracting(HttpStatusCodeException.class::cast)
         .extracting(HttpStatusCodeException::getStatusCode)
         .isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  void should_DeleteTaskComment_When_UserHasAuthorization() {
+    String url =
+        restHelper.toUrl(
+            RestEndpoints.URL_TASK_COMMENT, "TCI:000000000000000000000000000000000006");
+    HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("admin"));
+
+    ResponseEntity<TaskCommentRepresentationModel> response =
+        TEMPLATE.exchange(
+            url,
+            HttpMethod.DELETE,
+            auth,
+            ParameterizedTypeReference.forType(TaskCommentRepresentationModel.class));
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+    ThrowingCallable httpCall =
+        () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, TASK_COMMENT_TYPE);
+
+    assertThatThrownBy(httpCall)
+        .isInstanceOf(HttpStatusCodeException.class)
+        .hasMessageContaining("TASK_COMMENT_NOT_FOUND")
+        .extracting(HttpStatusCodeException.class::cast)
+        .extracting(HttpStatusCodeException::getStatusCode)
+        .isEqualTo(HttpStatus.NOT_FOUND);
   }
 
   @Test

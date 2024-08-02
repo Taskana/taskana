@@ -15,7 +15,6 @@ public class DistributionTargetsCollectionRepresentationModel
     super(content);
   }
 
-  /** the embedded distribution targets. */
   @Schema(name = "distributionTargets", description = "the embedded distribution targets.")
   @JsonProperty("distributionTargets")
   @Override

@@ -8,20 +8,17 @@ import java.util.List;
 import java.util.Map.Entry;
 import pro.taskana.task.api.models.Task;
 
-/** EntityModel class for {@link Task}. */
+@Schema(description = "EntityModel class for Task")
 @JsonIgnoreProperties("attachmentSummaries")
 public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
 
   // All objects have to be serializable
-  /** Additional information of the task. */
   @Schema(name = "customAttributes", description = "Additional information of the task.")
   private List<CustomAttribute> customAttributes = Collections.emptyList();
 
-  /** Callback Information of the task. */
   @Schema(name = "callbackInfo", description = "Callback Information of the task.")
   private List<CustomAttribute> callbackInfo = Collections.emptyList();
 
-  /** Attachments of the task. */
   @Schema(name = "attachments", description = "Attachments of the task.")
   private List<AttachmentRepresentationModel> attachments = new ArrayList<>();
 
@@ -53,12 +50,11 @@ public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
    * A CustomAttribute is a user customized attribute which is saved as a Map and can be retreived
    * from either {@link Task#getCustomAttributeMap()} or {@link Task#getCallbackInfo()}.
    */
+  @Schema(description = "A CustomAttribute is a user customized attribute which is saved as a Map.")
   public static class CustomAttribute {
 
-    /** the key of the custom attribute. */
     @Schema(name = "key", description = "the key of the custom attribute.")
     private String key;
-    /** the value of the custom attribute. */
     @Schema(name = "value", description = "the value of the custom attribute.")
     private String value;
 
