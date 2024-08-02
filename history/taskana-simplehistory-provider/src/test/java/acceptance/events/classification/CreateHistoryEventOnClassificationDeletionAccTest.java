@@ -30,9 +30,6 @@ class CreateHistoryEventOnClassificationDeletionAccTest extends AbstractAccTest 
 
     final String classificationId = "CLI:200000000000000000000000000000000015";
 
-    taskService.createTaskQuery().list();
-    historyService.deleteHistoryEventsByTaskIds(List.of("test12"));
-
     List<ClassificationHistoryEvent> events =
         historyService
             .createClassificationHistoryQuery()

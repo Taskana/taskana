@@ -46,10 +46,8 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
       TaskanaTransactionProvider txProvider,
       ScheduledJob scheduledJob) {
     super(taskanaEngine, txProvider, scheduledJob, true);
-    if (simpleHistoryService == null) {
-      simpleHistoryService = new SimpleHistoryServiceImpl();
-      simpleHistoryService.initialize(taskanaEngine);
-    }
+    simpleHistoryService = new SimpleHistoryServiceImpl();
+    simpleHistoryService.initialize(taskanaEngine);
   }
 
   public static Duration getLockExpirationPeriod(TaskanaConfiguration taskanaConfiguration) {
