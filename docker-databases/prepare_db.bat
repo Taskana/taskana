@@ -31,23 +31,23 @@ SETLOCAL
 
 :START_DB2_11_5
     ECHO ---
-    ECHO docker-compose -f %~dp0/docker-compose.yml up -d taskana-db2_11-5
-    docker-compose -f %~dp0/docker-compose.yml up -d taskana-db2_11-5
+    ECHO docker compose -f %~dp0/docker-compose.yml up -d taskana-db2_11-5
+    docker compose -f %~dp0/docker-compose.yml up -d taskana-db2_11-5
 
     ECHO ---
     GOTO MENU
 
 :STOP_DB2_11_5
     ECHO ---
-    ECHO docker-compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-db2_11-5
-    docker-compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-db2_11-5
+    ECHO docker compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-db2_11-5
+    docker compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-db2_11-5
     ECHO ---
     GOTO MENU
 
 :START_POSTGRES_14
     ECHO ---
-    ECHO docker-compose -f %~dp0/docker-compose.yml up -d taskana-postgres_14
-    docker-compose -f %~dp0/docker-compose.yml up -d taskana-postgres_14
+    ECHO docker compose -f %~dp0/docker-compose.yml up -d taskana-postgres_14
+    docker compose -f %~dp0/docker-compose.yml up -d taskana-postgres_14
 
     ECHO ---
     GOTO MENU
@@ -55,15 +55,15 @@ SETLOCAL
 :STOP_POSTGRES_14
     ECHO ---
     ECHO docker stop taskana-postgres_14
-    ECHO docker-compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-postgres_14
-    docker-compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-postgres_14
+    ECHO docker compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-postgres_14
+    docker compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-postgres_14
     ECHO ---
     GOTO MENU
 
 :START_ORACLE_18
     ECHO ---
-    ECHO docker-compose -f %~dp0/docker-compose.yml up -d taskana-oracle-18
-    docker-compose -f %~dp0/docker-compose.yml up -d taskana-oracle-18
+    ECHO docker compose -f %~dp0/docker-compose.yml up -d taskana-oracle-18
+    docker compose -f %~dp0/docker-compose.yml up -d taskana-oracle-18
 
     ECHO ---
     GOTO MENU
@@ -71,14 +71,14 @@ SETLOCAL
 :STOP_ORACLE_18
     ECHO ---
     ECHO docker stop taskana-oracle-18
-    ECHO docker-compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-oracle-18
-    docker-compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-oracle-18
+    ECHO docker compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-oracle-18
+    docker compose -f %~dp0/docker-compose.yml rm -f -s -v taskana-oracle-18
     ECHO ---
     GOTO MENU
 
 :STOP_ALL
     ECHO ---
-    ECHO docker-compose -f %~dp0/docker-compose.yml down -v
-    docker-compose -f %~dp0/docker-compose.yml down -v
+    ECHO docker compose -f %~dp0/docker-compose.yml down -v
+    docker compose -f %~dp0/docker-compose.yml down -v
     ECHO ---
     GOTO MENU

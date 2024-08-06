@@ -28,7 +28,7 @@ function helpAndExit() {
   exit "$1"
 }
 
-# This function maps the database parameter (for this file) to the docker-compose service name.
+# This function maps the database parameter (for this file) to the docker compose service name.
 # Arguments:
 #   $1: the database which should be mapped
 function mapDBToDockerComposeServiceName() {
@@ -56,19 +56,19 @@ function main() {
   H2)
     ;;
   DB2|DB2_11_5)
-    docker-compose -f $scriptDir/docker-compose.yml up -d "$(mapDBToDockerComposeServiceName "$1")"
+    docker compose -f $scriptDir/docker-compose.yml up -d "$(mapDBToDockerComposeServiceName "$1")"
     ;;
   POSTGRES|POSTGRES_14)
-    docker-compose -f $scriptDir/docker-compose.yml up -d "$(mapDBToDockerComposeServiceName "$1")"
+    docker compose -f $scriptDir/docker-compose.yml up -d "$(mapDBToDockerComposeServiceName "$1")"
     ;;
   ORACLE|ORACLE_18)
-    docker-compose -f $scriptDir/docker-compose.yml up -d "$(mapDBToDockerComposeServiceName "$1")"
+    docker compose -f $scriptDir/docker-compose.yml up -d "$(mapDBToDockerComposeServiceName "$1")"
     ;;
   stop)
     # this variable is necessary, so that the script can terminate properly
     # when the provided database name does not match. PLEASE DO NOT INLINE!
     local composeServiceName="$(mapDBToDockerComposeServiceName "$2")"
-    docker-compose -f $scriptDir/docker-compose.yml rm -f -s -v $composeServiceName
+    docker compose -f $scriptDir/docker-compose.yml rm -f -s -v $composeServiceName
     ;;
   *)
     echo "unknown database '$1'" >&2
