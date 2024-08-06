@@ -3,7 +3,7 @@ services:
   taskana-postgres_14:
     build: postgres_14
     ports:
-      - 5102:5432
+      - "5102:5432"
     environment:
       - POSTGRES_PASSWORD=postgres
   taskana-db2_11-5:
@@ -11,7 +11,7 @@ services:
     environment:
       - LICENSE=accept
     ports:
-      - 5101:50000
+      - "5101:50000"
   taskana-oracle-18:
     image: gvenzl/oracle-xe:18-slim-faststart
     environment:
@@ -21,4 +21,4 @@ services:
       - APP_USER_PASSWORD=testPassword
       - TZ=Europe/Berlin
     ports:
-      - 5103:1521
+      - "5103:1521"
