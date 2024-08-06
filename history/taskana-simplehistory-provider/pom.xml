@@ -39,6 +39,12 @@
     <!-- test dependencies -->
     <dependency>
       <groupId>pro.taskana</groupId>
+      <artifactId>taskana-test-api</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>pro.taskana</groupId>
       <artifactId>taskana-common-data</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>

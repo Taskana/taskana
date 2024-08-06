@@ -1019,4 +1019,12 @@ public interface TaskService {
    * @return a {@linkplain TaskCommentQuery}
    */
   TaskCommentQuery createTaskCommentQuery();
+
+  Task rerouteTask(String taskId)
+      throws NotAuthorizedOnWorkbasketException,
+          TaskNotFoundException,
+          WorkbasketNotFoundException,
+          InvalidTaskStateException;
+
+  BulkOperationResults<String, TaskanaException> rerouteTasks(List<String> taskIds);
 }
