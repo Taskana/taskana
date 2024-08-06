@@ -3,6 +3,7 @@ package pro.taskana.example.wildfly;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -95,17 +96,14 @@ public class AbstractAccTest {
       ProcessBuilder builder = new ProcessBuilder();
       if (isWindows) {
         builder.command(
-            "cmd.exe", "/c", "docker-compose -f ../../docker-databases/docker-compose.yml down -v");
+            "cmd.exe", "/c", "docker compose -f ../../docker-databases/docker-compose.yml down -v");
       } else {
         builder.command(
-            "sh", "-c", "docker-compose -f ../../docker-databases/docker-compose.yml down -v");
+            "sh", "-c", "docker compose -f ../../docker-databases/docker-compose.yml down -v");
       }
       Process process = builder.start();
       LOGGER.info("Stopping POSTGRES...");
-      int exitCode = process.waitFor();
-      if (exitCode != 0) {
-        throw new RuntimeException("could not start postgres db!");
-      }
+      assertSuccessExitCode(process);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -119,23 +117,35 @@ public class AbstractAccTest {
         builder.command(
             "cmd.exe",
             "/c",
-            "docker-compose -f ../../docker-databases/docker-compose.yml up -d "
+            "docker compose -f ../../docker-databases/docker-compose.yml up -d "
                 + "taskana-postgres_14");
       } else {
         builder.command(
             "sh",
             "-c",
-            "docker-compose -f ../../docker-databases/docker-compose.yml up -d "
+            "docker compose -f ../../docker-databases/docker-compose.yml up -d "
                 + "taskana-postgres_14");
       }
       Process process = builder.start();
       LOGGER.info("Starting POSTGRES...");
-      int exitCode = process.waitFor();
-      if (exitCode != 0) {
-        throw new RuntimeException("could not start postgres db!");
-      }
+      assertSuccessExitCode(process);
     } catch (Exception e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  private static void assertSuccessExitCode(Process process) throws InterruptedException {
+    int exitCode = process.waitFor();
+    if (exitCode != 0) {
+      String standardOutput = process.inputReader().lines().collect(Collectors.joining("\n"));
+      String standardError = process.errorReader().lines().collect(Collectors.joining("\n"));
+      throw new RuntimeException(
+          "Could not start postgres db! exit code: "
+              + exitCode
+              + ", standardOutput: "
+              + standardOutput
+              + ", standardError: "
+              + standardError);
     }
   }
 }
