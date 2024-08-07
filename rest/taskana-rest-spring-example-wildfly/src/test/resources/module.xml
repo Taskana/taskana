@@ -3,7 +3,7 @@
 <module name="org.postgresql.postgresql" xmlns="urn:jboss:module:1.9">
 
   <resources>
-    <resource-root path="postgresql-42.6.2.jar"/>
+    <resource-root path="postgresql-42.7.3.jar"/>
   </resources>
 
   <!-- don't know why it is still javax, but this is the only way how the postgresql module is loaded -->
