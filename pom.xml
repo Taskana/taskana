@@ -64,7 +64,7 @@
     <version.sonatype>1.7.0</version.sonatype>
 
     <!-- spring dependencies -->
-    <version.jakarta.annotation-api>2.1.1</version.jakarta.annotation-api>
+    <version.jakarta.annotation-api>3.0.0</version.jakarta.annotation-api>
     <version.spring.plugin.core>3.0.0</version.spring.plugin.core>
     <version.spring.boot>3.3.1</version.spring.boot>
     <version.spring.mybatis>3.0.2</version.spring.mybatis>
