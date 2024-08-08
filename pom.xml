@@ -88,7 +88,7 @@
     <version.jacoco>0.8.12</version.jacoco>
     <version.slf4j-test>3.0.1</version.slf4j-test>
     <version.testcontainers>1.20.0</version.testcontainers>
-    <version.spring-openapi>2.5.0</version.spring-openapi>
+    <version.spring-openapi>2.6.0</version.spring-openapi>
 
     <!-- AspectJ dependencies -->
     <version.aspectj-maven-plugin>1.15.0</version.aspectj-maven-plugin>
