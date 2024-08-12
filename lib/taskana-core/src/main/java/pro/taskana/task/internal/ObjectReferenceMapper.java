@@ -20,7 +20,7 @@ public interface ObjectReferenceMapper {
           + "FROM OBJECT_REFERENCE "
           + "WHERE ID = #{id}"
           + "ORDER BY VALUE ASC, TYPE ASC, SYSTEM_INSTANCE ASC, SYSTEM ASC, COMPANY ASC"
-          + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+          + "<if test=\"_databaseId == 'db2'\"> with UR </if> "
           + "</script>")
   @Result(property = "id", column = "ID")
   @Result(property = "company", column = "COMPANY")
@@ -34,8 +34,8 @@ public interface ObjectReferenceMapper {
       "<script>SELECT ID, TASK_ID, COMPANY, SYSTEM, SYSTEM_INSTANCE, TYPE, VALUE "
           + "FROM OBJECT_REFERENCE "
           + "WHERE TASK_ID = #{taskId}"
-          + "ORDER BY VALUE ASC, TYPE ASC, SYSTEM_INSTANCE ASC, SYSTEM ASC, COMPANY ASC"
-          + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+          + " ORDER BY VALUE ASC, TYPE ASC, SYSTEM_INSTANCE ASC, SYSTEM ASC, COMPANY ASC"
+          + "<if test=\"_databaseId == 'db2'\"> with UR </if> "
           + "</script>")
   @Result(property = "id", column = "ID")
   @Result(property = "taskId", column = "TASK_ID")
@@ -60,7 +60,7 @@ public interface ObjectReferenceMapper {
           + "</choose>"
           + "</where>"
           + "ORDER BY VALUE ASC, TYPE ASC, SYSTEM_INSTANCE ASC, SYSTEM ASC, COMPANY ASC"
-          + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+          + "<if test=\"_databaseId == 'db2'\"> with UR </if> "
           + "</script>")
   @Result(property = "id", column = "ID")
   @Result(property = "taskId", column = "TASK_ID")
@@ -81,7 +81,7 @@ public interface ObjectReferenceMapper {
           + "AND TYPE = #{objectReference.type} "
           + "AND VALUE = #{objectReference.value} "
           + "ORDER BY VALUE ASC, TYPE ASC, SYSTEM_INSTANCE ASC, SYSTEM ASC, COMPANY ASC"
-          + "<if test=\"_databaseId == 'db2'\">with UR </if> "
+          + "<if test=\"_databaseId == 'db2'\"> with UR </if> "
           + "</script>")
   @Result(property = "id", column = "ID")
   @Result(property = "company", column = "COMPANY")
