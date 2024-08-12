@@ -394,6 +394,8 @@ jobs:
         env:
           GPG_KEY_NAME: ${{ secrets.GPG_KEY_NAME }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          MAVEN_USERNAME: iFwWwha3
+          MAVEN_PASSWORD: uzrcUVbaTpjAOGY47uGhicQI1AmTAwILYPdfKWy1FF9r
       - name: Update version to next snapshot and push back
         run: |
           ci/change_version.sh -i -m .
