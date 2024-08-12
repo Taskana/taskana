@@ -16,8 +16,8 @@
 	<servers>
 		<server>
 			<id>ossrh</id>
-			<username>${env.OSSRH_JIRA_USERNAME}</username>
-			<password>${env.OSSRH_JIRA_PASSWORD}</password>
+			<username>44pdzWD8</username>
+			<password>eJZ25rsRdH7ZiePJO52JUy7LyVkNIgXxXEBmnTNH3aOM</password>
 		</server>
 	</servers>
 </settings>
