@@ -337,7 +337,7 @@ jobs:
   deploy_to_azure:
     runs-on: ubuntu-20.04
     name: Deploy demo app to Microsoft Azure
-    if: github.repository == 'Taskana/taskana' && github.ref == 'refs/heads/master' && github.head_ref == ''
+    if: github.repository == 'kadai-io/kadai' && github.ref == 'refs/heads/master' && github.head_ref == ''
     needs: [ test_frontend, test_e2e, test_backend ]
     steps:
       - name: Git checkout
@@ -390,48 +390,3 @@ jobs:
         if: failure()
         uses: andymckay/cancel-action@0.5
 
-  upload_to_sonar:
-    runs-on: ubuntu-20.04
-    name: Upload SonarQube analysis to sonarcloud
-    # no pull request and not on release
-    if: github.head_ref == '' && !startsWith(github.ref, 'refs/tags')
-    needs: [ test_frontend, test_e2e, test_backend ]
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Set up JDK ${{ env.JAVA_VERSION }}
-        uses: actions/setup-java@v4
-        with:
-          distribution: adopt
-          java-version: ${{ env.JAVA_VERSION }}
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-${{ env.CACHE_SONAR_NAME }}
-          restore-keys: ${{ runner.os }}-${{ env.CACHE_SONAR_NAME }}
-      - name: Cache maven dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-${{ env.CACHE_MAVEN_NAME }}
-      - name: Download JaCoCo reports
-        uses: actions/download-artifact@v4
-        with:
-          pattern: ${{ env.ARTIFACTS_JACOCO_REPORTS_NAME }}-*
-          merge-multiple: true
-      - name: Install taskana
-        run: ./mvnw -B install -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip
-      - name: Upload SonarQube analysis
-        run: ./mvnw -B sonar:sonar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
-      - name: Cancel workflow
-        if: failure()
-        uses: andymckay/cancel-action@0.5
