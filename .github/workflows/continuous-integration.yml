@@ -376,7 +376,7 @@ jobs:
         with:
           creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
       - name: Deploy to Microsoft Azure
-        uses: Azure/webapps-deploy@v3
+        uses: Azure/webapps-deploy@v2
         with:
           app-name: kadai
           package: rest/taskana-rest-spring-example-boot/target/taskana-rest-spring-example-boot.jar
