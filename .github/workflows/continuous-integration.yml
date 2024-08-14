@@ -378,7 +378,7 @@ jobs:
       - name: Deploy to Microsoft Azure
         uses: Azure/webapps-deploy@v3
         with:
-          app-name: taskana
+          app-name: kadai
           package: rest/taskana-rest-spring-example-boot/target/taskana-rest-spring-example-boot.jar
       - name: Wait for Azure for 60 seconds
         uses: jakejarvis/wait-action@master
