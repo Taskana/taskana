@@ -368,7 +368,7 @@ jobs:
       - name: Generate Javadoc
         run: ./mvnw -B clean javadoc:jar -pl :taskana-core,:taskana-cdi,:taskana-spring
       - name: Build Example Application
-        run: ./mvnw -B install -P history.plugin -P dmn-routing.plugin -pl :taskana-rest-spring-example-boot -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip -Djacoco.skip
+        run: ./mvnw -B install -P history.plugin -pl :taskana-rest-spring-example-boot -DskipTests -Dcheckstyle.skip -Dmaven.javadoc.skip -Djacoco.skip
       - name: Verify Example Application contains documentation
         run: ci/verify_docs_jar.sh
       - name: Login to Microsoft Azure
