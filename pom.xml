@@ -53,7 +53,7 @@
     <version.maven.source>3.3.1</version.maven.source>
     <version.maven.javadoc>3.8.0</version.maven.javadoc>
     <version.maven.resources>3.3.1</version.maven.resources>
-    <version.maven.surefire>3.3.1</version.maven.surefire>
+    <version.maven.surefire>3.4.0</version.maven.surefire>
     <version.maven.clean>3.2.0</version.maven.clean>
     <version.maven.dependency>3.7.1</version.maven.dependency>
     <version.maven.sonar>4.0.0.4121</version.maven.sonar>
