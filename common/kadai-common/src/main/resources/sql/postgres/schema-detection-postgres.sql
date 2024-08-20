@@ -1,0 +1,3 @@
+SET search_path TO %schemaName%;
+
+SELECT MAX(VERSION) FROM KADAI_SCHEMA_VERSION;

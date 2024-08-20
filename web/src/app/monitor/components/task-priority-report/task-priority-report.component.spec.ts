@@ -20,14 +20,14 @@ class GermanTimeFormatPipe implements PipeTransform {
   }
 }
 
-@Component({ selector: 'taskana-monitor-canvas', template: '' })
+@Component({ selector: 'kadai-monitor-canvas', template: '' })
 class CanvasStub {
   @Input() row;
   @Input() id;
   @Input() isReversed;
 }
 
-@Component({ selector: 'taskana-monitor-task-priority-report-filter', template: '' })
+@Component({ selector: 'kadai-monitor-task-priority-report-filter', template: '' })
 class TaskPriorityReportFilterStub {}
 
 const monitorServiceSpy: Partial<MonitorService> = {
@@ -70,7 +70,7 @@ describe('TaskPriorityReportComponent', () => {
   });
 
   it('should show Canvas component for all Workbaskets', () => {
-    const canvas = debugElement.nativeElement.querySelectorAll('taskana-monitor-canvas');
+    const canvas = debugElement.nativeElement.querySelectorAll('kadai-monitor-canvas');
     expect(canvas).toHaveLength(2);
   });
 

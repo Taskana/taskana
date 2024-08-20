@@ -12,7 +12,7 @@ module.exports = {
   collectCoverage: true,
   coverageReporters: ['text'],
   // coverageReporters: ['html', 'text'],
-  coverageDirectory: 'coverage/taskana-web',
+  coverageDirectory: 'coverage/kadai-web',
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths || {}, {
     prefix: `<rootDir>/${compilerOptions.baseUrl}/`
   })

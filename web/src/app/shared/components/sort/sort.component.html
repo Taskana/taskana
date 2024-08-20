@@ -2,7 +2,7 @@
   <button class="sort__button" mat-stroked-button [matMenuTriggerFor]="sortMenu" matTooltip="Modify sorting order">
     <mat-icon>sort</mat-icon>
 
-    <mat-menu #sortMenu="matMenu" >
+    <mat-menu #sortMenu="matMenu">
       <button mat-menu-item [matMenuTriggerFor]="sortDirection">Sort direction</button>
       <button mat-menu-item [matMenuTriggerFor]="sortValue">Sort value</button>
     </mat-menu>
@@ -16,7 +16,7 @@
           <span class="sort__selected-value"> Ascending </span>
         </span>
         <ng-template #coloredAsc>
-          <mat-icon> arrow_upward </mat-icon>
+          <mat-icon> arrow_upward</mat-icon>
           <span> Ascending </span>
         </ng-template>
       </button>
@@ -28,7 +28,7 @@
           <span class="sort__selected-value"> Descending </span>
         </span>
         <ng-template #coloredDesc>
-          <mat-icon> arrow_downward </mat-icon>
+          <mat-icon> arrow_downward</mat-icon>
           <span> Descending </span>
         </ng-template>
       </button>
@@ -48,8 +48,6 @@
     </mat-menu>
   </button>
 </div>
-
-
 
 
 <!-- with radio buttons

@@ -1,7 +1,7 @@
 import { Directive, HostListener, Renderer2, ElementRef } from '@angular/core';
 
 @Directive({
-  selector: '[taskanaResizableWidth]'
+  selector: '[kadaiResizableWidth]'
 })
 export class ResizableWidthDirective {
   private startX: number;

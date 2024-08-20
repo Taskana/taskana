@@ -30,7 +30,7 @@ import {
   workbasketReadStateMock
 } from '../../../shared/store/mock-data/mock-store';
 import { StartupService } from '../../../shared/services/startup/startup.service';
-import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
+import { KadaiEngineService } from '../../../shared/services/kadai-engine/kadai-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDividerModule } from '@angular/material/divider';
@@ -41,14 +41,14 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { By } from '@angular/platform-browser';
 
-@Component({ selector: 'taskana-shared-field-error-display', template: '' })
+@Component({ selector: 'kadai-shared-field-error-display', template: '' })
 class FieldErrorDisplayStub {
   @Input() displayError: boolean;
   @Input() errorMessage: string;
   @Input() validationTrigger: boolean;
 }
 
-@Component({ selector: 'taskana-administration-icon-type', template: '' })
+@Component({ selector: 'kadai-administration-icon-type', template: '' })
 class IconTypeStub {
   @Input() type: WorkbasketType;
   @Input() text: string;
@@ -122,7 +122,7 @@ describe('WorkbasketInformationComponent', () => {
         SelectedRouteService,
         ClassificationCategoriesService,
         StartupService,
-        TaskanaEngineService,
+        KadaiEngineService,
         WindowRefService
       ]
     }).compileComponents();

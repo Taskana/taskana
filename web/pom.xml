@@ -2,14 +2,14 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>taskana-web</artifactId>
+  <artifactId>kadai-web</artifactId>
 
   <name>${project.groupId}:${project.artifactId}</name>
-  <description>taskana web</description>
+  <description>kadai web</description>
 
   <parent>
-    <groupId>pro.taskana</groupId>
-    <artifactId>taskana-rest-parent</artifactId>
+    <groupId>io.kadai</groupId>
+    <artifactId>kadai-rest-parent</artifactId>
     <version>8.2.1-SNAPSHOT</version>
     <relativePath>../rest/pom.xml</relativePath>
   </parent>

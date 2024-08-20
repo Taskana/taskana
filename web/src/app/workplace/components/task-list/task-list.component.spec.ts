@@ -13,7 +13,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatBadgeModule } from '@angular/material/badge';
 
 @Component({
-  selector: 'taskana-dummy-detail',
+  selector: 'kadai-dummy-detail',
   template: 'dummydetail'
 })
 export class DummyDetailComponent {}

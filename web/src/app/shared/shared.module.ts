@@ -16,7 +16,7 @@ import { AccordionModule } from 'ngx-bootstrap/accordion';
  */
 import { SpinnerComponent } from 'app/shared/components/spinner/spinner.component';
 import { MasterAndDetailComponent } from 'app/shared/components/master-and-detail/master-and-detail.component';
-import { TaskanaTreeComponent } from 'app/administration/components/tree/tree.component';
+import { KadaiTreeComponent } from 'app/administration/components/tree/tree.component';
 import { IconTypeComponent } from 'app/administration/components/type-icon/icon-type.component';
 import { FieldErrorDisplayComponent } from 'app/shared/components/field-error-display/field-error-display.component';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -86,7 +86,7 @@ const MODULES = [
 const DECLARATIONS = [
   SpinnerComponent,
   MasterAndDetailComponent,
-  TaskanaTreeComponent,
+  KadaiTreeComponent,
   TypeAheadComponent,
   MapValuesPipe,
   RemoveNoneTypePipe,

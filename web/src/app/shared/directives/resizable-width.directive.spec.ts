@@ -4,7 +4,7 @@ import { By } from '@angular/platform-browser';
 import { ResizableWidthDirective } from './resizable-width.directive';
 
 @Component({
-  template: ` <div taskanaResizableWidth></div>`
+  template: ` <div kadaiResizableWidth></div>`
 })
 class TestComponent {}
 

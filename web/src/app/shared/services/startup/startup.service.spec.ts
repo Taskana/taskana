@@ -3,7 +3,7 @@ import { TestBed, inject, getTestBed } from '@angular/core/testing';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { StartupService } from './startup.service';
-import { TaskanaEngineService } from '../taskana-engine/taskana-engine.service';
+import { KadaiEngineService } from '../kadai-engine/kadai-engine.service';
 import { WindowRefService } from '../window/window.service';
 import { environment } from '../../../../environments/environment';
 
@@ -12,8 +12,8 @@ describe('StartupService', () => {
   const someRestUrl = 'someRestUrl';
   const someLogoutUrl = 'someLogoutUrl';
   const dummyEnvironmentInformation = {
-    taskanaRestUrl: someRestUrl,
-    taskanaLogoutUrl: someLogoutUrl
+    kadaiRestUrl: someRestUrl,
+    kadaiLogoutUrl: someLogoutUrl
   };
 
   let httpMock;
@@ -22,7 +22,7 @@ describe('StartupService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule, HttpClientTestingModule],
-      providers: [StartupService, HttpClient, TaskanaEngineService, WindowRefService]
+      providers: [StartupService, HttpClient, KadaiEngineService, WindowRefService]
     });
   });
 
@@ -38,11 +38,11 @@ describe('StartupService', () => {
   }));
 
   it('should initialize rest and logout url from external file', (done) => {
-    environment.taskanaRestUrl = '';
-    environment.taskanaLogoutUrl = '';
+    environment.kadaiRestUrl = '';
+    environment.kadaiLogoutUrl = '';
     service.getEnvironmentFilePromise().then((res) => {
-      expect(environment.taskanaRestUrl).toBe(someRestUrl);
-      expect(environment.taskanaLogoutUrl).toBe(someLogoutUrl);
+      expect(environment.kadaiRestUrl).toBe(someRestUrl);
+      expect(environment.kadaiLogoutUrl).toBe(someLogoutUrl);
       done();
     });
     const req = httpMock.expectOne(environmentFile);
@@ -52,11 +52,11 @@ describe('StartupService', () => {
   });
 
   it('should initialize rest and logout url from external file and override previous config', (done) => {
-    environment.taskanaRestUrl = 'oldRestUrl';
-    environment.taskanaLogoutUrl = 'oldLogoutUrl';
+    environment.kadaiRestUrl = 'oldRestUrl';
+    environment.kadaiLogoutUrl = 'oldLogoutUrl';
     service.getEnvironmentFilePromise().then((res) => {
-      expect(environment.taskanaRestUrl).toBe(someRestUrl);
-      expect(environment.taskanaLogoutUrl).toBe(someLogoutUrl);
+      expect(environment.kadaiRestUrl).toBe(someRestUrl);
+      expect(environment.kadaiLogoutUrl).toBe(someLogoutUrl);
       done();
     });
     const req = httpMock.expectOne(environmentFile);

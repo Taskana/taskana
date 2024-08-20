@@ -7,7 +7,7 @@ import { MetaInfoData } from '../../models/meta-info-data';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
-  selector: 'taskana-monitor-workbasket-report-due-date',
+  selector: 'kadai-monitor-workbasket-report-due-date',
   templateUrl: './workbasket-report-due-date.component.html',
   styleUrls: ['./workbasket-report-due-date.component.scss']
 })

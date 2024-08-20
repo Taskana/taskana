@@ -1,0 +1,41 @@
+<web-app version="3.1"
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+  http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+    <display-name>KadaiRestWildflySpring</display-name>
+    <session-config>
+        <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>kadai-web</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>*</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Public</web-resource-name>
+            <url-pattern>/css/main.css</url-pattern>
+            <url-pattern>/css/bootstrap/4.1.3/bootstrap.min.css</url-pattern>
+            <url-pattern>/css/bootstrap/4.1.3/bootstrap.min.css.map</url-pattern>
+            <url-pattern>/img/logo.png</url-pattern>
+            <url-pattern>/logout</url-pattern>
+        </web-resource-collection>
+        <!-- No auth-constraint means everybody has access! -->
+    </security-constraint>
+    <security-role>
+        <role-name>*</role-name>
+    </security-role>
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>kadaiApplicationDomain</realm-name>
+    </login-config>
+</web-app>

@@ -1,0 +1,21 @@
+<arquillian xmlns="http://jboss.org/schema/arquillian"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://jboss.org/schema/arquillian
+        http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+    <defaultProtocol type="Servlet 6.0"/>
+    <container qualifier="wildfly" default="true">
+        <configuration>
+            <property name="jbossHome">target/wildfly-31.0.1.Final</property>
+            <property name="serverConfig">int-test-standalone.xml</property>
+            <!--            <property name="javaVmArguments">-->
+            <!--              &#45;&#45;add-exports=java.naming/com.sun.jndi.ldap=ALL-UNNAMED-->
+            <!--              -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y-->
+            <!--              -Djava.util.logging.manager=org.jboss.logmanager.LogManager-->
+            <!--            </property>-->
+            <property name="javaVmArguments">
+                --add-exports=java.naming/com.sun.jndi.ldap=ALL-UNNAMED
+                -Djava.util.logging.manager=org.jboss.logmanager.LogManager
+            </property>
+        </configuration>
+    </container>
+</arquillian>

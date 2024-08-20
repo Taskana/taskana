@@ -1,11 +1,11 @@
-<div *ngIf= "reportData" class="panel panel-default">
+<div *ngIf="reportData" class="panel panel-default">
   <div class="panel-heading">
-      <h4>{{reportData.meta.name}} ({{reportData.meta.date | germanTimeFormat}})</h4>
+    <h4>{{reportData.meta.name}} ({{reportData.meta.date | germanTimeFormat}})</h4>
   </div>
   <div class="panel-body">
     <div style="display: block">
       <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"></canvas>
     </div>
-    <taskana-monitor-report-table [reportData]="reportData"></taskana-monitor-report-table>
+    <kadai-monitor-report-table [reportData]="reportData"></kadai-monitor-report-table>
   </div>
 </div>

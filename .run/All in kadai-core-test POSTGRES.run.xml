@@ -1,0 +1,22 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="All in kadai-core-test POSTGRES" type="JUnit" factoryName="JUnit"
+                   folderName="lib">
+        <module name="kadai-core-test"/>
+        <extension name="coverage">
+            <pattern>
+                <option name="PATTERN" value="io.kadai.*"/>
+                <option name="ENABLED" value="true"/>
+            </pattern>
+        </extension>
+        <option name="PACKAGE_NAME" value=""/>
+        <option name="MAIN_CLASS_NAME" value=""/>
+        <option name="METHOD_NAME" value=""/>
+        <option name="TEST_OBJECT" value="package"/>
+        <envs>
+            <env name="DB" value="POSTGRES"/>
+        </envs>
+        <method v="2">
+            <option name="Make" enabled="true"/>
+        </method>
+    </configuration>
+</component>

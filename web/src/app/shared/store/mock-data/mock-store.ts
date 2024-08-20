@@ -112,19 +112,19 @@ export const selectedWorkbasketMock: Workbasket = {
   modified: '2020-08-18T09:14:41.353Z',
   _links: {
     self: {
-      href: 'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000902'
+      href: 'http://localhost:8080/kadai/api/v1/workbaskets/WBI:000000000000000000000000000000000902'
     },
     distributionTargets: {
-      href: 'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000902/distribution-targets'
+      href: 'http://localhost:8080/kadai/api/v1/workbaskets/WBI:000000000000000000000000000000000902/distribution-targets'
     },
     accessItems: {
-      href: 'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000902/workbasketAccessItems'
+      href: 'http://localhost:8080/kadai/api/v1/workbaskets/WBI:000000000000000000000000000000000902/workbasketAccessItems'
     },
     allWorkbaskets: {
-      href: 'http://localhost:8080/taskana/api/v1/workbaskets'
+      href: 'http://localhost:8080/kadai/api/v1/workbaskets'
     },
     removeDistributionTargets: {
-      href: 'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000902/distribution-targets'
+      href: 'http://localhost:8080/kadai/api/v1/workbaskets/WBI:000000000000000000000000000000000902/distribution-targets'
     }
   }
 };
@@ -186,10 +186,10 @@ export const workbasketAccessItemsMock: WorkbasketAccessItemsRepresentation = {
   ],
   _links: {
     self: {
-      href: 'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000901/workbasketAccessItems'
+      href: 'http://localhost:8080/kadai/api/v1/workbaskets/WBI:000000000000000000000000000000000901/workbasketAccessItems'
     },
     workbasket: {
-      href: 'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000901'
+      href: 'http://localhost:8080/kadai/api/v1/workbaskets/WBI:000000000000000000000000000000000901'
     }
   }
 };
@@ -765,13 +765,13 @@ export const workbasketAvailableDistributionTargets = {
   },
   _links: {
     self: {
-      href: 'http://localhost:8080/taskana/api/v1/workbaskets/?page=1&page-size=40'
+      href: 'http://localhost:8080/kadai/api/v1/workbaskets/?page=1&page-size=40'
     },
     first: {
-      href: 'http://localhost:8080/taskana/api/v1/workbaskets/?page-size=40&page=1'
+      href: 'http://localhost:8080/kadai/api/v1/workbaskets/?page-size=40&page=1'
     },
     last: {
-      href: 'http://localhost:8080/taskana/api/v1/workbaskets/?page-size=40&page=1'
+      href: 'http://localhost:8080/kadai/api/v1/workbaskets/?page-size=40&page=1'
     }
   }
 };
@@ -781,16 +781,16 @@ export const workbasketReadStateMock = {
   paginatedWorkbasketsSummary: {
     _links: {
       self: {
-        href: 'http://localhost:8080/taskana/api/v1/workbaskets/?sort-by=name&order=asc&domain=DOMAIN_A&page=3&page-size=8'
+        href: 'http://localhost:8080/kadai/api/v1/workbaskets/?sort-by=name&order=asc&domain=DOMAIN_A&page=3&page-size=8'
       },
       first: {
-        href: 'http://localhost:8080/taskana/api/v1/workbaskets/?sort-by=name&order=asc&domain=DOMAIN_A&page-size=8&page=1'
+        href: 'http://localhost:8080/kadai/api/v1/workbaskets/?sort-by=name&order=asc&domain=DOMAIN_A&page-size=8&page=1'
       },
       last: {
-        href: 'http://localhost:8080/taskana/api/v1/workbaskets/?sort-by=name&order=asc&domain=DOMAIN_A&page-size=8&page=3'
+        href: 'http://localhost:8080/kadai/api/v1/workbaskets/?sort-by=name&order=asc&domain=DOMAIN_A&page-size=8&page=3'
       },
       prev: {
-        href: 'http://localhost:8080/taskana/api/v1/workbaskets/?sort-by=name&order=asc&domain=DOMAIN_A&page-size=8&page=2'
+        href: 'http://localhost:8080/kadai/api/v1/workbaskets/?sort-by=name&order=asc&domain=DOMAIN_A&page-size=8&page=2'
       }
     },
     workbaskets: [
@@ -1043,7 +1043,7 @@ export const workbasketReadStateMock = {
   workbasketDistributionTargets: {
     _links: {
       self: {
-        href: 'http://localhost:8080/taskana/api/v1/workbaskets/WBI:000000000000000000000000000000000900/distribution-targets'
+        href: 'http://localhost:8080/kadai/api/v1/workbaskets/WBI:000000000000000000000000000000000900/distribution-targets'
       }
     },
     distributionTargets: [

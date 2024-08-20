@@ -6,7 +6,7 @@ enum WorkbasketReports {
 }
 
 @Component({
-  selector: 'taskana-monitor-workbasket-report',
+  selector: 'kadai-monitor-workbasket-report',
   templateUrl: './workbasket-report.component.html',
   styleUrls: ['./workbasket-report.component.scss']
 })

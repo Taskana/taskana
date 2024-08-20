@@ -6,7 +6,7 @@ import { ChartColorsDefinition } from '../../models/chart-colors';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
-  selector: 'taskana-monitor-classification-report',
+  selector: 'kadai-monitor-classification-report',
   templateUrl: './classification-report.component.html',
   styleUrls: ['./classification-report.component.scss']
 })

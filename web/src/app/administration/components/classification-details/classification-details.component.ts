@@ -32,7 +32,7 @@ import { Pair } from '../../../shared/models/pair';
 import { trimForm } from '../../../shared/util/form-trimmer';
 
 @Component({
-  selector: 'taskana-administration-classification-details',
+  selector: 'kadai-administration-classification-details',
   templateUrl: './classification-details.component.html',
   animations: [highlight],
   styleUrls: ['./classification-details.component.scss']

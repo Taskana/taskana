@@ -10,7 +10,7 @@ import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { TaskQueryFilterParameter } from '../../../shared/models/task-query-filter-parameter';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
+import { KadaiEngineService } from '../../../shared/services/kadai-engine/kadai-engine.service';
 import { Actions, ofActionCompleted, Select, Store } from '@ngxs/store';
 import { ClearTaskFilter, SetTaskFilter } from '../../../shared/store/filter-store/filter.actions';
 import { WorkplaceSelectors } from '../../../shared/store/workplace-store/workplace.selectors';
@@ -23,7 +23,7 @@ export enum Search {
 }
 
 @Component({
-  selector: 'taskana-task-list-toolbar',
+  selector: 'kadai-task-list-toolbar',
   animations: [expandDown],
   templateUrl: './task-list-toolbar.component.html',
   styleUrls: ['./task-list-toolbar.component.scss']
@@ -56,7 +56,7 @@ export class TaskListToolbarComponent implements OnInit {
   destroy$ = new Subject<void>();
 
   constructor(
-    private taskanaEngineService: TaskanaEngineService,
+    private kadaiEngineService: KadaiEngineService,
     private taskService: TaskService,
     private workbasketService: WorkbasketService,
     private workplaceService: WorkplaceService,
@@ -82,7 +82,7 @@ export class TaskListToolbarComponent implements OnInit {
         });
 
         // get workbasket of current user
-        const user = this.taskanaEngineService.currentUserInfo;
+        const user = this.kadaiEngineService.currentUserInfo;
         const filteredWorkbasketsByUser = this.workbaskets.filter(
           (workbasket) => workbasket.key == user.userId || workbasket.key == user.userId.toUpperCase()
         );
@@ -143,10 +143,10 @@ export class TaskListToolbarComponent implements OnInit {
     const tab = search.path[0].innerText;
     this.requestInProgressService.setRequestInProgress(true);
     if (tab === 'Workbaskets') {
-      this.router.navigate(['taskana/workplace'], { queryParams: { component: 'workbaskets' } });
+      this.router.navigate(['kadai/workplace'], { queryParams: { component: 'workbaskets' } });
     }
     if (tab === 'Task search') {
-      this.router.navigate(['taskana/workplace'], { queryParams: { component: 'task-search' } });
+      this.router.navigate(['kadai/workplace'], { queryParams: { component: 'task-search' } });
     }
   }
 

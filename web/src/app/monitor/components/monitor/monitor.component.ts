@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'taskana-monitor',
+  selector: 'kadai-monitor',
   templateUrl: './monitor.component.html',
   styleUrls: ['./monitor.component.scss']
 })

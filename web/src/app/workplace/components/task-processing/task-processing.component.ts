@@ -11,7 +11,7 @@ import { take } from 'rxjs/operators';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
-  selector: 'taskana-task-processing',
+  selector: 'kadai-task-processing',
   templateUrl: './task-processing.component.html',
   styleUrls: ['./task-processing.component.scss']
 })

@@ -1,4 +1,4 @@
 {
-  "taskanaRestUrl": "http://localhost:8080/taskana/api",
-  "taskanaLogoutUrl": "http://localhost:8080/taskana/logout"
+  "kadaiRestUrl": "http://localhost:8080/kadai/api",
+  "kadaiLogoutUrl": "http://localhost:8080/kadai/logout"
 }

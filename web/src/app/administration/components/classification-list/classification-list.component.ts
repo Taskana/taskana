@@ -5,7 +5,7 @@ import { Actions, ofActionCompleted, ofActionDispatched, Select, Store } from '@
 
 import { ImportExportService } from 'app/administration/services/import-export.service';
 
-import { TaskanaType } from 'app/shared/models/taskana-type';
+import { KadaiType } from 'app/shared/models/kadai-type';
 import { EngineConfigurationSelectors } from 'app/shared/store/engine-configuration-store/engine-configuration.selectors';
 import { ClassificationSelectors } from 'app/shared/store/classification-store/classification.selectors';
 import { Location } from '@angular/common';
@@ -21,12 +21,12 @@ import { RequestInProgressService } from '../../../shared/services/request-in-pr
 import { Pair } from '../../../shared/models/pair';
 
 @Component({
-  selector: 'taskana-administration-classification-list',
+  selector: 'kadai-administration-classification-list',
   templateUrl: './classification-list.component.html',
   styleUrls: ['./classification-list.component.scss']
 })
 export class ClassificationListComponent implements OnInit, OnDestroy {
-  taskanaType = TaskanaType;
+  kadaiType = KadaiType;
   requestInProgress = true;
   inputValue: string;
   selectedCategory = '';

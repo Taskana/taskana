@@ -4,7 +4,7 @@ COMMIT_MESSAGE="$(cat $MSG_FILE)"
 REGEX='^(Close|Closes|Closed|Fix|Fixes|Fixed|Resolve|Resolves|Resolved) #([0-9]+)'
 if [[ $COMMIT_MESSAGE =~ $REGEX ]]; then
  TICKET=${BASH_REMATCH[2]}
- RESULT=$(curl -s https://api.github.com/repos/Taskana/taskana/issues/$TICKET)
+ RESULT=$(curl -s https://api.github.com/repos/kadai-iokadai/issues/$TICKET)
  if [[ $RESULT =~ "\"message\": \"Not Found\"" ]]; then
   echo -e "\033[0;31mERROR:\033[0m $TICKET is not a valid GitHub issue"
   exit 1

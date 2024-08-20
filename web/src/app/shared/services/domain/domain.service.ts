@@ -38,7 +38,7 @@ export class DomainService {
 
   // url loads rest url value from startUpService which is a http call to ensure url it is always loaded from environment-information.json
   get url(): string {
-    return this.startupService.getTaskanaRestUrl() + '/v1/domains';
+    return this.startupService.getKadaiRestUrl() + '/v1/domains';
   }
 
   // GET
@@ -108,10 +108,10 @@ export class DomainService {
 
   private getNavigationUrl(): string {
     if (this.router.url.indexOf('workbaskets') !== -1) {
-      return 'taskana/administration/workbaskets';
+      return 'kadai/administration/workbaskets';
     }
     if (this.router.url.indexOf('classifications') !== -1) {
-      return 'taskana/administration/classifications';
+      return 'kadai/administration/classifications';
     }
     return '';
   }

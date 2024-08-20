@@ -17,7 +17,7 @@ export class AccessIdsService {
   constructor(private httpClient: HttpClient, private startupService: StartupService) {}
 
   get url(): string {
-    return this.startupService.getTaskanaRestUrl() + '/v1/access-ids';
+    return this.startupService.getKadaiRestUrl() + '/v1/access-ids';
   }
 
   searchForAccessId(accessId: string): Observable<AccessId[]> {
@@ -48,7 +48,7 @@ export class AccessIdsService {
   ): Observable<WorkbasketAccessItemsRepresentation> {
     return this.httpClient.get<WorkbasketAccessItemsRepresentation>(
       encodeURI(
-        `${environment.taskanaRestUrl}/v1/workbasket-access-items${asUrlQueryString({
+        `${environment.kadaiRestUrl}/v1/workbasket-access-items${asUrlQueryString({
           ...filterParameter,
           ...sortParameter,
           ...pagingParameter
@@ -59,7 +59,7 @@ export class AccessIdsService {
 
   removeAccessItemsPermissions(accessId: string) {
     return this.httpClient.delete<WorkbasketAccessItemsRepresentation>(
-      `${environment.taskanaRestUrl}/v1/workbasket-access-items?access-id=${accessId}`
+      `${environment.kadaiRestUrl}/v1/workbasket-access-items?access-id=${accessId}`
     );
   }
 }

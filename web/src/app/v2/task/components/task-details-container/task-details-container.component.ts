@@ -4,7 +4,7 @@ import { TaskFacadeService } from '@task/services/task-facade.service';
 import { debounceTime } from 'rxjs';
 
 @Component({
-  selector: 'taskana-task-details-container',
+  selector: 'kadai-task-details-container',
   templateUrl: './task-details-container.component.html',
   styleUrls: ['./task-details-container.component.scss']
 })

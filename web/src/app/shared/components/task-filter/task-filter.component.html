@@ -5,29 +5,35 @@
 
     <div class="task-filter__row">
       <!-- FILTER BY NAME AND OWNER -->
-      <mat-form-field class="task-filter__input-field--large" style="margin-right: 16px;" matTooltip="Filter Tasks by name">
+      <mat-form-field class="task-filter__input-field--large" style="margin-right: 16px;"
+                      matTooltip="Filter Tasks by name">
         <mat-label>Filter by name</mat-label>
-        <input matInput type="text" placeholder="Name" [(ngModel)]="filter['name-like'][0]" (keyup.enter)="search()" (keyup)="updateState()">
+        <input matInput type="text" placeholder="Name" [(ngModel)]="filter['name-like'][0]" (keyup.enter)="search()"
+               (keyup)="updateState()">
       </mat-form-field>
 
       <!-- FILTER BY PRIORITY -->
       <mat-form-field class="task-filter__input-field--small" matTooltip="Filter Tasks by priority">
         <mat-label>Filter by priority</mat-label>
-        <input matInput type="number" placeholder="Priority" [(ngModel)]="filter.priority[0]" (keyup.enter)="search()" (ngModelChange)="updateState()">
+        <input matInput type="number" placeholder="Priority" [(ngModel)]="filter.priority[0]" (keyup.enter)="search()"
+               (ngModelChange)="updateState()">
       </mat-form-field>
     </div>
 
     <div class="task-filter__row">
-      <mat-form-field class="task-filter__input-field--large" style="margin-right: 16px" matTooltip="Filter Tasks by owner">
+      <mat-form-field class="task-filter__input-field--large" style="margin-right: 16px"
+                      matTooltip="Filter Tasks by owner">
         <mat-label>Filter by owner</mat-label>
-        <input matInput type="text" placeholder="Owner" [(ngModel)]="filter['owner-like'][0]" (keyup.enter)="search()" (keyup)="updateState()">
+        <input matInput type="text" placeholder="Owner" [(ngModel)]="filter['owner-like'][0]" (keyup.enter)="search()"
+               (keyup)="updateState()">
       </mat-form-field>
 
       <!-- FILTER BY TASK STATE -->
       <mat-form-field class="task-filter__input-field--small" matTooltip="Filter Tasks by status">
         <mat-label>Filter by status</mat-label>
         <mat-select [value]="filter.state && filter.state[0] ? filter.state[0] : undefined">
-          <mat-option class="types-selector__options" *ngFor="let state of allStates | mapValues" [value]="state.key" (click)="setStatus(state.key)">
+          <mat-option class="types-selector__options" *ngFor="let state of allStates | mapValues" [value]="state.key"
+                      (click)="setStatus(state.key)">
             {{ state.value }}
           </mat-option>
         </mat-select>

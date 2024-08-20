@@ -2,21 +2,23 @@
 
   <!-- TASK TOOLBAR AND TASK LIST-->
   <div class="workplace-overview__task-list">
-      <router-outlet name="master"> </router-outlet>
+    <router-outlet name="master"></router-outlet>
   </div>
 
   <div class="vertical-right-divider workplace-overview__divider"></div>
 
   <!-- TASK DETAILS-->
   <div *ngIf="showDetail" class="workplace-overview__task-details">
-      <router-outlet name="detail"> </router-outlet>
+    <router-outlet name="detail"></router-outlet>
   </div>
 
   <!-- TASK DETAILS WITHOUT SELECTED -->
   <div *ngIf="!showDetail && currentRoute === 'tasks'" class="workplace-overview__empty-page">
     <h2> Select a Task </h2>
     <br>
-    <div style="transform: scale(4)"> <mat-icon>done_all</mat-icon> </div>
+    <div style="transform: scale(4)">
+      <mat-icon>done_all</mat-icon>
+    </div>
   </div>
 
 </div>

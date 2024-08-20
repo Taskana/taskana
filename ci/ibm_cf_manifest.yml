@@ -1,7 +1,7 @@
 # Configuration file for Cloud Foundry, see https://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html
 applications:
-  - name: taskana-rest-spring-example-boot
-    path: ../rest/taskana-rest-spring-example-boot/target/taskana-rest-spring-example-boot.jar
+  - name: kadai-rest-spring-example-boot
+    path: ../rest/kadai-rest-spring-example-boot/target/kadai-rest-spring-example-boot.jar
     buildpacks:
       - https://github.com/cloudfoundry/java-buildpack.git
     memory: 1G

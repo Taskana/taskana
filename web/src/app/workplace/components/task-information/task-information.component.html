@@ -12,41 +12,47 @@
                  [(ngModel)]="task.name" name="task.name" (input)="validateInputOverflow(name, 255)">
         </mat-form-field>
         <div *ngIf="inputOverflowMap.get(name.name)" class="error">{{lengthError}}</div>
-        <taskana-shared-field-error-display [displayError]="!isFieldValid('task.name')"
-                                            [validationTrigger]="this.toggleValidationMap.get('task.name')" errorMessage="* Name is required">
-        </taskana-shared-field-error-display>
+        <kadai-shared-field-error-display [displayError]="!isFieldValid('task.name')"
+                                          [validationTrigger]="this.toggleValidationMap.get('task.name')"
+                                          errorMessage="* Name is required">
+        </kadai-shared-field-error-display>
 
         <!-- TASK SYSTEM -->
         <mat-form-field appearance="outline">
           <mat-label>System</mat-label>
           <label for="task.primaryObjRef.system"></label>
-          <input matInput type="text" required maxlength="32" #system="ngModel" id="task.primaryObjRef.system" placeholder="System description"
-                 [(ngModel)]="task.primaryObjRef.system" name="task.primaryObjRef.system" (input)="validateInputOverflow(system, 32)">
+          <input matInput type="text" required maxlength="32" #system="ngModel" id="task.primaryObjRef.system"
+                 placeholder="System description"
+                 [(ngModel)]="task.primaryObjRef.system" name="task.primaryObjRef.system"
+                 (input)="validateInputOverflow(system, 32)">
         </mat-form-field>
         <div *ngIf="inputOverflowMap.get(system.name)" class="error">{{lengthError}}</div>
-        <taskana-shared-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.system')"
-                                            [validationTrigger]="this.toggleValidationMap.get('task.primaryObjRef.system')"
-                                            errorMessage="* System is required">
-        </taskana-shared-field-error-display>
+        <kadai-shared-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.system')"
+                                          [validationTrigger]="this.toggleValidationMap.get('task.primaryObjRef.system')"
+                                          errorMessage="* System is required">
+        </kadai-shared-field-error-display>
 
         <!-- TYPE -->
         <mat-form-field appearance="outline">
           <mat-label>Reference type</mat-label>
           <label for="task.primaryObjRef.type"></label>
-          <input matInput type="text" required maxlength="32" #type="ngModel" id="task.primaryObjRef.type" placeholder="Reference type"
-                 [(ngModel)]="task.primaryObjRef.type" name="task.primaryObjRef.type" (input)="validateInputOverflow(type, 32)">
+          <input matInput type="text" required maxlength="32" #type="ngModel" id="task.primaryObjRef.type"
+                 placeholder="Reference type"
+                 [(ngModel)]="task.primaryObjRef.type" name="task.primaryObjRef.type"
+                 (input)="validateInputOverflow(type, 32)">
         </mat-form-field>
         <div *ngIf="inputOverflowMap.get(type.name)" class="error">{{lengthError}}</div>
-        <taskana-shared-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.type')"
-                                            [validationTrigger]="this.toggleValidationMap.get('task.primaryObjRef.type')"
-                                            errorMessage="* Reference type is required">
-        </taskana-shared-field-error-display>
+        <kadai-shared-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.type')"
+                                          [validationTrigger]="this.toggleValidationMap.get('task.primaryObjRef.type')"
+                                          errorMessage="* Reference type is required">
+        </kadai-shared-field-error-display>
 
         <!-- CLASSIFICATION -->
         <mat-form-field appearance="outline" *ngIf="this.task.classificationSummary else newTask">
           <mat-label>Classification</mat-label>
           <mat-select [value]="this.task.classificationSummary.name" required>
-            <mat-option *ngFor="let classification of classifications" [value]="classification.name" (click)="changedClassification(classification)">
+            <mat-option *ngFor="let classification of classifications" [value]="classification.name"
+                        (click)="changedClassification(classification)">
               {{ classification.name }}
             </mat-option>
           </mat-select>
@@ -55,38 +61,41 @@
           <mat-form-field appearance="outline">
             <mat-label>Classification</mat-label>
             <mat-select required>
-              <mat-option *ngFor="let classification of classifications" [value]="classification.name" (click)="changedClassification(classification)">
+              <mat-option *ngFor="let classification of classifications" [value]="classification.name"
+                          (click)="changedClassification(classification)">
                 {{ classification.name }}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </ng-template>
-        <taskana-shared-field-error-display [displayError]="isClassificationEmpty"
-                                            errorMessage="* Classification is required">
-        </taskana-shared-field-error-display>
+        <kadai-shared-field-error-display [displayError]="isClassificationEmpty"
+                                          errorMessage="* Classification is required">
+        </kadai-shared-field-error-display>
 
 
         <!-- PARENT BUSINESS PROCESS ID -->
         <mat-form-field appearance="outline">
           <mat-label>Parent Business Process Id</mat-label>
           <label for="task-parent-business-p-id"></label>
-          <input matInput type="text" maxlength="128" #parentBusinessProcessId="ngModel" id="task-parent-business-p-id" placeholder="Parent Business Process Id"
-                 [(ngModel)]="task.parentBusinessProcessId" name="task.parentBusinessProcessId" (input)="validateInputOverflow(parentBusinessProcessId, 128)">
+          <input matInput type="text" maxlength="128" #parentBusinessProcessId="ngModel" id="task-parent-business-p-id"
+                 placeholder="Parent Business Process Id"
+                 [(ngModel)]="task.parentBusinessProcessId" name="task.parentBusinessProcessId"
+                 (input)="validateInputOverflow(parentBusinessProcessId, 128)">
         </mat-form-field>
         <div *ngIf="inputOverflowMap.get(parentBusinessProcessId.name)" class="error">{{lengthError}}</div>
 
 
         <!-- OWNER -->
-        <taskana-shared-type-ahead *ngIf="(tasksCustomisation$ | async)?.information.owner.lookupField else ownerInput"
-                                   [savedAccessId]="task.owner"
-                                   placeHolderMessage="Owner"
-                                   [isDisabled]="task.state && task.state !== 'READY'"
-                                   [entityId]="task.taskId"
-                                   [displayError]="true"
-                                   (accessIdEventEmitter)="onSelectedOwner($event)"
-                                   (isFormValid)="isOwnerValid = $event"
-                                   matTooltip="{{task.state && task.state !== 'READY'? 'Cannot be modified since Task is not in state READY' : '' }}">
-        </taskana-shared-type-ahead>
+        <kadai-shared-type-ahead *ngIf="(tasksCustomisation$ | async)?.information.owner.lookupField else ownerInput"
+                                 [savedAccessId]="task.owner"
+                                 placeHolderMessage="Owner"
+                                 [isDisabled]="task.state && task.state !== 'READY'"
+                                 [entityId]="task.taskId"
+                                 [displayError]="true"
+                                 (accessIdEventEmitter)="onSelectedOwner($event)"
+                                 (isFormValid)="isOwnerValid = $event"
+                                 matTooltip="{{task.state && task.state !== 'READY'? 'Cannot be modified since Task is not in state READY' : '' }}">
+        </kadai-shared-type-ahead>
         <ng-template #ownerInput>
           <mat-form-field appearance="outline">
             <mat-label>Owner</mat-label>
@@ -98,7 +107,6 @@
         </ng-template>
 
 
-
       </div>
 
       <div class="task-information__column--right">
@@ -107,48 +115,54 @@
         <mat-form-field appearance="outline">
           <mat-label>Company</mat-label>
           <label for="task.primaryObjRef.company"></label>
-          <input matInput type="text" required maxlength="32" #company="ngModel" id="task.primaryObjRef.company" placeholder="Company description"
-                 [(ngModel)]="task.primaryObjRef.company" name="task.primaryObjRef.company" (input)="validateInputOverflow(company, 32)">
+          <input matInput type="text" required maxlength="32" #company="ngModel" id="task.primaryObjRef.company"
+                 placeholder="Company description"
+                 [(ngModel)]="task.primaryObjRef.company" name="task.primaryObjRef.company"
+                 (input)="validateInputOverflow(company, 32)">
         </mat-form-field>
         <div *ngIf="inputOverflowMap.get(company.name)" class="error">{{lengthError}}</div>
-        <taskana-shared-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.company')"
-                                            [validationTrigger]="this.toggleValidationMap.get('task.primaryObjRef.company')"
-                                            errorMessage="* Company is required">
-        </taskana-shared-field-error-display>
+        <kadai-shared-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.company')"
+                                          [validationTrigger]="this.toggleValidationMap.get('task.primaryObjRef.company')"
+                                          errorMessage="* Company is required">
+        </kadai-shared-field-error-display>
 
 
         <!-- TASK SYSTEM INSTANCE -->
         <mat-form-field appearance="outline">
           <mat-label>System Instance</mat-label>
           <label for="task.primaryObjRef.systemInstance"></label>
-          <input matInput type="text" required maxlength="32" #systemInstance="ngModel" id="task.primaryObjRef.systemInstance" placeholder="System Instance description"
-                 [(ngModel)]="task.primaryObjRef.systemInstance" name="task.primaryObjRef.systemInstance" (input)="validateInputOverflow(systemInstance, 32)">
+          <input matInput type="text" required maxlength="32" #systemInstance="ngModel"
+                 id="task.primaryObjRef.systemInstance" placeholder="System Instance description"
+                 [(ngModel)]="task.primaryObjRef.systemInstance" name="task.primaryObjRef.systemInstance"
+                 (input)="validateInputOverflow(systemInstance, 32)">
         </mat-form-field>
         <div *ngIf="inputOverflowMap.get(systemInstance.name)" class="error">{{lengthError}}</div>
-        <taskana-shared-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.systemInstance')"
-                                            [validationTrigger]="this.toggleValidationMap.get('task.primaryObjRef.systemInstance')"
-                                            errorMessage="* System instance is required">
-        </taskana-shared-field-error-display>
+        <kadai-shared-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.systemInstance')"
+                                          [validationTrigger]="this.toggleValidationMap.get('task.primaryObjRef.systemInstance')"
+                                          errorMessage="* System instance is required">
+        </kadai-shared-field-error-display>
 
         <!-- REFERENCE VALUE -->
         <mat-form-field appearance="outline">
           <mat-label>Reference value</mat-label>
           <label for="task.primaryObjRef.value"></label>
-          <input matInput type="text" required maxlength="32" #value="ngModel" id="task.primaryObjRef.value" placeholder="Reference value"
-                 [(ngModel)]="task.primaryObjRef.value" name="task.primaryObjRef.value" (input)="validateInputOverflow(value, 32)">
+          <input matInput type="text" required maxlength="32" #value="ngModel" id="task.primaryObjRef.value"
+                 placeholder="Reference value"
+                 [(ngModel)]="task.primaryObjRef.value" name="task.primaryObjRef.value"
+                 (input)="validateInputOverflow(value, 32)">
         </mat-form-field>
         <div *ngIf="inputOverflowMap.get(value.name)" class="error">{{lengthError}}</div>
-        <taskana-shared-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.value')"
-                                            [validationTrigger]="this.toggleValidationMap.get('task.primaryObjRef.value')"
-                                            errorMessage="* Reference value is required">
-        </taskana-shared-field-error-display>
+        <kadai-shared-field-error-display [displayError]="!isFieldValid('task.primaryObjRef.value')"
+                                          [validationTrigger]="this.toggleValidationMap.get('task.primaryObjRef.value')"
+                                          errorMessage="* Reference value is required">
+        </kadai-shared-field-error-display>
 
 
         <div class="task-information__due-date-and-priority">
 
           <!-- DUE DATE -->
           <mat-form-field appearance="outline" style="min-width: 0">
-            <mat-label> Due Date </mat-label>
+            <mat-label> Due Date</mat-label>
             <input matInput [matDatepicker]="picker" value="{{task.due}}" (dateInput)="updateDate($event)">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
@@ -169,8 +183,10 @@
         <mat-form-field appearance="outline">
           <mat-label>Business Process Id</mat-label>
           <label for="task-business-p-id"></label>
-          <input matInput type="text" maxlength="128" #businessProcessId="ngModel" id="task-business-p-id" placeholder="Business Process Id"
-                 [(ngModel)]="task.businessProcessId" name="task.businessProcessId" (input)="validateInputOverflow(businessProcessId, 128)">
+          <input matInput type="text" maxlength="128" #businessProcessId="ngModel" id="task-business-p-id"
+                 placeholder="Business Process Id"
+                 [(ngModel)]="task.businessProcessId" name="task.businessProcessId"
+                 (input)="validateInputOverflow(businessProcessId, 128)">
         </mat-form-field>
         <div *ngIf="inputOverflowMap.get(businessProcessId.name)" class="error">{{lengthError}}</div>
 

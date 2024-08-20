@@ -1,18 +1,20 @@
 <div id="wb-information" class="workbasket-distribution-targets">
-  <mat-toolbar class="distribution-targets-list__action-toolbar" >
-    <button mat-flat-button class="distribution-targets-list__action-button distribution-targets-list__toggle-view-button"
+  <mat-toolbar class="distribution-targets-list__action-toolbar">
+    <button mat-flat-button
+            class="distribution-targets-list__action-button distribution-targets-list__toggle-view-button"
             *ngIf="!sideBySide" (click)="toggleSideBySideView()">
       Display side-by-side
       <mat-icon class="distribution-targets-list__button-icon">view_week</mat-icon>
     </button>
-    <button mat-flat-button class="distribution-targets-list__action-button distribution-targets-list__toggle-view-button"
+    <button mat-flat-button
+            class="distribution-targets-list__action-button distribution-targets-list__toggle-view-button"
             *ngIf="sideBySide" (click)="toggleSideBySideView()">
       Display in single-view
       <mat-icon class="distribution-targets-list__button-icon">view_agenda</mat-icon>
     </button>
 
     <!-- SIDE BY SIDE VIEW BUTTONS -->
-    <div class="distribution-targets-list__action-buttons"  *ngIf="sideBySide">
+    <div class="distribution-targets-list__action-buttons" *ngIf="sideBySide">
 
       <div class="distribution-targets-list__action-buttons--chooser"
            style="justify-content: flex-end; margin-right: 2%">
@@ -83,7 +85,7 @@
        [ngClass]="sideBySide ? 'distribution-targets-list__lists--side' : 'distribution-targets-list__lists--single'">
 
     <!-- DISTRIBUTION TABLE-->
-    <taskana-administration-workbasket-distribution-targets-list
+    <kadai-administration-workbasket-distribution-targets-list
       [ngClass]="sideBySide ? 'distribution-targets-list__lists--left-side' : ''"
       header="Available distribution targets"
       [side]="sideEnum.AVAILABLE"
@@ -92,9 +94,9 @@
       [transferDistributionTargetObservable]="transferDistributionTargetObservable"
       id="dual-list-Left"
     >
-    </taskana-administration-workbasket-distribution-targets-list>
+    </kadai-administration-workbasket-distribution-targets-list>
 
-    <taskana-administration-workbasket-distribution-targets-list
+    <kadai-administration-workbasket-distribution-targets-list
       header="Selected distribution targets"
       [side]="sideEnum.SELECTED"
       [hidden]="displayingDistributionTargetsPicker && !sideBySide"
@@ -102,6 +104,6 @@
       [transferDistributionTargetObservable]="transferDistributionTargetObservable"
       id="dual-list-Right"
     >
-    </taskana-administration-workbasket-distribution-targets-list>
+    </kadai-administration-workbasket-distribution-targets-list>
   </div>
 </div>

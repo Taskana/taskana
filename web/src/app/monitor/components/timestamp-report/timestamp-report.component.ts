@@ -4,7 +4,7 @@ import { MonitorService } from '../../services/monitor.service';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
-  selector: 'taskana-monitor-timestamp-report',
+  selector: 'kadai-monitor-timestamp-report',
   templateUrl: './timestamp-report.component.html',
   styleUrls: ['./timestamp-report.component.scss']
 })

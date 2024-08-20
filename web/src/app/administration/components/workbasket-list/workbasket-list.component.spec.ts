@@ -56,7 +56,7 @@ const requestInProgressServiceSpy: Partial<RequestInProgressService> = {
   getRequestInProgress: jest.fn().mockReturnValue(of(false))
 };
 
-@Component({ selector: 'taskana-administration-workbasket-list-toolbar', template: '' })
+@Component({ selector: 'kadai-administration-workbasket-list-toolbar', template: '' })
 class WorkbasketListToolbarStub {
   @Input() workbaskets: Array<WorkbasketSummary>;
   @Input() workbasketDefaultSortBy: string;
@@ -64,13 +64,13 @@ class WorkbasketListToolbarStub {
   @Output() performSorting = new EventEmitter<Sorting<WorkbasketQuerySortParameter>>();
 }
 
-@Component({ selector: 'taskana-administration-icon-type', template: '' })
+@Component({ selector: 'kadai-administration-icon-type', template: '' })
 class IconTypeStub {
   @Input() type: WorkbasketType;
   @Input() selected = false;
 }
 
-@Component({ selector: 'taskana-shared-pagination', template: '' })
+@Component({ selector: 'kadai-shared-pagination', template: '' })
 class PaginationStub {
   @Input() page: Page;
   @Input() type: String;

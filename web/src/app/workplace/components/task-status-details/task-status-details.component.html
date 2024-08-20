@@ -7,7 +7,8 @@
     <mat-form-field appearance="outline">
       <mat-label>Modification Date</mat-label>
       <label for="task-modified"></label>
-      <input matInput type="text" disabled id="task-modified" placeholder="Modified Date" [value]="task.modified | germanTimeFormat"
+      <input matInput type="text" disabled id="task-modified" placeholder="Modified Date"
+             [value]="task.modified | germanTimeFormat"
              name="task.modified">
     </mat-form-field>
 
@@ -16,7 +17,8 @@
     <mat-form-field appearance="outline">
       <mat-label>Completion Date</mat-label>
       <label for="task-completed"></label>
-      <input matInput type="text" disabled id="task-completed" placeholder="Complete Date" [value]="task.completed | germanTimeFormat"
+      <input matInput type="text" disabled id="task-completed" placeholder="Complete Date"
+             [value]="task.completed | germanTimeFormat"
              name="task.completed">
     </mat-form-field>
 
@@ -29,21 +31,22 @@
     </mat-form-field>
 
     <div class="task-status-details__field--group">
-    <!-- TASK READ -->
-    <mat-form-field appearance="outline">
-      <mat-label>Task read</mat-label>
-      <label for="task-read"></label>
-      <input matInput type="text" disabled id="task-read" placeholder="Read" [(ngModel)]="task.read" name="task.read">
-    </mat-form-field>
+      <!-- TASK READ -->
+      <mat-form-field appearance="outline">
+        <mat-label>Task read</mat-label>
+        <label for="task-read"></label>
+        <input matInput type="text" disabled id="task-read" placeholder="Read" [(ngModel)]="task.read" name="task.read">
+      </mat-form-field>
 
       <span class="task-status-details__gap"></span>
-    <!-- TRANSFERRED -->
-    <mat-form-field appearance="outline">
-      <mat-label>Transferred</mat-label>
-      <label for="task-transferred"></label>
-      <input matInput type="text" disabled id="task-transferred" placeholder="Transferred" [(ngModel)]="task.transferred"
-             name="task.transferred">
-    </mat-form-field>
+      <!-- TRANSFERRED -->
+      <mat-form-field appearance="outline">
+        <mat-label>Transferred</mat-label>
+        <label for="task-transferred"></label>
+        <input matInput type="text" disabled id="task-transferred" placeholder="Transferred"
+               [(ngModel)]="task.transferred"
+               name="task.transferred">
+      </mat-form-field>
 
     </div>
 
@@ -56,7 +59,8 @@
     <mat-form-field appearance="outline">
       <mat-label>Claim Date</mat-label>
       <label for="task-claimed"></label>
-      <input matInput type="text" disabled id="task-claimed" placeholder="Claimed Date" [value]="task.claimed | germanTimeFormat"
+      <input matInput type="text" disabled id="task-claimed" placeholder="Claimed Date"
+             [value]="task.claimed | germanTimeFormat"
              name="task.claimed">
     </mat-form-field>
 
@@ -64,7 +68,8 @@
     <mat-form-field appearance="outline">
       <mat-label>Planned Date</mat-label>
       <label for="task-planned"></label>
-      <input matInput type="text" disabled id="task-planned" placeholder="Planned Date" [value]="task.planned | germanTimeFormat"
+      <input matInput type="text" disabled id="task-planned" placeholder="Planned Date"
+             [value]="task.planned | germanTimeFormat"
              name="task.planned">
     </mat-form-field>
 
@@ -72,7 +77,8 @@
     <mat-form-field appearance="outline">
       <mat-label>Creation Date</mat-label>
       <label for="task-created"></label>
-      <input matInput type="text" disabled id="task-created" placeholder="Creation Date" [value]="task.created | germanTimeFormat"
+      <input matInput type="text" disabled id="task-created" placeholder="Creation Date"
+             [value]="task.created | germanTimeFormat"
              name="task.created">
     </mat-form-field>
 

@@ -18,7 +18,7 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Direction, Sorting, WorkbasketAccessItemQuerySortParameter } from '../../../shared/models/sorting';
 import { StartupService } from '../../../shared/services/startup/startup.service';
-import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
+import { KadaiEngineService } from '../../../shared/services/kadai-engine/kadai-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
 import { engineConfigurationMock } from '../../../shared/store/mock-data/mock-store';
 import { MatSelectModule } from '@angular/material/select';
@@ -58,13 +58,13 @@ describe('AccessItemsManagementComponent', () => {
   let store: Store;
   let actions$: Observable<any>;
 
-  @Component({ selector: 'taskana-shared-spinner', template: '' })
-  class TaskanaSharedSpinnerStub {
+  @Component({ selector: 'kadai-shared-spinner', template: '' })
+  class KadaiSharedSpinnerStub {
     @Input() isRunning: boolean;
   }
 
-  @Component({ selector: 'taskana-shared-sort', template: '' })
-  class TaskanaSharedSortStub {
+  @Component({ selector: 'kadai-shared-sort', template: '' })
+  class KadaiSharedSortStub {
     @Input() sortingFields: Map<WorkbasketAccessItemQuerySortParameter, string>;
     @Input() defaultSortBy: WorkbasketAccessItemQuerySortParameter;
     @Output() performSorting = new EventEmitter<Sorting<WorkbasketAccessItemQuerySortParameter>>();
@@ -96,8 +96,8 @@ describe('AccessItemsManagementComponent', () => {
       declarations: [
         AccessItemsManagementComponent,
         TypeAheadComponent,
-        TaskanaSharedSortStub,
-        TaskanaSharedSpinnerStub,
+        KadaiSharedSortStub,
+        KadaiSharedSpinnerStub,
         SvgIconStub
       ],
       providers: [
@@ -106,7 +106,7 @@ describe('AccessItemsManagementComponent', () => {
         RequestInProgressService,
         ClassificationCategoriesService,
         StartupService,
-        TaskanaEngineService,
+        KadaiEngineService,
         WindowRefService
       ]
     }).compileComponents();
@@ -128,7 +128,7 @@ describe('AccessItemsManagementComponent', () => {
   });
 
   it('should render search type ahead', () => {
-    const typeAhead = () => debugElement.nativeElement.querySelector('taskana-shared-type-ahead');
+    const typeAhead = () => debugElement.nativeElement.querySelector('kadai-shared-type-ahead');
     expect(typeAhead()).toBeTruthy();
   });
 

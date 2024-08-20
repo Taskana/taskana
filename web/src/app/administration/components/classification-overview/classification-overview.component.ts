@@ -12,7 +12,7 @@ import {
 import { Classification } from '../../../shared/models/classification';
 
 @Component({
-  selector: 'taskana-administration-classification-overview',
+  selector: 'kadai-administration-classification-overview',
   templateUrl: './classification-overview.component.html',
   styleUrls: ['./classification-overview.component.scss']
 })

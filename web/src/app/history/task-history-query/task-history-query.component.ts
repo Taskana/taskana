@@ -12,7 +12,7 @@ import { RequestInProgressService } from '../../shared/services/request-in-progr
 import { Pair } from '../../shared/models/pair';
 
 @Component({
-  selector: 'taskana-task-query',
+  selector: 'kadai-task-query',
   templateUrl: './task-history-query.component.html',
   styleUrls: ['./task-history-query.component.scss']
 })

@@ -15,7 +15,7 @@ import { TaskService } from '../../services/task.service';
 import { TaskProcessingComponent } from './task-processing.component';
 
 @Component({
-  selector: 'taskana-dummy-detail',
+  selector: 'kadai-dummy-detail',
   template: 'dummydetail'
 })
 class DummyDetailComponent {}

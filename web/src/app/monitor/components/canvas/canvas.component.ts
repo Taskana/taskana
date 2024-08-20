@@ -9,7 +9,7 @@ import { takeUntil } from 'rxjs/operators';
 import { SettingMembers } from '../../../settings/components/Settings/expected-members';
 
 @Component({
-  selector: 'taskana-monitor-canvas',
+  selector: 'kadai-monitor-canvas',
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss']
 })

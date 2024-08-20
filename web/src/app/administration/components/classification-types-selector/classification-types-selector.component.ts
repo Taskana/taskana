@@ -6,7 +6,7 @@ import { SetSelectedClassificationType } from 'app/shared/store/classification-s
 import { Location } from '@angular/common';
 
 @Component({
-  selector: 'taskana-administration-classification-types-selector',
+  selector: 'kadai-administration-classification-types-selector',
   templateUrl: './classification-types-selector.component.html',
   styleUrls: ['./classification-types-selector.component.scss']
 })

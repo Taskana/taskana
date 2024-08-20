@@ -2,16 +2,16 @@
   <div class="panel-heading">
     <h4 *ngIf="metaInformation">{{getTitle()}} ({{metaInformation?.date | germanTimeFormat}})</h4>
   </div>
-  <mat-tab-group class="panel-body" animationDuration="0ms" (selectedIndexChange)="selectComponent($event)" >
+  <mat-tab-group class="panel-body" animationDuration="0ms" (selectedIndexChange)="selectComponent($event)">
     <mat-tab label="Due Date">
-      <taskana-monitor-workbasket-report-due-date
+      <kadai-monitor-workbasket-report-due-date
         (metaInformation)="getMetaInformation($event)">
-      </taskana-monitor-workbasket-report-due-date>
+      </kadai-monitor-workbasket-report-due-date>
     </mat-tab>
     <mat-tab label="Planned Date">
-      <taskana-monitor-workbasket-report-planned-date
+      <kadai-monitor-workbasket-report-planned-date
         (metaInformation)="getMetaInformation($event)">
-      </taskana-monitor-workbasket-report-planned-date>
+      </kadai-monitor-workbasket-report-planned-date>
     </mat-tab>
   </mat-tab-group>
 </div>

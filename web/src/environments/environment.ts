@@ -5,6 +5,6 @@
 
 export const environment = {
   production: false,
-  taskanaRestUrl: '',
-  taskanaLogoutUrl: ''
+  kadaiRestUrl: '',
+  kadaiLogoutUrl: ''
 };

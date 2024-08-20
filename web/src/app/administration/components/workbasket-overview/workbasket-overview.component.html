@@ -1,7 +1,7 @@
 <div class="workbasket-overview">
 
   <div class="workbasket-overview__list" #workbasketList>
-    <taskana-administration-workbasket-list [expanded]="expanded"></taskana-administration-workbasket-list>
+    <kadai-administration-workbasket-list [expanded]="expanded"></kadai-administration-workbasket-list>
   </div>
 
   <div class="vertical-right-divider">
@@ -12,7 +12,7 @@
   </div>
 
   <div class="workbasket-overview__details" *ngIf="showDetail; else showEmptyPage">
-    <taskana-administration-workbasket-details [expanded]="expanded"></taskana-administration-workbasket-details>
+    <kadai-administration-workbasket-details [expanded]="expanded"></kadai-administration-workbasket-details>
   </div>
 
   <ng-template #showEmptyPage>

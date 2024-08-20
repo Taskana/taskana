@@ -38,7 +38,7 @@ import { WorkbasketComponent } from '../../models/workbasket-component';
 import { ButtonAction } from '../../models/button-action';
 
 @Component({
-  selector: 'taskana-administration-workbasket-access-items',
+  selector: 'kadai-administration-workbasket-access-items',
   templateUrl: './workbasket-access-items.component.html',
   animations: [highlight],
   styleUrls: ['./workbasket-access-items.component.scss']

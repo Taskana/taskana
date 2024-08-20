@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Sorting, WORKBASKET_SORT_PARAMETER_NAMING, WorkbasketQuerySortParameter } from 'app/shared/models/sorting';
 import { WorkbasketSummary } from 'app/shared/models/workbasket-summary';
-import { TaskanaType } from 'app/shared/models/taskana-type';
+import { KadaiType } from 'app/shared/models/kadai-type';
 import { expandDown } from 'app/shared/animations/expand.animation';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subject } from 'rxjs';
@@ -12,7 +12,7 @@ import { WorkbasketSelectors } from '../../../shared/store/workbasket-store/work
 import { WorkbasketService } from '../../../shared/services/workbasket/workbasket.service';
 
 @Component({
-  selector: 'taskana-administration-workbasket-list-toolbar',
+  selector: 'kadai-administration-workbasket-list-toolbar',
   animations: [expandDown],
   templateUrl: './workbasket-list-toolbar.component.html',
   styleUrls: ['./workbasket-list-toolbar.component.scss']
@@ -23,7 +23,7 @@ export class WorkbasketListToolbarComponent implements OnInit {
   @Input() workbasketDefaultSortBy: WorkbasketQuerySortParameter;
   @Output() performSorting = new EventEmitter<Sorting<WorkbasketQuerySortParameter>>();
 
-  selectionToImport = TaskanaType.WORKBASKETS;
+  selectionToImport = KadaiType.WORKBASKETS;
   sortingFields: Map<WorkbasketQuerySortParameter, string> = WORKBASKET_SORT_PARAMETER_NAMING;
 
   isExpanded = false;

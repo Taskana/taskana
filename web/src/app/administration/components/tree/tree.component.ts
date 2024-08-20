@@ -34,11 +34,11 @@ import { Pair } from '../../../shared/models/pair';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
-  selector: 'taskana-administration-tree',
+  selector: 'kadai-administration-tree',
   templateUrl: './tree.component.html',
   styleUrls: ['./tree.component.scss']
 })
-export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class KadaiTreeComponent implements OnInit, AfterViewChecked, OnDestroy {
   treeNodes: TreeNodeModel[];
   categoryIcons: ClassificationCategoryImages;
 
@@ -49,7 +49,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   @Input() selectNodeId: string;
   @Input() filterText: string;
   @Input() filterIcon = '';
-  @Output() switchTaskanaSpinnerEmit = new EventEmitter<boolean>();
+  @Output() switchKadaiSpinnerEmit = new EventEmitter<boolean>();
   @Select(EngineConfigurationSelectors.selectCategoryIcons) categoryIcons$: Observable<ClassificationCategoryImages>;
   @Select(ClassificationSelectors.selectedClassificationId) selectedClassificationId$: Observable<string>;
   @Select(ClassificationSelectors.classifications) classifications$: Observable<Classification[]>;
@@ -162,7 +162,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   }
 
   async onMoveNode($event) {
-    this.switchTaskanaSpinner(true);
+    this.switchKadaiSpinner(true);
     const classification = await this.getClassification($event.node.classificationId);
     classification.parentId = $event.to.parent.classificationId;
     classification.parentKey = $event.to.parent.key;
@@ -172,7 +172,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
 
   async onDrop($event) {
     if ($event.event.target.tagName === 'TREE-VIEWPORT') {
-      this.switchTaskanaSpinner(true);
+      this.switchKadaiSpinner(true);
       const classification = await this.getClassification($event.element.data.classificationId);
       this.collapseParentNodeIfItIsTheLastChild($event.element.data);
       classification.parentId = '';
@@ -187,8 +187,8 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
       : { left: this.categoryIcons.missing, right: 'Category does not match with the configuration' };
   }
 
-  switchTaskanaSpinner(active: boolean) {
-    this.switchTaskanaSpinnerEmit.emit(active);
+  switchKadaiSpinner(active: boolean) {
+    this.switchKadaiSpinnerEmit.emit(active);
   }
 
   ngOnDestroy(): void {
@@ -244,7 +244,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   private checkValidElements(event): boolean {
     return (
       (this.elementRef.nativeElement.contains(event.target) || this.elementRef.nativeElement === event.target) &&
-      (event.target.localName === 'tree-viewport' || event.target.localName === 'taskana-tree')
+      (event.target.localName === 'tree-viewport' || event.target.localName === 'kadai-tree')
     );
   }
 
@@ -255,7 +255,7 @@ export class TaskanaTreeComponent implements OnInit, AfterViewChecked, OnDestroy
   private updateClassification(classification: Classification) {
     this.store.dispatch(new UpdateClassification(classification)).subscribe(() => {
       this.notificationsService.showSuccess('CLASSIFICATION_MOVE', { classificationKey: classification.key });
-      this.switchTaskanaSpinner(false);
+      this.switchKadaiSpinner(false);
     });
   }
 

@@ -6,7 +6,7 @@
 
         <!-- GENERAL FIELDS -->
         <h6 class="subheading"> General </h6>
-        <mat-divider class="horizontal-line"> </mat-divider>
+        <mat-divider class="horizontal-line"></mat-divider>
 
         <!-- GENERAL -->
         <div class="general">
@@ -23,40 +23,44 @@
                      (input)="validateInputOverflow(key, 64, $event)">
             </mat-form-field>
             <div *ngIf="inputOverflowMap.get(key.name)" class="error">{{lengthError}}</div>
-            <taskana-shared-field-error-display *ngIf="action != 3" [displayError]="!isFieldValid('workbasket.key')"
-                                                [validationTrigger]="this.toggleValidationMap.get('workbasket.key')" errorMessage="* Key is required">
-            </taskana-shared-field-error-display>
+            <kadai-shared-field-error-display *ngIf="action != 3" [displayError]="!isFieldValid('workbasket.key')"
+                                              [validationTrigger]="this.toggleValidationMap.get('workbasket.key')"
+                                              errorMessage="* Key is required">
+            </kadai-shared-field-error-display>
 
             <!-- NAME -->
             <mat-form-field appearance="outline">
               <mat-label>Name</mat-label>
               <label for="workbasket-name"></label>
-              <input matInput type="text" required maxlength="255" #name="ngModel" id="workbasket-name" placeholder="Name"
+              <input matInput type="text" required maxlength="255" #name="ngModel" id="workbasket-name"
+                     placeholder="Name"
                      [(ngModel)]="workbasket.name" name="workbasket.name" (input)="validateInputOverflow(name, 255)">
             </mat-form-field>
             <div *ngIf="inputOverflowMap.get(name.name)" class="error">{{lengthError}}</div>
-            <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.name')"
-                                                [validationTrigger]="this.toggleValidationMap.get('workbasket.name')" errorMessage="* Name is required">
-            </taskana-shared-field-error-display>
+            <kadai-shared-field-error-display [displayError]="!isFieldValid('workbasket.name')"
+                                              [validationTrigger]="this.toggleValidationMap.get('workbasket.name')"
+                                              errorMessage="* Name is required">
+            </kadai-shared-field-error-display>
 
             <!-- OWNER -->
-            <taskana-shared-type-ahead *ngIf="lookupField else ownerInput"
-                                       [savedAccessId]="workbasket.owner"
-                                       placeHolderMessage="Owner"
-                                       [entityId]="workbasket.workbasketId"
-                                       [displayError]="true"
-                                       (isFormValid)="isOwnerValid = $event"
-                                       (accessIdEventEmitter)="onSelectedOwner($event)">
-            </taskana-shared-type-ahead>
+            <kadai-shared-type-ahead *ngIf="lookupField else ownerInput"
+                                     [savedAccessId]="workbasket.owner"
+                                     placeHolderMessage="Owner"
+                                     [entityId]="workbasket.workbasketId"
+                                     [displayError]="true"
+                                     (isFormValid)="isOwnerValid = $event"
+                                     (accessIdEventEmitter)="onSelectedOwner($event)">
+            </kadai-shared-type-ahead>
 
             <ng-template #ownerInput>
               <input type="text" required maxlength="128" #owner="ngModel" class="form-control" id="wb-owner"
                      placeholder="Owner" [(ngModel)]="workbasket.owner" name="workbasket.owner"
                      (input)="validateInputOverflow(owner, 128)">
               <div *ngIf="inputOverflowMap.get(owner.name)" class="error">{{lengthError}}</div>
-              <taskana-shared-field-error-display [displayError]="!isFieldValid('workbasket.owner')"
-                                                  [validationTrigger]="this.toggleValidationMap.get('workbasket.owner')" errorMessage="* Owner is required">
-              </taskana-shared-field-error-display>
+              <kadai-shared-field-error-display [displayError]="!isFieldValid('workbasket.owner')"
+                                                [validationTrigger]="this.toggleValidationMap.get('workbasket.owner')"
+                                                errorMessage="* Owner is required">
+              </kadai-shared-field-error-display>
             </ng-template>
 
             <!-- DESCRIPTION AND TYPE -->
@@ -67,12 +71,12 @@
                 <mat-label>Type</mat-label>
                 <mat-select [(value)]="this.workbasket.type">
                   <mat-select-trigger>
-                    <taskana-administration-icon-type [type]='workbasket.type'></taskana-administration-icon-type>
+                    <kadai-administration-icon-type [type]='workbasket.type'></kadai-administration-icon-type>
                     {{allTypes.get(workbasket.type)}}
                   </mat-select-trigger>
                   <mat-option *ngFor="let type of allTypes | mapValues | removeEmptyType" value="{{type.key}}">
-                    <taskana-administration-icon-type [type]='type.key' [text]="type.value">
-                    </taskana-administration-icon-type>
+                    <kadai-administration-icon-type [type]='type.key' [text]="type.value">
+                    </kadai-administration-icon-type>
                   </mat-option>
                 </mat-select>
               </mat-form-field>
@@ -87,13 +91,13 @@
                             name="workbasket.description" #description="ngModel"
                             (input)="validateInputOverflow(description, 255)"></textarea>
                 </mat-form-field>
-                <mat-error *ngIf="inputOverflowMap.get(description.name)" class="error">{{lengthError}} </mat-error>
+                <mat-error *ngIf="inputOverflowMap.get(description.name)" class="error">{{lengthError}}</mat-error>
               </div>
             </div>
           </div>
 
           <!-- GENERAL SPACER -->
-          <div class="general__spacer"> </div>
+          <div class="general__spacer"></div>
 
           <!-- GENERAL RIGHT COLUMN -->
           <div class="general__right-column">
@@ -146,10 +150,9 @@
         </div>
 
 
-
         <!-- CUSTOM FIELDS -->
         <h6 class="subheading"> Custom Fields </h6>
-        <mat-divider class="horizontal-line"> </mat-divider>
+        <mat-divider class="horizontal-line"></mat-divider>
 
         <div class="custom-fields">
           <ng-container *ngFor="let customField of customFields$ | async; let index = index">

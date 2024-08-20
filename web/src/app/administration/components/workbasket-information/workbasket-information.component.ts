@@ -4,7 +4,7 @@ import { NgForm } from '@angular/forms';
 import { Select, Store } from '@ngxs/store';
 import { ACTION } from 'app/shared/models/action';
 import { customFieldCount, Workbasket } from 'app/shared/models/workbasket';
-import { TaskanaDate } from 'app/shared/util/taskana.date';
+import { KadaiDate } from 'app/shared/util/kadai.date';
 import { WorkbasketService } from 'app/shared/services/workbasket/workbasket.service';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 import { FormsValidatorService } from 'app/shared/services/forms-validator/forms-validator.service';
@@ -26,7 +26,7 @@ import { cloneDeep } from 'lodash';
 import { trimForm } from '../../../shared/util/form-trimmer';
 
 @Component({
-  selector: 'taskana-administration-workbasket-information',
+  selector: 'kadai-administration-workbasket-information',
   templateUrl: './workbasket-information.component.html',
   styleUrls: ['./workbasket-information.component.scss']
 })
@@ -185,7 +185,7 @@ export class WorkbasketInformationComponent implements OnInit, OnChanges, OnDest
   }
 
   addDateToWorkbasket() {
-    const date = TaskanaDate.getDate();
+    const date = KadaiDate.getDate();
     this.workbasket.created = date;
     this.workbasket.modified = date;
   }

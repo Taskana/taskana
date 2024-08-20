@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'taskana-shared-task-filter',
+  selector: 'kadai-shared-task-filter',
   templateUrl: './task-filter.component.html',
   styleUrls: ['./task-filter.component.scss']
 })

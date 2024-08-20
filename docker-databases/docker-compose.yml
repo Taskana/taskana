@@ -1,22 +1,22 @@
 version: '3'
 services:
-  taskana-postgres_14:
+  kadai-postgres_14:
     build: postgres_14
     ports:
       - "5102:5432"
     environment:
       - POSTGRES_PASSWORD=postgres
-  taskana-db2_11-5:
+  kadai-db2_11-5:
     image: taskana/db2:11.5
     environment:
       - LICENSE=accept
     ports:
       - "5101:50000"
-  taskana-oracle-18:
+  kadai-oracle-18:
     image: gvenzl/oracle-xe:18-slim-faststart
     environment:
       - ORACLE_PASSWORD=testPassword
-      - ORACLE_DATABASE=taskana
+      - ORACLE_DATABASE=kadai
       - APP_USER=TEST_USER
       - APP_USER_PASSWORD=testPassword
       - TZ=Europe/Berlin

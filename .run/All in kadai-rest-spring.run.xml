@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="All in kadai-rest-spring" type="JUnit" factoryName="JUnit" folderName="rest"
+                   nameIsGenerated="true">
+        <module name="kadai-rest-spring"/>
+        <option name="PACKAGE_NAME" value=""/>
+        <option name="MAIN_CLASS_NAME" value=""/>
+        <option name="METHOD_NAME" value=""/>
+        <option name="TEST_OBJECT" value="package"/>
+        <method v="2">
+            <option name="Make" enabled="true"/>
+        </method>
+    </configuration>
+</component>

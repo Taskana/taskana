@@ -1,0 +1,471 @@
+######################
+# Base Structure
+######################
+dn: OU=Test,O=KADAI
+ou: Organisationseinheit
+objectclass: top
+objectclass: organizationalUnit
+
+dn: cn=groups,OU=Test,O=KADAI
+cn: groups
+objectclass: top
+objectclass: container
+
+dn: cn=users,OU=Test,O=KADAI
+cn: users
+objectclass: top
+objectclass: container
+
+dn: cn=other-users,OU=Test,O=KADAI
+cn: users
+objectclass: top
+objectclass: container
+
+dn: cn=organisation,OU=Test,O=KADAI
+cn: organisation
+objectclass: top
+objectclass: container
+
+
+########################
+# Users General
+########################
+dn: uid=monitor,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Monitor
+description: desc
+uid: monitor
+sn: Monitor
+ou: Organisationseinheit/Organisationseinheit IT
+cn: monitor monitor
+userPassword: monitor
+
+dn: uid=taskadmin,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Task
+description: desc
+uid: taskadmin
+sn: Admin
+ou: Organisationseinheit/Organisationseinheit IT
+cn: Task admin
+userPassword: taskadmin
+
+dn: uid=admin,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Admin
+description: desc
+uid: admin
+sn: Admin
+ou: Organisationseinheit/Organisationseinheit IT
+cn: Admin Admin
+userPassword: admin
+
+dn: uid=businessadmin,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Business
+description: desc
+memberOf: cn=business-admins,cn=groups,OU=Test,O=KADAI
+uid: businessadmin
+sn: Admin
+ou: Organisationseinheit/Organisationseinheit IT
+cn: Business Admin
+userPassword: businessadmin
+
+########################
+# Users KSC 1
+########################
+dn: uid=teamlead-1,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Titus
+description: desc
+phoneNumber: 012345678
+mobileNumber: 09876554321
+email: Titus.Toll@kadai.de
+orgLevel1: ABC
+orgLevel2: DEF/GHI
+someDepartement: JKL
+orgLevel4: MNO/PQR
+memberOf: cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+memberOf: cn=monitor-users,cn=groups,OU=Test,O=KADAI
+memberOf: cn=business-admins,cn=groups,OU=Test,O=KADAI
+memberOf: cn=ksc-teamleads,cn=groups,OU=Test,O=KADAI
+uid: teamlead-1
+sn: Toll
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
+cn: Titus Toll
+userPassword: teamlead-1
+
+dn: uid=user-1-1,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Max
+description: desc
+memberOf: cn=ksc-users,cn=groups,OU=Test,O=KADAI
+memberOf: cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+uid: user-1-1
+sn: Mustermann
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
+cn: Max Mustermann
+userPassword: user-1-1
+
+dn: uid=user-1-2,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Elena
+description: desc
+memberOf: cn=ksc-users,cn=groups,OU=Test,O=KADAI
+permission: Kadai:CallCenter:AB:AB/A:CallCenter
+permission: Kadai:CallCenter:AB:AB/A:CallCenter-vip
+memberOf: cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+uid: user-1-2
+sn: Eifrig
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
+cn: Elena Eifrig
+userPassword: user-1-2
+
+dn: uid=user-1-3,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Elena
+description: desc
+uid: user-1-3
+sn: Faul
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 1
+cn: Elena Faul
+userPassword: user-1-3
+
+########################
+# Users KSC 2
+########################
+dn: uid=teamlead-2,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Frauke
+description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+memberOf: cn=monitor-users,cn=groups,OU=Test,O=KADAI
+memberOf: cn=business-admins,cn=groups,OU=Test,O=KADAI
+memberOf: cn=ksc-teamleads,cn=groups,OU=Test,O=KADAI
+uid: teamlead-2
+sn: Faul
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Frauke Faul
+userPassword: teamlead-2
+
+dn: uid=user-2-1,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Simone
+description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+memberOf: cn=ksc-users,cn=groups,OU=Test,O=KADAI
+permission: Kadai:CallCenter:AB:AB/A:CallCenter
+uid: user-2-1
+sn: Müller
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Simone Müller
+userPassword: user-2-1
+
+dn: uid=user-2-2,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Tim
+description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+memberOf: cn=ksc-users,cn=groups,OU=Test,O=KADAI
+uid: user-2-2
+sn:: U2NobMOkZnJpZw==
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn:: VGltIFNjaGzDpGZyaWc=
+userPassword: user-2-2
+
+dn: uid=user-2-3,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Thomas
+description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+uid: user-2-3
+sn: Bach
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Thomas Bach
+userPassword: user-2-3
+
+dn: uid=user-2-4,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Rolf
+description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+uid: user-2-4
+sn: Wieland
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Rolf Wieland
+userPassword: user-2-4
+
+dn: uid=user-2-5,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Heike
+description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+uid: user-2-5
+sn: Schmidt
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Heike Schmidt
+userPassword: user-2-5
+
+dn: uid=user-2-6,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Kurt
+description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+uid: user-2-6
+sn: Maier
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Kurt Maier
+userPassword: user-2-6
+
+dn: uid=user-2-7,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Wiebke
+description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+uid: user-2-7
+sn: Meyer
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Wiebke Meyer
+userPassword: user-2-7
+
+dn: uid=user-2-8,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Jana
+description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+uid: user-2-8
+sn: Heeg
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Jana Heeg
+userPassword: user-2-8
+
+dn: uid=user-2-9,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Nathalie
+description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+uid: user-2-9
+sn: Fuchs
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Nathalie Fuchs
+userPassword: user-2-9
+
+dn: uid=user-2-10,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Johannes
+description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+uid: user-2-10
+sn: Renz
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Johannes Renz
+userPassword: user-2-10
+
+dn: uid=das_ist_eine_sehr_sehr_sehr_sehr_sehr_lange_user_id,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Max
+description: desc
+memberOf: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+uid: das_ist_eine_sehr_sehr_sehr_sehr_sehr_lange_user_id
+sn: Renz
+ou: Organisationseinheit/Organisationseinheit KSC/Organisationseinheit KSC 2
+cn: Max Renz
+userPassword: user-2-11
+
+########################
+# Users Domäne B
+########################
+dn: uid=user-b-1,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Bernd
+description: desc
+uid: user-b-1
+sn: Bern
+ou: Organisationseinheit/Organisationseinheit B
+cn: Bernd Bern
+userPassword: user-b-1
+
+dn: uid=User-b-2,cn=users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Brunhilde
+description: desc
+uid: User-b-2
+sn: Bio
+ou: Organisationseinheit/Organisationseinheit B
+cn: Brunhilde Bio
+userPassword: user-b-2
+
+########################
+# Users in other cn
+########################
+dn: uid=otheruser,cn=other-users,OU=Test,O=KADAI
+objectclass: inetorgperson
+objectclass: organizationalperson
+objectclass: person
+objectclass: top
+givenName: Other
+description: User in other cn than search root
+uid: otheruser
+sn: User
+ou: Other
+cn: Other User
+userPassword: otheruser
+
+
+########################
+# Groups
+########################
+dn: cn=ksc-users,cn=groups,OU=Test,O=KADAI
+uniquemember: uid=user-1-1,cn=users,OU=Test,O=KADAI
+uniquemember: uid=user-1-2,cn=users,OU=Test,O=KADAI
+uniquemember: uid=user-2-1,cn=users,OU=Test,O=KADAI
+uniquemember: uid=user-2-2,cn=users,OU=Test,O=KADAI
+cn: ksc-users
+objectclass: groupofuniquenames
+objectclass: top
+
+dn: cn=ksc-teamleads,cn=groups,OU=Test,O=KADAI
+uniquemember: uid=teamlead-1,cn=users,OU=Test,O=KADAI
+uniquemember: uid=teamlead-2,cn=users,OU=Test,O=KADAI
+cn: ksc-teamleads
+objectclass: groupofuniquenames
+objectclass: top
+
+dn: cn=business-admins,cn=groups,OU=Test,O=KADAI
+uniquemember: uid=teamlead-1,cn=users,OU=Test,O=KADAI
+uniquemember: uid=teamlead-2,cn=users,OU=Test,O=KADAI
+uniquemember: uid=businessadmin,cn=users,OU=Test,O=KADAI
+cn: business-admins
+objectclass: groupofuniquenames
+objectclass: top
+
+dn: cn=monitor-users,cn=groups,OU=Test,O=KADAI
+uniquemember: uid=teamlead-1,cn=users,OU=Test,O=KADAI
+uniquemember: uid=teamlead-2,cn=users,OU=Test,O=KADAI
+cn: monitor-users
+objectclass: groupofuniquenames
+objectclass: top
+
+########################
+# Permissions
+########################
+
+dn: cn=g01,cn=groups,OU=Test,O=KADAI
+uniquemember: uid=user-1-2,cn=users,OU=Test,O=KADAI
+uniquemember: uid=user-2-1,cn=users,OU=Test,O=KADAI
+permission: Kadai:CallCenter:AB:AB/A:CallCenter
+cn: Kadai:CallCenter:AB:AB/A:CallCenter
+objectclass: groupofuniquenames
+objectclass: top
+
+dn: cn=g02,cn=groups,OU=Test,O=KADAI
+uniquemember: uid=user-1-2,cn=users,OU=Test,O=KADAI
+permission: Kadai:CallCenter:AB:AB/A:CallCenter-vip
+cn: g02
+objectclass: groupofuniquenames
+objectclass: top
+
+######################
+# Organizational Units
+######################
+dn: cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+cn: Organisationseinheit KSC
+uniquemember: cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+uniquemember: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+objectclass: groupofuniquenames
+objectclass: top
+
+dn: cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+uniquemember: uid=teamlead-1,cn=users,OU=Test,O=KADAI
+uniquemember: uid=user-1-1,cn=users,OU=Test,O=KADAI
+uniquemember: uid=user-1-2,cn=users,OU=Test,O=KADAI
+cn: Organisationseinheit KSC 1
+objectclass: groupofuniquenames
+objectclass: top
+
+dn: cn=Organisationseinheit KSC 2,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=KADAI
+uniquemember: uid=teamlead-2,cn=users,OU=Test,O=KADAI
+uniquemember: uid=user-2-1,cn=users,OU=Test,O=KADAI
+uniquemember: uid=user-2-2,cn=users,OU=Test,O=KADAI
+uniquemember: uid=user-2-3,cn=users,OU=Test,O=KADAI
+uniquemember: uid=user-2-4,cn=users,OU=Test,O=KADAI
+uniquemember: uid=user-2-5,cn=users,OU=Test,O=KADAI
+uniquemember: uid=user-2-6,cn=users,OU=Test,O=KADAI
+uniquemember: uid=user-2-7,cn=users,OU=Test,O=KADAI
+uniquemember: uid=user-2-8,cn=users,OU=Test,O=KADAI
+uniquemember: uid=user-2-9,cn=users,OU=Test,O=KADAI
+uniquemember: uid=user-2-10,cn=users,OU=Test,O=KADAI
+cn: Organisationseinheit KSC 2
+objectclass: groupofuniquenames
+objectclass: top
+
+dn: cn=Organisationseinheit B,cn=organisation,OU=Test,O=KADAI
+cn: Organisationseinheit B
+objectclass: groupofuniquenames
+objectclass: top

@@ -18,7 +18,7 @@ import { DomainService } from '../../../shared/services/domain/domain.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SelectedRouteService } from '../../../shared/services/selected-route/selected-route';
 import { StartupService } from '../../../shared/services/startup/startup.service';
-import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
+import { KadaiEngineService } from '../../../shared/services/kadai-engine/kadai-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
 import {
   engineConfigurationMock,
@@ -39,7 +39,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-@Component({ selector: 'taskana-shared-spinner', template: '' })
+@Component({ selector: 'kadai-shared-spinner', template: '' })
 class SpinnerStub {
   @Input() isRunning: boolean;
   @Input() positionClass: string;
@@ -100,7 +100,7 @@ describe('WorkbasketAccessItemsComponent', () => {
         DomainService,
         SelectedRouteService,
         StartupService,
-        TaskanaEngineService,
+        KadaiEngineService,
         WindowRefService
       ]
     }).compileComponents();

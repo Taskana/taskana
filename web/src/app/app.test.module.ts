@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
-import { TaskanaTypeAheadMockComponent } from 'app/shared/components/type-ahead/type-ahead.mock.component';
+import { KadaiTypeAheadMockComponent } from 'app/shared/components/type-ahead/type-ahead.mock.component';
 
 const MODULES = [];
 
-const DECLARATIONS = [TaskanaTypeAheadMockComponent];
+const DECLARATIONS = [KadaiTypeAheadMockComponent];
 
 @NgModule({
   declarations: DECLARATIONS,

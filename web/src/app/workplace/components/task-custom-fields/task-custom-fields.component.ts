@@ -5,7 +5,7 @@ import { FormsValidatorService } from '../../../shared/services/forms-validator/
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'taskana-task-custom-fields',
+  selector: 'kadai-task-custom-fields',
   templateUrl: './task-custom-fields.component.html',
   styleUrls: ['./task-custom-fields.component.scss']
 })

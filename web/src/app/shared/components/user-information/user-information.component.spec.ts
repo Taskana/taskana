@@ -3,8 +3,8 @@ import { Component, DebugElement, Input } from '@angular/core';
 import { UserInformationComponent } from './user-information.component';
 import { BrowserModule, By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
-import { TaskanaEngineServiceMock } from '../../services/taskana-engine/taskana-engine.mock.service';
+import { KadaiEngineService } from '../../services/kadai-engine/kadai-engine.service';
+import { KadaiEngineServiceMock } from '../../services/kadai-engine/kadai-engine.mock.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 jest.mock('angular-svg-icon');
@@ -24,7 +24,7 @@ describe('UserInformationComponent', () => {
     TestBed.configureTestingModule({
       declarations: [UserInformationComponent, SvgIconStub],
       imports: [BrowserModule, HttpClientTestingModule, NoopAnimationsModule],
-      providers: [{ provide: TaskanaEngineService, useClass: TaskanaEngineServiceMock }]
+      providers: [{ provide: KadaiEngineService, useClass: KadaiEngineServiceMock }]
     }).compileComponents();
   }));
 

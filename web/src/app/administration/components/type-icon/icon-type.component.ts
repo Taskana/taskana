@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import { WorkbasketType } from 'app/shared/models/workbasket-type';
 
 @Component({
-  selector: 'taskana-administration-icon-type',
+  selector: 'kadai-administration-icon-type',
   templateUrl: './icon-type.component.html',
   styleUrls: ['./icon-type.component.scss']
 })

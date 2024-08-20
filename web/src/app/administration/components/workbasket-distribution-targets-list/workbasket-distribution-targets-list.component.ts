@@ -29,7 +29,7 @@ import { FilterSelectors } from '../../../shared/store/filter-store/filter.selec
 import { WorkbasketDistributionTarget } from '../../../shared/models/workbasket-distribution-target';
 
 @Component({
-  selector: 'taskana-administration-workbasket-distribution-targets-list',
+  selector: 'kadai-administration-workbasket-distribution-targets-list',
   templateUrl: './workbasket-distribution-targets-list.component.html',
   styleUrls: ['./workbasket-distribution-targets-list.component.scss'],
   animations: [expandDown]

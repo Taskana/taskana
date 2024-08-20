@@ -42,7 +42,7 @@ export class WorkbasketService {
     return this.domainService.getSelectedDomain().pipe(
       mergeMap((domain) => {
         this.workbasketSummaryRef = this.httpClient.get<WorkbasketSummaryRepresentation>(
-          `${environment.taskanaRestUrl}/v1/workbaskets${asUrlQueryString({
+          `${environment.kadaiRestUrl}/v1/workbaskets${asUrlQueryString({
             ...filterParameter,
             ...sortParameter,
             ...pagingParameter
@@ -58,19 +58,19 @@ export class WorkbasketService {
 
   // GET
   getWorkBasket(id: string): Observable<Workbasket> {
-    return this.httpClient.get<Workbasket>(`${environment.taskanaRestUrl}/v1/workbaskets/${id}`);
+    return this.httpClient.get<Workbasket>(`${environment.kadaiRestUrl}/v1/workbaskets/${id}`);
   }
 
   // GET
   getAllWorkBaskets(): Observable<WorkbasketRepresentation> {
     return this.httpClient.get<WorkbasketRepresentation>(
-      `${environment.taskanaRestUrl}/v1/workbaskets?required-permission=OPEN`
+      `${environment.kadaiRestUrl}/v1/workbaskets?required-permission=OPEN`
     );
   }
 
   // POST
   createWorkbasket(workbasket: Workbasket): Observable<Workbasket> {
-    return this.httpClient.post<Workbasket>(`${environment.taskanaRestUrl}/v1/workbaskets`, workbasket);
+    return this.httpClient.post<Workbasket>(`${environment.kadaiRestUrl}/v1/workbaskets`, workbasket);
   }
 
   // PUT

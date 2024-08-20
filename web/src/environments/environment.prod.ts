@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  taskanaRestUrl: '/taskana/api',
-  taskanaLogoutUrl: '/taskana/logout'
+  kadaiRestUrl: '/kadai/api',
+  kadaiLogoutUrl: '/kadai/logout'
 };

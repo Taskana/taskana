@@ -1,8 +1,9 @@
 <div class="classification-overview">
 
-  <taskana-administration-classification-list></taskana-administration-classification-list>
+  <kadai-administration-classification-list></kadai-administration-classification-list>
   <div class="vertical-right-divider"></div>
-  <taskana-administration-classification-details *ngIf="showDetail; else showEmptyPage"></taskana-administration-classification-details>
+  <kadai-administration-classification-details
+    *ngIf="showDetail; else showEmptyPage"></kadai-administration-classification-details>
 
   <ng-template #showEmptyPage>
     <div class="classification-overview__empty-page">

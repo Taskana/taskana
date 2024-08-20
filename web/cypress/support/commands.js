@@ -78,7 +78,7 @@ Cypress.Commands.add('visitTestClassification', () => {
   cy.visit(Cypress.env('appUrl') + Cypress.env('adminUrl') + '/classifications');
   cy.verifyPageLoad('/classifications');
 
-  cy.get('taskana-administration-tree')
+  cy.get('kadai-administration-tree')
     .contains(Cypress.env('testValueClassificationSelectionName'))
     .should('exist')
     .click();
@@ -113,6 +113,6 @@ Cypress.Commands.add('loginAs', (username) => {
     cy.get('#password').type('admin').should('have.value', 'admin');
     cy.get('#login-submit').click();
 
-    cy.verifyPageLoad('/taskana/administration/workbaskets');
+    cy.verifyPageLoad('/kadai/administration/workbaskets');
   }
 });

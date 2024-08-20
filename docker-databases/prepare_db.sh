@@ -10,7 +10,7 @@ export TOP_PID=$$
 #H
 #H %FILE% <database>
 #H
-#H   downloads and starts docker image for TASKANA unit tests.
+#H   downloads and starts docker image for KADAI unit tests.
 #H
 #H %FILE% stop [database]
 #H
@@ -35,13 +35,13 @@ function mapDBToDockerComposeServiceName() {
   [[ -z "$1" || "$1" == "H2" ]] && return
   case "$1" in
     DB2|DB2_11_5)
-      echo "taskana-db2_11-5"
+      echo "kadai-db2_11-5"
       ;;
     POSTGRES|POSTGRES_14)
-      echo "taskana-postgres_14"
+      echo "kadai-postgres_14"
       ;;
     ORACLE|ORACLE_18)
-      echo "taskana-oracle-18"
+      echo "kadai-oracle-18"
       ;;
     *)
       echo "unknown database '$1'" >&2 && kill -s TERM $TOP_PID

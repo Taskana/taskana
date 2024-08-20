@@ -3,8 +3,8 @@
   "viewportWidth": 1280,
   "viewportHeight": 720,
   "env": {
-    "loginUrl": "http://localhost:8080/taskana",
-    "appUrl": "http://localhost:8080/taskana/#/taskana",
+    "loginUrl": "http://localhost:8080/kadai",
+    "appUrl": "http://localhost:8080/kadai/#/kadai",
     "adminUrl": "/administration",
     "dropdownWait": 100,
     "testValueClassificationSelectionName": "L10303",

@@ -68,17 +68,17 @@
                  [selectedIndex]="selectedTab$ | async"
                  animationDuration="0ms">
     <mat-tab label="Information">
-      <taskana-administration-workbasket-information [action]="action" [workbasket]="workbasket">
-      </taskana-administration-workbasket-information>
+      <kadai-administration-workbasket-information [action]="action" [workbasket]="workbasket">
+      </kadai-administration-workbasket-information>
     </mat-tab>
     <mat-tab label="Access">
-      <taskana-administration-workbasket-access-items [expanded]="expanded"
-                                                      [workbasket]="workbasket">
-      </taskana-administration-workbasket-access-items>
+      <kadai-administration-workbasket-access-items [expanded]="expanded"
+                                                    [workbasket]="workbasket">
+      </kadai-administration-workbasket-access-items>
     </mat-tab>
     <mat-tab label="Distribution Targets">
-      <taskana-administration-workbasket-distribution-targets *matTabContent>
-      </taskana-administration-workbasket-distribution-targets>
+      <kadai-administration-workbasket-distribution-targets *matTabContent>
+      </kadai-administration-workbasket-distribution-targets>
     </mat-tab>
   </mat-tab-group>
 </div>

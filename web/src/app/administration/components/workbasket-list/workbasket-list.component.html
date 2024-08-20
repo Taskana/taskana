@@ -1,13 +1,16 @@
 <div class="workbasket-list">
   <!-- TOOLBAR -->
   <section #wbToolbar class="workbasket-list__toolbar">
-    <taskana-administration-workbasket-list-toolbar [workbaskets]="workbasketsSummary$ | async"
-      (performSorting)="performSorting($event)" [workbasketDefaultSortBy]="workbasketDefaultSortBy" [workbasketListExpanded]="expanded">
-    </taskana-administration-workbasket-list-toolbar>
+    <kadai-administration-workbasket-list-toolbar [workbaskets]="workbasketsSummary$ | async"
+                                                  (performSorting)="performSorting($event)"
+                                                  [workbasketDefaultSortBy]="workbasketDefaultSortBy"
+                                                  [workbasketListExpanded]="expanded">
+    </kadai-administration-workbasket-list-toolbar>
   </section>
 
   <!-- WORKBASKET LIST -->
-  <div class="workbasket-list__list-items" *ngIf="((workbasketsSummary$ | async) && (workbasketsSummary$ | async)?.length > 0) else empty_workbaskets">
+  <div class="workbasket-list__list-items"
+       *ngIf="((workbasketsSummary$ | async) && (workbasketsSummary$ | async)?.length > 0) else empty_workbaskets">
     <mat-selection-list #workbasket [multiple]="false">
       <mat-list-option class="workbasket-list__list-item"
                        *ngFor="let workbasket of (workbasketsSummary$ | async);"
@@ -20,7 +23,8 @@
 
           <!-- ICON -->
           <div class="workbasket-list__list-item--icon" *ngIf="expanded">
-            <taskana-administration-icon-type [type]="workbasket.type" size="large" tooltip="true" [selected]="workbasket.workbasketId === selectedId"></taskana-administration-icon-type>
+            <kadai-administration-icon-type [type]="workbasket.type" size="large" tooltip="true"
+                                            [selected]="workbasket.workbasketId === selectedId"></kadai-administration-icon-type>
           </div>
 
           <!-- INFORMATION -->
@@ -33,7 +37,8 @@
             <p class="workbasket-list__list-item--no-wrap">{{workbasket.owner}}</p>
 
             <div class="workbasket-list__list-item--marked" *ngIf="workbasket.markedForDeletion">
-              <span title="Marked for deletion" data-toggle="tooltip" class="material-icons md-20 {{workbasket.workbasketId === selectedId ? 'white': 'red' }} ">error</span>
+              <span title="Marked for deletion" data-toggle="tooltip"
+                    class="material-icons md-20 {{workbasket.workbasketId === selectedId ? 'white': 'red' }} ">error</span>
             </div>
 
           </div>
@@ -56,11 +61,11 @@
 
 <!-- PAGINATION -->
 
-<taskana-shared-pagination
-        [page]="(workbasketsSummaryRepresentation$ | async) ? (workbasketsSummaryRepresentation$ | async)?.page : (workbasketsSummaryRepresentation$ | async)"
-        [type]="type"
-        [expanded]="expanded"
-        [numberOfItems]="(workbasketsSummary$ | async)?.length"
-        [resetPaging]="resetPagingSubject.asObservable()"
-        (changePage)="changePage($event)">
-</taskana-shared-pagination>
+<kadai-shared-pagination
+  [page]="(workbasketsSummaryRepresentation$ | async) ? (workbasketsSummaryRepresentation$ | async)?.page : (workbasketsSummaryRepresentation$ | async)"
+  [type]="type"
+  [expanded]="expanded"
+  [numberOfItems]="(workbasketsSummary$ | async)?.length"
+  [resetPaging]="resetPagingSubject.asObservable()"
+  (changePage)="changePage($event)">
+</kadai-shared-pagination>

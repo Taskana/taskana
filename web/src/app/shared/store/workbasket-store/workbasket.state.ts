@@ -35,7 +35,7 @@ import { ButtonAction } from '../../../administration/models/button-action';
 import { ActivatedRoute } from '@angular/router';
 import { RequestInProgressService } from '../../services/request-in-progress/request-in-progress.service';
 import { WorkbasketType } from '../../models/workbasket-type';
-import { TaskanaDate } from '../../util/taskana.date';
+import { KadaiDate } from '../../util/kadai.date';
 import { DomainService } from '../../services/domain/domain.service';
 import { ClearWorkbasketFilter } from '../filter-store/filter.actions';
 import { Injectable } from '@angular/core';
@@ -245,7 +245,7 @@ export class WorkbasketState implements NgxsAfterBootstrap {
         emptyWorkbasket.domain = domain;
         emptyWorkbasket.type = WorkbasketType.PERSONAL;
 
-        const date: string = TaskanaDate.getDate();
+        const date: string = KadaiDate.getDate();
         emptyWorkbasket.created = date;
         emptyWorkbasket.modified = date;
         emptyWorkbasket.owner = '';

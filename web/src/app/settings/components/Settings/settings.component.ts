@@ -10,7 +10,7 @@ import { validateSettings } from './settings.validators';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
-  selector: 'taskana-administration-settings',
+  selector: 'kadai-administration-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })

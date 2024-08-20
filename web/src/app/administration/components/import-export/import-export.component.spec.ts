@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { ImportExportComponent } from './import-export.component';
 import { StartupService } from '../../../shared/services/startup/startup.service';
-import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
+import { KadaiEngineService } from '../../../shared/services/kadai-engine/kadai-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { WorkbasketDefinitionService } from '../../services/workbasket-definition.service';
@@ -11,7 +11,7 @@ import { ImportExportService } from '../../services/import-export.service';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { ClassificationDefinitionService } from '../../services/classification-definition.service';
-import { TaskanaType } from '../../../shared/models/taskana-type';
+import { KadaiType } from '../../../shared/models/kadai-type';
 
 jest.mock('../../../shared/util/blob-generator');
 
@@ -49,7 +49,7 @@ xdescribe('ImportExportComponent', () => {
       declarations: [ImportExportComponent],
       providers: [
         StartupService,
-        TaskanaEngineService,
+        KadaiEngineService,
         WindowRefService,
         WorkbasketDefinitionService,
         ClassificationDefinitionService,
@@ -65,7 +65,7 @@ xdescribe('ImportExportComponent', () => {
     fixture = TestBed.createComponent(ImportExportComponent);
     debugElement = fixture.debugElement;
     app = fixture.debugElement.componentInstance;
-    app.currentSelection = TaskanaType.WORKBASKETS;
+    app.currentSelection = KadaiType.WORKBASKETS;
     fixture.detectChanges();
   }));
 
@@ -120,7 +120,7 @@ xdescribe('ImportExportComponent', () => {
     });
 
     it('should successfully export the classifications', async (done) => {
-      app.currentSelection = TaskanaType.CLASSIFICATIONS;
+      app.currentSelection = KadaiType.CLASSIFICATIONS;
       app
         .export()
         .pipe(take(1))

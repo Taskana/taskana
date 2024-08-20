@@ -6,14 +6,14 @@ import { SidenavService } from './shared/services/sidenav/sidenav.service';
 import { RequestInProgressService } from './shared/services/request-in-progress/request-in-progress.service';
 import { OrientationService } from './shared/services/orientation/orientation.service';
 import { SelectedRouteService } from './shared/services/selected-route/selected-route';
-import { TaskanaEngineService } from './shared/services/taskana-engine/taskana-engine.service';
+import { KadaiEngineService } from './shared/services/kadai-engine/kadai-engine.service';
 import { WindowRefService } from 'app/shared/services/window/window.service';
 import { environment } from 'environments/environment';
 import { MatSidenav } from '@angular/material/sidenav';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'taskana-root',
+  selector: 'kadai-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
@@ -36,7 +36,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private selectedRouteService: SelectedRouteService,
     private formsValidatorService: FormsValidatorService,
     private sidenavService: SidenavService,
-    private taskanaEngineService: TaskanaEngineService,
+    private kadaiEngineService: KadaiEngineService,
     private window: WindowRefService
   ) {}
 
@@ -72,7 +72,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.selectedRoute = value;
       });
 
-    this.taskanaEngineService
+    this.kadaiEngineService
       .getVersion()
       .pipe(takeUntil(this.destroy$))
       .subscribe((restVersion) => {
@@ -81,8 +81,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.taskanaEngineService.logout();
-    this.window.nativeWindow.location.href = environment.taskanaLogoutUrl;
+    this.kadaiEngineService.logout();
+    this.window.nativeWindow.location.href = environment.kadaiLogoutUrl;
   }
 
   toggleSidenav() {

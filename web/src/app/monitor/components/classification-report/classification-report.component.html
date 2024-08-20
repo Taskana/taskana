@@ -1,16 +1,16 @@
 <div *ngIf="reportData" class="panel panel-default">
-    <div class="panel-heading">
-        <h4>{{reportData.meta.name}} ({{reportData.meta.date | germanTimeFormat}})</h4>
-    </div>
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-xs-12 col-md-7 col-md-offset-2">
-                <div style="display: block;">
-                    <canvas baseChart  [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
-                        [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"></canvas>
-                </div>
-            </div>
+  <div class="panel-heading">
+    <h4>{{reportData.meta.name}} ({{reportData.meta.date | germanTimeFormat}})</h4>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-xs-12 col-md-7 col-md-offset-2">
+        <div style="display: block;">
+          <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+                  [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"></canvas>
         </div>
-        <taskana-monitor-report-table [reportData]="reportData"></taskana-monitor-report-table>
+      </div>
     </div>
+    <kadai-monitor-report-table [reportData]="reportData"></kadai-monitor-report-table>
+  </div>
 </div>

@@ -22,10 +22,12 @@
      [routerLink]=[workplaceUrl] class="navlist__item navlist__workplace"
      mat-list-item>Workplace</a>
   <div class="navlist__admin-item">
-    <a (click)="toggleSidenav(workplaceUrl)" *ngIf="workplaceAccess" [queryParams]="{component: 'workbaskets'}" [routerLinkActive]="['active__sub']"
+    <a (click)="toggleSidenav(workplaceUrl)" *ngIf="workplaceAccess" [queryParams]="{component: 'workbaskets'}"
+       [routerLinkActive]="['active__sub']"
        [routerLink]=[workplaceUrl] class="navlist__item  navlist__workplace--workbaskets"
        mat-list-item>Workbaskets</a>
-    <a (click)="toggleSidenav(workplaceUrl)" *ngIf="workplaceAccess" [queryParams]="{component: 'task-search'}" [routerLinkActive]="['active__sub']"
+    <a (click)="toggleSidenav(workplaceUrl)" *ngIf="workplaceAccess" [queryParams]="{component: 'task-search'}"
+       [routerLinkActive]="['active__sub']"
        [routerLink]=[workplaceUrl] class="navlist__item  navlist__workplace--task-search"
        mat-list-item>Task Search</a>
   </div>

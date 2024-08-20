@@ -20,7 +20,7 @@
 
         <!-- STRING -->
         <div *ngIf="member.type == settingTypes.Text" class="settings__grid">
-          <div class="settings__text"> {{member.displayName}} </div>
+          <div class="settings__text"> {{member.displayName}}</div>
           <mat-form-field appearance="outline" class="settings__grid--two-columns">
             <mat-label class="{{member.key}}">{{member.displayName}}</mat-label>
             <input [(ngModel)]="settings[member.key]" matInput maxlength="{{member.max}}"

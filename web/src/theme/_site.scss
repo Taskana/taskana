@@ -167,7 +167,7 @@ div.error {
 /*
  *Remove bootstrap cols padding for master and detail component
 */
-.no-gutter > taskana-shared-master-and-detail > [class*='col-'] {
+.no-gutter > kadai-shared-master-and-detail > [class*='col-'] {
   padding-right: 0;
   padding-left: 0;
 }
@@ -307,7 +307,7 @@ span.flip {
   padding: 5px 15px;
 }
 
-.dual-list > taskana-shared-filter > .list-group-search {
+.dual-list > kadai-shared-filter > .list-group-search {
   margin-top: 4px;
 }
 
@@ -317,14 +317,14 @@ span.flip {
   }
 }
 
-taskana-administration-workbasket-information,
-taskana-administration-workbasket-access-items,
-taskana-administration-workbasket-distribution-targets,
-taskana-administration-workbasket-details,
-taskana-monitor-task-report,
-taskana-monitor-workbasket-report,
-taskana-monitor-classification-report,
-taskana-monitor-timestamp-report {
+kadai-administration-workbasket-information,
+kadai-administration-workbasket-access-items,
+kadai-administration-workbasket-distribution-targets,
+kadai-administration-workbasket-details,
+kadai-monitor-task-report,
+kadai-monitor-workbasket-report,
+kadai-monitor-classification-report,
+kadai-monitor-timestamp-report {
   & .panel {
     border: none;
     box-shadow: none;
@@ -338,11 +338,11 @@ taskana-monitor-timestamp-report {
   }
 }
 
-taskana-task-details,
-taskana-administration-classification-details,
-taskana-administration-access-items-management,
-taskana-task,
-taskana-task-query {
+kadai-task-details,
+kadai-administration-classification-details,
+kadai-administration-access-items-management,
+kadai-task,
+kadai-task-query {
   & .panel {
     border: none;
     box-shadow: none;
@@ -356,7 +356,7 @@ taskana-task-query {
   }
 }
 
-taskana-task-query {
+kadai-task-query {
   & .panel {
     & > .panel-body {
       height: calc(100vh - 105px);
@@ -365,10 +365,10 @@ taskana-task-query {
   }
 }
 
-taskana-monitor-task-report,
-taskana-monitor-workbasket-report,
-taskana-monitor-classification-report,
-taskana-administration-access-items-management {
+kadai-monitor-task-report,
+kadai-monitor-workbasket-report,
+kadai-monitor-classification-report,
+kadai-administration-access-items-management {
   & .panel {
     & > .panel-heading {
       border-left: 1px solid #ddd;

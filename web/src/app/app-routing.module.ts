@@ -9,7 +9,7 @@ import { NoAccessComponent } from './shared/components/no-access/no-access.compo
 
 const appRoutes: Routes = [
   {
-    path: 'taskana',
+    path: 'kadai',
     children: [
       {
         canActivate: [BusinessAdminGuard],
@@ -58,7 +58,7 @@ const appRoutes: Routes = [
   {
     canActivate: [BusinessAdminGuard],
     path: '**',
-    redirectTo: 'taskana/administration/workbaskets'
+    redirectTo: 'kadai/administration/workbaskets'
   }
 ];
 

@@ -6,7 +6,7 @@ import { Settings } from '../../../settings/models/settings';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'taskana-monitor-task-priority-report-filter',
+  selector: 'kadai-monitor-task-priority-report-filter',
   templateUrl: './task-priority-report-filter.component.html',
   styleUrls: ['./task-priority-report-filter.component.scss']
 })

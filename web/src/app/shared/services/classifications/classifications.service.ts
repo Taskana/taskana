@@ -23,7 +23,7 @@ export class ClassificationsService {
   ) {}
 
   get url(): string {
-    return this.startupService.getTaskanaRestUrl() + '/v1/classifications';
+    return this.startupService.getKadaiRestUrl() + '/v1/classifications';
   }
 
   // GET

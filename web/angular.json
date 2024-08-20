@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "taskana-web": {
+    "kadai-web": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -61,36 +61,36 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "taskana-web:build"
+            "browserTarget": "kadai-web:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "taskana-web:build:production"
+              "browserTarget": "kadai-web:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "taskana-web:build"
+            "browserTarget": "kadai-web:build"
           }
         }
       }
     },
-    "taskana-web-e2e": {
+    "kadai-web-e2e": {
       "root": "",
       "sourceRoot": "e2e",
       "projectType": "application"
     }
   },
-  "defaultProject": "taskana-web",
+  "defaultProject": "kadai-web",
   "schematics": {
     "@schematics/angular:component": {
-      "prefix": "taskana",
+      "prefix": "kadai",
       "style": "scss"
     },
     "@schematics/angular:directive": {
-      "prefix": "taskana"
+      "prefix": "kadai"
     }
   },
   "cli": {
