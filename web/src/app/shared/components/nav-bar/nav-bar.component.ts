@@ -6,7 +6,7 @@ import { SidenavService } from '../../services/sidenav/sidenav.service';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'taskana-shared-nav-bar',
+  selector: 'kadai-shared-nav-bar',
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.scss'],
   animations: [expandRight]

@@ -20,17 +20,17 @@ import { ActivatedRoute } from '@angular/router';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
-@Component({ selector: 'taskana-shared-workbasket-filter', template: '' })
+@Component({ selector: 'kadai-shared-workbasket-filter', template: '' })
 class FilterStub {
   @Input() component = 'availableDistributionTargetList';
 }
 
-@Component({ selector: 'taskana-shared-spinner', template: '' })
+@Component({ selector: 'kadai-shared-spinner', template: '' })
 class SpinnerStub {
   @Input() isRunning: boolean;
 }
 
-@Component({ selector: 'taskana-administration-icon-type', template: '' })
+@Component({ selector: 'kadai-administration-icon-type', template: '' })
 class IconTypeStub {
   @Input() type: WorkbasketType;
   @Input() text: string;
@@ -130,7 +130,7 @@ describe('WorkbasketDistributionTargetsListComponent', () => {
   it('should display filter when toolbarState is true', () => {
     component.toolbarState = true;
     fixture.detectChanges();
-    expect(debugElement.nativeElement.querySelector('taskana-shared-workbasket-filter')).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('kadai-shared-workbasket-filter')).toBeTruthy();
   });
 
   it('should display all available workbaskets', fakeAsync(() => {

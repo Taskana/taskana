@@ -8,11 +8,11 @@ import { DomainService } from './domain.service';
 import { RequestInProgressService } from '../request-in-progress/request-in-progress.service';
 import { SelectedRouteService } from '../selected-route/selected-route';
 import { StartupService } from '../startup/startup.service';
-import { TaskanaEngineService } from '../taskana-engine/taskana-engine.service';
+import { KadaiEngineService } from '../kadai-engine/kadai-engine.service';
 import { WindowRefService } from '../window/window.service';
 
 @Component({
-  selector: 'taskana-dummy-detail',
+  selector: 'kadai-dummy-detail',
   template: 'dummydetail'
 })
 class DummyDetailComponent {}
@@ -29,7 +29,7 @@ describe('DomainService', () => {
         RequestInProgressService,
         SelectedRouteService,
         StartupService,
-        TaskanaEngineService,
+        KadaiEngineService,
         WindowRefService
       ],
       declarations: [DummyDetailComponent]

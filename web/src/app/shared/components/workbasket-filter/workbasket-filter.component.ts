@@ -8,7 +8,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'taskana-shared-workbasket-filter',
+  selector: 'kadai-shared-workbasket-filter',
   templateUrl: './workbasket-filter.component.html',
   styleUrls: ['./workbasket-filter.component.scss']
 })

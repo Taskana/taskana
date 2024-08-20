@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
-  selector: 'taskana-monitor-task-report',
+  selector: 'kadai-monitor-task-report',
   templateUrl: './task-report.component.html',
   styleUrls: ['./task-report.component.scss']
 })

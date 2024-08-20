@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Direction, Sorting } from 'app/shared/models/sorting';
 
 @Component({
-  selector: 'taskana-shared-sort',
+  selector: 'kadai-shared-sort',
   templateUrl: './sort.component.html',
   styleUrls: ['./sort.component.scss']
 })

@@ -1,0 +1,131 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>kadai-sonar-test-coverage</artifactId>
+    <packaging>pom</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>This pom aggregates the jacoco reports for each module</description>
+
+    <parent>
+        <groupId>io.kadai</groupId>
+        <artifactId>kadai-parent</artifactId>
+        <version>8.2.1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <!-- all common dependencies -->
+        <dependency>
+            <groupId>io.kadai</groupId>
+            <artifactId>kadai-common-logging</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.kadai</groupId>
+            <artifactId>kadai-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.kadai</groupId>
+            <artifactId>kadai-common-data</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.kadai</groupId>
+            <artifactId>kadai-common-security</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.kadai</groupId>
+            <artifactId>kadai-common-test</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- all lib dependencies -->
+        <dependency>
+            <groupId>io.kadai</groupId>
+            <artifactId>kadai-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.kadai</groupId>
+            <artifactId>kadai-cdi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.kadai</groupId>
+            <artifactId>kadai-spring</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.kadai</groupId>
+            <artifactId>kadai-test-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.kadai</groupId>
+            <artifactId>kadai-core-test</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- all rest dependencies -->
+        <dependency>
+            <groupId>io.kadai</groupId>
+            <artifactId>kadai-rest-spring</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.kadai</groupId>
+            <artifactId>kadai-rest-spring-test-lib</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.kadai</groupId>
+            <artifactId>kadai-routing-rest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- all SPI dependencies -->
+        <dependency>
+            <groupId>io.kadai</groupId>
+            <artifactId>kadai-spi-routing-dmn-router</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.kadai.history</groupId>
+            <artifactId>kadai-simplehistory-provider</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.kadai.history</groupId>
+            <artifactId>kadai-simplehistory-rest-spring</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.kadai.history</groupId>
+            <artifactId>kadai-loghistory-provider</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${version.jacoco}</version>
+                <executions>
+                    <execution>
+                        <id>report-aggregate</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

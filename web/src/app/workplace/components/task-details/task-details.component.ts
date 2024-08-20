@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TaskService } from 'app/workplace/services/task.service';
 import { Task } from 'app/workplace/models/task';
 import { RequestInProgressService } from 'app/shared/services/request-in-progress/request-in-progress.service';
-import { TaskanaDate } from 'app/shared/util/taskana.date';
+import { KadaiDate } from 'app/shared/util/kadai.date';
 import { Workbasket } from 'app/shared/models/workbasket';
 import { WorkplaceService } from 'app/workplace/services/workplace.service';
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
@@ -15,7 +15,7 @@ import { trimObject } from '../../../shared/util/form-trimmer';
 import { ObjectReference } from '../../models/object-reference';
 
 @Component({
-  selector: 'taskana-task-details',
+  selector: 'kadai-task-details',
   templateUrl: './task-details.component.html',
   styleUrls: ['./task-details.component.scss']
 })
@@ -125,7 +125,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.notificationService.showSuccess('TASK_DELETE', { taskName: this.task.name });
         this.taskService.publishTaskDeletion();
         this.task = null;
-        this.router.navigate(['taskana/workplace/tasks'], { queryParamsHandling: 'merge' });
+        this.router.navigate(['kadai/workplace/tasks'], { queryParamsHandling: 'merge' });
       });
   }
 
@@ -201,7 +201,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   private addDateToTask() {
-    const date = TaskanaDate.getDate();
+    const date = KadaiDate.getDate();
     this.task.created = date;
     this.task.modified = date;
   }

@@ -11,7 +11,7 @@ import { CreateWorkbasket } from '../../../shared/store/workbasket-store/workbas
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Direction, Sorting, WorkbasketQuerySortParameter } from '../../../shared/models/sorting';
 import { ACTION } from '../../../shared/models/action';
-import { TaskanaType } from '../../../shared/models/taskana-type';
+import { KadaiType } from '../../../shared/models/kadai-type';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -23,20 +23,20 @@ const domainServiceMock: Partial<DomainService> = {
   getSelectedDomain: jest.fn().mockReturnValue(of('A'))
 };
 
-@Component({ selector: 'taskana-administration-import-export', template: '' })
+@Component({ selector: 'kadai-administration-import-export', template: '' })
 class ImportExportStub {
-  @Input() currentSelection: TaskanaType;
+  @Input() currentSelection: KadaiType;
   @Input() parentComponent;
 }
 
-@Component({ selector: 'taskana-shared-sort', template: '' })
+@Component({ selector: 'kadai-shared-sort', template: '' })
 class SortStub {
   @Input() sortingFields: Map<WorkbasketQuerySortParameter, string>;
   @Input() defaultSortBy: WorkbasketQuerySortParameter;
   @Output() performSorting = new EventEmitter<Sorting<WorkbasketQuerySortParameter>>();
 }
 
-@Component({ selector: 'taskana-shared-workbasket-filter', template: '' })
+@Component({ selector: 'kadai-shared-workbasket-filter', template: '' })
 class FilterStub {
   @Input() isExpanded = false;
 }
@@ -126,15 +126,15 @@ describe('WorkbasketListToolbarComponent', () => {
   });
 
   it('should display import-export component', () => {
-    expect(debugElement.nativeElement.querySelector('taskana-administration-import-export')).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('kadai-administration-import-export')).toBeTruthy();
   });
 
   it('should display sort component', () => {
-    expect(debugElement.nativeElement.querySelector('taskana-shared-sort')).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('kadai-shared-sort')).toBeTruthy();
   });
 
   it('should display filter component', () => {
-    expect(debugElement.nativeElement.querySelector('taskana-shared-workbasket-filter')).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('kadai-shared-workbasket-filter')).toBeTruthy();
   });
 
   it('should show expanded filter component only when filter button is clicked', () => {

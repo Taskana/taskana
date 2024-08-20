@@ -11,7 +11,7 @@ import { EngineConfigurationSelectors } from '../../store/engine-configuration-s
 import { GlobalCustomisation } from '../../models/customisation';
 
 @Component({
-  selector: 'taskana-shared-type-ahead',
+  selector: 'kadai-shared-type-ahead',
   templateUrl: './type-ahead.component.html',
   styleUrls: ['./type-ahead.component.scss']
 })

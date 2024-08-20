@@ -1,3 +1,0 @@
-SET search_path TO %schemaName%;
-
-SELECT MAX(VERSION) FROM TASKANA_SCHEMA_VERSION;

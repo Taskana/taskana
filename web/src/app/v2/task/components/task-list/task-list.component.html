@@ -1,6 +1,6 @@
 <p>task-list works!</p>
 <div *ngFor="let task of tasks$ | async">
-    <div (click)="selectTask(task.taskId)">
-        <span [ngClass]="{'task--selected': (selectedTask$ | async)?.taskId === task.taskId}">{{ task.name }}</span>
-    </div>
+  <div (click)="selectTask(task.taskId)">
+    <span [ngClass]="{'task--selected': (selectedTask$ | async)?.taskId === task.taskId}">{{ task.name }}</span>
+  </div>
 </div>

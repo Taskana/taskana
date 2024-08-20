@@ -1,7 +1,7 @@
-context.skip('TASKANA Monitor', () => {
+context.skip('KADAI Monitor', () => {
   beforeEach(() => cy.loginAs('admin'));
 
-  it('should visit taskana tasks by status monitor page', () => {
+  it('should visit kadai tasks by status monitor page', () => {
     cy.intercept('**/monitor/task-status-report*').as('monitorData');
     cy.visitMonitor();
     cy.get('nav').find('a').contains('Tasks by Status').click();
@@ -11,7 +11,7 @@ context.skip('TASKANA Monitor', () => {
     cy.get('canvas.chartjs-render-monitor').should('be.visible');
   });
 
-  it('should visit taskana tasks by priority monitor page', () => {
+  it('should visit kadai tasks by priority monitor page', () => {
     cy.intercept('**/monitor/workbasket-priority-report*').as('monitorData');
     cy.visitMonitor();
     cy.get('nav').find('a').contains('Tasks by Priority').click();
@@ -21,7 +21,7 @@ context.skip('TASKANA Monitor', () => {
     cy.get('canvas.chartjs-render-monitor').should('be.visible');
   });
 
-  it('should visit taskana workbaskets monitor page', () => {
+  it('should visit kadai workbaskets monitor page', () => {
     cy.intercept('**/monitor/workbasket-report*').as('monitorData');
     cy.visitMonitor();
     cy.get('nav').find('a').contains('Workbaskets').click();
@@ -31,7 +31,7 @@ context.skip('TASKANA Monitor', () => {
     cy.get('canvas.chartjs-render-monitor').should('be.visible');
   });
 
-  it('should visit taskana classifications monitor page', () => {
+  it('should visit kadai classifications monitor page', () => {
     cy.intercept('**/monitor/classification-report').as('monitorData');
     cy.visitMonitor();
     cy.get('nav').find('a').contains('Classifications').click();
@@ -41,7 +41,7 @@ context.skip('TASKANA Monitor', () => {
     cy.get('canvas.chartjs-render-monitor').should('be.visible');
   });
 
-  it('should visit taskana timestamp monitor page', () => {
+  it('should visit kadai timestamp monitor page', () => {
     cy.intercept('**/monitor/timestamp*').as('monitorData');
     cy.visitMonitor();
     cy.get('nav').find('a').contains('Timestamp').click();

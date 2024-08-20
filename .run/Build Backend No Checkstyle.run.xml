@@ -14,6 +14,7 @@
               <option value="install" />
               <option value="-DskipTests" />
               <option value="-Dcheckstyle.skip" />
+              <option value="-Dasciidoctor.skip" />
             </list>
           </option>
           <option name="pomFileName" />

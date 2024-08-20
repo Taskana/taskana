@@ -63,14 +63,16 @@
       <button mat-stroked-button [matMenuTriggerFor]="menu" matTooltip="Filter Workbaskets by type">
         Filter by type
         <mat-icon *ngIf="filter.type.length == 0" style="color: #555">filter_list</mat-icon>
-        <taskana-administration-icon-type *ngIf="filter.type[0]"
-                                          [type]="filter.type[0]"></taskana-administration-icon-type>
+        <kadai-administration-icon-type *ngIf="filter.type[0]"
+                                        [type]="filter.type[0]"></kadai-administration-icon-type>
       </button>
 
       <mat-menu #menu="matMenu">
         <button mat-menu-item *ngFor="let type of allTypes | mapValues" (click)="selectType(type.key)">
-          <span *ngIf="type.value === 'All'"> <mat-icon style="color: #555" class="filter__all-icon">filter_list</mat-icon> All </span>
-          <taskana-administration-icon-type *ngIf="type.value !== 'All'" [type]='type.key' [text]="type.value"></taskana-administration-icon-type>
+          <span *ngIf="type.value === 'All'"> <mat-icon style="color: #555"
+                                                        class="filter__all-icon">filter_list</mat-icon> All </span>
+          <kadai-administration-icon-type *ngIf="type.value !== 'All'" [type]='type.key'
+                                          [text]="type.value"></kadai-administration-icon-type>
         </button>
       </mat-menu>
 

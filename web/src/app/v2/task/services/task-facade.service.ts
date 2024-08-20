@@ -22,7 +22,7 @@ export class TaskFacadeService {
 
   // distinguish between select a task (what happens to UI?) and the action of getting information of a task from a taskID
   selectTask(taskId: string): void {
-    this.store.dispatch(new Navigate([`/taskana/workplace/tasks/taskdetail/${taskId}`]));
+    this.store.dispatch(new Navigate([`/kadai/workplace/tasks/taskdetail/${taskId}`]));
   }
 
   getTask(taskId: string): void {

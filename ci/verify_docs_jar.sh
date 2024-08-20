@@ -8,18 +8,18 @@ function verifyDocs() {
 }
 
 REL=$(dirname "$0")
-JAR_FILE_LOCATION="$REL/../rest/taskana-rest-spring-example-boot/target/taskana-rest-spring-example-boot.jar"
+JAR_FILE_LOCATION="$REL/../rest/kadai-rest-spring-example-boot/target/kadai-rest-spring-example-boot.jar"
 set -x
 test -e "$JAR_FILE_LOCATION"
 set +x
 JAR_CONTENT=$(jar -tf "$JAR_FILE_LOCATION")
 set -x
 
-verifyDocs "$REL/../lib/taskana-core/target/apidocs" "/static/docs/java/taskana-core"
-verifyDocs "$REL/../lib/taskana-cdi/target/apidocs" "/static/docs/java/taskana-cdi"
-verifyDocs "$REL/../lib/taskana-spring/target/apidocs" "/static/docs/java/taskana-spring"
-test -n "$(jar -tf "$JAR_FILE_LOCATION" | grep /static/docs/java/taskana-core/index.html)"
-test -n "$(jar -tf "$JAR_FILE_LOCATION" | grep /static/docs/java/taskana-spring/index.html)"
-test -n "$(jar -tf "$JAR_FILE_LOCATION" | grep /static/docs/java/taskana-cdi/pro/taskana/common/internal/package-summary.html)"
+verifyDocs "$REL/../lib/kadai-core/target/apidocs" "/static/docs/java/kadai-core"
+verifyDocs "$REL/../lib/kadai-cdi/target/apidocs" "/static/docs/java/kadai-cdi"
+verifyDocs "$REL/../lib/kadai-spring/target/apidocs" "/static/docs/java/kadai-spring"
+test -n "$(jar -tf "$JAR_FILE_LOCATION" | grep /static/docs/java/kadai-core/index.html)"
+test -n "$(jar -tf "$JAR_FILE_LOCATION" | grep /static/docs/java/kadai-spring/index.html)"
+test -n "$(jar -tf "$JAR_FILE_LOCATION" | grep /static/docs/java/kadai-cdi/io/kadai/common/internal/package-summary.html)"
 set +x
 echo "the jar file '$JAR_FILE_LOCATION' contains documentation"

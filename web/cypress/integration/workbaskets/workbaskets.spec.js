@@ -1,4 +1,4 @@
-context('TASKANA Workbaskets', () => {
+context('KADAI Workbaskets', () => {
   beforeEach(() => cy.loginAs('admin'));
 
   it('should be able to see all workbaskets', () => {
@@ -91,7 +91,7 @@ context('TASKANA Workbaskets', () => {
     cy.visitTestWorkbasket();
     cy.visitWorkbasketsDistributionTargetsPage();
 
-    cy.get('taskana-administration-workbasket-distribution-targets-list[header="Available distribution targets"]')
+    cy.get('kadai-administration-workbasket-distribution-targets-list[header="Available distribution targets"]')
       .find('mat-list-option:first')
       .find('mat-pseudo-checkbox')
       .click();
@@ -100,12 +100,12 @@ context('TASKANA Workbaskets', () => {
     cy.saveWorkbaskets();
 
     cy.visitWorkbasketsDistributionTargetsPage();
-    cy.get('taskana-administration-workbasket-distribution-targets-list[header="Selected distribution targets"]')
+    cy.get('kadai-administration-workbasket-distribution-targets-list[header="Selected distribution targets"]')
       .find('mat-selection-list')
       .should('not.be.empty');
 
     // undo changes
-    cy.get('taskana-administration-workbasket-distribution-targets-list[header="Selected distribution targets"]')
+    cy.get('kadai-administration-workbasket-distribution-targets-list[header="Selected distribution targets"]')
       .find('mat-list-option:first')
       .find('mat-pseudo-checkbox')
       .click();
@@ -219,7 +219,7 @@ context('TASKANA Workbaskets', () => {
 
     cy.get('#dual-list-Right > .distribution-targets-list > .mat-toolbar > :nth-child(2)').click();
     cy.get(
-      '#dual-list-Right > .distribution-targets-list > taskana-shared-workbasket-filter > .filter > .filter__expanded-filter > .filter__text-input > :nth-child(1) > :nth-child(2) > .mat-form-field-wrapper > .mat-form-field-flex > .mat-form-field-infix > .mat-input-element'
+      '#dual-list-Right > .distribution-targets-list > kadai-shared-workbasket-filter > .filter > .filter__expanded-filter > .filter__text-input > :nth-child(1) > :nth-child(2) > .mat-form-field-wrapper > .mat-form-field-flex > .mat-form-field-infix > .mat-input-element'
     )
       .clear()
       .type('002');
@@ -244,7 +244,7 @@ context('TASKANA Workbaskets', () => {
 
     cy.get('#dual-list-Left > .distribution-targets-list > .mat-toolbar > :nth-child(2)').click();
     cy.get(
-      '#dual-list-Left > .distribution-targets-list > taskana-shared-workbasket-filter > .filter > .filter__expanded-filter > .filter__text-input > :nth-child(1) > :nth-child(2) > .mat-form-field-wrapper > .mat-form-field-flex > .mat-form-field-infix > .mat-input-element'
+      '#dual-list-Left > .distribution-targets-list > kadai-shared-workbasket-filter > .filter > .filter__expanded-filter > .filter__text-input > :nth-child(1) > :nth-child(2) > .mat-form-field-wrapper > .mat-form-field-flex > .mat-form-field-infix > .mat-input-element'
     )
       .clear()
       .type('008');

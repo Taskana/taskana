@@ -1,25 +1,25 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { TaskanaEngineService } from 'app/shared/services/taskana-engine/taskana-engine.service';
+import { KadaiEngineService } from 'app/shared/services/kadai-engine/kadai-engine.service';
 import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HistoryGuard implements CanActivate {
-  constructor(private taskanaEngineService: TaskanaEngineService, public router: Router) {}
+  constructor(private kadaiEngineService: KadaiEngineService, public router: Router) {}
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> {
-    return this.taskanaEngineService.isHistoryProviderEnabled().pipe(
+    return this.kadaiEngineService.isHistoryProviderEnabled().pipe(
       map((value) => {
         if (value) {
           return value;
         }
-        return this.router.parseUrl('/taskana/workplace');
+        return this.router.parseUrl('/kadai/workplace');
       }),
       catchError(() => {
-        return of(this.router.parseUrl('/taskana/workplace'));
+        return of(this.router.parseUrl('/kadai/workplace'));
       })
     );
   }

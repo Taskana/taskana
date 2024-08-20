@@ -5,7 +5,7 @@
 
 ### GENERATED ###
 target/
-routing/taskana-routing-rest/target\\routing.dmn
+routing/kadai-routing-rest/target\\routing.dmn
 .apt_generated/
 .checkstyle
 bin/

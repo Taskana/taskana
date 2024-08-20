@@ -1,7 +1,7 @@
 import { Directive, HostListener, Output, EventEmitter, HostBinding } from '@angular/core';
 
 @Directive({
-  selector: '[taskanaDragAndDrop]'
+  selector: '[kadaiDragAndDrop]'
 })
 export class DragAndDropDirective {
   @Output() onFileDropped = new EventEmitter<any>();

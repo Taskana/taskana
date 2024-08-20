@@ -16,7 +16,7 @@ import { SelectedRouteService } from '../../../shared/services/selected-route/se
 import { MatDialogModule } from '@angular/material/dialog';
 import { selectedWorkbasketMock, workbasketReadStateMock } from '../../../shared/store/mock-data/mock-store';
 import { StartupService } from '../../../shared/services/startup/startup.service';
-import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
+import { KadaiEngineService } from '../../../shared/services/kadai-engine/kadai-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -28,13 +28,13 @@ import { CopyWorkbasket, CreateWorkbasket } from '../../../shared/store/workbask
 import { take } from 'rxjs/operators';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-@Component({ selector: 'taskana-administration-workbasket-information', template: '<div>i</div>' })
+@Component({ selector: 'kadai-administration-workbasket-information', template: '<div>i</div>' })
 class WorkbasketInformationStub {
   @Input() workbasket: Workbasket;
   @Input() action: ACTION;
 }
 
-@Component({ selector: 'taskana-administration-workbasket-access-items', template: '' })
+@Component({ selector: 'kadai-administration-workbasket-access-items', template: '' })
 class WorkbasketAccessItemsStub {
   @Input() workbasket: Workbasket;
   @Input() action: ACTION;
@@ -42,7 +42,7 @@ class WorkbasketAccessItemsStub {
   @Input() expanded: boolean;
 }
 
-@Component({ selector: 'taskana-administration-workbasket-distribution-targets', template: '' })
+@Component({ selector: 'kadai-administration-workbasket-distribution-targets', template: '' })
 class WorkbasketDistributionTargetsStub {
   @Input() workbasket: Workbasket;
   @Input() action: ACTION;
@@ -104,7 +104,7 @@ describe('WorkbasketDetailsComponent', () => {
         RequestInProgressService,
         SelectedRouteService,
         StartupService,
-        TaskanaEngineService,
+        KadaiEngineService,
         WindowRefService
       ]
     }).compileComponents();
@@ -128,7 +128,7 @@ describe('WorkbasketDetailsComponent', () => {
   it('should render information component when workbasket details is opened', () => {
     component.workbasket = { workbasketId: '1' };
     fixture.detectChanges();
-    const information = debugElement.nativeElement.querySelector('taskana-administration-workbasket-information');
+    const information = debugElement.nativeElement.querySelector('kadai-administration-workbasket-information');
     expect(information).toBeTruthy();
   });
 

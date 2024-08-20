@@ -2,19 +2,19 @@
   <nav backgroundColor="#f5f5f5" class="administration-overview__navbar" mat-tab-nav-bar>
     <a (click)="selectedTab = 'workbaskets'" [active]="selectedTab == 'workbaskets'"
        class="administration-overview__navbar-links" mat-tab-link
-       routerLink="/taskana/administration/workbaskets">Workbaskets</a>
+       routerLink="/kadai/administration/workbaskets">Workbaskets</a>
     <a (click)="selectedTab = 'classifications'" [active]="selectedTab == 'classifications'"
        class="administration-overview__navbar-links" mat-tab-link
-       routerLink="/taskana/administration/classifications">Classifications</a>
+       routerLink="/kadai/administration/classifications">Classifications</a>
     <a (click)="selectedTab = 'access-items-management'"
        [active]="selectedTab == 'access-items-management'"
        class="administration-overview__navbar-links"
-       mat-tab-link routerLink="/taskana/administration/access-items-management">Access Items
+       mat-tab-link routerLink="/kadai/administration/access-items-management">Access Items
       Management</a>
     <a (click)="selectedTab = 'task-routing'" *ngIf="(routingAccess)"
        [active]="selectedTab == 'task-routing'"
        class="administration-overview__navbar-links" mat-tab-link
-       routerLink="/taskana/administration/task-routing">Task Routing</a>
+       routerLink="/kadai/administration/task-routing">Task Routing</a>
   </nav>
   <div class="administration-overview__domain">
     <mat-form-field appearance="legacy">

@@ -1,25 +1,25 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>pro.taskana.history</groupId>
-  <artifactId>taskana-history-parent</artifactId>
-  <packaging>pom</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.kadai.history</groupId>
+    <artifactId>kadai-history-parent</artifactId>
+    <packaging>pom</packaging>
 
-  <name>${project.groupId}:${project.artifactId}</name>
-  <description>The taskana history events plugin parent and bom module.</description>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>The kadai history events plugin parent and bom module.</description>
 
-  <parent>
-    <groupId>pro.taskana</groupId>
-    <artifactId>taskana-parent</artifactId>
-    <version>8.2.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
+    <parent>
+        <groupId>io.kadai</groupId>
+        <artifactId>kadai-parent</artifactId>
+        <version>8.2.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-  <modules>
-    <module>taskana-simplehistory-provider</module>
-    <module>taskana-simplehistory-rest-spring</module>
-    <module>taskana-loghistory-provider</module>
-  </modules>
+    <modules>
+        <module>kadai-simplehistory-provider</module>
+        <module>kadai-simplehistory-rest-spring</module>
+        <module>kadai-loghistory-provider</module>
+    </modules>
 
 </project>

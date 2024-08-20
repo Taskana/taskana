@@ -14,10 +14,10 @@ import {
 } from '../../../shared/store/classification-store/classification.actions';
 import { classificationStateMock } from '../../../shared/store/mock-data/mock-store';
 
-@Component({ selector: 'taskana-administration-classification-list', template: '' })
+@Component({ selector: 'kadai-administration-classification-list', template: '' })
 class ClassificationListStub {}
 
-@Component({ selector: 'taskana-administration-classification-details', template: '' })
+@Component({ selector: 'kadai-administration-classification-details', template: '' })
 class ClassificationDetailsStub {}
 
 @Component({ selector: 'svg-icon', template: '' })
@@ -76,13 +76,13 @@ describe('ClassificationOverviewComponent', () => {
   });
 
   it('should always display classification list', () => {
-    expect(debugElement.nativeElement.querySelector('taskana-administration-classification-list')).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('kadai-administration-classification-list')).toBeTruthy();
   });
 
   it('should display classification details when showDetail is true', () => {
     component.showDetail = true;
     fixture.detectChanges();
-    expect(debugElement.nativeElement.querySelector('taskana-administration-classification-details')).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('kadai-administration-classification-details')).toBeTruthy();
   });
 
   it('should show empty page with icon and text when showDetail is false', () => {
@@ -91,7 +91,7 @@ describe('ClassificationOverviewComponent', () => {
     const emptyPage = fixture.debugElement.nativeElement.querySelector('.select-classification');
     expect(emptyPage.textContent).toBe('Select a classification');
     expect(debugElement.nativeElement.querySelector('svg-icon')).toBeTruthy();
-    expect(debugElement.nativeElement.querySelector('taskana-administration-classification-details')).toBeFalsy();
+    expect(debugElement.nativeElement.querySelector('kadai-administration-classification-details')).toBeFalsy();
   });
 
   it('should set routerParams property when firstChild of route exists', () => {

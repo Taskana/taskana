@@ -8,12 +8,13 @@
       <div class="task-list-toolbar__tab">
 
         <!-- BUTTON TO FURTHER FILTER OPTIONS -->
-        <button mat-stroked-button style="min-width: 1%" class="task-list-toolbar__button--secondary" matTooltip="Display more filter options" (click)="setFilterExpansion()">
+        <button mat-stroked-button style="min-width: 1%" class="task-list-toolbar__button--secondary"
+                matTooltip="Display more filter options" (click)="setFilterExpansion()">
           <mat-icon *ngIf="!(isFilterExpanded$ | async)">keyboard_arrow_down</mat-icon>
           <mat-icon *ngIf="(isFilterExpanded$ | async)">keyboard_arrow_up</mat-icon>
         </button>
 
-        <div class="task-list-toolbar__spacer"> </div>
+        <div class="task-list-toolbar__spacer"></div>
 
         <!-- SEARCH FOR WORKBASKET -->
         <div class="task-list-toolbar__filter-input">
@@ -34,7 +35,7 @@
         </div>
 
 
-        <div class="task-list-toolbar__spacer"> </div>
+        <div class="task-list-toolbar__spacer"></div>
 
         <!-- SEARCH BUTTON -->
         <button class="task-list-toolbar__button--primary" style="top: 11px"
@@ -64,17 +65,18 @@
           <mat-icon *ngIf="(isFilterExpanded$ | async)">keyboard_arrow_up</mat-icon>
         </button>
 
-        <div class="task-list-toolbar__spacer"> </div>
+        <div class="task-list-toolbar__spacer"></div>
 
         <!-- FILTER TASKS -->
         <div class="task-list-toolbar__filter-input">
           <mat-form-field>
             <mat-label>Filter Tasks</mat-label>
-            <input matInput type="text" placeholder="Filter" [(ngModel)]="filterInput" (keyup.enter)="onFilter(); this.searched = true;" (ngModelChange)="updateState()">
+            <input matInput type="text" placeholder="Filter" [(ngModel)]="filterInput"
+                   (keyup.enter)="onFilter(); this.searched = true;" (ngModelChange)="updateState()">
           </mat-form-field>
         </div>
 
-        <div class="task-list-toolbar__spacer"> </div>
+        <div class="task-list-toolbar__spacer"></div>
 
         <!-- SEARCH BUTTON -->
         <button class="task-list-toolbar__button--primary" style="top: 11px"
@@ -95,7 +97,7 @@
 
   <!-- FURTHER FILTER OPTIONS -->
   <div *ngIf="(isFilterExpanded$ | async)" class="task-list-toolbar__additional-filter">
-    <taskana-shared-task-filter> </taskana-shared-task-filter>
+    <kadai-shared-task-filter></kadai-shared-task-filter>
   </div>
 
 
@@ -110,9 +112,9 @@
 
 
     <!-- SORT TASKS BUTTON -->
-    <taskana-shared-sort
+    <kadai-shared-sort
       [sortingFields]="sortingFields" [defaultSortBy]="taskDefaultSortBy" (performSorting)="sorting($event)">
-    </taskana-shared-sort>
+    </kadai-shared-sort>
 
   </div>
 

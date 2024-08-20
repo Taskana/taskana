@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from 'app/../environments/environment';
 import { Injectable, Injector } from '@angular/core';
-import { TaskanaEngineService } from 'app/shared/services/taskana-engine/taskana-engine.service';
+import { KadaiEngineService } from 'app/shared/services/kadai-engine/kadai-engine.service';
 import { map } from 'rxjs/operators';
 import { WindowRefService } from 'app/shared/services/window/window.service';
 
@@ -11,7 +11,7 @@ import { WindowRefService } from 'app/shared/services/window/window.service';
 export class StartupService {
   constructor(
     private httpClient: HttpClient,
-    private taskanaEngineService: TaskanaEngineService,
+    private kadaiEngineService: KadaiEngineService,
     private injector: Injector,
     private window: WindowRefService
   ) {}
@@ -30,12 +30,12 @@ export class StartupService {
       .get<any>('environments/data-sources/environment-information.json')
       .pipe(
         map((jsonFile) => {
-          if (jsonFile && jsonFile.taskanaRestUrl) {
-            environment.taskanaRestUrl = jsonFile.taskanaRestUrl;
+          if (jsonFile && jsonFile.kadaiRestUrl) {
+            environment.kadaiRestUrl = jsonFile.kadaiRestUrl;
           }
 
-          if (jsonFile && jsonFile.taskanaLogoutUrl) {
-            environment.taskanaLogoutUrl = jsonFile.taskanaLogoutUrl;
+          if (jsonFile && jsonFile.kadaiLogoutUrl) {
+            environment.kadaiLogoutUrl = jsonFile.kadaiLogoutUrl;
           }
         })
       )
@@ -43,19 +43,19 @@ export class StartupService {
       .catch(() => of(true));
   }
 
-  getTaskanaRestUrl() {
-    return environment.taskanaRestUrl;
+  getKadaiRestUrl() {
+    return environment.kadaiRestUrl;
   }
 
-  getTaskanaLogoutUrl() {
-    return environment.taskanaLogoutUrl;
+  getKadaiLogoutUrl() {
+    return environment.kadaiLogoutUrl;
   }
 
   private loadEnvironment() {
     return this.getEnvironmentFilePromise()
-      .then(() => this.taskanaEngineService.getUserInformation())
+      .then(() => this.kadaiEngineService.getUserInformation())
       .catch((error) => {
-        // this.window.nativeWindow.location.href = environment.taskanaRestUrl + '/login';
+        // this.window.nativeWindow.location.href = environment.kadaiRestUrl + '/login';
       });
   }
 }

@@ -34,7 +34,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-@Component({ selector: 'taskana-shared-field-error-display', template: '' })
+@Component({ selector: 'kadai-shared-field-error-display', template: '' })
 class FieldErrorDisplayStub {
   @Input() displayError;
   @Input() validationTrigger;
@@ -342,7 +342,7 @@ describe('ClassificationDetailsComponent', () => {
 
   /* DETAILED FIELDS */
   it('should display field-error-display component', () => {
-    expect(debugElement.nativeElement.querySelector('taskana-shared-field-error-display')).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('kadai-shared-field-error-display')).toBeTruthy();
   });
 
   it('should display form field for key', () => {

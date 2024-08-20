@@ -8,7 +8,7 @@ import { DomainService } from '../../../shared/services/domain/domain.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
+import { KadaiEngineService } from '../../../shared/services/kadai-engine/kadai-engine.service';
 
 const domainServiceSpy: Partial<DomainService> = {
   getDomains: jest.fn().mockReturnValue(of(['domain a', 'domain b'])),
@@ -31,7 +31,7 @@ describe('AdministrationOverviewComponent', () => {
         NoopAnimationsModule
       ],
       declarations: [AdministrationOverviewComponent],
-      providers: [{ provide: DomainService, useValue: domainServiceSpy }, TaskanaEngineService]
+      providers: [{ provide: DomainService, useValue: domainServiceSpy }, KadaiEngineService]
     }).compileComponents();
   }));
 

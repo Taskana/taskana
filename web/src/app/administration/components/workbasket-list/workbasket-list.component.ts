@@ -25,7 +25,7 @@ import { QueryPagingParameter } from '../../../shared/models/query-paging-parame
 import { FilterSelectors } from '../../../shared/store/filter-store/filter.selectors';
 
 @Component({
-  selector: 'taskana-administration-workbasket-list',
+  selector: 'kadai-administration-workbasket-list',
   templateUrl: './workbasket-list.component.html',
   styleUrls: ['./workbasket-list.component.scss']
 })

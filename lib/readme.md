@@ -1,2 +1,2 @@
-The TASKANA Java library
+The KADAI Java library
 ========================

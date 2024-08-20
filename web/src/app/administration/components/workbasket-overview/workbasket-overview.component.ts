@@ -9,7 +9,7 @@ import { CreateWorkbasket, SelectWorkbasket } from '../../../shared/store/workba
 import { Workbasket } from '../../../shared/models/workbasket';
 
 @Component({
-  selector: 'taskana-administration-workbasket-overview',
+  selector: 'kadai-administration-workbasket-overview',
   templateUrl: './workbasket-overview.component.html',
   styleUrls: ['./workbasket-overview.component.scss']
 })

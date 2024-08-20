@@ -18,7 +18,7 @@ export class MonitorService {
       states: [TaskState.READY, TaskState.CLAIMED, TaskState.COMPLETED]
     };
     return this.httpClient.get<ReportData>(
-      `${environment.taskanaRestUrl + monitorUrl}/task-status-report${asUrlQueryString(queryParams)}`
+      `${environment.kadaiRestUrl + monitorUrl}/task-status-report${asUrlQueryString(queryParams)}`
     );
   }
 
@@ -27,7 +27,7 @@ export class MonitorService {
       states: [TaskState.READY, TaskState.CLAIMED, TaskState.COMPLETED]
     };
     return this.httpClient.get<ReportData>(
-      `${environment.taskanaRestUrl + monitorUrl}/workbasket-report${asUrlQueryString(queryParams)}`
+      `${environment.kadaiRestUrl + monitorUrl}/workbasket-report${asUrlQueryString(queryParams)}`
     );
   }
 
@@ -37,16 +37,16 @@ export class MonitorService {
       states: [TaskState.READY, TaskState.CLAIMED, TaskState.COMPLETED]
     };
     return this.httpClient.get<ReportData>(
-      `${environment.taskanaRestUrl + monitorUrl}/workbasket-report${asUrlQueryString(queryParams)}`
+      `${environment.kadaiRestUrl + monitorUrl}/workbasket-report${asUrlQueryString(queryParams)}`
     );
   }
 
   getClassificationTasksReport(): Observable<ReportData> {
-    return this.httpClient.get<ReportData>(`${environment.taskanaRestUrl + monitorUrl}/classification-report`);
+    return this.httpClient.get<ReportData>(`${environment.kadaiRestUrl + monitorUrl}/classification-report`);
   }
 
   getDailyEntryExitReport(): Observable<ReportData> {
-    return this.httpClient.get<ReportData>(`${environment.taskanaRestUrl + monitorUrl}/timestamp-report`);
+    return this.httpClient.get<ReportData>(`${environment.kadaiRestUrl + monitorUrl}/timestamp-report`);
   }
 
   getChartData(source: ReportData): ChartData[] {
@@ -67,7 +67,7 @@ export class MonitorService {
     };
 
     return this.httpClient.get<ReportData>(
-      `${environment.taskanaRestUrl + monitorUrl}/workbasket-priority-report${asUrlQueryString(queryParams)}`
+      `${environment.kadaiRestUrl + monitorUrl}/workbasket-priority-report${asUrlQueryString(queryParams)}`
     );
   }
 }

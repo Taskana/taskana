@@ -4,7 +4,7 @@ import { NotificationService } from 'app/shared/services/notifications/notificat
 import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({
-  selector: 'taskana-routing-upload',
+  selector: 'kadai-routing-upload',
   templateUrl: './routing-upload.component.html',
   styleUrls: ['./routing-upload.component.scss']
 })

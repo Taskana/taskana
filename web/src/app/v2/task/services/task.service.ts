@@ -16,7 +16,7 @@ export class TaskService {
   constructor(private httpClient: HttpClient, private startupService: StartupService) {}
 
   get url(): string {
-    return this.startupService.getTaskanaRestUrl() + '/v1/tasks';
+    return this.startupService.getKadaiRestUrl() + '/v1/tasks';
   }
 
   createTask(task: Task): Observable<Task> {

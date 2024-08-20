@@ -14,7 +14,7 @@ import { NotificationService } from '../../../shared/services/notifications/noti
 import { ActivatedRoute } from '@angular/router';
 import { CreateWorkbasket, SelectWorkbasket } from '../../../shared/store/workbasket-store/workbasket.actions';
 import { StartupService } from '../../../shared/services/startup/startup.service';
-import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
+import { KadaiEngineService } from '../../../shared/services/kadai-engine/kadai-engine.service';
 import { WindowRefService } from '../../../shared/services/window/window.service';
 import { workbasketReadStateMock } from '../../../shared/store/mock-data/mock-store';
 import { MatIconModule } from '@angular/material/icon';
@@ -51,12 +51,12 @@ const mockActivatedRouteNoParams = {
   url: of([{ path: 'workbaskets' }])
 };
 
-@Component({ selector: 'taskana-administration-workbasket-list', template: '' })
+@Component({ selector: 'kadai-administration-workbasket-list', template: '' })
 class WorkbasketListStub {
   @Input() expanded: boolean;
 }
 
-@Component({ selector: 'taskana-administration-workbasket-details', template: '' })
+@Component({ selector: 'kadai-administration-workbasket-details', template: '' })
 class WorkbasketDetailsStub {
   @Input() expanded: boolean;
 }
@@ -88,7 +88,7 @@ describe('WorkbasketOverviewComponent', () => {
         RequestInProgressService,
         SelectedRouteService,
         StartupService,
-        TaskanaEngineService,
+        KadaiEngineService,
         WindowRefService
       ]
     }).compileComponents();
@@ -106,24 +106,24 @@ describe('WorkbasketOverviewComponent', () => {
   });
 
   it('should always displays workbasket-list', () => {
-    expect(debugElement.nativeElement.querySelector('taskana-administration-workbasket-list')).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('kadai-administration-workbasket-list')).toBeTruthy();
   });
 
   it('should display workbasket-details correctly', () => {
     component.showDetail = false;
     fixture.detectChanges();
-    expect(debugElement.nativeElement.querySelector('taskana-administration-workbasket-details')).toBeNull();
+    expect(debugElement.nativeElement.querySelector('kadai-administration-workbasket-details')).toBeNull();
 
     component.showDetail = true;
     fixture.detectChanges();
-    expect(debugElement.nativeElement.querySelector('taskana-administration-workbasket-details')).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('kadai-administration-workbasket-details')).toBeTruthy();
   });
 
   it('should display details when params id exists', async((done) => {
     actions$.pipe(ofActionCompleted(CreateWorkbasket), take(1)).subscribe(() => {
       expect(component.routerParams.id).toMatch('new-workbasket');
       expect(component.showDetail).toBeTruthy();
-      expect(debugElement.nativeElement.querySelector('taskana-administration-workbasket-details')).toBeTruthy();
+      expect(debugElement.nativeElement.querySelector('kadai-administration-workbasket-details')).toBeTruthy();
       done();
     });
     component.ngOnInit();
@@ -153,7 +153,7 @@ describe('WorkbasketOverviewComponent Alternative Params ID', () => {
         RequestInProgressService,
         SelectedRouteService,
         StartupService,
-        TaskanaEngineService,
+        KadaiEngineService,
         WindowRefService
       ]
     }).compileComponents();
@@ -196,7 +196,7 @@ describe('WorkbasketOverviewComponent No Params', () => {
         RequestInProgressService,
         SelectedRouteService,
         StartupService,
-        TaskanaEngineService,
+        KadaiEngineService,
         WindowRefService
       ]
     }).compileComponents();

@@ -35,7 +35,7 @@ describe('ClassificationCategoriesService', () => {
         expect(customisation).toEqual(expectedCustomisation);
       });
 
-      httpMock.expectOne('environments/data-sources/taskana-customization.json').flush(initialCustomisation);
+      httpMock.expectOne('environments/data-sources/kadai-customization.json').flush(initialCustomisation);
 
       httpMock.verify();
     });

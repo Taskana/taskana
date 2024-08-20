@@ -1,26 +1,26 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>taskana-common-parent</artifactId>
-  <packaging>pom</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>kadai-common-parent</artifactId>
+    <packaging>pom</packaging>
 
-  <name>${project.groupId}:${project.artifactId}</name>
-  <description>This pom is parent to all taskana common modules and serves the common build.
-  </description>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>This pom is parent to all kadai common modules and serves the common build.
+    </description>
 
-  <parent>
-    <groupId>pro.taskana</groupId>
-    <artifactId>taskana-parent</artifactId>
-    <version>8.2.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
+    <parent>
+        <groupId>io.kadai</groupId>
+        <artifactId>kadai-parent</artifactId>
+        <version>8.2.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-  <modules>
-    <module>taskana-common</module>
-    <module>taskana-common-security</module>
-    <module>taskana-common-data</module>
-    <module>taskana-common-test</module>
-    <module>taskana-common-logging</module>
-  </modules>
+    <modules>
+        <module>kadai-common</module>
+        <module>kadai-common-security</module>
+        <module>kadai-common-data</module>
+        <module>kadai-common-test</module>
+        <module>kadai-common-logging</module>
+    </modules>
 </project>

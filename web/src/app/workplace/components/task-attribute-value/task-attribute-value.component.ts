@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CustomAttribute } from 'app/workplace/models/task';
 
 @Component({
-  selector: 'taskana-task-attribute-value',
+  selector: 'kadai-task-attribute-value',
   templateUrl: './task-attribute-value.component.html',
   styleUrls: ['./task-attribute-value.component.scss']
 })

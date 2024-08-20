@@ -1,4 +1,4 @@
-context('TASKANA Classifications', () => {
+context('KADAI Classifications', () => {
   beforeEach(() => cy.loginAs('admin'));
 
   it('should be possible to edit the service level of a classification', () => {

@@ -1,4 +1,4 @@
-export class TaskanaQueryParameters {
+export class KadaiQueryParameters {
   static parameters = {
     // Sorting
     SORTBY: 'sort-by',

@@ -3,7 +3,7 @@ import { ReportData } from 'app/monitor/models/report-data';
 import { ReportRow } from '../../models/report-row';
 
 @Component({
-  selector: 'taskana-monitor-report-table',
+  selector: 'kadai-monitor-report-table',
   templateUrl: './report-table.component.html',
   styleUrls: ['./report-table.component.scss']
 })

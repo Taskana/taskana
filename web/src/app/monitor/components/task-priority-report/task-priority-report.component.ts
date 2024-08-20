@@ -11,7 +11,7 @@ import { SettingMembers } from '../../../settings/components/Settings/expected-m
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
 @Component({
-  selector: 'taskana-monitor-task-priority-report',
+  selector: 'kadai-monitor-task-priority-report',
   templateUrl: './task-priority-report.component.html',
   styleUrls: ['./task-priority-report.component.scss']
 })

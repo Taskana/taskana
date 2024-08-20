@@ -27,7 +27,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { WorkbasketAccessItemQueryFilterParameter } from '../../../shared/models/workbasket-access-item-query-filter-parameter';
 
 @Component({
-  selector: 'taskana-administration-access-items-management',
+  selector: 'kadai-administration-access-items-management',
   templateUrl: './access-items-management.component.html',
   styleUrls: ['./access-items-management.component.scss']
 })

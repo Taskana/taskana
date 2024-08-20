@@ -22,7 +22,7 @@ import { takeUntil } from 'rxjs/operators';
 import { AccessId } from '../../../shared/models/access-id';
 
 @Component({
-  selector: 'taskana-task-information',
+  selector: 'kadai-task-information',
   templateUrl: './task-information.component.html',
   styleUrls: ['./task-information.component.scss']
 })

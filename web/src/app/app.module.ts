@@ -34,7 +34,7 @@ import { DomainService } from 'app/shared/services/domain/domain.service';
 import { StartupService } from 'app/shared/services/startup/startup.service';
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
 import { WindowRefService } from 'app/shared/services/window/window.service';
-import { TaskanaEngineService } from 'app/shared/services/taskana-engine/taskana-engine.service';
+import { KadaiEngineService } from 'app/shared/services/kadai-engine/kadai-engine.service';
 import { NavBarComponent } from 'app/shared/components/nav-bar/nav-bar.component';
 import { UserInformationComponent } from 'app/shared/components/user-information/user-information.component';
 import { NoAccessComponent } from 'app/shared/components/no-access/no-access.component';
@@ -104,7 +104,7 @@ const PROVIDERS = [
   UserGuard,
   StartupService,
   MasterAndDetailService,
-  TaskanaEngineService,
+  KadaiEngineService,
   FormsValidatorService,
   NotificationService,
   ClassificationCategoriesService,

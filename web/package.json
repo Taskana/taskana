@@ -1,7 +1,7 @@
 {
-  "name": "taskana",
+  "name": "kadai",
   "version": "1.0.0",
-  "license": "Novatec GmbH",
+  "license": "Envite GmbH",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

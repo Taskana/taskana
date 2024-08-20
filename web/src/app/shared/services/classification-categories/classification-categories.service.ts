@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Customisation } from '../../models/customisation';
 
-const customisationUrl = 'environments/data-sources/taskana-customization.json';
+const customisationUrl = 'environments/data-sources/kadai-customization.json';
 
 export const missingIcon = 'assets/icons/categories/missing-icon.svg';
 export const asteriskIcon = './assets/icons/asterisk.svg';
@@ -21,7 +21,7 @@ export class ClassificationCategoriesService {
 
   // TODO: convert to Map (maybe via ES6)
   getClassificationCategoriesByType(): Observable<CategoriesResponse> {
-    return this.httpClient.get<CategoriesResponse>(`${environment.taskanaRestUrl}/v1/classifications-by-type`);
+    return this.httpClient.get<CategoriesResponse>(`${environment.kadaiRestUrl}/v1/classifications-by-type`);
   }
 
   getCustomisation(): Observable<Customisation> {

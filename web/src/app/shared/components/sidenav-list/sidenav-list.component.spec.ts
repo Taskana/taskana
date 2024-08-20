@@ -7,7 +7,7 @@ import { BrowserModule, By } from '@angular/platform-browser';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TaskanaEngineService } from '../../services/taskana-engine/taskana-engine.service';
+import { KadaiEngineService } from '../../services/kadai-engine/kadai-engine.service';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -22,7 +22,7 @@ const SidenavServiceSpy: Partial<SidenavService> = {
   toggleSidenav: jest.fn().mockReturnValue(EMPTY)
 };
 
-const TaskanaEngineServiceSpy: Partial<TaskanaEngineService> = {
+const KadaiEngineServiceSpy: Partial<KadaiEngineService> = {
   hasRole: jest.fn().mockReturnValue(EMPTY),
   isHistoryProviderEnabled: jest.fn().mockReturnValue(EMPTY),
   isCustomRoutingRulesEnabled: jest.fn().mockReturnValue(EMPTY)
@@ -51,7 +51,7 @@ describe('SidenavListComponent', () => {
       providers: [
         RequestInProgressService,
         { provide: SidenavService, useValue: SidenavServiceSpy },
-        { provide: TaskanaEngineService, useValue: TaskanaEngineServiceSpy }
+        { provide: KadaiEngineService, useValue: KadaiEngineServiceSpy }
       ]
     }).compileComponents();
   }));

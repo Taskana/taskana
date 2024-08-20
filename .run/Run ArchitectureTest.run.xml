@@ -1,18 +1,18 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Run ArchitectureTest" type="JUnit" factoryName="JUnit" folderName="lib">
-    <module name="taskana-core-test" />
-    <extension name="coverage">
-      <pattern>
-        <option name="PATTERN" value="pro.taskana.*" />
-        <option name="ENABLED" value="true" />
-      </pattern>
-    </extension>
-    <option name="PACKAGE_NAME" value="acceptance" />
-    <option name="MAIN_CLASS_NAME" value="acceptance.ArchitectureTest" />
-    <option name="METHOD_NAME" value="" />
-    <option name="TEST_OBJECT" value="class" />
-    <method v="2">
-      <option name="Make" enabled="true" />
-    </method>
-  </configuration>
+    <configuration default="false" name="Run ArchitectureTest" type="JUnit" factoryName="JUnit" folderName="lib">
+        <module name="kadai-core-test"/>
+        <extension name="coverage">
+            <pattern>
+                <option name="PATTERN" value="io.kadai.*"/>
+                <option name="ENABLED" value="true"/>
+            </pattern>
+        </extension>
+        <option name="PACKAGE_NAME" value="acceptance"/>
+        <option name="MAIN_CLASS_NAME" value="acceptance.ArchitectureTest"/>
+        <option name="METHOD_NAME" value=""/>
+        <option name="TEST_OBJECT" value="class"/>
+        <method v="2">
+            <option name="Make" enabled="true"/>
+        </method>
+    </configuration>
 </component>

@@ -13,7 +13,8 @@
 
       <div>
 
-        <button mat-stroked-button class="task-details__button--primary" matTooltip="Save Task" (click)="toggleFormValidation = !toggleFormValidation">
+        <button mat-stroked-button class="task-details__button--primary" matTooltip="Save Task"
+                (click)="toggleFormValidation = !toggleFormValidation">
           <span> Save </span>
           <mat-icon>save</mat-icon>
         </button>
@@ -63,28 +64,29 @@
     <mat-tab-group animationDuration="0ms">
       <mat-tab label="Information">
         <div class="task-details__tab-wrapper">
-          <taskana-task-information [task]="task" [saveToggleTriggered]="toggleFormValidation"
-                                    (formValid)="onSave()"></taskana-task-information>
+          <kadai-task-information [task]="task" [saveToggleTriggered]="toggleFormValidation"
+                                  (formValid)="onSave()"></kadai-task-information>
         </div>
       </mat-tab>
       <mat-tab label="Status Details">
         <div class="task-details__tab-wrapper">
-          <taskana-task-status-details [task]="task"></taskana-task-status-details>
+          <kadai-task-status-details [task]="task"></kadai-task-status-details>
         </div>
       </mat-tab>
       <mat-tab label="Custom Fields">
         <div class="task-details__tab-wrapper">
-          <taskana-task-custom-fields [task]="task"></taskana-task-custom-fields>
+          <kadai-task-custom-fields [task]="task"></kadai-task-custom-fields>
         </div>
       </mat-tab>
       <mat-tab label="Custom Attributes">
         <div class="task-details__tab-wrapper">
-          <taskana-task-attribute-value [attributes]="task.customAttributes"></taskana-task-attribute-value>
+          <kadai-task-attribute-value [attributes]="task.customAttributes"></kadai-task-attribute-value>
         </div>
       </mat-tab>
       <mat-tab label="Callback Information">
         <div class="task-details__tab-wrapper">
-          <taskana-task-attribute-value [attributes]="task.callbackInfo" [callbackInfo]="true"></taskana-task-attribute-value>
+          <kadai-task-attribute-value [attributes]="task.callbackInfo"
+                                      [callbackInfo]="true"></kadai-task-attribute-value>
         </div>
       </mat-tab>
     </mat-tab-group>

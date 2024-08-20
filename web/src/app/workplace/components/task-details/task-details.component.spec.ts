@@ -16,7 +16,7 @@ import { TaskDetailsComponent } from './task-details.component';
 import { NotificationService } from '../../../shared/services/notifications/notification.service';
 
 @Component({
-  selector: 'taskana-dummy-detail',
+  selector: 'kadai-dummy-detail',
   template: 'dummydetail'
 })
 class DummyDetailComponent {}

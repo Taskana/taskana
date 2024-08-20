@@ -1,66 +1,68 @@
 <div *ngIf="reportData" class="report table table-striped">
-    <div class="table-header">
-        <div class="table-row">
-            <ng-container *ngFor="let header of reportData.meta.rowDesc; let i = index">
-                <div *ngIf="i <= currentExpHeaders"
-                     [ngClass]="{'table-cell--border-right': currentExpHeaders === i}"
-                     class="table-cell table-cell--bold table-cell--justify">{{header}}</div>
-            </ng-container>
-            <div *ngFor="let header of reportData.meta.header"
-                 class="table-cell table-cell--bold">{{header}}</div>
-            <div class="table-cell table-cell--bold table-cell--border-left">{{reportData.meta.sumRowDesc}}</div>
+  <div class="table-header">
+    <div class="table-row">
+      <ng-container *ngFor="let header of reportData.meta.rowDesc; let i = index">
+        <div *ngIf="i <= currentExpHeaders"
+             [ngClass]="{'table-cell--border-right': currentExpHeaders === i}"
+             class="table-cell table-cell--bold table-cell--justify">{{header}}
         </div>
+      </ng-container>
+      <div *ngFor="let header of reportData.meta.header"
+           class="table-cell table-cell--bold">{{header}}
+      </div>
+      <div class="table-cell table-cell--bold table-cell--border-left">{{reportData.meta.sumRowDesc}}</div>
     </div>
-    <div class="table-body">
-        <ng-container *ngFor="let row of reportData.rows; let i = index">
-            <div *ngIf="row.display" [ngClass]="{'table-row--highlight': row.depth === 0 && currentExpHeaders > 0,
+  </div>
+  <div class="table-body">
+    <ng-container *ngFor="let row of reportData.rows; let i = index">
+      <div *ngIf="row.display" [ngClass]="{'table-row--highlight': row.depth === 0 && currentExpHeaders > 0,
              'table-row--hover': row.depth > 0 && currentExpHeaders > 0,
              'table-row--white': row.depth > 0 && currentExpHeaders > 0}" class="table-row">
-                <ng-container *ngFor="let header of row.desc; let idx = index">
-                    <div (click)="toggleFold(i)" *ngIf="idx <= currentExpHeaders"
-                         [ngClass]="{'table-cell--border-right': currentExpHeaders === idx,
+        <ng-container *ngFor="let header of row.desc; let idx = index">
+          <div (click)="toggleFold(i)" *ngIf="idx <= currentExpHeaders"
+               [ngClass]="{'table-cell--border-right': currentExpHeaders === idx,
                          'table-cell--bold': row.depth === 0 && currentExpHeaders > 0,
                          'table-cell--clickable': reportData.meta.rowDesc.length - 1 > row.depth}"
-                         class="table-cell table-cell--justify">
+               class="table-cell table-cell--justify">
                         <span *ngIf="reportData.meta.rowDesc.length - 1 > row.depth && idx === row.depth"
                               class="material-icons md-18">{{ canRowCollapse(i) ? "expand_more" : "expand_less"}}</span>
-                        {{header}}
-                    </div>
-                </ng-container>
-                <div *ngFor="let val of row.cells"
-                     [ngClass]="{'table-cell--bold': row.depth === 0 && currentExpHeaders > 0}" class="table-cell">
-                    {{val}}
-                </div>
-                <div class="table-cell table-cell--bold table-cell--border-left">
-                    {{row.total}}
-                </div>
-            </div>
+            {{header}}
+          </div>
         </ng-container>
-        <button mat-flat-button color="accent" (click)="addRows()">Add more rows</button>
-    </div>
-    <div class="table-footer">
-        <ng-container *ngFor="let row of reportData.sumRow; let i = index">
-            <div *ngIf="row.display" [ngClass]="{'table-row--highlight': row.depth === 0 && currentExpHeaders > 0,
+        <div *ngFor="let val of row.cells"
+             [ngClass]="{'table-cell--bold': row.depth === 0 && currentExpHeaders > 0}" class="table-cell">
+          {{val}}
+        </div>
+        <div class="table-cell table-cell--bold table-cell--border-left">
+          {{row.total}}
+        </div>
+      </div>
+    </ng-container>
+    <button mat-flat-button color="accent" (click)="addRows()">Add more rows</button>
+  </div>
+  <div class="table-footer">
+    <ng-container *ngFor="let row of reportData.sumRow; let i = index">
+      <div *ngIf="row.display" [ngClass]="{'table-row--highlight': row.depth === 0 && currentExpHeaders > 0,
              'table-row--hover': row.depth > 0 && currentExpHeaders > 0,
              'table-row--white': row.depth > 0 && currentExpHeaders > 0}" class="table-row">
-                <ng-container *ngFor="let header of row.desc; let idx = index">
-                    <div (click)="toggleFold(i, true)" *ngIf="idx <= currentExpHeaders"
-                         [ngClass]="{'table-cell--border-right': currentExpHeaders === idx,
+        <ng-container *ngFor="let header of row.desc; let idx = index">
+          <div (click)="toggleFold(i, true)" *ngIf="idx <= currentExpHeaders"
+               [ngClass]="{'table-cell--border-right': currentExpHeaders === idx,
                          'table-cell--clickable': reportData.meta.rowDesc.length - 1 > row.depth}"
-                         class="table-cell table-cell--bold table-cell--justify">
+               class="table-cell table-cell--bold table-cell--justify">
                         <span *ngIf="reportData.meta.rowDesc.length - 1 > row.depth && idx === row.depth"
                               class="material-icons md-18">{{ canRowCollapse(i, true) ? "expand_more" : "expand_less"}}</span>
-                        {{header}}
-                    </div>
-                </ng-container>
-                <div *ngFor="let val of row.cells" class="table-cell table-cell--bold">
-                    {{val}}
-                </div>
-                <div class="table-cell table-cell--bold table-cell--border-left">
-                    {{row.total}}
-                </div>
-            </div>
+            {{header}}
+          </div>
         </ng-container>
-    </div>
+        <div *ngFor="let val of row.cells" class="table-cell table-cell--bold">
+          {{val}}
+        </div>
+        <div class="table-cell table-cell--bold table-cell--border-left">
+          {{row.total}}
+        </div>
+      </div>
+    </ng-container>
+  </div>
 
 </div>

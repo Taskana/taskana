@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { takeUntil } from 'rxjs/operators';
-import { TaskanaEngineService } from '../../../shared/services/taskana-engine/taskana-engine.service';
+import { KadaiEngineService } from '../../../shared/services/kadai-engine/kadai-engine.service';
 
 @Component({
-  selector: 'taskana-administration-overview',
+  selector: 'kadai-administration-overview',
   templateUrl: './administration-overview.component.html',
   styleUrls: ['./administration-overview.component.scss']
 })
@@ -22,7 +22,7 @@ export class AdministrationOverviewComponent implements OnInit {
   constructor(
     private router: Router,
     private domainService: DomainService,
-    private taskanaEngineService: TaskanaEngineService
+    private kadaiEngineService: KadaiEngineService
   ) {
     router.events.pipe(takeUntil(this.destroy$)).subscribe((e) => {
       const urlPaths = this.router.url.split('/');
@@ -35,7 +35,7 @@ export class AdministrationOverviewComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.taskanaEngineService
+    this.kadaiEngineService
       .isCustomRoutingRulesEnabled()
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {

@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, NavigationStart, RouterEvent } from '@angular/r
 import { MasterAndDetailService } from 'app/shared/services/master-and-detail/master-and-detail.service';
 
 @Component({
-  selector: 'taskana-shared-master-and-detail',
+  selector: 'kadai-shared-master-and-detail',
   templateUrl: './master-and-detail.component.html',
   styleUrls: ['./master-and-detail.component.scss']
 })

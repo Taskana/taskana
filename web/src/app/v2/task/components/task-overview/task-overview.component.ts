@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'taskana-task-overview',
+  selector: 'kadai-task-overview',
   templateUrl: './task-overview.component.html',
   styleUrls: ['./task-overview.component.scss']
 })

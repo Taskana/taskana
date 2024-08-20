@@ -6,7 +6,7 @@ import { TaskSelector } from '@task/store/task.selector';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'taskana-task-list',
+  selector: 'kadai-task-list',
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.scss']
 })

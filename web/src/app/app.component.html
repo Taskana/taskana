@@ -14,18 +14,18 @@
         </button>
       </div>
     </div>
-    <taskana-shared-user-information
-      class="sidenav__drawer-user-info"></taskana-shared-user-information>
-    <taskana-sidenav-list></taskana-sidenav-list>
+    <kadai-shared-user-information
+      class="sidenav__drawer-user-info"></kadai-shared-user-information>
+    <kadai-sidenav-list></kadai-sidenav-list>
     <div class="sidenav__drawer-version">
-      <p> Taskana version: {{version}} </p>
+      <p> Kadai version: {{version}} </p>
     </div>
   </mat-sidenav>
   <mat-sidenav-content>
-    <taskana-shared-nav-bar></taskana-shared-nav-bar>
+    <kadai-shared-nav-bar></kadai-shared-nav-bar>
     <div (window:resize)="onResize()">
-      <div class="taskana-main">
-        <div class="taskana-main__progress-bar">
+      <div class="kadai-main">
+        <div class="kadai-main__progress-bar">
           <mat-progress-bar *ngIf="requestInProgress" color="accent"
                             mode="indeterminate"></mat-progress-bar>
           <mat-progress-bar *ngIf="requestInProgress" color="accent"

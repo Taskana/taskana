@@ -17,7 +17,7 @@ import { Side } from '../../models/workbasket-distribution-enums';
 import { ClearWorkbasketFilter } from '../../../shared/store/filter-store/filter.actions';
 
 @Component({
-  selector: 'taskana-administration-workbasket-distribution-targets',
+  selector: 'kadai-administration-workbasket-distribution-targets',
   templateUrl: './workbasket-distribution-targets.component.html',
   styleUrls: ['./workbasket-distribution-targets.component.scss']
 })

@@ -1,7 +1,7 @@
 import { Action, NgxsAfterBootstrap, State, StateContext } from '@ngxs/store';
 import { Observable, of } from 'rxjs';
 import { mergeMap, take, tap } from 'rxjs/operators';
-import { TaskanaDate } from 'app/shared/util/taskana.date';
+import { KadaiDate } from 'app/shared/util/kadai.date';
 import {
   CategoriesResponse,
   ClassificationCategoriesService
@@ -178,7 +178,7 @@ export class ClassificationState implements NgxsAfterBootstrap {
   newCreateClassification(ctx: StateContext<ClassificationStateModel>): Observable<null> {
     // Initialization of a new classification
     const state: ClassificationStateModel = ctx.getState();
-    const date = TaskanaDate.getDate();
+    const date = KadaiDate.getDate();
     const initialClassification: Classification = {
       type: state.selectedClassificationType,
       category: state.classificationTypes[state.selectedClassificationType][0],
@@ -244,7 +244,7 @@ export class ClassificationState implements NgxsAfterBootstrap {
     );
   }
 
-  // initialize after Startup service has configured the taskanaRestUrl properly.
+  // initialize after Startup service has configured the kadaiRestUrl properly.
   ngxsAfterBootstrap(ctx: StateContext<ClassificationStateModel>): Observable<null> {
     ctx.dispatch(new InitializeStore());
     return of(null);

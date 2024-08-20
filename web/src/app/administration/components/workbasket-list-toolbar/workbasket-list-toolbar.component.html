@@ -10,26 +10,30 @@
     </button>
 
     <!-- IMPORT EXPORT -->
-    <taskana-administration-import-export *ngIf="workbasketListExpanded" [currentSelection]="selectionToImport" [parentComponent]="'workbaskets'"></taskana-administration-import-export>
+    <kadai-administration-import-export *ngIf="workbasketListExpanded" [currentSelection]="selectionToImport"
+                                        [parentComponent]="'workbaskets'"></kadai-administration-import-export>
 
     <span class="workbasket-details__spacer" style="flex: 1 1 auto"> </span>
 
     <!-- SORTING -->
-    <taskana-shared-sort
-      style="margin-right: 4px;" [sortingFields]="sortingFields" (performSorting)="sorting($event)" [defaultSortBy]="workbasketDefaultSortBy">
-    </taskana-shared-sort>
+    <kadai-shared-sort
+      style="margin-right: 4px;" [sortingFields]="sortingFields" (performSorting)="sorting($event)"
+      [defaultSortBy]="workbasketDefaultSortBy">
+    </kadai-shared-sort>
 
   </div>
 
   <!-- FILTER -->
   <div class="workbasket-list-toolbar__filter">
-    <button mat-stroked-button class="filter__filter-button" matTooltip="Display more filter options" (click)="onClickFilter()">
+    <button mat-stroked-button class="filter__filter-button" matTooltip="Display more filter options"
+            (click)="onClickFilter()">
       <mat-icon *ngIf="!isExpanded">keyboard_arrow_down</mat-icon>
       <mat-icon *ngIf="isExpanded">keyboard_arrow_up</mat-icon>
     </button>
 
     <div class="filter__filter-component-wrapper">
-      <taskana-shared-workbasket-filter [isExpanded]="isExpanded" component="workbasketList"></taskana-shared-workbasket-filter>
+      <kadai-shared-workbasket-filter [isExpanded]="isExpanded"
+                                      component="workbasketList"></kadai-shared-workbasket-filter>
     </div>
   </div>
 </div>

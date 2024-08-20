@@ -3,7 +3,7 @@ import { Task } from 'app/workplace/models/task';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'taskana-task-list',
+  selector: 'kadai-task-list',
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.scss']
 })

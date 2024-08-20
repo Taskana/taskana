@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TaskHistoryEventResourceData } from 'app/shared/models/task-history-event-resource';
 import { QueryParameters } from 'app/shared/models/query-parameters';
-import { TaskanaQueryParameters } from 'app/shared/util/query-parameters';
+import { KadaiQueryParameters } from 'app/shared/util/query-parameters';
 import { Sorting, TaskHistoryQuerySortParameter } from 'app/shared/models/sorting';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -17,7 +17,7 @@ export class TaskHistoryQueryService {
   constructor(private httpClient: HttpClient, private startupService: StartupService) {}
 
   get url(): string {
-    return this.startupService.getTaskanaRestUrl();
+    return this.startupService.getKadaiRestUrl();
   }
 
   getTaskHistoryEvents(
@@ -84,8 +84,8 @@ export class TaskHistoryQueryService {
     parameters.CREATED = created;
 
     if (allPages) {
-      delete TaskanaQueryParameters.page;
-      delete TaskanaQueryParameters.pageSize;
+      delete KadaiQueryParameters.page;
+      delete KadaiQueryParameters.pageSize;
     }
   }
 }

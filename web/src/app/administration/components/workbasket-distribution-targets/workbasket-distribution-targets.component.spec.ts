@@ -24,7 +24,7 @@ const activatedRouteMock = {
   }
 };
 
-@Component({ selector: 'taskana-administration-workbasket-distribution-targets-list', template: '' })
+@Component({ selector: 'kadai-administration-workbasket-distribution-targets-list', template: '' })
 class WorkbasketDistributionTargetsListStub {
   @Input() distributionTargets: WorkbasketSummary[];
   @Input() side: Side;

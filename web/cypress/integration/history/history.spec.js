@@ -1,4 +1,4 @@
-context('TASKANA History', () => {
+context('KADAI History', () => {
   beforeEach(() => cy.loginAs('admin'));
 
   it('should display the history', () => {

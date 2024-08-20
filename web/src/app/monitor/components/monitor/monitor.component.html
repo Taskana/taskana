@@ -1,13 +1,15 @@
 <nav mat-tab-nav-bar class="nav-bar">
-    <a mat-tab-link class="nav-bar__tasks--priority" routerLink="/taskana/monitor/tasks-priority" [active]="selectedTab === 'tasks-priority'"
-        (click)="selectedTab = 'tasks-priority'">Tasks by Priority</a>
-    <a mat-tab-link class="nav-bar__tasks--status" routerLink="/taskana/monitor/tasks-status" [active]="selectedTab === 'tasks-status'"
-        (click)="selectedTab = 'tasks-status'">Tasks by Status </a>
-    <a mat-tab-link class="nav-bar__workbaskets" routerLink="/taskana/monitor/workbaskets"
-        [active]="selectedTab === 'workbaskets'" (click)="selectedTab = 'workbaskets'">Workbaskets</a>
-    <a mat-tab-link class="nav-bar__classifications" routerLink="/taskana/monitor/classifications"
-        [active]="selectedTab === 'classifications'" (click)="selectedTab = 'classifications'">Classifications</a>
-    <a mat-tab-link class="nav-bar__timestamp" routerLink="/taskana/monitor/timestamp"
-        [active]="selectedTab === 'timestamp'" (click)="selectedTab = 'timestamp'">Timestamp</a>
+  <a mat-tab-link class="nav-bar__tasks--priority" routerLink="/kadai/monitor/tasks-priority"
+     [active]="selectedTab === 'tasks-priority'"
+     (click)="selectedTab = 'tasks-priority'">Tasks by Priority</a>
+  <a mat-tab-link class="nav-bar__tasks--status" routerLink="/kadai/monitor/tasks-status"
+     [active]="selectedTab === 'tasks-status'"
+     (click)="selectedTab = 'tasks-status'">Tasks by Status </a>
+  <a mat-tab-link class="nav-bar__workbaskets" routerLink="/kadai/monitor/workbaskets"
+     [active]="selectedTab === 'workbaskets'" (click)="selectedTab = 'workbaskets'">Workbaskets</a>
+  <a mat-tab-link class="nav-bar__classifications" routerLink="/kadai/monitor/classifications"
+     [active]="selectedTab === 'classifications'" (click)="selectedTab = 'classifications'">Classifications</a>
+  <a mat-tab-link class="nav-bar__timestamp" routerLink="/kadai/monitor/timestamp"
+     [active]="selectedTab === 'timestamp'" (click)="selectedTab = 'timestamp'">Timestamp</a>
 </nav>
 <router-outlet></router-outlet>

@@ -25,7 +25,7 @@ import { RequestInProgressService } from '../../../shared/services/request-in-pr
 import { cloneDeep } from 'lodash';
 
 @Component({
-  selector: 'taskana-administration-workbasket-details',
+  selector: 'kadai-administration-workbasket-details',
   templateUrl: './workbasket-details.component.html',
   styleUrls: ['./workbasket-details.component.scss']
 })

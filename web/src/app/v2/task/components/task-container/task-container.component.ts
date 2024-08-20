@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TaskFacadeService } from '@task/services/task-facade.service';
 
 @Component({
-  selector: 'taskana-task-container',
+  selector: 'kadai-task-container',
   templateUrl: './task-container.component.html',
   styleUrls: ['./task-container.component.scss']
 })

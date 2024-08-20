@@ -7,7 +7,7 @@ import { ClassificationCategoriesService } from '../../../shared/services/classi
 import { DomainService } from '../../../shared/services/domain/domain.service';
 import { ClassificationListComponent } from './classification-list.component';
 import { classificationStateMock, engineConfigurationMock } from '../../../shared/store/mock-data/mock-store';
-import { TaskanaType } from '../../../shared/models/taskana-type';
+import { KadaiType } from '../../../shared/models/kadai-type';
 import { ImportExportService } from '../../services/import-export.service';
 import { Observable, of } from 'rxjs';
 import { CreateClassification } from '../../../shared/store/classification-store/classification.actions';
@@ -21,20 +21,20 @@ import { By } from '@angular/platform-browser';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RequestInProgressService } from '../../../shared/services/request-in-progress/request-in-progress.service';
 
-@Component({ selector: 'taskana-administration-import-export', template: '' })
+@Component({ selector: 'kadai-administration-import-export', template: '' })
 class ImportExportStub {
-  @Input() currentSelection: TaskanaType;
+  @Input() currentSelection: KadaiType;
   @Input() parentComponent: string;
 }
 
-@Component({ selector: 'taskana-administration-classification-types-selector', template: '' })
+@Component({ selector: 'kadai-administration-classification-types-selector', template: '' })
 class ClassificationTypesSelectorStub {}
 
-@Component({ selector: 'taskana-administration-tree', template: '' })
+@Component({ selector: 'kadai-administration-tree', template: '' })
 class TreeStub {
   @Input() filterText;
   @Input() filterIcon;
-  @Output() switchTaskanaSpinnerEmit = new EventEmitter();
+  @Output() switchKadaiSpinnerEmit = new EventEmitter();
 }
 
 @Component({ selector: 'svg-icon', template: '' })
@@ -130,12 +130,12 @@ describe('ClassificationListComponent', () => {
   });
 
   it('should display import-export component', () => {
-    expect(debugElement.nativeElement.querySelector('taskana-administration-import-export')).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('kadai-administration-import-export')).toBeTruthy();
   });
 
   it('should display classification-types-selector component', () => {
     const typesSelectorComponent = debugElement.nativeElement.querySelector(
-      'taskana-administration-classification-types-selector'
+      'kadai-administration-classification-types-selector'
     );
     expect(typesSelectorComponent).toBeTruthy();
   });
@@ -176,7 +176,7 @@ describe('ClassificationListComponent', () => {
   it('should display tree component when classifications exist', () => {
     component.classifications = [{ classificationId: '1' }, { classificationId: '2' }];
     fixture.detectChanges();
-    expect(debugElement.nativeElement.querySelector('taskana-administration-tree')).toBeTruthy();
+    expect(debugElement.nativeElement.querySelector('kadai-administration-tree')).toBeTruthy();
   });
 
   it('should display icon and text when no classifications exist', () => {

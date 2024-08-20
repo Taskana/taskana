@@ -15,13 +15,13 @@ export class SettingsService {
   // GET
   getSettings(): Observable<Settings> {
     return this.httpClient
-      .get<SettingsRepresentation>(`${environment.taskanaRestUrl}/v1/config/custom-attributes`)
+      .get<SettingsRepresentation>(`${environment.kadaiRestUrl}/v1/config/custom-attributes`)
       .pipe(map((b) => b.customAttributes));
   }
 
   // PUT
   updateSettings(settings: Settings) {
-    return this.httpClient.put<Settings>(`${environment.taskanaRestUrl}/v1/config/custom-attributes`, {
+    return this.httpClient.put<Settings>(`${environment.kadaiRestUrl}/v1/config/custom-attributes`, {
       customAttributes: settings
     });
   }

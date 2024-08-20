@@ -30,8 +30,8 @@
   </mat-toolbar>
 
   <!-- FILTER COMPONENT -->
-  <taskana-shared-workbasket-filter *ngIf="toolbarState" [component]="component"
-                                    isExpanded="true"></taskana-shared-workbasket-filter>
+  <kadai-shared-workbasket-filter *ngIf="toolbarState" [component]="component"
+                                  isExpanded="true"></kadai-shared-workbasket-filter>
 
   <!-- EMPTY LIST -->
   <div *ngIf="distributionTargets?.length == 0 && requestInProgress < 0"
@@ -55,18 +55,18 @@
                                  class="{{toolbarState?  'distribution-targets-list__list--with-filter' : 'distribution-targets-list__list--no-filter'}}"
                                  itemSize="90">
       <mat-list-option
-          (click)="updateSelectAll(!workbasket.selected) && (workbasket.selected = !workbasket.selected)"
-          *cdkVirtualFor="let workbasket of distributionTargets| orderBy: ['name']; templateCacheSize: 0"
-          [selected]="workbasket.selected"
-          [value]="workbasket.workbasketId"
-          class="workbasket-distribution-targets__workbaskets-item">
+        (click)="updateSelectAll(!workbasket.selected) && (workbasket.selected = !workbasket.selected)"
+        *cdkVirtualFor="let workbasket of distributionTargets| orderBy: ['name']; templateCacheSize: 0"
+        [selected]="workbasket.selected"
+        [value]="workbasket.workbasketId"
+        class="workbasket-distribution-targets__workbaskets-item">
 
         <div class="distribution-targets-list__item-wrapper">
 
           <!-- ICON -->
           <div class="distribution-targets-list__item-icon">
-            <taskana-administration-icon-type [type]="workbasket.type" size="large"
-                                              tooltip="true"></taskana-administration-icon-type>
+            <kadai-administration-icon-type [type]="workbasket.type" size="large"
+                                            tooltip="true"></kadai-administration-icon-type>
           </div>
 
           <!-- INFO -->
@@ -81,9 +81,9 @@
           <!-- MARKED FOR DELETION -->
           <div *ngIf="workbasket.markedForDeletion" class="workbaskets-item__marked">
             <span
-                class="material-icons md-20 red "
-                matTooltip="Marked for deletion"
-                title="Marked for deletion">error</span>
+              class="material-icons md-20 red "
+              matTooltip="Marked for deletion"
+              title="Marked for deletion">error</span>
           </div>
         </div>
 
