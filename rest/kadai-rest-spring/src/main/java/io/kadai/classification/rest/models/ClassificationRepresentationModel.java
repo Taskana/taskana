@@ -12,16 +12,18 @@ public class ClassificationRepresentationModel extends ClassificationSummaryRepr
       name = "isValidInDomain",
       description = "True, if this classification to objects in this domain.")
   private Boolean isValidInDomain;
+
   @Schema(
       name = "created",
       description =
           "The creation timestamp of the classification in the system.<p>The format is ISO-8601.")
   private Instant created;
+
   @Schema(
-          name = "modified",
-          description = "The timestamp of the last modification.<p>The format is ISO-8601."
-  )
+      name = "modified",
+      description = "The timestamp of the last modification.<p>The format is ISO-8601.")
   private Instant modified;
+
   @Schema(name = "description", description = "The description of the classification.")
   private String description;
 

@@ -6,8 +6,6 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface KadaiTransactionProvider {
 
-  <T> T executeInTransaction(Supplier<T> supplier);
-
   static <T> T executeInTransactionIfPossible(
       KadaiTransactionProvider transactionProvider, Supplier<T> supplier) {
     return transactionProvider != null
@@ -24,4 +22,6 @@ public interface KadaiTransactionProvider {
           return null;
         });
   }
+
+  <T> T executeInTransaction(Supplier<T> supplier);
 }

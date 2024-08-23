@@ -18,7 +18,6 @@ import org.camunda.bpm.dmn.xlsx.elements.IndexedDmnColumns;
 
 /**
  * @author Thorben Lindhauer
- *
  */
 public class DmnConversionContext {
 
@@ -28,7 +27,8 @@ public class DmnConversionContext {
   protected IndexedDmnColumns indexedDmnColumns = new IndexedDmnColumns();
 
   public DmnConversionContext(
-      XlsxWorksheetContext worksheetContext, List<org.camunda.bpm.dmn.xlsx.CellContentHandler> cellContentHandlers) {
+      XlsxWorksheetContext worksheetContext,
+      List<org.camunda.bpm.dmn.xlsx.CellContentHandler> cellContentHandlers) {
     this.worksheetContext = worksheetContext;
     this.cellContentHandlers = cellContentHandlers;
   }
@@ -40,11 +40,9 @@ public class DmnConversionContext {
       }
     }
     throw new RuntimeException("cannot parse cell content, unsupported format");
-
   }
 
   public IndexedDmnColumns getIndexedDmnColumns() {
     return indexedDmnColumns;
   }
-
 }

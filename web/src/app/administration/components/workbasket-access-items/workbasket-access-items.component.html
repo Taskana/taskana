@@ -1,27 +1,27 @@
 <div *ngIf="workbasket" id="wb-information">
 
   <!-- ACCESS ITEMS -->
-  <div class="workbasket-access-items"
-       [ngStyle]="{'width': expanded ? 'calc(' + 100 + 'vw - 500px)' : 'calc(' + 100 + 'vw - 250px)'}">
+  <div [ngStyle]="{'width': expanded ? 'calc(' + 100 + 'vw - 500px)' : 'calc(' + 100 + 'vw - 250px)'}"
+       class="workbasket-access-items">
     <div class=" workbasket-access-items__buttons">
-      <button mat-stroked-button matTooltip="Add new access" type="button"
-              class="workbasket-access-items__buttons-add-access" (click)="addAccessItem()">
+      <button (click)="addAccessItem()" class="workbasket-access-items__buttons-add-access" mat-stroked-button
+              matTooltip="Add new access" type="button">
         Add new access
-        <mat-icon color="green-blue" aria-label="add new access">add</mat-icon>
+        <mat-icon aria-label="add new access" color="green-blue">add</mat-icon>
       </button>
-      <button mat-stroked-button matTooltip="Delete selected access" type="button"
-              class="workbasket-access-items__buttons-delete-access" (click)="deleteAccessItems()">
+      <button (click)="deleteAccessItems()" class="workbasket-access-items__buttons-delete-access" mat-stroked-button
+              matTooltip="Delete selected access" type="button">
         Delete selected access
-        <mat-icon color="green-blue" aria-label="delete access">delete</mat-icon>
+        <mat-icon aria-label="delete access" color="green-blue">delete</mat-icon>
       </button>
     </div>
     <form [formGroup]="AccessItemsForm" class="workbasket-access-items__form">
-      <table formArrayName="accessItemsGroups" id="table-access-items" class="workbasket-access-items__table">
+      <table class="workbasket-access-items__table" formArrayName="accessItemsGroups" id="table-access-items">
         <!-- TITLE ROW -->
         <thead>
         <tr>
           <th></th>
-          <th kadaiResizableWidth class="required-header test">AccessID</th>
+          <th class="required-header test" kadaiResizableWidth>AccessID</th>
           <th class="rotated-th">
             <div><span>Select all</span></div>
           </th>
@@ -59,21 +59,21 @@
             [formGroupName]="index">
           <!-- REMOVE BUTTON -->
           <td>
-            <input class="workbasket-access-items__select-row" type="checkbox" aria-label="selectRow"
-                   aria-labelledby="selectRow" (change)="selectRow($event, index)">
+            <input (change)="selectRow($event, index)" aria-label="selectRow" aria-labelledby="selectRow"
+                   class="workbasket-access-items__select-row" type="checkbox">
           </td>
 
           <!-- ACCESS ID -->
           <td *ngIf="(accessItemsCustomization$ | async)?.accessId.lookupField else accessIdInput"
-              class="workbasket-access-items__typeahead" [ngClass]="{	'has-warning': (accessItemsClone[index].accessId !== accessItem.value.accessId),
-                							'has-error': !accessItem.value.accessId }">
+              [ngClass]="{	'has-warning': (accessItemsClone[index].accessId !== accessItem.value.accessId),
+                							'has-error': !accessItem.value.accessId }" class="workbasket-access-items__typeahead">
 
             <kadai-shared-type-ahead
-              [savedAccessId]="accessItem"
-              placeHolderMessage="Access id"
+              (accessIdEventEmitter)="accessItemSelected($event, index)"
               [displayError]="true"
               [isRequired]="true"
-              (accessIdEventEmitter)="accessItemSelected($event, index)">
+              [savedAccessId]="accessItem"
+              placeHolderMessage="Access id">
             </kadai-shared-type-ahead>
           </td>
 
@@ -81,83 +81,91 @@
             <td>
               <div [ngClass]="{ 'has-warning': (accessItemsClone[index].accessId !== accessItem.value.accessId),
 																  'has-error': !accessItem.value.accessId && formsValidatorService.formSubmitAttempt}">
-                <input matInput type="text" formControlName="accessId"
-                       placeholder="{{accessItem.invalid ? '* Access id is required': ''}}"
-                       [@validation]="toggleValidationAccessIdMap.get(index)" #htmlInputElement>
+                <input #htmlInputElement [@validation]="toggleValidationAccessIdMap.get(index)"
+                       formControlName="accessId"
+                       matInput
+                       placeholder="{{accessItem.invalid ? '* Access id is required': ''}}" type="text">
               </div>
             </td>
           </ng-template>
 
           <!-- SELECT ALL -->
           <td>
-            <input class="workbasket-access-items__check-all" type="checkbox" id="checkbox-{{index}}-00"
-                   (change)="checkAll(index, $event)" aria-label="checkAll" aria-labelledby="checkAll">
+            <input (change)="checkAll(index, $event)" aria-label="checkAll" aria-labelledby="checkAll"
+                   class="workbasket-access-items__check-all" id="checkbox-{{index}}-00" type="checkbox">
           </td>
 
           <!-- READ -->
           <td
             [ngClass]="{ 'has-changes': (accessItemsClone[index].permRead !== accessItem.value.permRead)}">
-            <input class="workbasket-access-items__permission-checkbox" type="checkbox"
-                   id="checkbox-{{index}}-0" formControlName="permRead" aria-label="permRead"
-                   aria-labelledby="permRead" (change)="setSelectAllCheckbox(this.index, $event)">
+            <input (change)="setSelectAllCheckbox(this.index, $event)" aria-label="permRead"
+                   aria-labelledby="permRead" class="workbasket-access-items__permission-checkbox"
+                   formControlName="permRead"
+                   id="checkbox-{{index}}-0" type="checkbox">
           </td>
 
           <!-- READ TASKS -->
           <td
             [ngClass]="{ 'has-changes': (accessItemsClone[index].permReadTasks !== accessItem.value.permReadTasks)}">
-            <input class="workbasket-access-items__permission-checkbox" type="checkbox"
-                   id="checkbox-{{index}}-1" formControlName="permReadTasks" aria-label="permReadTasks"
-                   aria-labelledby="permReadTasks" (change)="setSelectAllCheckbox(this.index, $event)">
+            <input (change)="setSelectAllCheckbox(this.index, $event)" aria-label="permReadTasks"
+                   aria-labelledby="permReadTasks" class="workbasket-access-items__permission-checkbox"
+                   formControlName="permReadTasks"
+                   id="checkbox-{{index}}-1" type="checkbox">
           </td>
 
           <!-- OPEN -->
           <td
             [ngClass]="{ 'has-changes': (accessItemsClone[index].permOpen !== accessItem.value.permOpen)}">
-            <input class="workbasket-access-items__permission-checkbox" type="checkbox"
-                   id="checkbox-{{index}}-2" formControlName="permOpen" aria-label="permOpen"
-                   aria-labelledby="permOpen" (change)="setSelectAllCheckbox(this.index, $event)">
+            <input (change)="setSelectAllCheckbox(this.index, $event)" aria-label="permOpen"
+                   aria-labelledby="permOpen" class="workbasket-access-items__permission-checkbox"
+                   formControlName="permOpen"
+                   id="checkbox-{{index}}-2" type="checkbox">
           </td>
 
           <!-- EDIT TASKS -->
           <td
             [ngClass]="{ 'has-changes': (accessItemsClone[index].permEditTasks !== accessItem.value.permEditTasks)}">
-            <input class="workbasket-access-items__permission-checkbox" type="checkbox"
-                   id="checkbox-{{index}}-3" formControlName="permEditTasks" aria-label="permEditTasks"
-                   aria-labelledby="permEditTasks" (change)="setSelectAllCheckbox(this.index, $event)">
+            <input (change)="setSelectAllCheckbox(this.index, $event)" aria-label="permEditTasks"
+                   aria-labelledby="permEditTasks" class="workbasket-access-items__permission-checkbox"
+                   formControlName="permEditTasks"
+                   id="checkbox-{{index}}-3" type="checkbox">
           </td>
 
           <!-- APPEND -->
           <td
             [ngClass]="{ 'has-changes': (accessItemsClone[index].permAppend !== accessItem.value.permAppend)}">
-            <input class="workbasket-access-items__permission-checkbox" type="checkbox"
-                   id="checkbox-{{index}}-4" formControlName="permAppend" aria-label="permAppend"
-                   aria-labelledby="permAppend" (change)="setSelectAllCheckbox(this.index, $event)">
+            <input (change)="setSelectAllCheckbox(this.index, $event)" aria-label="permAppend"
+                   aria-labelledby="permAppend" class="workbasket-access-items__permission-checkbox"
+                   formControlName="permAppend"
+                   id="checkbox-{{index}}-4" type="checkbox">
           </td>
 
           <!-- TRANSFER -->
           <td
             [ngClass]="{ 'has-changes': (accessItemsClone[index].permTransfer !== accessItem.value.permTransfer)}">
-            <input class="workbasket-access-items__permission-checkbox" type="checkbox"
-                   id="checkbox-{{index}}-5" formControlName="permTransfer" aria-label="permTransfer"
-                   aria-labelledby="permTransfer" (change)="setSelectAllCheckbox(this.index, $event)">
+            <input (change)="setSelectAllCheckbox(this.index, $event)" aria-label="permTransfer"
+                   aria-labelledby="permTransfer" class="workbasket-access-items__permission-checkbox"
+                   formControlName="permTransfer"
+                   id="checkbox-{{index}}-5" type="checkbox">
           </td>
 
           <!-- DISTRIBUTE -->
           <td
             [ngClass]="{ 'has-changes': (accessItemsClone[index].permDistribute !== accessItem.value.permDistribute)}">
-            <input class="workbasket-access-items__permission-checkbox" type="checkbox"
-                   id="checkbox-{{index}}-6" formControlName="permDistribute" aria-label="permDistribute"
-                   aria-labelledby="permDistribute" (change)="setSelectAllCheckbox(this.index, $event)">
+            <input (change)="setSelectAllCheckbox(this.index, $event)" aria-label="permDistribute"
+                   aria-labelledby="permDistribute" class="workbasket-access-items__permission-checkbox"
+                   formControlName="permDistribute"
+                   id="checkbox-{{index}}-6" type="checkbox">
           </td>
 
           <!-- CUSTOM FIELDS -->
           <ng-container *ngFor="let customField of customFields$ | async; let customIndex = index">
             <td *ngIf="customField.visible"
                 [ngClass]="{ 'has-changes': accessItemsClone[index][getAccessItemCustomProperty(customIndex + 1)] !== accessItem.value[getAccessItemCustomProperty(customIndex+1)] }">
-              <input class="workbasket-access-items__permission-checkbox" type="checkbox"
-                     id="checkbox-{{index}}-{{customIndex + 7}}"
-                     formControlName="permCustom{{customIndex+1}}" aria-label="customField"
-                     aria-labelledby="customField" (change)="setSelectAllCheckbox(this.index, $event)">
+              <input (change)="setSelectAllCheckbox(this.index, $event)" aria-label="customField"
+                     aria-labelledby="customField"
+                     class="workbasket-access-items__permission-checkbox" formControlName="permCustom{{customIndex+1}}"
+                     id="checkbox-{{index}}-{{customIndex + 7}}" type="checkbox">
             </td>
           </ng-container>
         </tr>

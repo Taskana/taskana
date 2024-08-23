@@ -12,150 +12,6 @@ import java.beans.ConstructorProperties;
 import java.time.Instant;
 
 public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHistoryQuery, Void> {
-  public String[] getEventType() {
-    return eventType;
-  }
-
-  public String[] getEventTypeLike() {
-    return eventTypeLike;
-  }
-
-  public String[] getUserId() {
-    return userId;
-  }
-
-  public String[] getUserIdLike() {
-    return userIdLike;
-  }
-
-  public Instant[] getCreated() {
-    return created;
-  }
-
-  public String[] getDomain() {
-    return domain;
-  }
-
-  public String[] getTaskId() {
-    return taskId;
-  }
-
-  public String[] getTaskIdLike() {
-    return taskIdLike;
-  }
-
-  public String[] getBusinessProcessId() {
-    return businessProcessId;
-  }
-
-  public String[] getBusinessProcessIdLike() {
-    return businessProcessIdLike;
-  }
-
-  public String[] getParentBusinessProcessId() {
-    return parentBusinessProcessId;
-  }
-
-  public String[] getParentBusinessProcessIdLike() {
-    return parentBusinessProcessIdLike;
-  }
-
-  public String[] getTaskClassificationKey() {
-    return taskClassificationKey;
-  }
-
-  public String[] getTaskClassificationKeyLike() {
-    return taskClassificationKeyLike;
-  }
-
-  public String[] getTaskClassificationCategory() {
-    return taskClassificationCategory;
-  }
-
-  public String[] getTaskClassificationCategoryLike() {
-    return taskClassificationCategoryLike;
-  }
-
-  public String[] getAttachmentClassificationKey() {
-    return attachmentClassificationKey;
-  }
-
-  public String[] getAttachmentClassificationKeyLike() {
-    return attachmentClassificationKeyLike;
-  }
-
-  public String[] getWorkbasketKey() {
-    return workbasketKey;
-  }
-
-  public String[] getWorkbasketKeyLike() {
-    return workbasketKeyLike;
-  }
-
-  public String[] getPorCompany() {
-    return porCompany;
-  }
-
-  public String[] getPorCompanyLike() {
-    return porCompanyLike;
-  }
-
-  public String[] getPorSystem() {
-    return porSystem;
-  }
-
-  public String[] getPorSystemLike() {
-    return porSystemLike;
-  }
-
-  public String[] getPorInstance() {
-    return porInstance;
-  }
-
-  public String[] getPorInstanceLike() {
-    return porInstanceLike;
-  }
-
-  public String[] getPorValue() {
-    return porValue;
-  }
-
-  public String[] getPorValueLike() {
-    return porValueLike;
-  }
-
-  public String[] getCustom1() {
-    return custom1;
-  }
-
-  public String[] getCustom1Like() {
-    return custom1Like;
-  }
-
-  public String[] getCustom2() {
-    return custom2;
-  }
-
-  public String[] getCustom2Like() {
-    return custom2Like;
-  }
-
-  public String[] getCustom3() {
-    return custom3;
-  }
-
-  public String[] getCustom3Like() {
-    return custom3Like;
-  }
-
-  public String[] getCustom4() {
-    return custom4;
-  }
-
-  public String[] getCustom4Like() {
-    return custom4Like;
-  }
-
   @Schema(
       name = "event-type",
       description = "Filter by the event type of the Task History Event. This is an exact match.")
@@ -561,6 +417,150 @@ public class TaskHistoryQueryFilterParameter implements QueryParameter<TaskHisto
     this.custom4Like = custom4Like;
 
     validateFilterParameters();
+  }
+
+  public String[] getEventType() {
+    return eventType;
+  }
+
+  public String[] getEventTypeLike() {
+    return eventTypeLike;
+  }
+
+  public String[] getUserId() {
+    return userId;
+  }
+
+  public String[] getUserIdLike() {
+    return userIdLike;
+  }
+
+  public Instant[] getCreated() {
+    return created;
+  }
+
+  public String[] getDomain() {
+    return domain;
+  }
+
+  public String[] getTaskId() {
+    return taskId;
+  }
+
+  public String[] getTaskIdLike() {
+    return taskIdLike;
+  }
+
+  public String[] getBusinessProcessId() {
+    return businessProcessId;
+  }
+
+  public String[] getBusinessProcessIdLike() {
+    return businessProcessIdLike;
+  }
+
+  public String[] getParentBusinessProcessId() {
+    return parentBusinessProcessId;
+  }
+
+  public String[] getParentBusinessProcessIdLike() {
+    return parentBusinessProcessIdLike;
+  }
+
+  public String[] getTaskClassificationKey() {
+    return taskClassificationKey;
+  }
+
+  public String[] getTaskClassificationKeyLike() {
+    return taskClassificationKeyLike;
+  }
+
+  public String[] getTaskClassificationCategory() {
+    return taskClassificationCategory;
+  }
+
+  public String[] getTaskClassificationCategoryLike() {
+    return taskClassificationCategoryLike;
+  }
+
+  public String[] getAttachmentClassificationKey() {
+    return attachmentClassificationKey;
+  }
+
+  public String[] getAttachmentClassificationKeyLike() {
+    return attachmentClassificationKeyLike;
+  }
+
+  public String[] getWorkbasketKey() {
+    return workbasketKey;
+  }
+
+  public String[] getWorkbasketKeyLike() {
+    return workbasketKeyLike;
+  }
+
+  public String[] getPorCompany() {
+    return porCompany;
+  }
+
+  public String[] getPorCompanyLike() {
+    return porCompanyLike;
+  }
+
+  public String[] getPorSystem() {
+    return porSystem;
+  }
+
+  public String[] getPorSystemLike() {
+    return porSystemLike;
+  }
+
+  public String[] getPorInstance() {
+    return porInstance;
+  }
+
+  public String[] getPorInstanceLike() {
+    return porInstanceLike;
+  }
+
+  public String[] getPorValue() {
+    return porValue;
+  }
+
+  public String[] getPorValueLike() {
+    return porValueLike;
+  }
+
+  public String[] getCustom1() {
+    return custom1;
+  }
+
+  public String[] getCustom1Like() {
+    return custom1Like;
+  }
+
+  public String[] getCustom2() {
+    return custom2;
+  }
+
+  public String[] getCustom2Like() {
+    return custom2Like;
+  }
+
+  public String[] getCustom3() {
+    return custom3;
+  }
+
+  public String[] getCustom3Like() {
+    return custom3Like;
+  }
+
+  public String[] getCustom4() {
+    return custom4;
+  }
+
+  public String[] getCustom4Like() {
+    return custom4Like;
   }
 
   @Override

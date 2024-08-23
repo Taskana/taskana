@@ -18,8 +18,8 @@ import org.camunda.bpm.dmn.xlsx.InputOutputColumns;
 import org.camunda.bpm.model.dmn.HitPolicy;
 
 /**
- * Implement this interface to tailor the conversion process to a specific format
- * of your excel sheets.
+ * Implement this interface to tailor the conversion process to a specific format of your excel
+ * sheets.
  */
 public interface SpreadsheetAdapter {
 
@@ -37,9 +37,6 @@ public interface SpreadsheetAdapter {
 
   String determineDecisionName(Spreadsheet spreadsheet);
 
-  /**
-   * order is important; add most specific converters first
-   */
+  /** order is important; add most specific converters first */
   List<CellContentHandler> getCellContentHandlers(Spreadsheet spreadsheet);
-
 }

@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
- * This exception is thrown when the current user is not in a certain {@linkplain KadaiRole role}
- * it is supposed to be.
+ * This exception is thrown when the current user is not in a certain {@linkplain KadaiRole role} it
+ * is supposed to be.
  */
 public class NotAuthorizedException extends KadaiException {
 

@@ -1,7 +1,7 @@
 <div class="task-attribute-value">
 
   <!-- ATTRIBUTE VALUE TABLE -->
-  <div class="task-attribute-value__table" *ngIf="attributes.length > 0; else noAttributes">
+  <div *ngIf="attributes.length > 0; else noAttributes" class="task-attribute-value__table">
 
     <!-- HEADER -->
     <div class="task-attribute-value__row">
@@ -22,9 +22,9 @@
 
         <!-- REMOVE BUTTON -->
         <div class="task-attribute-value__column--button">
-          <button mat-stroked-button class="task-attribute-value__button--secondary" color="warn"
-                  matTooltip="Remove attribute"
-                  (click)="removeAttribute(i)">
+          <button (click)="removeAttribute(i)" class="task-attribute-value__button--secondary" color="warn"
+                  mat-stroked-button
+                  matTooltip="Remove attribute">
             <mat-icon>clear</mat-icon>
           </button>
         </div>
@@ -34,9 +34,9 @@
 
         <!-- ATTRIBUTE INPUT -->
         <div class="task-attribute-value__column--inputs">
-          <mat-form-field style="width: 98%" appearance="outline">
-            <input matInput type="text" [(ngModel)]="entry.key"
-                   name="{{callbackInfo ? 'callback-info' : 'custom-attribute'}}-{{i}}">
+          <mat-form-field appearance="outline" style="width: 98%">
+            <input [(ngModel)]="entry.key" matInput name="{{callbackInfo ? 'callback-info' : 'custom-attribute'}}-{{i}}"
+                   type="text">
           </mat-form-field>
         </div>
 
@@ -44,9 +44,10 @@
 
         <!-- VALUE INPUT -->
         <div class="task-attribute-value__column--inputs">
-          <mat-form-field style="width: 98%" appearance="outline">
-            <input matInput type="text" [(ngModel)]="entry.value"
-                   name="{{callbackInfo ? 'callback-info' : 'custom-attribute'}}-{{i}}-val">
+          <mat-form-field appearance="outline" style="width: 98%">
+            <input [(ngModel)]="entry.value" matInput
+                   name="{{callbackInfo ? 'callback-info' : 'custom-attribute'}}-{{i}}-val"
+                   type="text">
           </mat-form-field>
         </div>
 
@@ -64,8 +65,8 @@
 
 
   <!-- ADD BUTTON -->
-  <button mat-flat-button class="task-attribute-value__button--primary"
-          (click)="addAttribute()">
+  <button (click)="addAttribute()" class="task-attribute-value__button--primary"
+          mat-flat-button>
     <span> Add {{ callbackInfo ? 'callback information' : 'custom attribute'}} </span>
     <mat-icon>add</mat-icon>
   </button>

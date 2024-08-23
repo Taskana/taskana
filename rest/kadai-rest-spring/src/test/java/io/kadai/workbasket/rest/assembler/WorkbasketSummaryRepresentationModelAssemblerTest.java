@@ -35,6 +35,31 @@ class WorkbasketSummaryRepresentationModelAssemblerTest {
     this.workbasketService = workbasketService;
   }
 
+  static void testEquality(
+      WorkbasketSummary summary, WorkbasketSummaryRepresentationModel repModel) {
+    assertThat(summary).hasNoNullFieldsOrProperties();
+    assertThat(repModel).hasNoNullFieldsOrProperties();
+    assertThat(summary.getDescription()).isEqualTo(repModel.getDescription());
+    assertThat(summary.getDomain()).isEqualTo(repModel.getDomain());
+    assertThat(summary.getId()).isEqualTo(repModel.getWorkbasketId());
+    assertThat(summary.getKey()).isEqualTo(repModel.getKey());
+    assertThat(summary.getName()).isEqualTo(repModel.getName());
+    assertThat(summary.getCustomField(CUSTOM_1)).isEqualTo(repModel.getCustom1());
+    assertThat(summary.getCustomField(CUSTOM_2)).isEqualTo(repModel.getCustom2());
+    assertThat(summary.getCustomField(CUSTOM_3)).isEqualTo(repModel.getCustom3());
+    assertThat(summary.getCustomField(CUSTOM_4)).isEqualTo(repModel.getCustom4());
+    assertThat(summary.getCustomField(CUSTOM_5)).isEqualTo(repModel.getCustom5());
+    assertThat(summary.getCustomField(CUSTOM_6)).isEqualTo(repModel.getCustom6());
+    assertThat(summary.getCustomField(CUSTOM_7)).isEqualTo(repModel.getCustom7());
+    assertThat(summary.getCustomField(CUSTOM_8)).isEqualTo(repModel.getCustom8());
+    assertThat(summary.getOrgLevel1()).isEqualTo(repModel.getOrgLevel1());
+    assertThat(summary.getOrgLevel2()).isEqualTo(repModel.getOrgLevel2());
+    assertThat(summary.getOrgLevel3()).isEqualTo(repModel.getOrgLevel3());
+    assertThat(summary.getOrgLevel4()).isEqualTo(repModel.getOrgLevel4());
+    assertThat(summary.getOwner()).isEqualTo(repModel.getOwner());
+    assertThat(summary.getType()).isEqualTo(repModel.getType());
+  }
+
   @Test
   void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel() {
     // given
@@ -121,31 +146,6 @@ class WorkbasketSummaryRepresentationModelAssemblerTest {
         .hasNoNullFieldsOrProperties()
         .isNotSameAs(workbasketSummary2)
         .isEqualTo(workbasketSummary2);
-  }
-
-  static void testEquality(
-      WorkbasketSummary summary, WorkbasketSummaryRepresentationModel repModel) {
-    assertThat(summary).hasNoNullFieldsOrProperties();
-    assertThat(repModel).hasNoNullFieldsOrProperties();
-    assertThat(summary.getDescription()).isEqualTo(repModel.getDescription());
-    assertThat(summary.getDomain()).isEqualTo(repModel.getDomain());
-    assertThat(summary.getId()).isEqualTo(repModel.getWorkbasketId());
-    assertThat(summary.getKey()).isEqualTo(repModel.getKey());
-    assertThat(summary.getName()).isEqualTo(repModel.getName());
-    assertThat(summary.getCustomField(CUSTOM_1)).isEqualTo(repModel.getCustom1());
-    assertThat(summary.getCustomField(CUSTOM_2)).isEqualTo(repModel.getCustom2());
-    assertThat(summary.getCustomField(CUSTOM_3)).isEqualTo(repModel.getCustom3());
-    assertThat(summary.getCustomField(CUSTOM_4)).isEqualTo(repModel.getCustom4());
-    assertThat(summary.getCustomField(CUSTOM_5)).isEqualTo(repModel.getCustom5());
-    assertThat(summary.getCustomField(CUSTOM_6)).isEqualTo(repModel.getCustom6());
-    assertThat(summary.getCustomField(CUSTOM_7)).isEqualTo(repModel.getCustom7());
-    assertThat(summary.getCustomField(CUSTOM_8)).isEqualTo(repModel.getCustom8());
-    assertThat(summary.getOrgLevel1()).isEqualTo(repModel.getOrgLevel1());
-    assertThat(summary.getOrgLevel2()).isEqualTo(repModel.getOrgLevel2());
-    assertThat(summary.getOrgLevel3()).isEqualTo(repModel.getOrgLevel3());
-    assertThat(summary.getOrgLevel4()).isEqualTo(repModel.getOrgLevel4());
-    assertThat(summary.getOwner()).isEqualTo(repModel.getOwner());
-    assertThat(summary.getType()).isEqualTo(repModel.getType());
   }
 
   private void testLinks(WorkbasketSummaryRepresentationModel repModel) {}

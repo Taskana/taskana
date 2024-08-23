@@ -26,7 +26,6 @@ import org.xlsx4j.sml.Row;
 
 /**
  * @author Thorben Lindhauer
- *
  */
 public class IndexedRow implements SpreadsheetRow {
 

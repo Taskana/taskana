@@ -1,10 +1,11 @@
 <div class="footer-space-pagination-list">
   <div #wbToolbar>
-    <kadai-task-list-toolbar (performSorting)="performSorting($event)" (performFilter)="performFilter()"
+    <kadai-task-list-toolbar (performFilter)="performFilter()" (performSorting)="performSorting($event)"
                              (selectSearchType)="selectSearchType($event)" [taskDefaultSortBy]="taskDefaultSortBy">
     </kadai-task-list-toolbar>
   </div>
-  <kadai-task-list *ngIf="!requestInProgress" [tasks]="tasks" [(selectedId)]="selectedId"></kadai-task-list>
+  <kadai-task-list *ngIf="!requestInProgress" [(selectedId)]="selectedId" [tasks]="tasks"></kadai-task-list>
 </div>
-<kadai-shared-pagination [numberOfItems]="tasks.length" *ngIf="tasks && tasks.length > 0" [page]="tasksPageInformation"
-                         [type]="type" (changePage)="changePage($event)"></kadai-shared-pagination>
+<kadai-shared-pagination (changePage)="changePage($event)" *ngIf="tasks && tasks.length > 0"
+                         [numberOfItems]="tasks.length"
+                         [page]="tasksPageInformation" [type]="type"></kadai-shared-pagination>

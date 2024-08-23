@@ -43,8 +43,7 @@ public class ExampleRestConfiguration {
 
   @Bean
   @DependsOn("generateSampleData")
-  public KadaiEngine getKadaiEngine(KadaiConfiguration kadaiConfiguration)
-      throws SQLException {
+  public KadaiEngine getKadaiEngine(KadaiConfiguration kadaiConfiguration) throws SQLException {
     return SpringKadaiEngine.buildKadaiEngine(kadaiConfiguration);
   }
 

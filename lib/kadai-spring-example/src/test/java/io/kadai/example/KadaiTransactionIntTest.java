@@ -62,6 +62,16 @@ class KadaiTransactionIntTest {
   @Autowired private JdbcTemplate jdbcTemplate;
   @Autowired private KadaiEngine kadaiEngine;
 
+  private static ObjectReference createDefaultObjRef() {
+    ObjectReferenceImpl objRef = new ObjectReferenceImpl();
+    objRef.setCompany("company");
+    objRef.setSystem("system");
+    objRef.setSystemInstance("instance");
+    objRef.setType("type");
+    objRef.setValue("value");
+    return objRef;
+  }
+
   @BeforeEach
   void before() {
 
@@ -229,16 +239,6 @@ class KadaiTransactionIntTest {
         .isInstanceOf(WorkbasketNotFoundException.class);
     assertThatCode(() -> workbasketService.getWorkbasket("key3", "DOMAIN_A"))
         .doesNotThrowAnyException();
-  }
-
-  private static ObjectReference createDefaultObjRef() {
-    ObjectReferenceImpl objRef = new ObjectReferenceImpl();
-    objRef.setCompany("company");
-    objRef.setSystem("system");
-    objRef.setSystemInstance("instance");
-    objRef.setType("type");
-    objRef.setValue("value");
-    return objRef;
   }
 
   private void assertQuantities(int workbaskets, int tests) {

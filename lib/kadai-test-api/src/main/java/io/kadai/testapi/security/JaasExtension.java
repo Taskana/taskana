@@ -48,6 +48,64 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
 
   // region InvocationInterceptor
 
+  private static void persistDynamicContainerChildren(
+      Iterable<DynamicNode> nodes, Map<String, List<DynamicNode>> childrenMap) {
+    nodes.forEach(
+        node -> {
+          if (node instanceof DynamicContainer container) {
+            List<DynamicNode> children = container.getChildren().collect(Collectors.toList());
+            childrenMap.put(container.hashCode() + container.getDisplayName(), children);
+            persistDynamicContainerChildren(children, childrenMap);
+          }
+        });
+  }
+
+  private static DynamicNode duplicateDynamicNode(
+      DynamicNode node, Map<String, List<DynamicNode>> lookupMap) {
+    if (node instanceof DynamicContainer container) {
+      Stream<DynamicNode> children =
+          lookupMap.get(node.hashCode() + node.getDisplayName()).stream()
+              .map(x -> duplicateDynamicNode(x, lookupMap));
+      return DynamicContainer.dynamicContainer(container.getDisplayName(), children);
+    }
+    return node;
+  }
+
+  private static <T> T extractAccessIdAndPerformInvocation(
+      Invocation<T> invocation, AnnotatedElement executable) {
+    return performInvocationWithAccessId(invocation, executable.getAnnotation(WithAccessId.class));
+  }
+
+  private static <T> T performInvocationWithAccessId(
+      Invocation<T> invocation, WithAccessId withAccessId) {
+    Subject subject = new Subject();
+    subject.getPrincipals().addAll(getPrincipals(withAccessId));
+
+    Function<Invocation<T>, T> proceedInvocation =
+        wrapExceptFor(Invocation::proceed, TestAbortedException.class);
+    PrivilegedAction<T> performInvocation = () -> proceedInvocation.apply(invocation);
+    return Subject.doAs(subject, performInvocation);
+  }
+
+  private static List<Principal> getPrincipals(WithAccessId withAccessId) {
+    if (withAccessId != null) {
+      return Stream.concat(
+              Stream.of(withAccessId.user()).map(UserPrincipal::new),
+              Arrays.stream(withAccessId.groups()).map(GroupPrincipal::new))
+          .collect(Collectors.toList());
+    }
+    return Collections.emptyList();
+  }
+
+  private static Store getMethodLevelStore(ExtensionContext context) {
+    return context.getStore(
+        Namespace.create(context.getRequiredTestClass(), context.getRequiredTestMethod()));
+  }
+
+  private static String getDisplayNameForAccessId(WithAccessId withAccessId) {
+    return String.format("for user '%s'", withAccessId.user());
+  }
+
   @Override
   public <T> T interceptTestClassConstructor(
       Invocation<T> invocation,
@@ -63,6 +121,10 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
       ExtensionContext extensionContext) {
     extractAccessIdAndPerformInvocation(invocation, invocationContext.getExecutable());
   }
+
+  // endregion
+
+  // region TestTemplateInvocationContextProvider
 
   @Override
   public void interceptBeforeEachMethod(
@@ -82,6 +144,8 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
     }
     extractAccessIdAndPerformInvocation(invocation, invocationContext.getExecutable());
   }
+
+  // endregion
 
   @Override
   @SuppressWarnings("unchecked")
@@ -190,10 +254,6 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
     extractAccessIdAndPerformInvocation(invocation, invocationContext.getExecutable());
   }
 
-  // endregion
-
-  // region TestTemplateInvocationContextProvider
-
   @Override
   public boolean supportsTestTemplate(ExtensionContext context) {
     return isAnnotated(context.getElement(), WithAccessIds.class)
@@ -209,57 +269,6 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
     return accessIds.stream()
         .peek(a -> store.put(ACCESS_IDS_STORE_KEY, a))
         .map(JaasExtensionInvocationContext::new);
-  }
-
-  // endregion
-
-  private static void persistDynamicContainerChildren(
-      Iterable<DynamicNode> nodes, Map<String, List<DynamicNode>> childrenMap) {
-    nodes.forEach(
-        node -> {
-          if (node instanceof DynamicContainer container) {
-            List<DynamicNode> children = container.getChildren().collect(Collectors.toList());
-            childrenMap.put(container.hashCode() + container.getDisplayName(), children);
-            persistDynamicContainerChildren(children, childrenMap);
-          }
-        });
-  }
-
-  private static DynamicNode duplicateDynamicNode(
-      DynamicNode node, Map<String, List<DynamicNode>> lookupMap) {
-    if (node instanceof DynamicContainer container) {
-      Stream<DynamicNode> children =
-          lookupMap.get(node.hashCode() + node.getDisplayName()).stream()
-              .map(x -> duplicateDynamicNode(x, lookupMap));
-      return DynamicContainer.dynamicContainer(container.getDisplayName(), children);
-    }
-    return node;
-  }
-
-  private static <T> T extractAccessIdAndPerformInvocation(
-      Invocation<T> invocation, AnnotatedElement executable) {
-    return performInvocationWithAccessId(invocation, executable.getAnnotation(WithAccessId.class));
-  }
-
-  private static <T> T performInvocationWithAccessId(
-      Invocation<T> invocation, WithAccessId withAccessId) {
-    Subject subject = new Subject();
-    subject.getPrincipals().addAll(getPrincipals(withAccessId));
-
-    Function<Invocation<T>, T> proceedInvocation =
-        wrapExceptFor(Invocation::proceed, TestAbortedException.class);
-    PrivilegedAction<T> performInvocation = () -> proceedInvocation.apply(invocation);
-    return Subject.doAs(subject, performInvocation);
-  }
-
-  private static List<Principal> getPrincipals(WithAccessId withAccessId) {
-    if (withAccessId != null) {
-      return Stream.concat(
-              Stream.of(withAccessId.user()).map(UserPrincipal::new),
-              Arrays.stream(withAccessId.groups()).map(GroupPrincipal::new))
-          .collect(Collectors.toList());
-    }
-    return Collections.emptyList();
   }
 
   private ExtensionContext getParentMethodExtensionContent(ExtensionContext extensionContext) {
@@ -278,15 +287,6 @@ public class JaasExtension implements InvocationInterceptor, TestTemplateInvocat
             new JUnitException(
                 String.format(
                     "Test '%s' does not have a parent method", extensionContext.getUniqueId())));
-  }
-
-  private static Store getMethodLevelStore(ExtensionContext context) {
-    return context.getStore(
-        Namespace.create(context.getRequiredTestClass(), context.getRequiredTestMethod()));
-  }
-
-  private static String getDisplayNameForAccessId(WithAccessId withAccessId) {
-    return String.format("for user '%s'", withAccessId.user());
   }
 
   private static class JaasExtensionInvocationContext implements TestTemplateInvocationContext {

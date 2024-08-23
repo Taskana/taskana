@@ -33,6 +33,26 @@ public class WorkingTimeCalculatorImpl implements WorkingTimeCalculator {
     this.zoneId = Objects.requireNonNull(zoneId);
   }
 
+  private static boolean isBeforeOrEquals(LocalTime time, ZonedDateTime currentDateTime) {
+    return !time.isAfter(currentDateTime.toLocalTime());
+  }
+
+  private static ZonedDateTime max(ZonedDateTime a, ZonedDateTime b) {
+    if (a.isAfter(b)) {
+      return a;
+    } else {
+      return b;
+    }
+  }
+
+  private static ZonedDateTime min(ZonedDateTime a, ZonedDateTime b) {
+    if (a.isBefore(b)) {
+      return a;
+    } else {
+      return b;
+    }
+  }
+
   @Override
   public Instant subtractWorkingTime(Instant workStart, Duration workingTime)
       throws InvalidArgumentException {
@@ -189,10 +209,6 @@ public class WorkingTimeCalculatorImpl implements WorkingTimeCalculator {
                 getWorkSlotOrPrevious(getDayBefore(currentDateTime)));
   }
 
-  private static boolean isBeforeOrEquals(LocalTime time, ZonedDateTime currentDateTime) {
-    return !time.isAfter(currentDateTime.toLocalTime());
-  }
-
   private ZonedDateTime getDayAfter(ZonedDateTime current) {
     return LocalDateTime.of(current.toLocalDate().plusDays(1), LocalTime.MIN)
         .atZone(current.getZone());
@@ -221,22 +237,6 @@ public class WorkingTimeCalculatorImpl implements WorkingTimeCalculator {
 
   private LocalDate toLocalDate(Instant instant) {
     return LocalDate.ofInstant(instant, zoneId);
-  }
-
-  private static ZonedDateTime max(ZonedDateTime a, ZonedDateTime b) {
-    if (a.isAfter(b)) {
-      return a;
-    } else {
-      return b;
-    }
-  }
-
-  private static ZonedDateTime min(ZonedDateTime a, ZonedDateTime b) {
-    if (a.isBefore(b)) {
-      return a;
-    } else {
-      return b;
-    }
   }
 
   class WorkSlot {

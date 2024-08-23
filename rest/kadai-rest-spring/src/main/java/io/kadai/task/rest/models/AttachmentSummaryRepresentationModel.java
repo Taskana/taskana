@@ -11,18 +11,25 @@ public class AttachmentSummaryRepresentationModel
 
   @Schema(name = "attachmentId", description = "Unique Id.")
   protected String attachmentId;
+
   @Schema(name = "taskId", description = "The referenced task id.")
   protected String taskId;
+
   @Schema(name = "created", description = "The creation timestamp in the system.")
   protected Instant created;
+
   @Schema(name = "modified", description = "The timestamp of the last modification.")
   protected Instant modified;
+
   @Schema(name = "received", description = "The timestamp of the entry date.")
   protected Instant received;
+
   @Schema(name = "classificationSummary", description = "The classification of this attachment.")
   protected ClassificationSummaryRepresentationModel classificationSummary;
+
   @Schema(name = "objectReference", description = "The Objects primary ObjectReference.")
   protected ObjectReferenceRepresentationModel objectReference;
+
   @Schema(
       name = "channel",
       description = "Determines on which channel this attachment was received.")

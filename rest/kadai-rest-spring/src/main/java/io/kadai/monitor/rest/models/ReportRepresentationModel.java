@@ -13,8 +13,10 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
 
   @Schema(name = "meta", description = "Object holding meta info on the report.")
   private final MetaInformation meta;
+
   @Schema(name = "rows", description = "Array holding the rows of the report.")
   private final List<RowRepresentationModel> rows;
+
   @Schema(name = "sumRow", description = "Array holding the sums in the columns over all rows.")
   private final List<RowRepresentationModel> sumRow;
 
@@ -46,15 +48,19 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
 
     @Schema(name = "cells", description = "Array holding all the cell values of the given row.")
     private final int[] cells;
+
     @Schema(name = "cells", description = "Sum of all values of the given row.")
     private final int total;
+
     @Schema(
         name = "depth",
         description =
             "Depth of the row. If the depth is > 0, then this row is a sub-row of a prior row")
     private final int depth;
+
     @Schema(name = "desc", description = "Array containing description of the row.")
     private final String[] desc;
+
     @Schema(
         name = "display",
         description = "Boolean identifying if the given row should be initially displayed or not.")
@@ -111,12 +117,16 @@ public class ReportRepresentationModel extends RepresentationModel<ReportReprese
 
     @Schema(name = "name", description = "Name of the report.")
     private final String name;
+
     @Schema(name = "date", description = "Date of the report creation.")
     private final Instant date;
+
     @Schema(name = "header", description = "Column headers of the report.")
     private final String[] header;
+
     @Schema(name = "rowDesc", description = "Descriptions for the rows of the report.")
     private final String[] rowDesc;
+
     @Schema(name = "sumRowDesc", description = "Description for the sum column.")
     private final String sumRowDesc;
 

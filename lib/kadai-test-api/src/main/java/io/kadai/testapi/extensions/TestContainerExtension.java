@@ -41,35 +41,6 @@ public class TestContainerExtension implements InvocationInterceptor {
     }
   }
 
-  @Override
-  public <T> T interceptTestClassConstructor(
-      Invocation<T> invocation,
-      ReflectiveInvocationContext<Constructor<T>> invocationContext,
-      ExtensionContext extensionContext)
-      throws Throwable {
-    Class<?> testClass = extensionContext.getRequiredTestClass();
-    if (isTopLevelClass(testClass) || isAnnotated(testClass, CleanKadaiContext.class)) {
-      Store store = getClassLevelStore(extensionContext);
-      String schemaName = determineSchemaName();
-      store.put(STORE_SCHEMA_NAME, schemaName);
-      store.put(STORE_DATA_SOURCE, DATA_SOURCE);
-      if (DB.ORACLE == EXECUTION_DATABASE) {
-        initOracleSchema(DATA_SOURCE, schemaName);
-      }
-    } else if (KadaiConfigurationModifier.class.isAssignableFrom(testClass)
-        || isAnnotated(testClass, WithServiceProvider.class)) {
-      // since the implementation of KadaiConfigurationModifier implies the generation of a
-      // new KadaiEngine, we have to copy the schema name and datasource from the enclosing class'
-      // store to the testClass store.
-      // This allows the following extensions to generate a new KadaiEngine for the testClass.
-      Store parentStore = getClassLevelStore(extensionContext, testClass.getEnclosingClass());
-      Store store = getClassLevelStore(extensionContext);
-      copyValue(TestContainerExtension.STORE_SCHEMA_NAME, parentStore, store);
-      copyValue(TestContainerExtension.STORE_DATA_SOURCE, parentStore, store);
-    }
-    return invocation.proceed();
-  }
-
   public static DataSource createDataSourceForH2() {
     PooledDataSource ds =
         new PooledDataSource(
@@ -112,5 +83,34 @@ public class TestContainerExtension implements InvocationInterceptor {
       db = DB.H2;
     }
     return db;
+  }
+
+  @Override
+  public <T> T interceptTestClassConstructor(
+      Invocation<T> invocation,
+      ReflectiveInvocationContext<Constructor<T>> invocationContext,
+      ExtensionContext extensionContext)
+      throws Throwable {
+    Class<?> testClass = extensionContext.getRequiredTestClass();
+    if (isTopLevelClass(testClass) || isAnnotated(testClass, CleanKadaiContext.class)) {
+      Store store = getClassLevelStore(extensionContext);
+      String schemaName = determineSchemaName();
+      store.put(STORE_SCHEMA_NAME, schemaName);
+      store.put(STORE_DATA_SOURCE, DATA_SOURCE);
+      if (DB.ORACLE == EXECUTION_DATABASE) {
+        initOracleSchema(DATA_SOURCE, schemaName);
+      }
+    } else if (KadaiConfigurationModifier.class.isAssignableFrom(testClass)
+        || isAnnotated(testClass, WithServiceProvider.class)) {
+      // since the implementation of KadaiConfigurationModifier implies the generation of a
+      // new KadaiEngine, we have to copy the schema name and datasource from the enclosing class'
+      // store to the testClass store.
+      // This allows the following extensions to generate a new KadaiEngine for the testClass.
+      Store parentStore = getClassLevelStore(extensionContext, testClass.getEnclosingClass());
+      Store store = getClassLevelStore(extensionContext);
+      copyValue(TestContainerExtension.STORE_SCHEMA_NAME, parentStore, store);
+      copyValue(TestContainerExtension.STORE_DATA_SOURCE, parentStore, store);
+    }
+    return invocation.proceed();
   }
 }

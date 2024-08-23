@@ -142,9 +142,11 @@ class KadaiEngineControllerIntTest {
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getUserId()).isEqualTo("user-1-2");
     assertThat(response.getBody().getGroupIds())
-        .containsExactlyInAnyOrder("cn=organisationseinheit ksc 1,cn=organisationseinheit "
+        .containsExactlyInAnyOrder(
+            "cn=organisationseinheit ksc 1,cn=organisationseinheit "
                 + "ksc,cn=organisation,ou=test,o=kadai",
-            "cn=ksc-users,cn=groups,ou=test,o=kadai", "cn=g02,cn=groups,ou=test,o=kadai",
+            "cn=ksc-users,cn=groups,ou=test,o=kadai",
+            "cn=g02,cn=groups,ou=test,o=kadai",
             "cn=g01,cn=groups,ou=test,o=kadai");
     assertThat(response.getBody().getRoles())
         .contains(KadaiRole.USER)

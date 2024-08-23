@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link rel="icon" type="image/x-icon" th:href="@{/img/logo.png}">
+    <link rel="icon" th:href="@{/img/logo.png}" type="image/x-icon">
     <title>Kadai login</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap/4.1.3/bootstrap.min.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap/4.1.3/bootstrap.min.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}" type="text/css"/>
 </head>
 <body>
 
@@ -12,12 +12,12 @@
     <h1 class="row justify-content-center">Welcome to Kadai</h1>
     <div class="row justify-content-center">
         <div>
-            <img th:src="@{/img/logo.png}" class="logo" alt="memorynotfound logo"/>
+            <img alt="memorynotfound logo" class="logo" th:src="@{/img/logo.png}"/>
         </div>
     </div>
     <div class="row justify-content-center align-items-center">
         <div class="col-xs-12 col-md-6">
-            <form th:action="@{/login}" method="post">
+            <form method="post" th:action="@{/login}">
                 <div th:if="${param.error}">
                     <div class="alert alert-danger">
                         Invalid username or password.
@@ -30,28 +30,28 @@
                 </div>
                 <div class="form-group">
                     <label for="username">Username</label>:
-                    <input type="text"
+                    <input autofocus="autofocus"
+                           class="form-control"
                            id="username"
                            name="username"
-                           class="form-control"
-                           autofocus="autofocus"
-                           placeholder="Username">
+                           placeholder="Username"
+                           type="text">
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>:
-                    <input type="password"
+                    <input class="form-control"
                            id="password"
                            name="password"
-                           class="form-control"
-                           placeholder="Password">
+                           placeholder="Password"
+                           type="password">
                 </div>
                 <div class="form-group">
                     <div class="row justify-content-center">
                         <div class="col-sm-6 col-sm-offset-3">
-                            <input type="submit"
-                                   name="login-submit"
+                            <input class="form-control btn btn-info"
                                    id="login-submit"
-                                   class="form-control btn btn-info"
+                                   name="login-submit"
+                                   type="submit"
                                    value="Log In">
                         </div>
                     </div>

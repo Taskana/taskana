@@ -44,6 +44,10 @@ public class TaskCleanupJob extends AbstractKadaiJob {
         kadaiEngine.getConfiguration().isTaskCleanupJobAllCompletedSameParentBusiness();
   }
 
+  public static Duration getLockExpirationPeriod(KadaiConfiguration kadaiConfiguration) {
+    return kadaiConfiguration.getTaskCleanupJobLockExpirationPeriod();
+  }
+
   @Override
   public void execute() {
     Instant completedBefore = Instant.now().minus(minimumAge);
@@ -60,10 +64,6 @@ public class TaskCleanupJob extends AbstractKadaiJob {
     } catch (Exception e) {
       throw new SystemException("Error while processing TaskCleanupJob.", e);
     }
-  }
-
-  public static Duration getLockExpirationPeriod(KadaiConfiguration kadaiConfiguration) {
-    return kadaiConfiguration.getTaskCleanupJobLockExpirationPeriod();
   }
 
   @Override

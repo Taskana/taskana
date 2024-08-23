@@ -123,38 +123,6 @@ public abstract class AbstractAccTest {
     return historyService;
   }
 
-  protected TaskHistoryQueryMapper getHistoryQueryMapper()
-      throws NoSuchFieldException, IllegalAccessException {
-
-    Field sessionManagerField = KadaiEngineImpl.class.getDeclaredField("sessionManager");
-    sessionManagerField.setAccessible(true);
-    SqlSessionManager sqlSessionManager =
-        (SqlSessionManager) sessionManagerField.get(kadaiEngine);
-
-    return sqlSessionManager.getMapper(TaskHistoryQueryMapper.class);
-  }
-
-  protected JobMapper getJobMapper() throws NoSuchFieldException, IllegalAccessException {
-
-    Field sessionManagerField = KadaiEngineImpl.class.getDeclaredField("sessionManager");
-    sessionManagerField.setAccessible(true);
-    SqlSessionManager sqlSessionManager =
-        (SqlSessionManager) sessionManagerField.get(kadaiEngine);
-
-    return sqlSessionManager.getMapper(JobMapper.class);
-  }
-
-  protected ObjectReference createObjectRef(
-      String company, String system, String systemInstance, String type, String value) {
-    ObjectReferenceImpl objectRef = new ObjectReferenceImpl();
-    objectRef.setCompany(company);
-    objectRef.setSystem(system);
-    objectRef.setSystemInstance(systemInstance);
-    objectRef.setType(type);
-    objectRef.setValue(value);
-    return objectRef;
-  }
-
   protected static WorkbasketHistoryEventMapper getWorkbasketHistoryEventMapper() {
     try {
       Field sessionManager = KadaiEngineImpl.class.getDeclaredField("sessionManager");
@@ -189,5 +157,35 @@ public abstract class AbstractAccTest {
   @BeforeAll
   static void setupTest() throws Exception {
     resetDb(null);
+  }
+
+  protected TaskHistoryQueryMapper getHistoryQueryMapper()
+      throws NoSuchFieldException, IllegalAccessException {
+
+    Field sessionManagerField = KadaiEngineImpl.class.getDeclaredField("sessionManager");
+    sessionManagerField.setAccessible(true);
+    SqlSessionManager sqlSessionManager = (SqlSessionManager) sessionManagerField.get(kadaiEngine);
+
+    return sqlSessionManager.getMapper(TaskHistoryQueryMapper.class);
+  }
+
+  protected JobMapper getJobMapper() throws NoSuchFieldException, IllegalAccessException {
+
+    Field sessionManagerField = KadaiEngineImpl.class.getDeclaredField("sessionManager");
+    sessionManagerField.setAccessible(true);
+    SqlSessionManager sqlSessionManager = (SqlSessionManager) sessionManagerField.get(kadaiEngine);
+
+    return sqlSessionManager.getMapper(JobMapper.class);
+  }
+
+  protected ObjectReference createObjectRef(
+      String company, String system, String systemInstance, String type, String value) {
+    ObjectReferenceImpl objectRef = new ObjectReferenceImpl();
+    objectRef.setCompany(company);
+    objectRef.setSystem(system);
+    objectRef.setSystemInstance(systemInstance);
+    objectRef.setType(type);
+    objectRef.setValue(value);
+    return objectRef;
   }
 }

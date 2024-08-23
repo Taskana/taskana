@@ -9,22 +9,6 @@ import java.util.Optional;
 
 public class WorkbasketAccessItemQueryFilterParameter
     implements QueryParameter<WorkbasketAccessItemQuery, Void> {
-  public String[] getWorkbasketKey() {
-    return workbasketKey;
-  }
-
-  public String[] getWorkbasketKeyLike() {
-    return workbasketKeyLike;
-  }
-
-  public String[] getAccessId() {
-    return accessId;
-  }
-
-  public String[] getAccessIdLike() {
-    return accessIdLike;
-  }
-
   @Schema(
       name = "workbasket-key",
       description = "Filter by the key of the Workbasket. This is an exact match.")
@@ -65,6 +49,22 @@ public class WorkbasketAccessItemQueryFilterParameter
     this.workbasketKeyLike = workbasketKeyLike;
     this.accessId = accessId;
     this.accessIdLike = accessIdLike;
+  }
+
+  public String[] getWorkbasketKey() {
+    return workbasketKey;
+  }
+
+  public String[] getWorkbasketKeyLike() {
+    return workbasketKeyLike;
+  }
+
+  public String[] getAccessId() {
+    return accessId;
+  }
+
+  public String[] getAccessIdLike() {
+    return accessIdLike;
   }
 
   @Override

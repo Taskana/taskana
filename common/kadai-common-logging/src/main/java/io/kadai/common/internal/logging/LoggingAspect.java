@@ -21,6 +21,27 @@ public class LoggingAspect {
   public static final String ENABLE_LOGGING_ASPECT_PROPERTY_KEY = "enableLoggingAspect";
   private static final Map<String, Logger> CLASS_TO_LOGGER = new ConcurrentHashMap<>();
 
+  // This method exists, so that we can mock the system property during testing.
+  public static boolean isLoggingAspectEnabled() {
+    return LazyHolder.LOGGING_ASPECT_ENABLED;
+  }
+
+  private static String mapParametersNameValue(String[] parameterNames, Object[] values) {
+    Map<String, Object> parametersNameToValue = new HashMap<>();
+
+    if (parameterNames.length > 0) {
+      for (int i = 0; i < parameterNames.length; i++) {
+        parametersNameToValue.put(parameterNames[i], values[i]);
+      }
+    }
+
+    StringBuilder stringBuilder = new StringBuilder();
+    for (Entry<String, Object> parameter : parametersNameToValue.entrySet()) {
+      stringBuilder.append(parameter.getKey()).append(" = ").append(parameter.getValue());
+    }
+    return stringBuilder.toString();
+  }
+
   @Pointcut(
       "!@annotation(io.kadai.common.internal.logging.NoLogging)"
           + " && !within(@io.kadai.common.internal.logging.NoLogging *)"
@@ -32,11 +53,6 @@ public class LoggingAspect {
           + " && !execution(boolean *.canEqual(Object))"
           + " && !execution(boolean *.equals(Object))")
   public void traceLogging() {}
-
-  // This method exists, so that we can mock the system property during testing.
-  public static boolean isLoggingAspectEnabled() {
-    return LazyHolder.LOGGING_ASPECT_ENABLED;
-  }
 
   @Before("traceLogging()")
   public void beforeMethodExecuted(JoinPoint joinPoint) {
@@ -79,22 +95,6 @@ public class LoggingAspect {
         }
       }
     }
-  }
-
-  private static String mapParametersNameValue(String[] parameterNames, Object[] values) {
-    Map<String, Object> parametersNameToValue = new HashMap<>();
-
-    if (parameterNames.length > 0) {
-      for (int i = 0; i < parameterNames.length; i++) {
-        parametersNameToValue.put(parameterNames[i], values[i]);
-      }
-    }
-
-    StringBuilder stringBuilder = new StringBuilder();
-    for (Entry<String, Object> parameter : parametersNameToValue.entrySet()) {
-      stringBuilder.append(parameter.getKey()).append(" = ").append(parameter.getValue());
-    }
-    return stringBuilder.toString();
   }
 
   // This Initialization-on-demand holder idiom is necessary so that the retrieval of the system

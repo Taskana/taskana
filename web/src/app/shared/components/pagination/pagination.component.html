@@ -1,17 +1,19 @@
-<div class="pagination" #pagination>
-  <mat-paginator class="pagination__mat-paginator" [length]="page?.totalElements"
-                 hidePageSize="true" [pageSize]="page?.size" (page)="changeToPage($event)" [showFirstLastButtons]="true"
+<div #pagination class="pagination">
+  <mat-paginator (page)="changeToPage($event)" [length]="page?.totalElements"
                  [ngClass]="
                  {'pagination__mat-paginator--expanded': expanded,
-                 'pagination__mat-paginator--collapsed': !expanded }"></mat-paginator>
-  <div class="pagination__go-to" *ngIf="expanded">
+                 'pagination__mat-paginator--collapsed': !expanded }" [pageSize]="page?.size"
+                 [showFirstLastButtons]="true" class="pagination__mat-paginator"
+                 hidePageSize="true"></mat-paginator>
+  <div *ngIf="expanded" class="pagination__go-to">
     <div class="pagination__go-to-label">Page:</div>
     <mat-form-field>
-      <input id="inputTypeAhead" matInput type="text" [matAutocomplete]="auto" [(ngModel)]="pageSelected"
-             name="accessId"
-             (ngModelChange)="filter(pageSelected)" (focus)="filter(pageSelected)" (click)="onSelectText()"/>
-      <mat-autocomplete #autoComplete autoActiveFirstOption (optionSelected)="goToPage($event.option.value)"
-                        #auto="matAutocomplete">
+      <input (click)="onSelectText()" (focus)="filter(pageSelected)" (ngModelChange)="filter(pageSelected)"
+             [(ngModel)]="pageSelected" [matAutocomplete]="auto"
+             id="inputTypeAhead"
+             matInput name="accessId" type="text"/>
+      <mat-autocomplete #auto="matAutocomplete" #autoComplete (optionSelected)="goToPage($event.option.value)"
+                        autoActiveFirstOption>
         <mat-option *ngFor="let pageNumber of filteredPages" [value]="pageNumber">{{ pageNumber }}</mat-option>
       </mat-autocomplete>
     </mat-form-field>

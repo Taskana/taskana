@@ -51,8 +51,7 @@ public class SimpleHistoryServiceImpl implements KadaiHistory {
       Field internalKadaiEngineImpl =
           KadaiEngineImpl.class.getDeclaredField("internalKadaiEngineImpl");
       internalKadaiEngineImpl.setAccessible(true);
-      this.internalKadaiEngine =
-          (InternalKadaiEngine) internalKadaiEngineImpl.get(kadaiEngine);
+      this.internalKadaiEngine = (InternalKadaiEngine) internalKadaiEngineImpl.get(kadaiEngine);
       sessionManager = KadaiEngineImpl.class.getDeclaredField("sessionManager");
       sessionManager.setAccessible(true);
     } catch (NoSuchFieldException e) {

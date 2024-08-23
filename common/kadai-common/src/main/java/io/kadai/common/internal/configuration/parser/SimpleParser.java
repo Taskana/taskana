@@ -21,6 +21,13 @@ public class SimpleParser<T> implements PropertyParser<T> {
     this.parseFunction = parseFunction;
   }
 
+  protected static List<String> splitStringAndTrimElements(String str, String separator) {
+    return Arrays.stream(str.split(Pattern.quote(separator)))
+        .filter(not(String::isEmpty))
+        .map(String::trim)
+        .toList();
+  }
+
   @Override
   public Optional<T> parse(String value, String separator, Type type) {
     Class<?> rawClass = ReflectionUtil.getRawClass(type);
@@ -36,12 +43,5 @@ public class SimpleParser<T> implements PropertyParser<T> {
   @Override
   public Class<?> getTargetClass() {
     return targetClass;
-  }
-
-  protected static List<String> splitStringAndTrimElements(String str, String separator) {
-    return Arrays.stream(str.split(Pattern.quote(separator)))
-        .filter(not(String::isEmpty))
-        .map(String::trim)
-        .toList();
   }
 }

@@ -83,6 +83,34 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
     return new ComparableVersion(version);
   }
 
+  private static Item parseItem(boolean isDigit, String buf) {
+    if (isDigit) {
+      buf = stripLeadingZeroes(buf);
+      if (buf.length() <= MAX_INT_ITEM_LENGTH) {
+        // lower than 2^31
+        return new IntItem(buf);
+      } else if (buf.length() <= MAX_LONG_ITEM_LENGTH) {
+        // lower than 2^63
+        return new LongItem(buf);
+      }
+      return new BigIntegerItem(buf);
+    }
+    return new StringItem(buf, false);
+  }
+
+  private static String stripLeadingZeroes(String buf) {
+    if (buf == null || buf.isEmpty()) {
+      return "0";
+    }
+    for (int i = 0; i < buf.length(); ++i) {
+      char c = buf.charAt(i);
+      if (c != '0') {
+        return buf.substring(i);
+      }
+    }
+    return buf;
+  }
+
   public final void parseVersion(String version) {
     this.value = version;
 
@@ -162,34 +190,6 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
       canonical = items.toString();
     }
     return canonical;
-  }
-
-  private static Item parseItem(boolean isDigit, String buf) {
-    if (isDigit) {
-      buf = stripLeadingZeroes(buf);
-      if (buf.length() <= MAX_INT_ITEM_LENGTH) {
-        // lower than 2^31
-        return new IntItem(buf);
-      } else if (buf.length() <= MAX_LONG_ITEM_LENGTH) {
-        // lower than 2^63
-        return new LongItem(buf);
-      }
-      return new BigIntegerItem(buf);
-    }
-    return new StringItem(buf, false);
-  }
-
-  private static String stripLeadingZeroes(String buf) {
-    if (buf == null || buf.isEmpty()) {
-      return "0";
-    }
-    for (int i = 0; i < buf.length(); ++i) {
-      char c = buf.charAt(i);
-      if (c != '0') {
-        return buf.substring(i);
-      }
-    }
-    return buf;
   }
 
   @Override
@@ -472,16 +472,6 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
       this.value = ALIASES.getProperty(value, value);
     }
 
-    @Override
-    public int getType() {
-      return STRING_ITEM;
-    }
-
-    @Override
-    public boolean isNull() {
-      return (comparableQualifier(value).compareTo(RELEASE_VERSION_INDEX) == 0);
-    }
-
     /**
      * Returns a comparable value for a qualifier.
      *
@@ -500,6 +490,16 @@ public class ComparableVersion implements Comparable<ComparableVersion> {
       int i = QUALIFIERS.indexOf(qualifier);
 
       return i == -1 ? (QUALIFIERS.size() + "-" + qualifier) : String.valueOf(i);
+    }
+
+    @Override
+    public int getType() {
+      return STRING_ITEM;
+    }
+
+    @Override
+    public boolean isNull() {
+      return (comparableQualifier(value).compareTo(RELEASE_VERSION_INDEX) == 0);
     }
 
     @Override

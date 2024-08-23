@@ -32,10 +32,10 @@ public class AdvancedSpreadsheetAdapter extends BaseAdapter {
     List<SpreadsheetCell> cells = headerRow.getCells();
 
     for (SpreadsheetCell indexedCell : cells) {
-      if("input".equalsIgnoreCase(context.resolveCellContent(indexedCell))) {
+      if ("input".equalsIgnoreCase(context.resolveCellContent(indexedCell))) {
         inputColumns.add(indexedCell.getColumn());
       }
-      if("output".equalsIgnoreCase(context.resolveCellContent(indexedCell))) {
+      if ("output".equalsIgnoreCase(context.resolveCellContent(indexedCell))) {
         outputColumns.add(indexedCell.getColumn());
       }
     }
@@ -49,7 +49,7 @@ public class AdvancedSpreadsheetAdapter extends BaseAdapter {
       fillHvc(context, column, hvc);
       columns.addInputHeader(hvc);
     }
-    idCounter= 0;
+    idCounter = 0;
     for (String column : outputColumns) {
       idCounter++;
       HeaderValuesContainer hvc = new HeaderValuesContainer();
@@ -69,9 +69,7 @@ public class AdvancedSpreadsheetAdapter extends BaseAdapter {
     if (row.getCell("A") != null) {
       final String hitPolicyString = context.resolveCellContent(row.getCell("A")).toUpperCase();
       return HitPolicy.valueOf(hitPolicyString);
-    }
-    else
-    {
+    } else {
       return null;
     }
   }

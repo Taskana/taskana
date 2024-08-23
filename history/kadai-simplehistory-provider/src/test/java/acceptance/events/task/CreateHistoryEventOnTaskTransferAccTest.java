@@ -200,7 +200,7 @@ class CreateHistoryEventOnTaskTransferAccTest extends AbstractAccTest {
                 wrap(
                     (String taskId) ->
                         taskService.transferWithOwner(
-                                taskId, "WBI:100000000000000000000000000000000007", "user-1-2"))),
+                            taskId, "WBI:100000000000000000000000000000000007", "user-1-2"))),
             Quadruple.of(
                 "Using WorkbasketId; Task has Attachment and secondary Object Reference",
                 "TKI:000000000000000000000000000000000001",
@@ -208,7 +208,7 @@ class CreateHistoryEventOnTaskTransferAccTest extends AbstractAccTest {
                 wrap(
                     (String taskId) ->
                         taskService.transferWithOwner(
-                                taskId, "WBI:100000000000000000000000000000000007", "user-1-2"))),
+                            taskId, "WBI:100000000000000000000000000000000007", "user-1-2"))),
             Quadruple.of(
                 "Using WorkbasketKey and Domain",
                 "TKI:000000000000000000000000000000000006",
@@ -216,7 +216,7 @@ class CreateHistoryEventOnTaskTransferAccTest extends AbstractAccTest {
                 wrap(
                     (String taskId) ->
                         taskService.transferWithOwner(
-                                taskId, "USER-1-2", "DOMAIN_A", "user-1-2"))));
+                            taskId, "USER-1-2", "DOMAIN_A", "user-1-2"))));
     ThrowingConsumer<Quadruple<String, String, String, Consumer<String>>> test =
         q -> {
           String taskId = q.getSecond();
@@ -289,7 +289,7 @@ class CreateHistoryEventOnTaskTransferAccTest extends AbstractAccTest {
                 wrap(
                     (List<String> taskIds) ->
                         taskService.transferTasksWithOwner(
-                                "USER-1-2", "DOMAIN_A", taskIds, "user-1-2"))));
+                            "USER-1-2", "DOMAIN_A", taskIds, "user-1-2"))));
     ThrowingConsumer<Triplet<String, Map<String, String>, Consumer<List<String>>>> test =
         t -> {
           Map<String, String> taskIds = t.getMiddle();

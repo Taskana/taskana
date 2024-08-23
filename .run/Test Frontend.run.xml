@@ -1,12 +1,12 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Test Frontend" type="JavaScriptTestRunnerJest">
-    <config-file value="$PROJECT_DIR$/web/jest.config.js" />
-    <node-interpreter value="project" />
-    <node-options value="" />
-    <jest-package value="$PROJECT_DIR$/web/node_modules/jest" />
-    <working-dir value="$PROJECT_DIR$/web" />
-    <envs />
-    <scope-kind value="ALL" />
-    <method v="2" />
-  </configuration>
+    <configuration default="false" name="Test Frontend" type="JavaScriptTestRunnerJest">
+        <config-file value="$PROJECT_DIR$/web/jest.config.js"/>
+        <node-interpreter value="project"/>
+        <node-options value=""/>
+        <jest-package value="$PROJECT_DIR$/web/node_modules/jest"/>
+        <working-dir value="$PROJECT_DIR$/web"/>
+        <envs/>
+        <scope-kind value="ALL"/>
+        <method v="2"/>
+    </configuration>
 </component>

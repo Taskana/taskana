@@ -19,14 +19,14 @@ import outside.of.io.kadai.OutsideOfProKadaiPackageLoggingTestClass;
 @NoLogging
 class LoggingAspectTest {
 
-  @BeforeEach
-  public void clearLoggers() {
-    TestLoggerFactory.clear();
-  }
-
   @BeforeAll
   public static void setup() {
     System.setProperty(LoggingAspect.ENABLE_LOGGING_ASPECT_PROPERTY_KEY, "true");
+  }
+
+  @BeforeEach
+  public void clearLoggers() {
+    TestLoggerFactory.clear();
   }
 
   @Test

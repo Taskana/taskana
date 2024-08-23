@@ -13,7 +13,6 @@
 package org.camunda.bpm.dmn.xlsx;
 
 import java.util.List;
-import org.camunda.bpm.dmn.xlsx.CellContentHandler;
 import org.camunda.bpm.dmn.xlsx.api.Spreadsheet;
 import org.camunda.bpm.dmn.xlsx.api.SpreadsheetAdapter;
 

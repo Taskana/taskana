@@ -1,15 +1,17 @@
-<nav mat-tab-nav-bar class="nav-bar">
-  <a mat-tab-link class="nav-bar__tasks--priority" routerLink="/kadai/monitor/tasks-priority"
-     [active]="selectedTab === 'tasks-priority'"
-     (click)="selectedTab = 'tasks-priority'">Tasks by Priority</a>
-  <a mat-tab-link class="nav-bar__tasks--status" routerLink="/kadai/monitor/tasks-status"
-     [active]="selectedTab === 'tasks-status'"
-     (click)="selectedTab = 'tasks-status'">Tasks by Status </a>
-  <a mat-tab-link class="nav-bar__workbaskets" routerLink="/kadai/monitor/workbaskets"
-     [active]="selectedTab === 'workbaskets'" (click)="selectedTab = 'workbaskets'">Workbaskets</a>
-  <a mat-tab-link class="nav-bar__classifications" routerLink="/kadai/monitor/classifications"
-     [active]="selectedTab === 'classifications'" (click)="selectedTab = 'classifications'">Classifications</a>
-  <a mat-tab-link class="nav-bar__timestamp" routerLink="/kadai/monitor/timestamp"
-     [active]="selectedTab === 'timestamp'" (click)="selectedTab = 'timestamp'">Timestamp</a>
+<nav class="nav-bar" mat-tab-nav-bar>
+  <a (click)="selectedTab = 'tasks-priority'" [active]="selectedTab === 'tasks-priority'"
+     class="nav-bar__tasks--priority"
+     mat-tab-link
+     routerLink="/kadai/monitor/tasks-priority">Tasks by Priority</a>
+  <a (click)="selectedTab = 'tasks-status'" [active]="selectedTab === 'tasks-status'" class="nav-bar__tasks--status"
+     mat-tab-link
+     routerLink="/kadai/monitor/tasks-status">Tasks by Status </a>
+  <a (click)="selectedTab = 'workbaskets'" [active]="selectedTab === 'workbaskets'" class="nav-bar__workbaskets"
+     mat-tab-link routerLink="/kadai/monitor/workbaskets">Workbaskets</a>
+  <a (click)="selectedTab = 'classifications'" [active]="selectedTab === 'classifications'"
+     class="nav-bar__classifications"
+     mat-tab-link routerLink="/kadai/monitor/classifications">Classifications</a>
+  <a (click)="selectedTab = 'timestamp'" [active]="selectedTab === 'timestamp'" class="nav-bar__timestamp"
+     mat-tab-link routerLink="/kadai/monitor/timestamp">Timestamp</a>
 </nav>
 <router-outlet></router-outlet>

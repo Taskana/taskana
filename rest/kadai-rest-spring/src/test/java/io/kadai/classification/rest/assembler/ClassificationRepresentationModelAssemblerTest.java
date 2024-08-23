@@ -29,6 +29,16 @@ class ClassificationRepresentationModelAssemblerTest {
     this.classificationService = classificationService;
   }
 
+  private static void testEquality(
+      Classification entity, ClassificationRepresentationModel repModel) {
+    ClassificationSummaryRepresentationModelAssemblerTest.testEquality(entity, repModel);
+
+    assertThat(entity.getIsValidInDomain()).isEqualTo(repModel.getIsValidInDomain());
+    assertThat(entity.getCreated()).isEqualTo(repModel.getCreated());
+    assertThat(entity.getModified()).isEqualTo(repModel.getModified());
+    assertThat(entity.getDescription()).isEqualTo(repModel.getDescription());
+  }
+
   @Test
   void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel() {
     // given
@@ -135,15 +145,5 @@ class ClassificationRepresentationModelAssemblerTest {
             RestEndpoints.URL_CLASSIFICATIONS_ID.replaceAll(
                 "\\{.*}", repModel.getClassificationId()))
         .isEqualTo(repModel.getRequiredLink("self").getHref());
-  }
-
-  private static void testEquality(
-      Classification entity, ClassificationRepresentationModel repModel) {
-    ClassificationSummaryRepresentationModelAssemblerTest.testEquality(entity, repModel);
-
-    assertThat(entity.getIsValidInDomain()).isEqualTo(repModel.getIsValidInDomain());
-    assertThat(entity.getCreated()).isEqualTo(repModel.getCreated());
-    assertThat(entity.getModified()).isEqualTo(repModel.getModified());
-    assertThat(entity.getDescription()).isEqualTo(repModel.getDescription());
   }
 }

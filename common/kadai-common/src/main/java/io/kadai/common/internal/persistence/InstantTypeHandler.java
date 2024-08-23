@@ -14,6 +14,13 @@ import org.apache.ibatis.type.JdbcType;
 /** Instruct jdbc driver to interpret timestamps as being in utc timezone. */
 public class InstantTypeHandler extends BaseTypeHandler<Instant> {
 
+  private static Instant getInstant(Timestamp timestamp) {
+    if (timestamp != null) {
+      return timestamp.toInstant();
+    }
+    return null;
+  }
+
   @Override
   public void setNonNullParameter(PreparedStatement ps, int i, Instant parameter, JdbcType jdbcType)
       throws SQLException {
@@ -40,12 +47,5 @@ public class InstantTypeHandler extends BaseTypeHandler<Instant> {
     Timestamp timestamp =
         cs.getTimestamp(columnIndex, Calendar.getInstance(TimeZone.getTimeZone("UTC")));
     return getInstant(timestamp);
-  }
-
-  private static Instant getInstant(Timestamp timestamp) {
-    if (timestamp != null) {
-      return timestamp.toInstant();
-    }
-    return null;
   }
 }

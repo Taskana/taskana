@@ -31,11 +31,9 @@ public class KadaiProducers {
   private static final Logger LOGGER = LoggerFactory.getLogger(KadaiProducers.class);
 
   private static final String KADAI_PROPERTIES = "kadai.properties";
-
+  private final KadaiEngine kadaiEngine;
   // initalized during post construct
   private KadaiConfiguration kadaiConfiguration;
-
-  private final KadaiEngine kadaiEngine;
 
   public KadaiProducers() {
     this.kadaiEngine = null;

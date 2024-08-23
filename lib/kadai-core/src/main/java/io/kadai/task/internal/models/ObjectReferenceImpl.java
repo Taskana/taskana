@@ -33,6 +33,24 @@ public class ObjectReferenceImpl implements ObjectReference {
     value = copyFrom.value;
   }
 
+  public static void validate(ObjectReference objectReference, String objRefType, String objName)
+      throws InvalidArgumentException {
+    // check that all values in the ObjectReference are set correctly
+    if (objectReference == null) {
+      throw new InvalidArgumentException(
+          String.format("%s of %s must not be null.", objRefType, objName));
+    } else if (objectReference.getCompany() == null || objectReference.getCompany().isEmpty()) {
+      throw new InvalidArgumentException(
+          String.format("Company of %s of %s must not be empty", objRefType, objName));
+    } else if (objectReference.getType() == null || objectReference.getType().length() == 0) {
+      throw new InvalidArgumentException(
+          String.format("Type of %s of %s must not be empty", objRefType, objName));
+    } else if (objectReference.getValue() == null || objectReference.getValue().length() == 0) {
+      throw new InvalidArgumentException(
+          String.format("Value of %s of %s must not be empty", objRefType, objName));
+    }
+  }
+
   @Override
   public String getId() {
     return id;
@@ -99,24 +117,6 @@ public class ObjectReferenceImpl implements ObjectReference {
   @Override
   public ObjectReferenceImpl copy() {
     return new ObjectReferenceImpl(this);
-  }
-
-  public static void validate(ObjectReference objectReference, String objRefType, String objName)
-      throws InvalidArgumentException {
-    // check that all values in the ObjectReference are set correctly
-    if (objectReference == null) {
-      throw new InvalidArgumentException(
-          String.format("%s of %s must not be null.", objRefType, objName));
-    } else if (objectReference.getCompany() == null || objectReference.getCompany().isEmpty()) {
-      throw new InvalidArgumentException(
-          String.format("Company of %s of %s must not be empty", objRefType, objName));
-    } else if (objectReference.getType() == null || objectReference.getType().length() == 0) {
-      throw new InvalidArgumentException(
-          String.format("Type of %s of %s must not be empty", objRefType, objName));
-    } else if (objectReference.getValue() == null || objectReference.getValue().length() == 0) {
-      throw new InvalidArgumentException(
-          String.format("Value of %s of %s must not be empty", objRefType, objName));
-    }
   }
 
   @Override

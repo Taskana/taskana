@@ -13,8 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class BulkOperationResultsRepresentationModelAssembler
     implements RepresentationModelAssembler<
-        BulkOperationResults<String, KadaiException>,
-        BulkOperationResultsRepresentationModel> {
+        BulkOperationResults<String, KadaiException>, BulkOperationResultsRepresentationModel> {
 
   @NonNull
   @Override

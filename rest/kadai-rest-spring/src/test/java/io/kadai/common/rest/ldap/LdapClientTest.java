@@ -49,16 +49,16 @@ class LdapClientTest {
   @Spy @InjectMocks LdapClient cut;
 
   @ParameterizedTest
-  @CsvSource(value = {
-      "cn=developersgroup,ou=groups,o=kadaitest;cn=developersgroup,ou=groups",
-      "cn=developers:permission,cn=groups;"
-          + "cn=developers:permission,cn=groups",
-      "cn=Developersgroup,ou=groups,o=kadaitest;cn=developersgroup,ou=groups",
-      "cn=Developers:Permission,cn=groups,o=kadaitest;"
-          + "cn=developers:permission,cn=groups"
-  }, delimiter = ';')
-  void should_SearchGroupOrPermissionByDnAndConvertAccessIdToLowercase_For_LdapCall(String arg1,
-      String arg2) throws InvalidNameException {
+  @CsvSource(
+      value = {
+        "cn=developersgroup,ou=groups,o=kadaitest;cn=developersgroup,ou=groups",
+        "cn=developers:permission,cn=groups;" + "cn=developers:permission,cn=groups",
+        "cn=Developersgroup,ou=groups,o=kadaitest;cn=developersgroup,ou=groups",
+        "cn=Developers:Permission,cn=groups,o=kadaitest;" + "cn=developers:permission,cn=groups"
+      },
+      delimiter = ';')
+  void should_SearchGroupOrPermissionByDnAndConvertAccessIdToLowercase_For_LdapCall(
+      String arg1, String arg2) throws InvalidNameException {
     setUpEnvMock();
     cut.init();
 
@@ -79,7 +79,11 @@ class LdapClientTest {
     AccessIdRepresentationModel user = new AccessIdRepresentationModel("testU", "testUId");
 
     when(ldapTemplate.search(
-        any(String.class), any(), anyInt(), any(), any(LdapClient.PermissionContextMapper.class)))
+            any(String.class),
+            any(),
+            anyInt(),
+            any(),
+            any(LdapClient.PermissionContextMapper.class)))
         .thenReturn(List.of(permission));
     when(ldapTemplate.search(
             any(String.class), any(), anyInt(), any(), any(LdapClient.GroupContextMapper.class)))
@@ -157,9 +161,9 @@ class LdapClientTest {
       throws InvalidArgumentException, InvalidNameException {
 
     setUpEnvMock();
-    lenient().when(this.environment.getProperty("kadai.ldap.groupsOfUser.type"))
-        .thenReturn("dn");
-    lenient().when(this.environment.getProperty("kadai.ldap.permissionsOfUser.type"))
+    lenient().when(this.environment.getProperty("kadai.ldap.groupsOfUser.type")).thenReturn("dn");
+    lenient()
+        .when(this.environment.getProperty("kadai.ldap.permissionsOfUser.type"))
         .thenReturn("dn");
     lenient()
         .when(
@@ -176,8 +180,10 @@ class LdapClientTest {
     cut.searchGroupsAccessIdIsMemberOf("user-1-1");
     cut.searchPermissionsAccessIdHas("user-1-1");
 
-    String expectedFilterValue = "(&(!(permission=*))"
-        + "(&(objectclass=groupOfUniqueNames)(memberUid=uid=user-1-1,cn=users,OU=Test,O=KADAI)))";
+    String expectedFilterValue =
+        "(&(!(permission=*))"
+            + "(&(objectclass=groupOfUniqueNames)(memberUid=uid=user-1-1,cn=users,OU=Test,"
+            + "O=KADAI)))";
     verify(ldapTemplate)
         .search(
             any(String.class),
@@ -186,8 +192,10 @@ class LdapClientTest {
             any(),
             any(LdapClient.GroupContextMapper.class));
 
-    String expectedFilterValueForPermission = "(&(permission=*)"
-        + "(&(objectclass=groupOfUniqueNames)(memberUid=uid=user-1-1,cn=users,OU=Test,O=KADAI)))";
+    String expectedFilterValueForPermission =
+        "(&(permission=*)"
+            + "(&(objectclass=groupOfUniqueNames)(memberUid=uid=user-1-1,cn=users,OU=Test,"
+            + "O=KADAI)))";
     verify(ldapTemplate)
         .search(
             any(String.class),
@@ -270,7 +278,7 @@ class LdapClientTest {
               {"kadai.ldap.permissionSearchFilterName", "objectclass"},
               {"kadai.ldap.permissionSearchBase", "ou=groups"},
               {"kadai.ldap.userPermissionsAttribute", "permission"},
-                {"kadai.ldap.useDnForGroups", "false"},
+              {"kadai.ldap.useDnForGroups", "false"},
             })
         .forEach(
             strings ->

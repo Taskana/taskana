@@ -12,16 +12,16 @@ public final class CustomHoliday {
     this.month = month;
   }
 
+  public static CustomHoliday of(Integer day, Integer month) {
+    return new CustomHoliday(day, month);
+  }
+
   public Integer getDay() {
     return day;
   }
 
   public Integer getMonth() {
     return month;
-  }
-
-  public static CustomHoliday of(Integer day, Integer month) {
-    return new CustomHoliday(day, month);
   }
 
   @Override

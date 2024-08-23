@@ -82,32 +82,6 @@ class AbstractKadaiJobAccTest {
     assertThat(jobsToRun).extracting(ScheduledJob::getDue).containsExactly(firstDue.plus(runEvery));
   }
 
-  @Nested
-  @TestInstance(Lifecycle.PER_CLASS)
-  class CleanCompletedTasks implements KadaiConfigurationModifier {
-    @KadaiInject KadaiEngine kadaiEngine;
-
-    @KadaiInject JobMapper jobMapper;
-
-    @Override
-    public Builder modify(Builder builder) {
-      return builder
-          .taskCleanupJobEnabled(true)
-          .jobRunEvery(Duration.ofMillis(1))
-          .jobFirstRun(Instant.now().plus(5, ChronoUnit.MINUTES));
-    }
-
-    @WithAccessId(user = "admin")
-    @Test
-    void should_FindNoJobsToRunUntilFirstRunIsReached_When_CleanupScheduleIsInitialized()
-        throws Exception {
-      AbstractKadaiJob.initializeSchedule(kadaiEngine, TaskCleanupJob.class);
-
-      List<ScheduledJob> nextJobs = jobMapper.findJobsToRun(Instant.now());
-      assertThat(nextJobs).isEmpty();
-    }
-  }
-
   @WithAccessId(user = "admin")
   @TestFactory
   Stream<DynamicTest> should_DeleteOldCleanupJobs_When_InitializingSchedule() throws Exception {
@@ -183,5 +157,31 @@ class AbstractKadaiJobAccTest {
 
     @Override
     protected void execute() throws KadaiException {}
+  }
+
+  @Nested
+  @TestInstance(Lifecycle.PER_CLASS)
+  class CleanCompletedTasks implements KadaiConfigurationModifier {
+    @KadaiInject KadaiEngine kadaiEngine;
+
+    @KadaiInject JobMapper jobMapper;
+
+    @Override
+    public Builder modify(Builder builder) {
+      return builder
+          .taskCleanupJobEnabled(true)
+          .jobRunEvery(Duration.ofMillis(1))
+          .jobFirstRun(Instant.now().plus(5, ChronoUnit.MINUTES));
+    }
+
+    @WithAccessId(user = "admin")
+    @Test
+    void should_FindNoJobsToRunUntilFirstRunIsReached_When_CleanupScheduleIsInitialized()
+        throws Exception {
+      AbstractKadaiJob.initializeSchedule(kadaiEngine, TaskCleanupJob.class);
+
+      List<ScheduledJob> nextJobs = jobMapper.findJobsToRun(Instant.now());
+      assertThat(nextJobs).isEmpty();
+    }
   }
 }

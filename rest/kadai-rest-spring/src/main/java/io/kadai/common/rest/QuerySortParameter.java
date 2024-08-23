@@ -38,18 +38,6 @@ public class QuerySortParameter<Q extends BaseQuery<?, ?>, S extends QuerySortBy
     verifyAmountOfSortByAndOrderByMatches(sortBy, order);
   }
 
-  @Override
-  public Void apply(Q query) {
-    if (sortBy != null) {
-      for (int i = 0; i < sortBy.size(); i++) {
-        SortDirection sortDirection =
-            order == null || order.isEmpty() ? SortDirection.ASCENDING : order.get(i);
-        sortBy.get(i).applySortByForQuery(query, sortDirection);
-      }
-    }
-    return null;
-  }
-
   // this method is only static because there exists no query for the task comment entity
   public static <T> void verifyAmountOfSortByAndOrderByMatches(
       List<T> sortBy, List<SortDirection> order) throws InvalidArgumentException {
@@ -67,6 +55,18 @@ public class QuerySortParameter<Q extends BaseQuery<?, ?>, S extends QuerySortBy
       throw new InvalidArgumentException(
           "Only 'order' parameters were provided. Please also provide 'sort-by' parameter(s)");
     }
+  }
+
+  @Override
+  public Void apply(Q query) {
+    if (sortBy != null) {
+      for (int i = 0; i < sortBy.size(); i++) {
+        SortDirection sortDirection =
+            order == null || order.isEmpty() ? SortDirection.ASCENDING : order.get(i);
+        sortBy.get(i).applySortByForQuery(query, sortDirection);
+      }
+    }
+    return null;
   }
 
   @JsonProperty("sort-by")

@@ -243,8 +243,7 @@ public class LdapClient {
     List<AccessIdRepresentationModel> permissions = new ArrayList<>();
     List<String> accessIdsOfPermissions = new ArrayList<>();
     for (String groupOrPermission : dns) {
-      accessIdsOfGroupsAndPermissions.add(searchAccessIdByDn(groupOrPermission)
-          .getAccessId());
+      accessIdsOfGroupsAndPermissions.add(searchAccessIdByDn(groupOrPermission).getAccessId());
     }
     for (String groupOrPermission : accessIdsOfGroupsAndPermissions) {
       permissions.addAll(searchPermissionsByName(groupOrPermission));
@@ -266,8 +265,8 @@ public class LdapClient {
     testMinSearchForLength(name);
 
     final AndFilter andFilter = new AndFilter();
-    andFilter.and(new EqualsFilter(getPermissionSearchFilterName(),
-        getPermissionSearchFilterValue()));
+    andFilter.and(
+        new EqualsFilter(getPermissionSearchFilterName(), getPermissionSearchFilterValue()));
     final OrFilter orFilter = new OrFilter();
     orFilter.or(new WhitespaceWildcardsFilter(getUserPermissionsAttribute(), name));
     if (!CN.equals(getUserPermissionsAttribute())) {
@@ -356,8 +355,8 @@ public class LdapClient {
     }
 
     final AndFilter andFilter = new AndFilter();
-    andFilter.and(new EqualsFilter(getPermissionSearchFilterName(),
-        getPermissionSearchFilterValue()));
+    andFilter.and(
+        new EqualsFilter(getPermissionSearchFilterName(), getPermissionSearchFilterValue()));
     final OrFilter orFilter = new OrFilter();
     if (!"DN".equalsIgnoreCase(getPermissionsOfUserType())) {
       orFilter.or(new EqualsFilter(getPermissionsOfUserName(), accessId));
@@ -442,17 +441,17 @@ public class LdapClient {
         getUserSearchBase());
 
     return ldapTemplate.search(
-            getUserSearchBase(),
-            andFilter.encode(),
-            SearchControls.SUBTREE_SCOPE,
-            null,
-            new DnStringContextMapper());
+        getUserSearchBase(),
+        andFilter.encode(),
+        SearchControls.SUBTREE_SCOPE,
+        null,
+        new DnStringContextMapper());
   }
 
   private List<String> searchDnForPermissionAccessId(String accessId) {
     final AndFilter andFilter = new AndFilter();
-    andFilter.and(new EqualsFilter(getPermissionSearchFilterName(),
-        getPermissionSearchFilterValue()));
+    andFilter.and(
+        new EqualsFilter(getPermissionSearchFilterName(), getPermissionSearchFilterValue()));
     final OrFilter orFilter = new OrFilter();
     orFilter.or(new EqualsFilter(getUserPermissionsAttribute(), accessId));
     final AndFilter andFilterPermission2 = new AndFilter();
@@ -466,11 +465,11 @@ public class LdapClient {
         getPermissionSearchBase());
 
     return ldapTemplate.search(
-            getPermissionSearchBase(),
-            andFilterPermission2.encode(),
-            SearchControls.SUBTREE_SCOPE,
-            null,
-            new DnStringContextMapper());
+        getPermissionSearchBase(),
+        andFilterPermission2.encode(),
+        SearchControls.SUBTREE_SCOPE,
+        null,
+        new DnStringContextMapper());
   }
 
   private List<String> searchDnForGroupAccessId(String accessId) {
@@ -489,11 +488,11 @@ public class LdapClient {
         getPermissionSearchBase());
 
     return ldapTemplate.search(
-            getPermissionSearchBase(),
-            andFilter.encode(),
-            SearchControls.SUBTREE_SCOPE,
-            null,
-            new DnStringContextMapper());
+        getPermissionSearchBase(),
+        andFilter.encode(),
+        SearchControls.SUBTREE_SCOPE,
+        null,
+        new DnStringContextMapper());
   }
 
   /**
@@ -652,8 +651,7 @@ public class LdapClient {
   }
 
   public boolean useDnForGroups() {
-    String envValue =
-        LdapSettings.KADAI_LDAP_USE_DN_FOR_GROUPS.getValueFromEnv(env);
+    String envValue = LdapSettings.KADAI_LDAP_USE_DN_FOR_GROUPS.getValueFromEnv(env);
     if (envValue == null || envValue.isEmpty()) {
       return true;
     }
@@ -738,18 +736,15 @@ public class LdapClient {
   }
 
   String[] getLookUpPermissionAttributesToReturn() {
-    return new String[] {
-        getUserPermissionsAttribute(),
-        getPermissionSearchFilterName()
-    };
+    return new String[] {getUserPermissionsAttribute(), getPermissionSearchFilterName()};
   }
 
   String[] getLookUpUserAndGroupAndPermissionAttributesToReturn() {
-    return Stream.concat(Stream.concat(
-            Arrays.stream(getLookUpUserAttributesToReturn()),
-            Arrays.stream(getLookUpGroupAttributesToReturn())),
-          Arrays.stream(getLookUpPermissionAttributesToReturn())
-        )
+    return Stream.concat(
+            Stream.concat(
+                Arrays.stream(getLookUpUserAttributesToReturn()),
+                Arrays.stream(getLookUpGroupAttributesToReturn())),
+            Arrays.stream(getLookUpPermissionAttributesToReturn()))
         .toArray(String[]::new);
   }
 

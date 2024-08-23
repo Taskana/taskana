@@ -20,6 +20,17 @@ class ObjectReferenceRepresentationModelAssemblerTest {
     this.assembler = assembler;
   }
 
+  static void testEquality(
+      ObjectReference objectReference, ObjectReferenceRepresentationModel repModel) {
+    assertThat(objectReference).isNotNull();
+    assertThat(objectReference.getId()).isEqualTo(repModel.getId());
+    assertThat(objectReference.getCompany()).isEqualTo(repModel.getCompany());
+    assertThat(objectReference.getSystem()).isEqualTo(repModel.getSystem());
+    assertThat(objectReference.getSystemInstance()).isEqualTo(repModel.getSystemInstance());
+    assertThat(objectReference.getType()).isEqualTo(repModel.getType());
+    assertThat(objectReference.getValue()).isEqualTo(repModel.getValue());
+  }
+
   @Test
   void should_ReturnEntity_When_ConvertingRepresentationModelToEntity() {
     ObjectReferenceRepresentationModel repModel = new ObjectReferenceRepresentationModel();
@@ -48,16 +59,5 @@ class ObjectReferenceRepresentationModelAssemblerTest {
     ObjectReferenceRepresentationModel representationModel = assembler.toModel(entity);
 
     testEquality(entity, representationModel);
-  }
-
-  static void testEquality(
-      ObjectReference objectReference, ObjectReferenceRepresentationModel repModel) {
-    assertThat(objectReference).isNotNull();
-    assertThat(objectReference.getId()).isEqualTo(repModel.getId());
-    assertThat(objectReference.getCompany()).isEqualTo(repModel.getCompany());
-    assertThat(objectReference.getSystem()).isEqualTo(repModel.getSystem());
-    assertThat(objectReference.getSystemInstance()).isEqualTo(repModel.getSystemInstance());
-    assertThat(objectReference.getType()).isEqualTo(repModel.getType());
-    assertThat(objectReference.getValue()).isEqualTo(repModel.getValue());
   }
 }

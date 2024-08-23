@@ -29,6 +29,25 @@ class PojoTest {
 
   private static final List<Class<?>> POJO_CLASSES = getPojoClasses();
 
+  private static List<Class<?>> getPojoClasses() {
+    // TODO how to identify pojos? Is overwritten equals method enough?
+    return new ClassFileImporter()
+        .importPackages("io.kadai").stream()
+            .filter(javaClass -> javaClass.tryGetMethod("equals", Object.class).isPresent())
+            .filter(
+                javaClass ->
+                    !javaClass.getSimpleName().equals("TaskHistoryEvent")
+                        && !javaClass.getSimpleName().equals("WorkbasketHistoryEvent")
+                        && !javaClass.getSimpleName().equals("ClassificationHistoryEvent")
+                        && !javaClass.getSimpleName().equals("ComparableVersion")
+                        && !javaClass.getSimpleName().equals("StringItem")
+                        && !javaClass.getSimpleName().equals("BigIntegerItem")
+                        && !javaClass.getSimpleName().equals("IntItem")
+                        && !javaClass.getSimpleName().equals("LongItem"))
+            .map(JavaClass::reflect)
+            .collect(Collectors.toList());
+  }
+
   @Test
   void testsThatPojoClassesAreFound() {
     assertThat(POJO_CLASSES).isNotEmpty();
@@ -108,24 +127,5 @@ class PojoTest {
         .suppress(Warning.NONFINAL_FIELDS, Warning.STRICT_INHERITANCE)
         .withRedefinedSuperclass()
         .verify();
-  }
-
-  private static List<Class<?>> getPojoClasses() {
-    // TODO how to identify pojos? Is overwritten equals method enough?
-    return new ClassFileImporter()
-        .importPackages("io.kadai").stream()
-            .filter(javaClass -> javaClass.tryGetMethod("equals", Object.class).isPresent())
-            .filter(
-                javaClass ->
-                    !javaClass.getSimpleName().equals("TaskHistoryEvent")
-                        && !javaClass.getSimpleName().equals("WorkbasketHistoryEvent")
-                        && !javaClass.getSimpleName().equals("ClassificationHistoryEvent")
-                        && !javaClass.getSimpleName().equals("ComparableVersion")
-                        && !javaClass.getSimpleName().equals("StringItem")
-                        && !javaClass.getSimpleName().equals("BigIntegerItem")
-                        && !javaClass.getSimpleName().equals("IntItem")
-                        && !javaClass.getSimpleName().equals("LongItem"))
-            .map(JavaClass::reflect)
-            .collect(Collectors.toList());
   }
 }

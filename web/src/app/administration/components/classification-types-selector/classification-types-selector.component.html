@@ -2,8 +2,8 @@
   <mat-label>Type</mat-label>
   <mat-select [value]="classificationTypeSelected$ | async" class="types-selector__selected-type"
               matTooltip="Change type">
-    <mat-option class="types-selector__options" *ngFor="let classificationType of classificationTypes$ | async"
-                [value]="classificationType" (click)="select(classificationType)">
+    <mat-option (click)="select(classificationType)" *ngFor="let classificationType of classificationTypes$ | async"
+                [value]="classificationType" class="types-selector__options">
       {{ classificationType }}
     </mat-option>
   </mat-select>

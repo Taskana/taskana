@@ -103,389 +103,6 @@ class ArchitectureTest {
 
   // region Coding Guidelines
 
-  @Test
-  void testMethodNamesShouldMatchAccordingToOurGuidelines() {
-    methods()
-        .that(
-            are(
-                annotatedWith(Test.class)
-                    .or(annotatedWith(ParameterizedTest.class))
-                    .or(annotatedWith(TestFactory.class))
-                    .or(annotatedWith(TestTemplate.class))))
-        .and()
-        .areNotDeclaredIn(ArchitectureTest.class)
-        .and()
-        .areNotDeclaredIn(PojoTest.class) // we have to find a proper naming for those tests
-        .should()
-        .bePackagePrivate()
-        .andShould()
-        .haveNameMatching("^should_[A-Z][^_]+(_(For|When)_[A-Z][^_]+)?$")
-        .check(importedClasses);
-  }
-
-  @Test
-  void classesShouldNotUseJunit5Assertions() {
-    classes()
-        .that()
-        .areNotAssignableFrom(ArchitectureTest.class)
-        .should()
-        .onlyDependOnClassesThat()
-        .areNotAssignableTo(org.junit.jupiter.api.Assertions.class)
-        .because("we consistently want to use assertj in our tests")
-        .check(importedClasses);
-  }
-
-  @Test
-  void mapperClassesShouldNotUseCurrentTimestampSqlFunction() {
-    classes()
-        .that()
-        .haveSimpleNameEndingWith("Mapper")
-        .should(notUseCurrentTimestampSqlFunction())
-        .check(importedClasses);
-  }
-
-  @Test
-  void kadaiIntegrationTestsShouldOnlyHavePackagePrivateFields() {
-    classes()
-        .that()
-        .areAnnotatedWith(KadaiIntegrationTest.class)
-        .or(areNestedKadaiIntegrationTestClasses())
-        .should(onlyHaveFieldsWithNoModifierAndPrivateConstants())
-        .check(importedClasses);
-  }
-
-  @Test
-  void nestedKadaiIntegrationTestsShouldBeAnnotatedWithTestInstance() {
-    classes()
-        .that(areNestedKadaiIntegrationTestClasses())
-        .should(beAnnotatedWithTestInstancePerClass())
-        .check(importedClasses);
-  }
-
-  @Test
-  void noClassShouldThrowGenericException() {
-    noClasses().should(THROW_GENERIC_EXCEPTIONS).check(importedClasses);
-  }
-
-  @Test
-  void noClassShouldAccessStandardStreams() {
-    noClasses().should(ACCESS_STANDARD_STREAMS).check(importedClasses);
-  }
-
-  @Test
-  void utilityClassesShouldNotBeInitializable() {
-    classes()
-        .that()
-        .resideInAPackage("..util..")
-        .and()
-        .areNotNestedClasses()
-        .should()
-        .haveOnlyPrivateConstructors()
-        .check(importedClasses);
-  }
-
-  @Test
-  void noClassesShouldUseFieldInjection() {
-    noFields()
-        .should(BE_ANNOTATED_WITH_AN_INJECTION_ANNOTATION)
-        .as("no classes should use field injection")
-        .because(
-            "field injection is considered harmful; use constructor injection or setter"
-                + " injection instead; see https://stackoverflow.com/q/39890849 for"
-                + " detailed explanations")
-        .check(importedClasses);
-  }
-
-  @Test
-  void noClassesShouldUseJavaUtilLogging() {
-    noClasses().should(USE_JAVA_UTIL_LOGGING).check(importedClasses);
-  }
-
-  @Test
-  void noClassesShouldUseJodatime() {
-    noClasses()
-        .should(USE_JODATIME)
-        .because("modern Java projects use the [java.time] API instead")
-        .check(importedClasses);
-  }
-
-  // endregion
-
-  // region Dependencies
-  @Test
-  void apiClassesShouldNotDependOnInternalClasses() {
-    classes()
-        .that()
-        .resideInAPackage("..api..")
-        .and()
-        .areNotAssignableFrom(KadaiEngine.class)
-        .and()
-        .areNotAssignableTo(Interval.class)
-        .should()
-        .onlyDependOnClassesThat(
-            resideOutsideOfPackage("..io.kadai..internal..").or(assignableTo(LoggingAspect.class)))
-        .check(importedClasses);
-  }
-
-  @Test
-  @Disabled("this has way too many false positives during regular development without refactoring")
-  void packagesShouldBeFreeOfCyclicDependencies() {
-    // Frozen, so it can be improved over time:
-    // https://www.archunit.org/userguide/html/000_Index.html#_freezing_arch_rules
-    freeze(slices().matching("io.kadai.(**)").should().beFreeOfCycles()).check(importedClasses);
-  }
-
-  @Test
-  @Disabled("this has way too many false positives during regular development without refactoring")
-  void classesShouldBeFreeOfCyclicDependencies() {
-    SliceAssignment everySingleClass =
-        new SliceAssignment() {
-          // this will specify which classes belong together in the same slice
-          @Override
-          public SliceIdentifier getIdentifierOf(JavaClass javaClass) {
-            return SliceIdentifier.of(javaClass.getFullName());
-          }
-
-          // this will be part of the rule description if the test fails
-          @Override
-          public String getDescription() {
-            return "every single class";
-          }
-        };
-
-    freeze(slices().assignedFrom(everySingleClass).should().beFreeOfCycles())
-        .check(importedClasses);
-  }
-
-  @Test
-  void moduleTaskShouldOnlyDependOn() {
-    // FIXME should not depend on spi
-    moduleShouldOnlyDependOn("task", List.of("workbasket", "classification", "common", "spi"));
-  }
-
-  @Test
-  void moduleClassificationShouldOnlyDependOn() {
-    moduleShouldOnlyDependOn("workbasket", List.of("common"));
-  }
-
-  @Test
-  void moduleWorkbasketShouldOnlyDependOn() {
-    moduleShouldOnlyDependOn("workbasket", List.of("common"));
-  }
-
-  @Test
-  @Disabled("Test is failing for an unknown reason")
-  void moduleMonitorShouldOnlyDependOn() {
-    // FIXME fails for some unknown reason...
-    moduleShouldOnlyDependOn("monitor", List.of("common", "classification", "task", "workbasket"));
-  }
-
-  @Test
-  void moduleUserShouldOnlyDependOn() {
-    moduleShouldOnlyDependOn("user", List.of("common"));
-  }
-
-  @Test
-  void moduleSpiShouldOnlyDependOn() {
-    // FIXME should not depend on task, classification and workbasket
-    moduleShouldOnlyDependOn("spi", List.of("common", "task", "classification", "workbasket"));
-  }
-
-  @TestFactory
-  Stream<DynamicTest> rootModulesShouldExist() {
-    Function<String, String> descriptionProvider = p -> String.format("Package '%s' exists", p);
-
-    ThrowingConsumer<String> testProvider =
-        p -> assertThat(importedClasses.containPackage(p)).isTrue();
-
-    return DynamicTest.stream(KADAI_ROOT_PACKAGES.stream(), descriptionProvider, testProvider);
-  }
-
-  @Test
-  @Disabled("Needs to be replaced")
-  void allClassesAreInsideApiOrInternal() {
-    classes()
-        .that()
-        .resideOutsideOfPackages("acceptance..", "testapi..", "..test..")
-        .should()
-        .resideInAnyPackage("..api..", "..internal..")
-        .check(importedClasses);
-  }
-
-  @TestFactory
-  Stream<DynamicTest> commonClassesShouldNotDependOnOtherPackages() {
-
-    Stream<String> input = KADAI_ROOT_PACKAGES.stream().filter(not("io.kadai.common"::equals));
-
-    Function<String, String> descriptionProvider =
-        p -> String.format("Common classes of %s should not depend on domain classes", p);
-
-    ThrowingConsumer<String> testDefinitionProvider =
-        rootPackage ->
-            classes()
-                .that()
-                .resideInAPackage("..common..")
-                .and()
-                .areNotAssignableTo(KadaiEngine.class)
-                .and()
-                .areNotAssignableTo(InternalKadaiEngine.class)
-                .and()
-                .areNotAssignableTo(JobScheduler.class)
-                .should()
-                .onlyDependOnClassesThat()
-                .resideOutsideOfPackage(rootPackage + "..")
-                .check(importedClasses);
-
-    return DynamicTest.stream(input, descriptionProvider, testDefinitionProvider);
-  }
-
-  @Test
-  void classesShouldNotDependOnMonitorDomainClasses() {
-    noClasses()
-        .that()
-        .resideInAPackage("io.kadai..")
-        .and()
-        .areNotAssignableTo(KadaiEngine.class)
-        .and()
-        .resideOutsideOfPackages("..monitor..", "io.kadai.testapi..")
-        .should()
-        .dependOnClassesThat()
-        .resideInAPackage("..monitor..")
-        .check(importedClasses);
-  }
-
-  // endregion
-
-  // region Structure
-
-  @Test
-  void exceptionsShouldNotImplementToStringMethod() {
-    classes()
-        .that()
-        .areAssignableTo(KadaiException.class)
-        .or()
-        .areAssignableTo(KadaiRuntimeException.class)
-        .and()
-        .doNotBelongToAnyOf(KadaiRuntimeException.class, KadaiException.class)
-        .should(notImplementToString())
-        .check(importedClasses);
-  }
-
-  @Test
-  void rootExceptionsShouldImplementToStringMethod() {
-    classes()
-        .that()
-        .areAssignableFrom(KadaiRuntimeException.class)
-        .or()
-        .areAssignableFrom(KadaiException.class)
-        .should(implementToString())
-        .check(importedClasses);
-  }
-
-  @Test
-  void exceptionsShouldBePlacedInExceptionPackage() {
-    classes()
-        .that()
-        .areAssignableTo(Throwable.class)
-        .should()
-        .resideInAPackage("..exceptions")
-        .check(importedClasses);
-  }
-
-  @Test
-  void exceptionsPackageShouldOnlyContainExceptions() {
-    classes()
-        .that()
-        .resideInAPackage("..exceptions..")
-        .and()
-        .doNotBelongToAnyOf(ErrorCode.class)
-        .should()
-        .beAssignableTo(Throwable.class)
-        .check(importedClasses);
-  }
-
-  @Test
-  void exceptionsShouldHaveSuffixException() {
-    classes()
-        .that()
-        .areAssignableTo(Throwable.class)
-        .should()
-        .haveSimpleNameEndingWith("Exception")
-        .check(importedClasses);
-  }
-
-  @Test
-  void exceptionsShouldInheritFromKadaiRootExceptions() {
-    classes()
-        .that()
-        .areAssignableTo(Throwable.class)
-        .should()
-        .beAssignableTo(
-            assignableTo(KadaiException.class).or(assignableTo(KadaiRuntimeException.class)))
-        .check(importedClasses);
-  }
-
-  @Test
-  void exceptionsShouldBePublic() {
-    classes().that().areAssignableTo(Throwable.class).should().bePublic().check(importedClasses);
-  }
-
-  @Test
-  void classesShouldNotUseWorkingDaysToDaysConverter() {
-    classes()
-        .that()
-        .areNotAssignableFrom(ArchitectureTest.class)
-        .and()
-        .areNotAssignableTo(WorkingTimeCalculator.class)
-        .and()
-        .areNotAssignableTo(KadaiEngineImpl.class)
-        .and()
-        .haveSimpleNameNotEndingWith("Test")
-        .should()
-        .onlyDependOnClassesThat()
-        .areNotAssignableTo(HolidaySchedule.class)
-        .because(
-            "we want to enforce the usage of the WorkingTimeCalculator"
-                + " instead of the WorkingDaysToDaysConverter")
-        .check(importedClasses);
-  }
-
-  // endregion
-
-  // region Helper Methods
-
-  /**
-   * Test the dependencies of the packages. Adds the prefix <code>io.kadai</code> to every given
-   * value.
-   *
-   * @param module the module which should be tested
-   * @param dependentModules the expected dependent modules
-   */
-  private void moduleShouldOnlyDependOn(String module, List<String> dependentModules) {
-
-    String moduleTemplate = "io.kadai.%s..";
-
-    String moduleUndertest = String.format(moduleTemplate, module);
-
-    List<String> dependentModulesList =
-        dependentModules.stream()
-            .map(dp -> String.format(moduleTemplate, dp))
-            .collect(toCollection(ArrayList::new));
-    dependentModulesList.addAll(List.of("java..", "org.."));
-    dependentModulesList.add(moduleUndertest);
-
-    classes()
-        .that()
-        .resideInAPackage(moduleUndertest)
-        .should()
-        .onlyAccessClassesThat()
-        .resideInAnyPackage(dependentModulesList.toArray(new String[0]))
-        .orShould()
-        .dependOnClassesThat()
-        .areAssignableTo(KadaiConfiguration.class)
-        .check(importedClasses);
-  }
-
   private static ArchCondition<JavaClass> implementToString() {
     return new ArchCondition<>("implement toString()") {
       @Override
@@ -665,6 +282,389 @@ class ArchitectureTest {
   private static String executeStaticProviderMethod(Class<?> clazz, String methodName)
       throws Exception {
     return clazz.getMethod(methodName).invoke(null).toString();
+  }
+
+  @Test
+  void testMethodNamesShouldMatchAccordingToOurGuidelines() {
+    methods()
+        .that(
+            are(
+                annotatedWith(Test.class)
+                    .or(annotatedWith(ParameterizedTest.class))
+                    .or(annotatedWith(TestFactory.class))
+                    .or(annotatedWith(TestTemplate.class))))
+        .and()
+        .areNotDeclaredIn(ArchitectureTest.class)
+        .and()
+        .areNotDeclaredIn(PojoTest.class) // we have to find a proper naming for those tests
+        .should()
+        .bePackagePrivate()
+        .andShould()
+        .haveNameMatching("^should_[A-Z][^_]+(_(For|When)_[A-Z][^_]+)?$")
+        .check(importedClasses);
+  }
+
+  @Test
+  void classesShouldNotUseJunit5Assertions() {
+    classes()
+        .that()
+        .areNotAssignableFrom(ArchitectureTest.class)
+        .should()
+        .onlyDependOnClassesThat()
+        .areNotAssignableTo(org.junit.jupiter.api.Assertions.class)
+        .because("we consistently want to use assertj in our tests")
+        .check(importedClasses);
+  }
+
+  @Test
+  void mapperClassesShouldNotUseCurrentTimestampSqlFunction() {
+    classes()
+        .that()
+        .haveSimpleNameEndingWith("Mapper")
+        .should(notUseCurrentTimestampSqlFunction())
+        .check(importedClasses);
+  }
+
+  @Test
+  void kadaiIntegrationTestsShouldOnlyHavePackagePrivateFields() {
+    classes()
+        .that()
+        .areAnnotatedWith(KadaiIntegrationTest.class)
+        .or(areNestedKadaiIntegrationTestClasses())
+        .should(onlyHaveFieldsWithNoModifierAndPrivateConstants())
+        .check(importedClasses);
+  }
+
+  // endregion
+
+  @Test
+  void nestedKadaiIntegrationTestsShouldBeAnnotatedWithTestInstance() {
+    classes()
+        .that(areNestedKadaiIntegrationTestClasses())
+        .should(beAnnotatedWithTestInstancePerClass())
+        .check(importedClasses);
+  }
+
+  @Test
+  void noClassShouldThrowGenericException() {
+    noClasses().should(THROW_GENERIC_EXCEPTIONS).check(importedClasses);
+  }
+
+  @Test
+  void noClassShouldAccessStandardStreams() {
+    noClasses().should(ACCESS_STANDARD_STREAMS).check(importedClasses);
+  }
+
+  @Test
+  void utilityClassesShouldNotBeInitializable() {
+    classes()
+        .that()
+        .resideInAPackage("..util..")
+        .and()
+        .areNotNestedClasses()
+        .should()
+        .haveOnlyPrivateConstructors()
+        .check(importedClasses);
+  }
+
+  @Test
+  void noClassesShouldUseFieldInjection() {
+    noFields()
+        .should(BE_ANNOTATED_WITH_AN_INJECTION_ANNOTATION)
+        .as("no classes should use field injection")
+        .because(
+            "field injection is considered harmful; use constructor injection or setter"
+                + " injection instead; see https://stackoverflow.com/q/39890849 for"
+                + " detailed explanations")
+        .check(importedClasses);
+  }
+
+  @Test
+  void noClassesShouldUseJavaUtilLogging() {
+    noClasses().should(USE_JAVA_UTIL_LOGGING).check(importedClasses);
+  }
+
+  @Test
+  void noClassesShouldUseJodatime() {
+    noClasses()
+        .should(USE_JODATIME)
+        .because("modern Java projects use the [java.time] API instead")
+        .check(importedClasses);
+  }
+
+  // region Dependencies
+  @Test
+  void apiClassesShouldNotDependOnInternalClasses() {
+    classes()
+        .that()
+        .resideInAPackage("..api..")
+        .and()
+        .areNotAssignableFrom(KadaiEngine.class)
+        .and()
+        .areNotAssignableTo(Interval.class)
+        .should()
+        .onlyDependOnClassesThat(
+            resideOutsideOfPackage("..io.kadai..internal..").or(assignableTo(LoggingAspect.class)))
+        .check(importedClasses);
+  }
+
+  @Test
+  @Disabled("this has way too many false positives during regular development without refactoring")
+  void packagesShouldBeFreeOfCyclicDependencies() {
+    // Frozen, so it can be improved over time:
+    // https://www.archunit.org/userguide/html/000_Index.html#_freezing_arch_rules
+    freeze(slices().matching("io.kadai.(**)").should().beFreeOfCycles()).check(importedClasses);
+  }
+
+  @Test
+  @Disabled("this has way too many false positives during regular development without refactoring")
+  void classesShouldBeFreeOfCyclicDependencies() {
+    SliceAssignment everySingleClass =
+        new SliceAssignment() {
+          // this will specify which classes belong together in the same slice
+          @Override
+          public SliceIdentifier getIdentifierOf(JavaClass javaClass) {
+            return SliceIdentifier.of(javaClass.getFullName());
+          }
+
+          // this will be part of the rule description if the test fails
+          @Override
+          public String getDescription() {
+            return "every single class";
+          }
+        };
+
+    freeze(slices().assignedFrom(everySingleClass).should().beFreeOfCycles())
+        .check(importedClasses);
+  }
+
+  @Test
+  void moduleTaskShouldOnlyDependOn() {
+    // FIXME should not depend on spi
+    moduleShouldOnlyDependOn("task", List.of("workbasket", "classification", "common", "spi"));
+  }
+
+  @Test
+  void moduleClassificationShouldOnlyDependOn() {
+    moduleShouldOnlyDependOn("workbasket", List.of("common"));
+  }
+
+  @Test
+  void moduleWorkbasketShouldOnlyDependOn() {
+    moduleShouldOnlyDependOn("workbasket", List.of("common"));
+  }
+
+  // endregion
+
+  // region Structure
+
+  @Test
+  @Disabled("Test is failing for an unknown reason")
+  void moduleMonitorShouldOnlyDependOn() {
+    // FIXME fails for some unknown reason...
+    moduleShouldOnlyDependOn("monitor", List.of("common", "classification", "task", "workbasket"));
+  }
+
+  @Test
+  void moduleUserShouldOnlyDependOn() {
+    moduleShouldOnlyDependOn("user", List.of("common"));
+  }
+
+  @Test
+  void moduleSpiShouldOnlyDependOn() {
+    // FIXME should not depend on task, classification and workbasket
+    moduleShouldOnlyDependOn("spi", List.of("common", "task", "classification", "workbasket"));
+  }
+
+  @TestFactory
+  Stream<DynamicTest> rootModulesShouldExist() {
+    Function<String, String> descriptionProvider = p -> String.format("Package '%s' exists", p);
+
+    ThrowingConsumer<String> testProvider =
+        p -> assertThat(importedClasses.containPackage(p)).isTrue();
+
+    return DynamicTest.stream(KADAI_ROOT_PACKAGES.stream(), descriptionProvider, testProvider);
+  }
+
+  @Test
+  @Disabled("Needs to be replaced")
+  void allClassesAreInsideApiOrInternal() {
+    classes()
+        .that()
+        .resideOutsideOfPackages("acceptance..", "testapi..", "..test..")
+        .should()
+        .resideInAnyPackage("..api..", "..internal..")
+        .check(importedClasses);
+  }
+
+  @TestFactory
+  Stream<DynamicTest> commonClassesShouldNotDependOnOtherPackages() {
+
+    Stream<String> input = KADAI_ROOT_PACKAGES.stream().filter(not("io.kadai.common"::equals));
+
+    Function<String, String> descriptionProvider =
+        p -> String.format("Common classes of %s should not depend on domain classes", p);
+
+    ThrowingConsumer<String> testDefinitionProvider =
+        rootPackage ->
+            classes()
+                .that()
+                .resideInAPackage("..common..")
+                .and()
+                .areNotAssignableTo(KadaiEngine.class)
+                .and()
+                .areNotAssignableTo(InternalKadaiEngine.class)
+                .and()
+                .areNotAssignableTo(JobScheduler.class)
+                .should()
+                .onlyDependOnClassesThat()
+                .resideOutsideOfPackage(rootPackage + "..")
+                .check(importedClasses);
+
+    return DynamicTest.stream(input, descriptionProvider, testDefinitionProvider);
+  }
+
+  @Test
+  void classesShouldNotDependOnMonitorDomainClasses() {
+    noClasses()
+        .that()
+        .resideInAPackage("io.kadai..")
+        .and()
+        .areNotAssignableTo(KadaiEngine.class)
+        .and()
+        .resideOutsideOfPackages("..monitor..", "io.kadai.testapi..")
+        .should()
+        .dependOnClassesThat()
+        .resideInAPackage("..monitor..")
+        .check(importedClasses);
+  }
+
+  @Test
+  void exceptionsShouldNotImplementToStringMethod() {
+    classes()
+        .that()
+        .areAssignableTo(KadaiException.class)
+        .or()
+        .areAssignableTo(KadaiRuntimeException.class)
+        .and()
+        .doNotBelongToAnyOf(KadaiRuntimeException.class, KadaiException.class)
+        .should(notImplementToString())
+        .check(importedClasses);
+  }
+
+  // endregion
+
+  // region Helper Methods
+
+  @Test
+  void rootExceptionsShouldImplementToStringMethod() {
+    classes()
+        .that()
+        .areAssignableFrom(KadaiRuntimeException.class)
+        .or()
+        .areAssignableFrom(KadaiException.class)
+        .should(implementToString())
+        .check(importedClasses);
+  }
+
+  @Test
+  void exceptionsShouldBePlacedInExceptionPackage() {
+    classes()
+        .that()
+        .areAssignableTo(Throwable.class)
+        .should()
+        .resideInAPackage("..exceptions")
+        .check(importedClasses);
+  }
+
+  @Test
+  void exceptionsPackageShouldOnlyContainExceptions() {
+    classes()
+        .that()
+        .resideInAPackage("..exceptions..")
+        .and()
+        .doNotBelongToAnyOf(ErrorCode.class)
+        .should()
+        .beAssignableTo(Throwable.class)
+        .check(importedClasses);
+  }
+
+  @Test
+  void exceptionsShouldHaveSuffixException() {
+    classes()
+        .that()
+        .areAssignableTo(Throwable.class)
+        .should()
+        .haveSimpleNameEndingWith("Exception")
+        .check(importedClasses);
+  }
+
+  @Test
+  void exceptionsShouldInheritFromKadaiRootExceptions() {
+    classes()
+        .that()
+        .areAssignableTo(Throwable.class)
+        .should()
+        .beAssignableTo(
+            assignableTo(KadaiException.class).or(assignableTo(KadaiRuntimeException.class)))
+        .check(importedClasses);
+  }
+
+  @Test
+  void exceptionsShouldBePublic() {
+    classes().that().areAssignableTo(Throwable.class).should().bePublic().check(importedClasses);
+  }
+
+  @Test
+  void classesShouldNotUseWorkingDaysToDaysConverter() {
+    classes()
+        .that()
+        .areNotAssignableFrom(ArchitectureTest.class)
+        .and()
+        .areNotAssignableTo(WorkingTimeCalculator.class)
+        .and()
+        .areNotAssignableTo(KadaiEngineImpl.class)
+        .and()
+        .haveSimpleNameNotEndingWith("Test")
+        .should()
+        .onlyDependOnClassesThat()
+        .areNotAssignableTo(HolidaySchedule.class)
+        .because(
+            "we want to enforce the usage of the WorkingTimeCalculator"
+                + " instead of the WorkingDaysToDaysConverter")
+        .check(importedClasses);
+  }
+
+  /**
+   * Test the dependencies of the packages. Adds the prefix <code>io.kadai</code> to every given
+   * value.
+   *
+   * @param module the module which should be tested
+   * @param dependentModules the expected dependent modules
+   */
+  private void moduleShouldOnlyDependOn(String module, List<String> dependentModules) {
+
+    String moduleTemplate = "io.kadai.%s..";
+
+    String moduleUndertest = String.format(moduleTemplate, module);
+
+    List<String> dependentModulesList =
+        dependentModules.stream()
+            .map(dp -> String.format(moduleTemplate, dp))
+            .collect(toCollection(ArrayList::new));
+    dependentModulesList.addAll(List.of("java..", "org.."));
+    dependentModulesList.add(moduleUndertest);
+
+    classes()
+        .that()
+        .resideInAPackage(moduleUndertest)
+        .should()
+        .onlyAccessClassesThat()
+        .resideInAnyPackage(dependentModulesList.toArray(new String[0]))
+        .orShould()
+        .dependOnClassesThat()
+        .areAssignableTo(KadaiConfiguration.class)
+        .check(importedClasses);
   }
 
   // endregion

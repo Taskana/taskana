@@ -5,10 +5,10 @@
 </div>
 <div class="user-info">
   <span>Logged as: {{userInformation?.userId}}</span>
-  <button mat-button class="user-info__button" (click)="toggleRoles();" aria-expanded="true" aria-controls="roles">
+  <button (click)="toggleRoles();" aria-controls="roles" aria-expanded="true" class="user-info__button" mat-button>
     <span>Roles</span>
   </button>
 </div>
-<div class="roles" [@toggleDown]="showRoles">
+<div [@toggleDown]="showRoles" class="roles">
   <span><i>{{roles}}</i></span>
 </div>

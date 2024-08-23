@@ -11,21 +11,14 @@ import org.springframework.lang.NonNull;
 public class KadaiUserInfoRepresentationModel
     extends RepresentationModel<KadaiUserInfoRepresentationModel> {
 
-  @Schema(
-          name = "userId",
-          description = "The user Id of the current user."
-  )
+  @Schema(name = "userId", description = "The user Id of the current user.")
   private String userId;
-  @Schema(
-          name = "groupIds",
-          description = "All groups the current user is a member of."
-  )
+
+  @Schema(name = "groupIds", description = "All groups the current user is a member of.")
   private List<String> groupIds = new ArrayList<>();
+
   /** All permissions the current user has. */
-  @Schema(
-          name = "roles",
-          description = "All permissions the current user has."
-  )
+  @Schema(name = "roles", description = "All permissions the current user has.")
   private List<KadaiRole> roles = new ArrayList<>();
 
   public String getUserId() {

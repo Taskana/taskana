@@ -1373,8 +1373,7 @@ public class TaskController {
 
     List<String> taskIdsToDelete = taskSummaries.stream().map(TaskSummary::getId).toList();
 
-    BulkOperationResults<String, KadaiException> result =
-        taskService.deleteTasks(taskIdsToDelete);
+    BulkOperationResults<String, KadaiException> result = taskService.deleteTasks(taskIdsToDelete);
 
     Set<String> failedIds = new HashSet<>(result.getFailedIds());
     List<TaskSummary> successfullyDeletedTaskSummaries =

@@ -6,27 +6,27 @@
     <div class="task-processing__action-buttons">
 
       <!-- TRANSFER TASK -->
-      <button mat-stroked-button class="task-processing__button--secondary" [matMenuTriggerFor]="menu"
+      <button [matMenuTriggerFor]="menu" class="task-processing__button--secondary" mat-stroked-button
               matTooltip="Transfer Task to another Workbasket">
         Transfer Task
         <mat-icon class="task-processing__icon--aquamarine">transfer_within_a_station</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item *ngFor="let workbasket of workbaskets" (click)="transferTask(workbasket)">
+        <button (click)="transferTask(workbasket)" *ngFor="let workbasket of workbaskets" mat-menu-item>
           {{workbasket.name}}
         </button>
       </mat-menu>
 
       <!-- COMPLETE TASK -->
-      <button mat-stroked-button class="task-processing__button--secondary"
-              matTooltip="Complete Task and return to Task list" (click)="completeTask()">
+      <button (click)="completeTask()" class="task-processing__button--secondary"
+              mat-stroked-button matTooltip="Complete Task and return to Task list">
         <span> Complete Task </span>
         <mat-icon class="task-processing__icon--aquamarine">check</mat-icon>
       </button>
 
       <!-- CANCEL CLAIM -->
-      <button mat-stroked-button class="task-processing__button--secondary"
-              matTooltip="Cancel Task claim and return to Task overview" (click)="cancelClaimTask()">
+      <button (click)="cancelClaimTask()" class="task-processing__button--secondary"
+              mat-stroked-button matTooltip="Cancel Task claim and return to Task overview">
         <span> Cancel claim </span>
         <mat-icon class="task-processing__icon--aquamarine">clear</mat-icon>
       </button>

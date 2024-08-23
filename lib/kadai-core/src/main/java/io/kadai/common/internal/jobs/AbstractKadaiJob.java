@@ -49,14 +49,6 @@ public abstract class AbstractKadaiJob implements KadaiJob {
     return initKadaiJob(engine, jobClass, txProvider, job);
   }
 
-  @Override
-  public final void run() throws KadaiException {
-    execute();
-    if (async) {
-      scheduleNextJob();
-    }
-  }
-
   /**
    * Initializes the TaskCleanupJob schedule. <br>
    * All scheduled cleanup jobs are cancelled/deleted and a new one is scheduled.
@@ -76,44 +68,8 @@ public abstract class AbstractKadaiJob implements KadaiJob {
     job.scheduleNextJob();
   }
 
-  public boolean isAsync() {
-    return async;
-  }
-
-  public Instant getFirstRun() {
-    return firstRun;
-  }
-
-  public Duration getRunEvery() {
-    return runEvery;
-  }
-
   public static Duration getLockExpirationPeriod(KadaiConfiguration kadaiConfiguration) {
     return kadaiConfiguration.getJobLockExpirationPeriod();
-  }
-
-  protected abstract String getType();
-
-  protected abstract void execute() throws KadaiException;
-
-  protected Instant getNextDueForJob() {
-    Instant nextRun = firstRun;
-    if (scheduledJob != null && scheduledJob.getDue() != null) {
-      nextRun = scheduledJob.getDue();
-    }
-
-    while (nextRun.isBefore(Instant.now())) {
-      nextRun = nextRun.plus(runEvery);
-    }
-
-    return nextRun;
-  }
-
-  protected void scheduleNextJob() {
-    ScheduledJob job = new ScheduledJob();
-    job.setType(getType());
-    job.setDue(getNextDueForJob());
-    kadaiEngineImpl.getJobService().createJob(job);
   }
 
   private static AbstractKadaiJob initKadaiJob(
@@ -159,5 +115,49 @@ public abstract class AbstractKadaiJob implements KadaiJob {
           e);
     }
     return job;
+  }
+
+  @Override
+  public final void run() throws KadaiException {
+    execute();
+    if (async) {
+      scheduleNextJob();
+    }
+  }
+
+  public boolean isAsync() {
+    return async;
+  }
+
+  public Instant getFirstRun() {
+    return firstRun;
+  }
+
+  public Duration getRunEvery() {
+    return runEvery;
+  }
+
+  protected abstract String getType();
+
+  protected abstract void execute() throws KadaiException;
+
+  protected Instant getNextDueForJob() {
+    Instant nextRun = firstRun;
+    if (scheduledJob != null && scheduledJob.getDue() != null) {
+      nextRun = scheduledJob.getDue();
+    }
+
+    while (nextRun.isBefore(Instant.now())) {
+      nextRun = nextRun.plus(runEvery);
+    }
+
+    return nextRun;
+  }
+
+  protected void scheduleNextJob() {
+    ScheduledJob job = new ScheduledJob();
+    job.setType(getType());
+    job.setDue(getNextDueForJob());
+    kadaiEngineImpl.getJobService().createJob(job);
   }
 }

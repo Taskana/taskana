@@ -46,7 +46,7 @@ class WorkbasketControllerIntTest {
   }
 
   @Test
-  void testGetWorkbasket()  {
+  void testGetWorkbasket() {
     final String url =
         restHelper.toUrl(
             RestEndpoints.URL_WORKBASKET_ID, "WBI%3A100000000000000000000000000000000006");

@@ -54,12 +54,12 @@ class LdapTest {
         ldapClient.searchPermissionsAccessIdHas("user-1-2");
     assertThat(permissions)
         .extracting(AccessIdRepresentationModel::getAccessId)
-        .containsExactlyInAnyOrder("kadai:callcenter:ab:ab/a:callcenter-vip",
-            "kadai:callcenter:ab:ab/a:callcenter");
+        .containsExactlyInAnyOrder(
+            "kadai:callcenter:ab:ab/a:callcenter-vip", "kadai:callcenter:ab:ab/a:callcenter");
     assertThat(permissions)
         .extracting(AccessIdRepresentationModel::getName)
-        .containsExactlyInAnyOrder("Kadai:CallCenter:AB:AB/A:CallCenter-vip",
-            "Kadai:CallCenter:AB:AB/A:CallCenter");
+        .containsExactlyInAnyOrder(
+            "Kadai:CallCenter:AB:AB/A:CallCenter-vip", "Kadai:CallCenter:AB:AB/A:CallCenter");
   }
 
   @Test

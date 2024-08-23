@@ -38,16 +38,6 @@ public class RestHelper {
     this.port = port;
   }
 
-  public String toUrl(String relativeUrl, Object... uriVariables) {
-    return UriComponentsBuilder.fromPath(relativeUrl)
-        .scheme("http")
-        .host("127.0.0.1")
-        .port(getPort())
-        .build(false)
-        .expand(uriVariables)
-        .toString();
-  }
-
   public static HttpHeaders generateHeadersForUser(String user) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Authorization", encodeUserAndPasswordAsBasicAuth(user));
@@ -58,12 +48,6 @@ public class RestHelper {
   public static String encodeUserAndPasswordAsBasicAuth(String user) {
     String toEncode = user + ":" + user;
     return "Basic " + Base64.getEncoder().encodeToString(toEncode.getBytes(StandardCharsets.UTF_8));
-  }
-
-  private int getPort() {
-    return Optional.ofNullable(environment)
-        .map(e -> e.getRequiredProperty("local.server.port", int.class))
-        .orElse(port);
   }
 
   /**
@@ -88,5 +72,21 @@ public class RestHelper {
     // important to add first to ensure priority
     template.getMessageConverters().add(0, converter);
     return template;
+  }
+
+  public String toUrl(String relativeUrl, Object... uriVariables) {
+    return UriComponentsBuilder.fromPath(relativeUrl)
+        .scheme("http")
+        .host("127.0.0.1")
+        .port(getPort())
+        .build(false)
+        .expand(uriVariables)
+        .toString();
+  }
+
+  private int getPort() {
+    return Optional.ofNullable(environment)
+        .map(e -> e.getRequiredProperty("local.server.port", int.class))
+        .orElse(port);
   }
 }

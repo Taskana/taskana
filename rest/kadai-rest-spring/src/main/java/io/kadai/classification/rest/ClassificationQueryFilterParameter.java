@@ -16,62 +16,6 @@ import java.util.stream.Stream;
 public class ClassificationQueryFilterParameter
     implements QueryParameter<ClassificationQuery, Void> {
 
-  public String[] getName() {
-    return name;
-  }
-
-  public String[] getNameLike() {
-    return nameLike;
-  }
-
-  public String[] getKey() {
-    return key;
-  }
-
-  public String[] getCategory() {
-    return category;
-  }
-
-  public String[] getDomain() {
-    return domain;
-  }
-
-  public String[] getType() {
-    return type;
-  }
-
-  public String[] getCustom1Like() {
-    return custom1Like;
-  }
-
-  public String[] getCustom2Like() {
-    return custom2Like;
-  }
-
-  public String[] getCustom3Like() {
-    return custom3Like;
-  }
-
-  public String[] getCustom4Like() {
-    return custom4Like;
-  }
-
-  public String[] getCustom5Like() {
-    return custom5Like;
-  }
-
-  public String[] getCustom6Like() {
-    return custom6Like;
-  }
-
-  public String[] getCustom7Like() {
-    return custom7Like;
-  }
-
-  public String[] getCustom8Like() {
-    return custom8Like;
-  }
-
   @Schema(
       name = "name",
       description = "Filter by the name of the Classification. This is an exact match.")
@@ -164,6 +108,7 @@ public class ClassificationQueryFilterParameter
               + "wildcard characters will be resolved correctly.")
   @JsonProperty("custom-6-like")
   private final String[] custom6Like;
+
   @Schema(
       name = "custom-7-like",
       description =
@@ -232,6 +177,62 @@ public class ClassificationQueryFilterParameter
     this.custom6Like = custom6Like;
     this.custom7Like = custom7Like;
     this.custom8Like = custom8Like;
+  }
+
+  public String[] getName() {
+    return name;
+  }
+
+  public String[] getNameLike() {
+    return nameLike;
+  }
+
+  public String[] getKey() {
+    return key;
+  }
+
+  public String[] getCategory() {
+    return category;
+  }
+
+  public String[] getDomain() {
+    return domain;
+  }
+
+  public String[] getType() {
+    return type;
+  }
+
+  public String[] getCustom1Like() {
+    return custom1Like;
+  }
+
+  public String[] getCustom2Like() {
+    return custom2Like;
+  }
+
+  public String[] getCustom3Like() {
+    return custom3Like;
+  }
+
+  public String[] getCustom4Like() {
+    return custom4Like;
+  }
+
+  public String[] getCustom5Like() {
+    return custom5Like;
+  }
+
+  public String[] getCustom6Like() {
+    return custom6Like;
+  }
+
+  public String[] getCustom7Like() {
+    return custom7Like;
+  }
+
+  public String[] getCustom8Like() {
+    return custom8Like;
   }
 
   @Override

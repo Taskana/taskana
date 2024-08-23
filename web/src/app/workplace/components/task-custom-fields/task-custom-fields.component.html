@@ -7,11 +7,11 @@
         <mat-form-field appearance="outline" style="width: 100%">
           <mat-label>Custom {{i + 1}}</mat-label>
           <label for="task-custom-{{i + 1}}"></label>
-          <input matInput type="text" maxlength="255"
-                 id="task-custom-{{i + 1}}" placeholder="Custom {{i + 1}}"
-                 [(ngModel)]="task[customField]"
-                 name="task.custom{{i + 1}}" #custom="ngModel"
-                 (input)="validateKeypress(custom, 255)">
+          <input #custom="ngModel" (input)="validateKeypress(custom, 255)" [(ngModel)]="task[customField]"
+                 id="task-custom-{{i + 1}}" matInput
+                 maxlength="255"
+                 name="task.custom{{i + 1}}" placeholder="Custom {{i + 1}}"
+                 type="text">
         </mat-form-field>
         <div *ngIf="inputOverflowMap.get(custom.name)" class="error">{{lengthError}}</div>
       </div>

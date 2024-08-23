@@ -34,6 +34,22 @@ class AttachmentSummaryRepresentationModelAssemblerTest {
     this.taskService = taskService;
   }
 
+  static void testEquality(
+      AttachmentSummary attachment, AttachmentSummaryRepresentationModel repModel) {
+    assertThat(attachment).hasNoNullFieldsOrProperties();
+    assertThat(repModel).hasNoNullFieldsOrProperties();
+    assertThat(attachment.getId()).isEqualTo(repModel.getAttachmentId());
+    assertThat(attachment.getTaskId()).isEqualTo(repModel.getTaskId());
+    assertThat(attachment.getCreated()).isEqualTo(repModel.getCreated());
+    assertThat(attachment.getModified()).isEqualTo(repModel.getModified());
+    assertThat(attachment.getReceived()).isEqualTo(repModel.getReceived());
+    assertThat(attachment.getClassificationSummary().getId())
+        .isEqualTo(repModel.getClassificationSummary().getClassificationId());
+    ObjectReferenceRepresentationModelAssemblerTest.testEquality(
+        attachment.getObjectReference(), repModel.getObjectReference());
+    assertThat(attachment.getChannel()).isEqualTo(repModel.getChannel());
+  }
+
   @Test
   void should_ReturnEntity_When_ConvertingRepresentationModelToEntity() {
     ObjectReferenceRepresentationModel reference = new ObjectReferenceRepresentationModel();
@@ -105,22 +121,6 @@ class AttachmentSummaryRepresentationModelAssemblerTest {
         .hasNoNullFieldsOrProperties()
         .isNotSameAs(attachment2)
         .isEqualTo(attachment2);
-  }
-
-  static void testEquality(
-      AttachmentSummary attachment, AttachmentSummaryRepresentationModel repModel) {
-    assertThat(attachment).hasNoNullFieldsOrProperties();
-    assertThat(repModel).hasNoNullFieldsOrProperties();
-    assertThat(attachment.getId()).isEqualTo(repModel.getAttachmentId());
-    assertThat(attachment.getTaskId()).isEqualTo(repModel.getTaskId());
-    assertThat(attachment.getCreated()).isEqualTo(repModel.getCreated());
-    assertThat(attachment.getModified()).isEqualTo(repModel.getModified());
-    assertThat(attachment.getReceived()).isEqualTo(repModel.getReceived());
-    assertThat(attachment.getClassificationSummary().getId())
-        .isEqualTo(repModel.getClassificationSummary().getClassificationId());
-    ObjectReferenceRepresentationModelAssemblerTest.testEquality(
-        attachment.getObjectReference(), repModel.getObjectReference());
-    assertThat(attachment.getChannel()).isEqualTo(repModel.getChannel());
   }
 
   private void testLinks(AttachmentSummaryRepresentationModel repModel) {}

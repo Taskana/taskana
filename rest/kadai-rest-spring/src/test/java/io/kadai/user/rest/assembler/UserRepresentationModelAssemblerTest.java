@@ -24,6 +24,28 @@ class UserRepresentationModelAssemblerTest {
     this.userService = userService;
   }
 
+  private static void testEquality(User entity, UserRepresentationModel repModel) {
+    assertThat(entity).hasNoNullFieldsOrProperties();
+    assertThat(repModel).hasNoNullFieldsOrProperties();
+
+    assertThat(entity.getId()).isEqualTo(repModel.getUserId());
+    assertThat(entity.getGroups()).isEqualTo(repModel.getGroups());
+    assertThat(entity.getPermissions()).isEqualTo(repModel.getPermissions());
+    assertThat(entity.getFirstName()).isEqualTo(repModel.getFirstName());
+    assertThat(entity.getLastName()).isEqualTo(repModel.getLastName());
+    assertThat(entity.getFullName()).isEqualTo(repModel.getFullName());
+    assertThat(entity.getLongName()).isEqualTo(repModel.getLongName());
+    assertThat(entity.getEmail()).isEqualTo(repModel.getEmail());
+    assertThat(entity.getPhone()).isEqualTo(repModel.getPhone());
+    assertThat(entity.getMobilePhone()).isEqualTo(repModel.getMobilePhone());
+    assertThat(entity.getOrgLevel4()).isEqualTo(repModel.getOrgLevel4());
+    assertThat(entity.getOrgLevel3()).isEqualTo(repModel.getOrgLevel3());
+    assertThat(entity.getOrgLevel2()).isEqualTo(repModel.getOrgLevel2());
+    assertThat(entity.getOrgLevel1()).isEqualTo(repModel.getOrgLevel1());
+    assertThat(entity.getData()).isEqualTo(repModel.getData());
+    assertThat(entity.getDomains()).isEqualTo(repModel.getDomains());
+  }
+
   @Test
   void should_ReturnRepresentationModel_When_ConvertingUserEntityToRepresentationModel() {
     UserImpl user = (UserImpl) userService.newUser();
@@ -99,27 +121,5 @@ class UserRepresentationModelAssemblerTest {
         .hasNoNullFieldsOrProperties()
         .isNotSameAs(userAfterConversion)
         .isEqualTo(userAfterConversion);
-  }
-
-  private static void testEquality(User entity, UserRepresentationModel repModel) {
-    assertThat(entity).hasNoNullFieldsOrProperties();
-    assertThat(repModel).hasNoNullFieldsOrProperties();
-
-    assertThat(entity.getId()).isEqualTo(repModel.getUserId());
-    assertThat(entity.getGroups()).isEqualTo(repModel.getGroups());
-    assertThat(entity.getPermissions()).isEqualTo(repModel.getPermissions());
-    assertThat(entity.getFirstName()).isEqualTo(repModel.getFirstName());
-    assertThat(entity.getLastName()).isEqualTo(repModel.getLastName());
-    assertThat(entity.getFullName()).isEqualTo(repModel.getFullName());
-    assertThat(entity.getLongName()).isEqualTo(repModel.getLongName());
-    assertThat(entity.getEmail()).isEqualTo(repModel.getEmail());
-    assertThat(entity.getPhone()).isEqualTo(repModel.getPhone());
-    assertThat(entity.getMobilePhone()).isEqualTo(repModel.getMobilePhone());
-    assertThat(entity.getOrgLevel4()).isEqualTo(repModel.getOrgLevel4());
-    assertThat(entity.getOrgLevel3()).isEqualTo(repModel.getOrgLevel3());
-    assertThat(entity.getOrgLevel2()).isEqualTo(repModel.getOrgLevel2());
-    assertThat(entity.getOrgLevel1()).isEqualTo(repModel.getOrgLevel1());
-    assertThat(entity.getData()).isEqualTo(repModel.getData());
-    assertThat(entity.getDomains()).isEqualTo(repModel.getDomains());
   }
 }

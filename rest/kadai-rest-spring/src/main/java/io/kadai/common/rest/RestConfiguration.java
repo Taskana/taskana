@@ -72,8 +72,7 @@ public class RestConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(KadaiEngine.class)
-  public KadaiEngine getKadaiEngine(KadaiConfiguration kadaiConfiguration)
-      throws SQLException {
+  public KadaiEngine getKadaiEngine(KadaiConfiguration kadaiConfiguration) throws SQLException {
     return SpringKadaiEngine.buildKadaiEngine(kadaiConfiguration);
   }
 

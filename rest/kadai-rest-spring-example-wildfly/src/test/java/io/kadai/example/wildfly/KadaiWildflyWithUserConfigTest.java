@@ -117,8 +117,7 @@ public class KadaiWildflyWithUserConfigTest extends AbstractAccTest {
     ResponseEntity<TaskRepresentationModel> response =
         TEMPLATE.exchange(
             restHelper.toUrl(
-                "/kadai" + RestEndpoints.URL_TASKS_ID,
-                "TKI:000000000000000000000000000000000005"),
+                "/kadai" + RestEndpoints.URL_TASKS_ID, "TKI:000000000000000000000000000000000005"),
             HttpMethod.GET,
             new HttpEntity<>(headers),
             ParameterizedTypeReference.forType(TaskRepresentationModel.class));
