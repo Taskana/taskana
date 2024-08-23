@@ -69,7 +69,7 @@
     <version.spring.mybatis>3.0.2</version.spring.mybatis>
 
     <!-- wildfly dependencies -->
-    <version.wildfly>31.0.1.Final</version.wildfly>
+    <version.wildfly>33.0.1.Final</version.wildfly>
 
     <!-- camunda dependencies -->
     <version.camunda.dmn>7.21.0</version.camunda.dmn>
