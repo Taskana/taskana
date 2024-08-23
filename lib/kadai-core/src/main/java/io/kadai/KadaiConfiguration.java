@@ -999,6 +999,18 @@ public class KadaiConfiguration {
       this.properties = conf.properties;
     }
 
+    private static Map<DayOfWeek, Set<LocalTimeInterval>> initDefaultWorkingTimeSchedule() {
+      Map<DayOfWeek, Set<LocalTimeInterval>> workingTime = new EnumMap<>(DayOfWeek.class);
+      Set<LocalTimeInterval> standardWorkingSlots =
+          Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.MAX));
+      workingTime.put(DayOfWeek.MONDAY, standardWorkingSlots);
+      workingTime.put(DayOfWeek.TUESDAY, standardWorkingSlots);
+      workingTime.put(DayOfWeek.WEDNESDAY, standardWorkingSlots);
+      workingTime.put(DayOfWeek.THURSDAY, standardWorkingSlots);
+      workingTime.put(DayOfWeek.FRIDAY, standardWorkingSlots);
+      return workingTime;
+    }
+
     /**
      * Configure the {@linkplain KadaiConfiguration} with the default {@linkplain
      * #DEFAULT_KADAI_PROPERTIES property file location} and {@linkplain
@@ -1021,6 +1033,10 @@ public class KadaiConfiguration {
     public Builder initKadaiProperties(String propertiesFile) {
       return initKadaiProperties(propertiesFile, DEFAULT_KADAI_PROPERTY_SEPARATOR);
     }
+
+    // region builder methods
+
+    // region general configuration
 
     /**
      * Configure the {@linkplain KadaiConfiguration} using a property file from the classpath of
@@ -1051,14 +1067,14 @@ public class KadaiConfiguration {
       return this;
     }
 
-    // region builder methods
-
-    // region general configuration
-
     public Builder domains(List<String> domains) {
       this.domains = domains;
       return this;
     }
+
+    // endregion
+
+    // region authentication configuration
 
     public Builder enforceServiceLevel(boolean enforceServiceLevel) {
       this.enforceServiceLevel = enforceServiceLevel;
@@ -1067,31 +1083,27 @@ public class KadaiConfiguration {
 
     // endregion
 
-    // region authentication configuration
+    // region classification configuration
 
     public Builder roleMap(Map<KadaiRole, Set<String>> roleMap) {
       this.roleMap = roleMap;
       return this;
     }
 
-    // endregion
-
-    // region classification configuration
-
     public Builder classificationTypes(List<String> classificationTypes) {
       this.classificationTypes = classificationTypes;
-      return this;
-    }
-
-    public Builder classificationCategoriesByType(
-        Map<String, List<String>> classificationCategoriesByType) {
-      this.classificationCategoriesByType = classificationCategoriesByType;
       return this;
     }
 
     // endregion
 
     // region working time configuration
+
+    public Builder classificationCategoriesByType(
+        Map<String, List<String>> classificationCategoriesByType) {
+      this.classificationCategoriesByType = classificationCategoriesByType;
+      return this;
+    }
 
     public Builder useWorkingTimeCalculation(boolean useWorkingTimeCalculation) {
       this.useWorkingTimeCalculation = useWorkingTimeCalculation;
@@ -1118,15 +1130,15 @@ public class KadaiConfiguration {
       return this;
     }
 
+    // endregion
+
+    // region history configuration
+
     public Builder germanPublicHolidaysCorpusChristiEnabled(
         boolean germanPublicHolidaysCorpusChristiEnabled) {
       this.germanPublicHolidaysCorpusChristiEnabled = germanPublicHolidaysCorpusChristiEnabled;
       return this;
     }
-
-    // endregion
-
-    // region history configuration
 
     public Builder deleteHistoryEventsOnTaskDeletionEnabled(
         boolean deleteHistoryEventsOnTaskDeletionEnabled) {
@@ -1134,14 +1146,14 @@ public class KadaiConfiguration {
       return this;
     }
 
+    // endregion
+
+    // region job configuration
+
     public Builder logHistoryLoggerName(String loggerName) {
       this.logHistoryLoggerName = loggerName;
       return this;
     }
-
-    // endregion
-
-    // region job configuration
 
     public Builder jobSchedulerEnabled(boolean jobSchedulerEnabled) {
       this.jobSchedulerEnabled = jobSchedulerEnabled;
@@ -1296,14 +1308,14 @@ public class KadaiConfiguration {
       return this;
     }
 
+    // endregion
+
+    // region user configuration
+
     public Builder customJobs(Set<String> customJobs) {
       this.customJobs = customJobs;
       return this;
     }
-
-    // endregion
-
-    // region user configuration
 
     public Builder addAdditionalUserInfo(boolean addAdditionalUserInfo) {
       this.addAdditionalUserInfo = addAdditionalUserInfo;
@@ -1323,13 +1335,13 @@ public class KadaiConfiguration {
       return this;
     }
 
+    // endregion
+
     public KadaiConfiguration build() {
       adjustConfiguration();
       validateConfiguration();
       return new KadaiConfiguration(this);
     }
-
-    // endregion
 
     private void addMasterDomain() {
       // Master Domain is treat as empty string
@@ -1501,18 +1513,6 @@ public class KadaiConfiguration {
           .collect(
               Collectors.toUnmodifiableMap(
                   e -> e.getKey().toString(), e -> e.getValue().toString()));
-    }
-
-    private static Map<DayOfWeek, Set<LocalTimeInterval>> initDefaultWorkingTimeSchedule() {
-      Map<DayOfWeek, Set<LocalTimeInterval>> workingTime = new EnumMap<>(DayOfWeek.class);
-      Set<LocalTimeInterval> standardWorkingSlots =
-          Set.of(new LocalTimeInterval(LocalTime.MIN, LocalTime.MAX));
-      workingTime.put(DayOfWeek.MONDAY, standardWorkingSlots);
-      workingTime.put(DayOfWeek.TUESDAY, standardWorkingSlots);
-      workingTime.put(DayOfWeek.WEDNESDAY, standardWorkingSlots);
-      workingTime.put(DayOfWeek.THURSDAY, standardWorkingSlots);
-      workingTime.put(DayOfWeek.FRIDAY, standardWorkingSlots);
-      return workingTime;
     }
   }
 }

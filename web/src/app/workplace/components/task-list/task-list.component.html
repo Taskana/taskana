@@ -1,8 +1,8 @@
 <!-- TASK LIST -->
 <div *ngIf="(tasks && tasks.length > 0); else empty_list">
   <mat-selection-list [multiple]="false">
-    <mat-list-option *ngFor="let task of tasks"
-                     (click)="selectTask(task.taskId)"
+    <mat-list-option (click)="selectTask(task.taskId)"
+                     *ngFor="let task of tasks"
                      [selected]="task.taskId == selectedId"
                      [value]="task.taskId">
 
@@ -10,8 +10,8 @@
 
         <!-- TASK PRIORITY -->
         <div class="task-list__task-priority-badge"
-             matTooltip="Priority"
-             matBadge="{{task.priority}}" matBadgePosition="{{task.taskId == selectedId? 'above' : 'below'}}">
+             matBadge="{{task.priority}}"
+             matBadgePosition="{{task.taskId == selectedId? 'above' : 'below'}}" matTooltip="Priority">
         </div>
 
         <!-- TASK INFORMATION -->
@@ -32,7 +32,7 @@
 
 <!-- EMPTY TASK-LIST -->
 <ng-template #empty_list>
-  <div style="margin-top: 60px" class="container-no-items center-block">
+  <div class="container-no-items center-block" style="margin-top: 60px">
     <h3 class="grey">Select a Workbasket</h3>
     <svg-icon class="img-responsive empty-icon workbasket-icon" src="./assets/icons/wb-empty.svg"></svg-icon>
   </div>

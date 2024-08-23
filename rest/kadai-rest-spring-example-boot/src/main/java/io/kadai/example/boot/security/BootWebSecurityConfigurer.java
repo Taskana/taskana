@@ -52,7 +52,7 @@ public class BootWebSecurityConfigurer {
       @Value("${kadai.ldap.groupSearchFilter:uniqueMember={0}}") String ldapGroupSearchFilter,
       @Value("${kadai.ldap.permissionSearchBase:cn=permissions}") String ldapPermissionSearchBase,
       @Value("${kadai.ldap.permissionSearchFilter:uniqueMember={0}}")
-      String ldapPermissionSearchFilter,
+          String ldapPermissionSearchFilter,
       @Value("${enableCsrf:false}") boolean enableCsrf,
       @Value("${devMode:false}") boolean devMode) {
     this.enableCsrf = enableCsrf;

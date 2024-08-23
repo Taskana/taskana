@@ -10,17 +10,21 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class TaskQueryGroupByParameter implements QueryParameter<TaskQuery, Void> {
-  public enum TaskQueryGroupBy {
-    POR_VALUE(TaskQuery::groupByPor);
-    private final Consumer<TaskQuery> consumer;
+  // region groupBy
+  @JsonProperty("group-by")
+  @Schema(name = "group-by")
+  private final TaskQueryGroupBy groupByPor;
 
-    TaskQueryGroupBy(Consumer<TaskQuery> consumer) {
-      this.consumer = consumer;
-    }
+  @JsonProperty("group-by-sor")
+  @Schema(name = "group-by-sor")
+  private final String groupBySor;
 
-    public void applyGroupByForQuery(TaskQuery query) {
-      consumer.accept(query);
-    }
+  @ConstructorProperties({"group-by", "group-by-sor"})
+  public TaskQueryGroupByParameter(TaskQueryGroupBy groupBy, String groupBySor)
+      throws InvalidArgumentException {
+    this.groupByPor = groupBy;
+    this.groupBySor = groupBySor;
+    validateGroupByParameters();
   }
 
   public String getGroupBySor() {
@@ -31,31 +35,9 @@ public class TaskQueryGroupByParameter implements QueryParameter<TaskQuery, Void
     return groupByPor;
   }
 
-  // region groupBy
-  @JsonProperty("group-by")
-  @Schema(
-          name = "group-by"
-  )
-  private final TaskQueryGroupBy groupByPor;
-
-  @JsonProperty("group-by-sor")
-  @Schema(
-          name = "group-by-sor"
-  )
-  private final String groupBySor;
   // endregion
 
   // region constructor
-
-  @ConstructorProperties({"group-by", "group-by-sor"})
-  public TaskQueryGroupByParameter(TaskQueryGroupBy groupBy, String groupBySor)
-      throws InvalidArgumentException {
-    this.groupByPor = groupBy;
-    this.groupBySor = groupBySor;
-    validateGroupByParameters();
-  }
-
-  // endregion
 
   @Override
   public Void apply(TaskQuery query) {
@@ -67,10 +49,25 @@ public class TaskQueryGroupByParameter implements QueryParameter<TaskQuery, Void
     return null;
   }
 
+  // endregion
+
   private void validateGroupByParameters() throws InvalidArgumentException {
     if (groupByPor != null && groupBySor != null) {
       throw new InvalidArgumentException(
           "Only one of the following can be provided: Either group-by or group-by-sor");
+    }
+  }
+
+  public enum TaskQueryGroupBy {
+    POR_VALUE(TaskQuery::groupByPor);
+    private final Consumer<TaskQuery> consumer;
+
+    TaskQueryGroupBy(Consumer<TaskQuery> consumer) {
+      this.consumer = consumer;
+    }
+
+    public void applyGroupByForQuery(TaskQuery query) {
+      consumer.accept(query);
     }
   }
 }

@@ -26,6 +26,10 @@ public class TaskUpdatePriorityWorker {
     priorityServiceManager = ((KadaiEngineImpl) kadaiEngine).getPriorityServiceManager();
   }
 
+  public static IntPredicate hasDifferentPriority(TaskSummary taskSummary) {
+    return prio -> nonNull(taskSummary) && prio != taskSummary.getPriority();
+  }
+
   public List<String> executeBatch(List<String> taskIds) {
     List<String> updatedTaskIds = new ArrayList<>();
     sqlConnectionRunner.runWithConnection(
@@ -81,9 +85,5 @@ public class TaskUpdatePriorityWorker {
       return computedPriority;
     }
     return OptionalInt.empty();
-  }
-
-  public static IntPredicate hasDifferentPriority(TaskSummary taskSummary) {
-    return prio -> nonNull(taskSummary) && prio != taskSummary.getPriority();
   }
 }

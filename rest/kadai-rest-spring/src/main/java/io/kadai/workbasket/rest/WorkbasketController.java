@@ -453,8 +453,8 @@ public class WorkbasketController {
         workbasketService.getWorkbasketAccessItems(workbasketId);
 
     return ResponseEntity.ok(
-        workbasketAccessItemRepresentationModelAssembler
-            .toKadaiCollectionModelForSingleWorkbasket(workbasketId, accessItems));
+        workbasketAccessItemRepresentationModelAssembler.toKadaiCollectionModelForSingleWorkbasket(
+            workbasketId, accessItems));
   }
 
   /**
@@ -559,8 +559,8 @@ public class WorkbasketController {
         workbasketService.getWorkbasketAccessItems(workbasketId);
 
     return ResponseEntity.ok(
-        workbasketAccessItemRepresentationModelAssembler
-            .toKadaiCollectionModelForSingleWorkbasket(workbasketId, updatedWbAccessItems));
+        workbasketAccessItemRepresentationModelAssembler.toKadaiCollectionModelForSingleWorkbasket(
+            workbasketId, updatedWbAccessItems));
   }
 
   /**
@@ -672,8 +672,7 @@ public class WorkbasketController {
         workbasketService.getDistributionTargets(sourceWorkbasketId);
 
     return ResponseEntity.ok(
-        workbasketSummaryRepresentationModelAssembler.toKadaiCollectionModel(
-            distributionTargets));
+        workbasketSummaryRepresentationModelAssembler.toKadaiCollectionModel(distributionTargets));
   }
 
   /**

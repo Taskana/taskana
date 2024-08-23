@@ -74,7 +74,7 @@ public class WorkbasketSummaryRepresentationModel
 
   @Schema(name = "orgLevel4", description = "The fourth Org Level.")
   protected String orgLevel4;
-  
+
   @Schema(
       name = "markedForDeletion",
       description = "Identifier to tell if this workbasket can be " + "deleted.")

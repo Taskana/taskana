@@ -33,9 +33,7 @@ public class UserInfoRefreshJob extends AbstractKadaiJob {
   }
 
   public UserInfoRefreshJob(
-      KadaiEngine kadaiEngine,
-      KadaiTransactionProvider txProvider,
-      ScheduledJob scheduledJob) {
+      KadaiEngine kadaiEngine, KadaiTransactionProvider txProvider, ScheduledJob scheduledJob) {
     super(kadaiEngine, txProvider, scheduledJob, true);
     runEvery = kadaiEngine.getConfiguration().getUserRefreshJobRunEvery();
     firstRun = kadaiEngine.getConfiguration().getUserRefreshJobFirstRun();

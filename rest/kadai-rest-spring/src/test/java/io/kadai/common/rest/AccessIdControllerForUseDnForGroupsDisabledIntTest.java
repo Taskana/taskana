@@ -42,17 +42,13 @@ class AccessIdControllerForUseDnForGroupsDisabledIntTest {
   Stream<DynamicTest> should_ResolveAccessId_When_SearchingForDnOrCn() {
     List<Pair<String, String>> list =
         List.of(
-            Pair.of(
-                "cn=ksc-users,cn=groups,OU=Test,O=KADAI",
-                "ksc-users"),
+            Pair.of("cn=ksc-users,cn=groups,OU=Test,O=KADAI", "ksc-users"),
             Pair.of("uid=teamlead-1,cn=users,OU=Test,O=KADAI", "teamlead-1"),
             Pair.of("ksc-use", "ksc-users"),
             Pair.of("user-b-2", "user-b-2"),
             Pair.of("User-b-2", "user-b-2"),
-            Pair.of("cn=g01,cn=groups,OU=Test,O=KADAI",
-                "kadai:callcenter:ab:ab/a:callcenter"),
-            Pair.of("cn=g02,cn=groups,OU=Test,O=KADAI",
-                "kadai:callcenter:ab:ab/a:callcenter-vip"));
+            Pair.of("cn=g01,cn=groups,OU=Test,O=KADAI", "kadai:callcenter:ab:ab/a:callcenter"),
+            Pair.of("cn=g02,cn=groups,OU=Test,O=KADAI", "kadai:callcenter:ab:ab/a:callcenter-vip"));
 
     ThrowingConsumer<Pair<String, String>> test =
         pair -> {
@@ -145,16 +141,12 @@ class AccessIdControllerForUseDnForGroupsDisabledIntTest {
         .extracting(AccessIdRepresentationModel::getAccessId)
         .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
         .containsExactlyInAnyOrder(
-            "ksc-teamleads",
-            "business-admins",
-            "monitor-users",
-            "Organisationseinheit KSC 2");
+            "ksc-teamleads", "business-admins", "monitor-users", "Organisationseinheit KSC 2");
   }
 
   @Test
   void should_ReturnAccessIdsOfPermissionsTheAccessIdIsMemberOf_ifAccessIdOfUserIsGiven() {
-    String url = restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_PERMISSIONS)
-        + "?access-id=user-1-2";
+    String url = restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_PERMISSIONS) + "?access-id=user-1-2";
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1"));
 
     ResponseEntity<List<AccessIdRepresentationModel>> response =
@@ -164,8 +156,8 @@ class AccessIdControllerForUseDnForGroupsDisabledIntTest {
         .isNotNull()
         .extracting(AccessIdRepresentationModel::getAccessId)
         .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
-        .containsExactlyInAnyOrder("kadai:callcenter:ab:ab/a:callcenter",
-            "kadai:callcenter:ab:ab/a:callcenter-vip");
+        .containsExactlyInAnyOrder(
+            "kadai:callcenter:ab:ab/a:callcenter", "kadai:callcenter:ab:ab/a:callcenter-vip");
   }
 
   @Test
@@ -180,9 +172,7 @@ class AccessIdControllerForUseDnForGroupsDisabledIntTest {
         .isNotNull()
         .extracting(AccessIdRepresentationModel::getAccessId)
         .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
-        .containsExactlyInAnyOrder(
-            "ksc-users",
-            "Organisationseinheit KSC 2");
+        .containsExactlyInAnyOrder("ksc-users", "Organisationseinheit KSC 2");
   }
 
   @Test
@@ -197,8 +187,7 @@ class AccessIdControllerForUseDnForGroupsDisabledIntTest {
         .isNotNull()
         .extracting(AccessIdRepresentationModel::getAccessId)
         .usingElementComparator(String.CASE_INSENSITIVE_ORDER)
-        .containsExactlyInAnyOrder(
-            "kadai:callcenter:ab:ab/a:callcenter");
+        .containsExactlyInAnyOrder("kadai:callcenter:ab:ab/a:callcenter");
   }
 
   @Test
@@ -251,8 +240,8 @@ class AccessIdControllerForUseDnForGroupsDisabledIntTest {
 
   @Test
   void should_ThrowNotAuthorizedException_ifCallerOfPermissionRetrievalIsNotAdminOrBusinessAdmin() {
-    String url = restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_PERMISSIONS)
-        + "?access-id=teamlead-2";
+    String url =
+        restHelper.toUrl(RestEndpoints.URL_ACCESS_ID_PERMISSIONS) + "?access-id=teamlead-2";
     HttpEntity<Object> auth = new HttpEntity<>(RestHelper.generateHeadersForUser("user-1-1"));
 
     ThrowingCallable call = () -> TEMPLATE.exchange(url, HttpMethod.GET, auth, ACCESS_ID_LIST_TYPE);

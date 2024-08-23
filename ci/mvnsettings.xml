@@ -1,23 +1,23 @@
 <settings>
-  <profiles>
-    <profile>
-      <id>ossrh</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <gpg.executable>gpg</gpg.executable>
-        <gpg.keyname>${env.GPG_KEY_NAME}</gpg.keyname>
-        <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
-      </properties>
-    </profile>
-  </profiles>
+    <profiles>
+        <profile>
+            <id>ossrh</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <gpg.executable>gpg</gpg.executable>
+                <gpg.keyname>${env.GPG_KEY_NAME}</gpg.keyname>
+                <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
+            </properties>
+        </profile>
+    </profiles>
 
-  <servers>
-    <server>
-      <id>ossrh</id>
-      <username>44pdzWD8</username>
-      <password>eJZ25rsRdH7ZiePJO52JUy7LyVkNIgXxXEBmnTNH3aOM</password>
-    </server>
-  </servers>
+    <servers>
+        <server>
+            <id>ossrh</id>
+            <username>44pdzWD8</username>
+            <password>eJZ25rsRdH7ZiePJO52JUy7LyVkNIgXxXEBmnTNH3aOM</password>
+        </server>
+    </servers>
 </settings>

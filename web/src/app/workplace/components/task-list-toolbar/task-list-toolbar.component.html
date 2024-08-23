@@ -1,6 +1,6 @@
 <div class="task-list-toolbar">
 
-  <mat-tab-group animationDuration="0ms" [selectedIndex]="activeTab" (click)="onTabChange($event)">
+  <mat-tab-group (click)="onTabChange($event)" [selectedIndex]="activeTab" animationDuration="0ms">
 
     <!-- WORKBASKETS -->
     <mat-tab label="Workbaskets">
@@ -8,8 +8,8 @@
       <div class="task-list-toolbar__tab">
 
         <!-- BUTTON TO FURTHER FILTER OPTIONS -->
-        <button mat-stroked-button style="min-width: 1%" class="task-list-toolbar__button--secondary"
-                matTooltip="Display more filter options" (click)="setFilterExpansion()">
+        <button (click)="setFilterExpansion()" class="task-list-toolbar__button--secondary" mat-stroked-button
+                matTooltip="Display more filter options" style="min-width: 1%">
           <mat-icon *ngIf="!(isFilterExpanded$ | async)">keyboard_arrow_down</mat-icon>
           <mat-icon *ngIf="(isFilterExpanded$ | async)">keyboard_arrow_up</mat-icon>
         </button>
@@ -20,12 +20,12 @@
         <div class="task-list-toolbar__filter-input">
           <mat-form-field class="task-list-toolbar__filter--workbasket">
             <mat-label>Select Workbasket</mat-label>
-            <input matInput
-                   type="text"
-                   placeholder="Workbasket"
+            <input (ngModelChange)="filterWorkbasketNames()"
                    [(ngModel)]="resultName"
-                   (ngModelChange)="filterWorkbasketNames()"
-                   [matAutocomplete]="auto">
+                   [matAutocomplete]="auto"
+                   matInput
+                   placeholder="Workbasket"
+                   type="text">
             <mat-autocomplete #auto="matAutocomplete" (optionSelected)="searchBasket()">
               <mat-option *ngFor="let workbasketName of filteredWorkbasketNames" [value]="workbasketName">
                 {{workbasketName}}
@@ -38,14 +38,14 @@
         <div class="task-list-toolbar__spacer"></div>
 
         <!-- SEARCH BUTTON -->
-        <button class="task-list-toolbar__button--primary" style="top: 11px"
-                mat-stroked-button matTooltip="Filter Tasks" (click)="onFilter()">
+        <button (click)="onFilter()" class="task-list-toolbar__button--primary"
+                mat-stroked-button matTooltip="Filter Tasks" style="top: 11px">
           <mat-icon>search</mat-icon>
         </button>
 
         <!-- CLEAR BUTTON -->
-        <button class="task-list-toolbar__button--secondary" style="top: 11px;"
-                mat-stroked-button matTooltip="Clear Filter" (click)="onClearFilter()">
+        <button (click)="onClearFilter()" class="task-list-toolbar__button--secondary"
+                mat-stroked-button matTooltip="Clear Filter" style="top: 11px;">
           <mat-icon>clear</mat-icon>
         </button>
 
@@ -59,8 +59,8 @@
       <div class="task-list-toolbar__tab">
 
         <!-- BUTTON TO FURTHER FILTER OPTIONS -->
-        <button mat-stroked-button style="min-width: 1%" class="task-list-toolbar__button--secondary"
-                matTooltip="Display more filter options" (click)="setFilterExpansion()">
+        <button (click)="setFilterExpansion()" class="task-list-toolbar__button--secondary" mat-stroked-button
+                matTooltip="Display more filter options" style="min-width: 1%">
           <mat-icon *ngIf="!(isFilterExpanded$ | async)">keyboard_arrow_down</mat-icon>
           <mat-icon *ngIf="(isFilterExpanded$ | async)">keyboard_arrow_up</mat-icon>
         </button>
@@ -71,22 +71,23 @@
         <div class="task-list-toolbar__filter-input">
           <mat-form-field>
             <mat-label>Filter Tasks</mat-label>
-            <input matInput type="text" placeholder="Filter" [(ngModel)]="filterInput"
-                   (keyup.enter)="onFilter(); this.searched = true;" (ngModelChange)="updateState()">
+            <input (keyup.enter)="onFilter(); this.searched = true;" (ngModelChange)="updateState()"
+                   [(ngModel)]="filterInput" matInput
+                   placeholder="Filter" type="text">
           </mat-form-field>
         </div>
 
         <div class="task-list-toolbar__spacer"></div>
 
         <!-- SEARCH BUTTON -->
-        <button class="task-list-toolbar__button--primary" style="top: 11px"
-                mat-stroked-button matTooltip="Filter Tasks" (click)="onFilter(); this.searched = true">
+        <button (click)="onFilter(); this.searched = true" class="task-list-toolbar__button--primary"
+                mat-stroked-button matTooltip="Filter Tasks" style="top: 11px">
           <mat-icon>search</mat-icon>
         </button>
 
         <!-- CLEAR BUTTON -->
-        <button class="task-list-toolbar__button--secondary" style="top: 11px;"
-                mat-stroked-button matTooltip="Clear Filter" (click)="onClearFilter(); this.searched = true;">
+        <button (click)="onClearFilter(); this.searched = true;" class="task-list-toolbar__button--secondary"
+                mat-stroked-button matTooltip="Clear Filter" style="top: 11px;">
           <mat-icon>clear</mat-icon>
         </button>
 
@@ -105,7 +106,7 @@
   <div *ngIf="searched" class="task-list-toolbar__additional-toolbar">
 
     <!-- ADD TASK BUTTON -->
-    <button class="task-list-toolbar__button--primary" mat-flat-button matTooltip="Add Task" (click)="createTask()">
+    <button (click)="createTask()" class="task-list-toolbar__button--primary" mat-flat-button matTooltip="Add Task">
       Add
       <mat-icon class="md-20">add</mat-icon>
     </button>
@@ -113,7 +114,7 @@
 
     <!-- SORT TASKS BUTTON -->
     <kadai-shared-sort
-      [sortingFields]="sortingFields" [defaultSortBy]="taskDefaultSortBy" (performSorting)="sorting($event)">
+      (performSorting)="sorting($event)" [defaultSortBy]="taskDefaultSortBy" [sortingFields]="sortingFields">
     </kadai-shared-sort>
 
   </div>

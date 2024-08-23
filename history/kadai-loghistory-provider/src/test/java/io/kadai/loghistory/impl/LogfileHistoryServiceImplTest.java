@@ -28,17 +28,17 @@ class LogfileHistoryServiceImplTest {
       new LogfileHistoryServiceImpl();
   private final TestLogger logger = TestLoggerFactory.getTestLogger("AUDIT");
 
-  @AfterEach
-  public void clearLoggers() {
-    TestLoggerFactory.clear();
-  }
-
   @BeforeAll
   public static void setupObjectMapper() {
     KadaiConfiguration kadaiConfiguration = Mockito.mock(KadaiConfiguration.class);
     kadaiEngineMock = Mockito.mock(KadaiEngine.class);
     Mockito.when(kadaiEngineMock.getConfiguration()).thenReturn(kadaiConfiguration);
     Mockito.when(kadaiConfiguration.getLogHistoryLoggerName()).thenReturn("AUDIT");
+  }
+
+  @AfterEach
+  public void clearLoggers() {
+    TestLoggerFactory.clear();
   }
 
   @Test

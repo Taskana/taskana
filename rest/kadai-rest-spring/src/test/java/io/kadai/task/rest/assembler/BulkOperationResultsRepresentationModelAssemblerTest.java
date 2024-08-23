@@ -54,8 +54,7 @@ class BulkOperationResultsRepresentationModelAssemblerTest {
       BulkOperationResults<String, KadaiException> bulkOperationResults,
       BulkOperationResultsRepresentationModel repModel) {
     Map<String, ErrorCode> newErrorMap = new HashMap<>();
-    for (Map.Entry<String, KadaiException> entry :
-        bulkOperationResults.getErrorMap().entrySet()) {
+    for (Map.Entry<String, KadaiException> entry : bulkOperationResults.getErrorMap().entrySet()) {
       newErrorMap.put(entry.getKey(), entry.getValue().getErrorCode());
     }
     assertThat(newErrorMap).isEqualTo(repModel.getTasksWithErrors());

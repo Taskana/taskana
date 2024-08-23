@@ -32,6 +32,10 @@ public class TaskUpdatePriorityJob extends AbstractKadaiJob {
     firstRun = kadaiEngine.getConfiguration().getTaskUpdatePriorityJobFirstRun();
   }
 
+  public static Duration getLockExpirationPeriod(KadaiConfiguration kadaiConfiguration) {
+    return kadaiConfiguration.getTaskUpdatePriorityJobLockExpirationPeriod();
+  }
+
   @Override
   public void execute() {
     TaskUpdatePriorityWorker worker = new TaskUpdatePriorityWorker(kadaiEngineImpl);
@@ -43,10 +47,6 @@ public class TaskUpdatePriorityJob extends AbstractKadaiJob {
     } catch (Exception e) {
       throw new SystemException("Error while processing TaskUpdatePriorityJob.", e);
     }
-  }
-
-  public static Duration getLockExpirationPeriod(KadaiConfiguration kadaiConfiguration) {
-    return kadaiConfiguration.getTaskUpdatePriorityJobLockExpirationPeriod();
   }
 
   public int getBatchSize() {

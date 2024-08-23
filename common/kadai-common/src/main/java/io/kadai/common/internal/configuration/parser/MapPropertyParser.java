@@ -21,10 +21,7 @@ public class MapPropertyParser implements PropertyParser<Map<?, ?>> {
 
   @Override
   public Optional<Map<?, ?>> parse(
-      Map<String, String> properties,
-      String separator,
-      Field field,
-      KadaiProperty kadaiProperty) {
+      Map<String, String> properties, String separator, Field field, KadaiProperty kadaiProperty) {
     if (!Map.class.isAssignableFrom(field.getType())) {
       throw new SystemException(
           String.format(

@@ -11,7 +11,9 @@
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
-            "allowedCommonJsDependencies": ["chart.js"],
+            "allowedCommonJsDependencies": [
+              "chart.js"
+            ],
             "aot": true,
             "sourceMap": {
               "scripts": true
@@ -24,7 +26,10 @@
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
-            "assets": ["src/assets", "src/environments/data-sources"],
+            "assets": [
+              "src/assets",
+              "src/environments/data-sources"
+            ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/theme/_main.scss",

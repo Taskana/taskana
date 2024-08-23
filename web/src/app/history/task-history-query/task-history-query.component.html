@@ -1,135 +1,135 @@
 <div class="task-history-query">
-  <table mat-table [dataSource]="data"
-         matSort matSortActive="created" matSortDisableClear matSortDirection="asc">
+  <table [dataSource]="data" mat-table
+         matSort matSortActive="created" matSortDirection="asc" matSortDisableClear>
 
     <ng-container matColumnDef="parentBusinessProcessId">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Parent BPI</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).parentBusinessProcessId}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Parent BPI</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).parentBusinessProcessId}}</td>
     </ng-container>
 
     <ng-container matColumnDef="businessProcessId">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>BPI</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).businessProcessId}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>BPI</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).businessProcessId}}</td>
     </ng-container>
 
     <ng-container matColumnDef="taskId">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Task Id</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).taskId}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Task Id</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).taskId}}</td>
     </ng-container>
 
     <ng-container matColumnDef="eventType">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Event type</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).eventType}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Event type</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).eventType}}</td>
     </ng-container>
 
     <ng-container matColumnDef="created">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Created</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).created | germanTimeFormat}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Created</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).created | germanTimeFormat}}</td>
     </ng-container>
 
     <ng-container matColumnDef="userId">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>User Id</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).userId}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>User Id</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).userId}}</td>
     </ng-container>
 
     <ng-container matColumnDef="domain">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Domain</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).domain}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Domain</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).domain}}</td>
     </ng-container>
 
     <ng-container matColumnDef="workbasketKey">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Workbasket key</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).workbasketKey}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Workbasket key</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).workbasketKey}}</td>
     </ng-container>
 
     <ng-container matColumnDef="porCompany">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Obj company</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).porCompany}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Obj company</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).porCompany}}</td>
     </ng-container>
 
     <ng-container matColumnDef="porSystem">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Obj system</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).porSystem}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Obj system</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).porSystem}}</td>
     </ng-container>
 
     <ng-container matColumnDef="porInstance">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Obj instance</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).porInstance}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Obj instance</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).porInstance}}</td>
     </ng-container>
 
     <ng-container matColumnDef="porType">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Obj type</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).porType}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Obj type</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).porType}}</td>
     </ng-container>
 
     <ng-container matColumnDef="porValue">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Obj value</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).porValue}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Obj value</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).porValue}}</td>
     </ng-container>
 
     <ng-container matColumnDef="taskClassificationKey">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Classification key</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).taskClassificationKey}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Classification key</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).taskClassificationKey}}</td>
     </ng-container>
 
     <ng-container matColumnDef="taskClassificationCategory">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Classification category</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).taskClassificationCategory}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Classification category</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).taskClassificationCategory}}</td>
     </ng-container>
 
     <ng-container matColumnDef="attachmentClassificationKey">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Attachment Classification Key</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).attachmentClassificationKey}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Attachment Classification Key</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).attachmentClassificationKey}}</td>
     </ng-container>
 
     <ng-container matColumnDef="custom1">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Custom 1</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).custom1}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Custom 1</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).custom1}}</td>
     </ng-container>
 
     <ng-container matColumnDef="custom2">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Custom 2</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).custom2}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Custom 2</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).custom2}}</td>
     </ng-container>
 
     <ng-container matColumnDef="custom3">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Custom 3</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).custom3}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Custom 3</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).custom3}}</td>
     </ng-container>
 
     <ng-container matColumnDef="custom4">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Custom 4</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).custom4}}</td>
+      <th *matHeaderCellDef disableClear mat-header-cell mat-sort-header>Custom 4</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).custom4}}</td>
     </ng-container>
 
     <ng-container matColumnDef="oldData">
-      <th mat-header-cell *matHeaderCellDef>Old data</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).oldData}}</td>
+      <th *matHeaderCellDef mat-header-cell>Old data</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).oldData}}</td>
     </ng-container>
 
     <ng-container matColumnDef="newData">
-      <th mat-header-cell *matHeaderCellDef>New data</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).newData}}</td>
+      <th *matHeaderCellDef mat-header-cell>New data</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).newData}}</td>
     </ng-container>
 
     <ng-container matColumnDef="comment">
-      <th mat-header-cell *matHeaderCellDef>Comment</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).comment}}</td>
+      <th *matHeaderCellDef mat-header-cell>Comment</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).comment}}</td>
     </ng-container>
 
     <ng-container matColumnDef="oldValue">
-      <th mat-header-cell *matHeaderCellDef>Old value</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).oldValue}}</td>
+      <th *matHeaderCellDef mat-header-cell>Old value</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).oldValue}}</td>
     </ng-container>
 
     <ng-container matColumnDef="newValue">
-      <th mat-header-cell *matHeaderCellDef>New value</th>
-      <td mat-cell *matCellDef="let element">{{convertToTaskHistoryEventData(element).newValue}}</td>
+      <th *matHeaderCellDef mat-header-cell>New value</th>
+      <td *matCellDef="let element" mat-cell>{{convertToTaskHistoryEventData(element).newValue}}</td>
     </ng-container>
 
 
-    <tr mat-header-row *matHeaderRowDef="getDisplayColumns()"></tr>
-    <tr mat-row *matRowDef="let row; columns: getDisplayColumns()"></tr>
+    <tr *matHeaderRowDef="getDisplayColumns()" mat-header-row></tr>
+    <tr *matRowDef="let row; columns: getDisplayColumns()" mat-row></tr>
   </table>
 
   <div class="task-history-query__pagination-wrapper">

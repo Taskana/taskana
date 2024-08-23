@@ -29,262 +29,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Void> {
-  public String[] getCustom1In() {
-    return custom1In;
-  }
-
-  public String[] getCustom1NotIn() {
-    return custom1NotIn;
-  }
-
-  public String[] getCustom1Like() {
-    return custom1Like;
-  }
-
-  public String[] getCustom1NotLike() {
-    return custom1NotLike;
-  }
-
-  public String[] getCustom2In() {
-    return custom2In;
-  }
-
-  public String[] getCustom2NotIn() {
-    return custom2NotIn;
-  }
-
-  public String[] getCustom2Like() {
-    return custom2Like;
-  }
-
-  public String[] getCustom2NotLike() {
-    return custom2NotLike;
-  }
-
-  public String[] getCustom3In() {
-    return custom3In;
-  }
-
-  public String[] getCustom3NotIn() {
-    return custom3NotIn;
-  }
-
-  public String[] getCustom3Like() {
-    return custom3Like;
-  }
-
-  public String[] getCustom3NotLike() {
-    return custom3NotLike;
-  }
-
-  public String[] getCustom4In() {
-    return custom4In;
-  }
-
-  public String[] getCustom4NotIn() {
-    return custom4NotIn;
-  }
-
-  public String[] getCustom4Like() {
-    return custom4Like;
-  }
-
-  public String[] getCustom4NotLike() {
-    return custom4NotLike;
-  }
-
-  public String[] getCustom5In() {
-    return custom5In;
-  }
-
-  public String[] getCustom5NotIn() {
-    return custom5NotIn;
-  }
-
-  public String[] getCustom5Like() {
-    return custom5Like;
-  }
-
-  public String[] getCustom5NotLike() {
-    return custom5NotLike;
-  }
-
-  public String[] getCustom6In() {
-    return custom6In;
-  }
-
-  public String[] getCustom6NotIn() {
-    return custom6NotIn;
-  }
-
-  public String[] getCustom6Like() {
-    return custom6Like;
-  }
-
-  public String[] getCustom6NotLike() {
-    return custom6NotLike;
-  }
-
-  public String[] getCustom7In() {
-    return custom7In;
-  }
-
-  public String[] getCustom7NotIn() {
-    return custom7NotIn;
-  }
-
-  public String[] getCustom7Like() {
-    return custom7Like;
-  }
-
-  public String[] getCustom7NotLike() {
-    return custom7NotLike;
-  }
-
-  public String[] getCustom8In() {
-    return custom8In;
-  }
-
-  public String[] getCustom8NotIn() {
-    return custom8NotIn;
-  }
-
-  public String[] getCustom8Like() {
-    return custom8Like;
-  }
-
-  public String[] getCustom8NotLike() {
-    return custom8NotLike;
-  }
-
-  public String[] getCustom9In() {
-    return custom9In;
-  }
-
-  public String[] getCustom9NotIn() {
-    return custom9NotIn;
-  }
-
-  public String[] getCustom9Like() {
-    return custom9Like;
-  }
-
-  public String[] getCustom9NotLike() {
-    return custom9NotLike;
-  }
-
-  public String[] getCustom10In() {
-    return custom10In;
-  }
-
-  public String[] getCustom10NotIn() {
-    return custom10NotIn;
-  }
-
-  public String[] getCustom10Like() {
-    return custom10Like;
-  }
-
-  public String[] getCustom10NotLike() {
-    return custom10NotLike;
-  }
-
-  public String[] getCustom11In() {
-    return custom11In;
-  }
-
-  public String[] getCustom11NotIn() {
-    return custom11NotIn;
-  }
-
-  public String[] getCustom11Like() {
-    return custom11Like;
-  }
-
-  public String[] getCustom11NotLike() {
-    return custom11NotLike;
-  }
-
-  public String[] getCustom12In() {
-    return custom12In;
-  }
-
-  public String[] getCustom12NotIn() {
-    return custom12NotIn;
-  }
-
-  public String[] getCustom12Like() {
-    return custom12Like;
-  }
-
-  public String[] getCustom12NotLike() {
-    return custom12NotLike;
-  }
-
-  public String[] getCustom13In() {
-    return custom13In;
-  }
-
-  public String[] getCustom13NotIn() {
-    return custom13NotIn;
-  }
-
-  public String[] getCustom13Like() {
-    return custom13Like;
-  }
-
-  public String[] getCustom13NotLike() {
-    return custom13NotLike;
-  }
-
-  public String[] getCustom14In() {
-    return custom14In;
-  }
-
-  public String[] getCustom14NotIn() {
-    return custom14NotIn;
-  }
-
-  public String[] getCustom14Like() {
-    return custom14Like;
-  }
-
-  public String[] getCustom14NotLike() {
-    return custom14NotLike;
-  }
-
-  public String[] getCustom15In() {
-    return custom15In;
-  }
-
-  public String[] getCustom15NotIn() {
-    return custom15NotIn;
-  }
-
-  public String[] getCustom15Like() {
-    return custom15Like;
-  }
-
-  public String[] getCustom15NotLike() {
-    return custom15NotLike;
-  }
-
-  public String[] getCustom16In() {
-    return custom16In;
-  }
-
-  public String[] getCustom16NotIn() {
-    return custom16NotIn;
-  }
-
-  public String[] getCustom16Like() {
-    return custom16Like;
-  }
-
-  public String[] getCustom16NotLike() {
-    return custom16NotLike;
-  }
-
   @Schema(
       name = "custom-1",
       description = "Filter by the value of the field custom1 of the Task. This is an exact match.")
@@ -980,6 +724,262 @@ public class TaskQueryFilterCustomFields implements QueryParameter<TaskQuery, Vo
     this.custom16NotIn = custom16NotIn;
     this.custom16Like = custom16Like;
     this.custom16NotLike = custom16NotLike;
+  }
+
+  public String[] getCustom1In() {
+    return custom1In;
+  }
+
+  public String[] getCustom1NotIn() {
+    return custom1NotIn;
+  }
+
+  public String[] getCustom1Like() {
+    return custom1Like;
+  }
+
+  public String[] getCustom1NotLike() {
+    return custom1NotLike;
+  }
+
+  public String[] getCustom2In() {
+    return custom2In;
+  }
+
+  public String[] getCustom2NotIn() {
+    return custom2NotIn;
+  }
+
+  public String[] getCustom2Like() {
+    return custom2Like;
+  }
+
+  public String[] getCustom2NotLike() {
+    return custom2NotLike;
+  }
+
+  public String[] getCustom3In() {
+    return custom3In;
+  }
+
+  public String[] getCustom3NotIn() {
+    return custom3NotIn;
+  }
+
+  public String[] getCustom3Like() {
+    return custom3Like;
+  }
+
+  public String[] getCustom3NotLike() {
+    return custom3NotLike;
+  }
+
+  public String[] getCustom4In() {
+    return custom4In;
+  }
+
+  public String[] getCustom4NotIn() {
+    return custom4NotIn;
+  }
+
+  public String[] getCustom4Like() {
+    return custom4Like;
+  }
+
+  public String[] getCustom4NotLike() {
+    return custom4NotLike;
+  }
+
+  public String[] getCustom5In() {
+    return custom5In;
+  }
+
+  public String[] getCustom5NotIn() {
+    return custom5NotIn;
+  }
+
+  public String[] getCustom5Like() {
+    return custom5Like;
+  }
+
+  public String[] getCustom5NotLike() {
+    return custom5NotLike;
+  }
+
+  public String[] getCustom6In() {
+    return custom6In;
+  }
+
+  public String[] getCustom6NotIn() {
+    return custom6NotIn;
+  }
+
+  public String[] getCustom6Like() {
+    return custom6Like;
+  }
+
+  public String[] getCustom6NotLike() {
+    return custom6NotLike;
+  }
+
+  public String[] getCustom7In() {
+    return custom7In;
+  }
+
+  public String[] getCustom7NotIn() {
+    return custom7NotIn;
+  }
+
+  public String[] getCustom7Like() {
+    return custom7Like;
+  }
+
+  public String[] getCustom7NotLike() {
+    return custom7NotLike;
+  }
+
+  public String[] getCustom8In() {
+    return custom8In;
+  }
+
+  public String[] getCustom8NotIn() {
+    return custom8NotIn;
+  }
+
+  public String[] getCustom8Like() {
+    return custom8Like;
+  }
+
+  public String[] getCustom8NotLike() {
+    return custom8NotLike;
+  }
+
+  public String[] getCustom9In() {
+    return custom9In;
+  }
+
+  public String[] getCustom9NotIn() {
+    return custom9NotIn;
+  }
+
+  public String[] getCustom9Like() {
+    return custom9Like;
+  }
+
+  public String[] getCustom9NotLike() {
+    return custom9NotLike;
+  }
+
+  public String[] getCustom10In() {
+    return custom10In;
+  }
+
+  public String[] getCustom10NotIn() {
+    return custom10NotIn;
+  }
+
+  public String[] getCustom10Like() {
+    return custom10Like;
+  }
+
+  public String[] getCustom10NotLike() {
+    return custom10NotLike;
+  }
+
+  public String[] getCustom11In() {
+    return custom11In;
+  }
+
+  public String[] getCustom11NotIn() {
+    return custom11NotIn;
+  }
+
+  public String[] getCustom11Like() {
+    return custom11Like;
+  }
+
+  public String[] getCustom11NotLike() {
+    return custom11NotLike;
+  }
+
+  public String[] getCustom12In() {
+    return custom12In;
+  }
+
+  public String[] getCustom12NotIn() {
+    return custom12NotIn;
+  }
+
+  public String[] getCustom12Like() {
+    return custom12Like;
+  }
+
+  public String[] getCustom12NotLike() {
+    return custom12NotLike;
+  }
+
+  public String[] getCustom13In() {
+    return custom13In;
+  }
+
+  public String[] getCustom13NotIn() {
+    return custom13NotIn;
+  }
+
+  public String[] getCustom13Like() {
+    return custom13Like;
+  }
+
+  public String[] getCustom13NotLike() {
+    return custom13NotLike;
+  }
+
+  public String[] getCustom14In() {
+    return custom14In;
+  }
+
+  public String[] getCustom14NotIn() {
+    return custom14NotIn;
+  }
+
+  public String[] getCustom14Like() {
+    return custom14Like;
+  }
+
+  public String[] getCustom14NotLike() {
+    return custom14NotLike;
+  }
+
+  public String[] getCustom15In() {
+    return custom15In;
+  }
+
+  public String[] getCustom15NotIn() {
+    return custom15NotIn;
+  }
+
+  public String[] getCustom15Like() {
+    return custom15Like;
+  }
+
+  public String[] getCustom15NotLike() {
+    return custom15NotLike;
+  }
+
+  public String[] getCustom16In() {
+    return custom16In;
+  }
+
+  public String[] getCustom16NotIn() {
+    return custom16NotIn;
+  }
+
+  public String[] getCustom16Like() {
+    return custom16Like;
+  }
+
+  public String[] getCustom16NotLike() {
+    return custom16NotLike;
   }
 
   @Override

@@ -480,8 +480,7 @@ class QueryTaskHistoryAccTest extends AbstractAccTest {
             .idIn(taskHistoryEvents.get(0).getTaskId())
             .single();
     assertThat(task).isNotNull();
-    String taskOwnerLongName =
-        kadaiEngine.getUserService().getUser(task.getOwner()).getLongName();
+    String taskOwnerLongName = kadaiEngine.getUserService().getUser(task.getOwner()).getLongName();
 
     assertThat(taskHistoryEvents.get(0))
         .extracting(TaskHistoryEvent::getTaskOwnerLongName)

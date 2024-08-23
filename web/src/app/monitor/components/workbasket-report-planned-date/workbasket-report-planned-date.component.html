@@ -1,8 +1,9 @@
-<div class="row" *ngIf="reportData">
+<div *ngIf="reportData" class="row">
   <div class="col-xs-12 col-md-7 col-md-offset-2">
     <div style="display: block;">
-      <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
-              [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"></canvas>
+      <canvas [chartType]="lineChartType" [colors]="lineChartColors" [datasets]="lineChartData"
+              [labels]="lineChartLabels"
+              [legend]="lineChartLegend" [options]="lineChartOptions" baseChart></canvas>
     </div>
   </div>
 </div>

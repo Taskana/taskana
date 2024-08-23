@@ -22,7 +22,6 @@ import org.camunda.bpm.model.dmn.instance.DecisionTable;
 
 /**
  * @author Thorben Lindhauer
- *
  */
 public class TestHelper {
 
@@ -32,7 +31,8 @@ public class TestHelper {
 
   public static DecisionTable assertAndGetSingleDecisionTable(DmnModelInstance dmnModel) {
     assertThat(dmnModel.getDefinitions()).isNotNull();
-    Collection<Decision> decisions = dmnModel.getDefinitions().getChildElementsByType(Decision.class);
+    Collection<Decision> decisions =
+        dmnModel.getDefinitions().getChildElementsByType(Decision.class);
     assertThat(decisions).hasSize(1);
 
     Decision decision = decisions.iterator().next();

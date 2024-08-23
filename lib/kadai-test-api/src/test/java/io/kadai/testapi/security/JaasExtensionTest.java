@@ -65,6 +65,28 @@ class JaasExtensionTest {
 
   // region JaasExtension#interceptBeforeEachMethod
 
+  @AfterAll
+  static void should_NotSetJaasSubject_When_AnnotationIsMissing_On_AfterAll() {
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isNull();
+  }
+
+  @WithAccessId(user = "afterall")
+  @AfterAll
+  static void should_SetJaasSubject_When_AnnotationExists_On_AfterAll() {
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo("afterall");
+  }
+
+  @WithAccessId(user = "afterall")
+  @WithAccessId(user = "afterall2")
+  @AfterAll
+  static void should_NotSetJaasSubject_When_MultipleAnnotationsExist_On_AfterAll() {
+    assertThat(CURRENT_USER_CONTEXT.getUserid()).isNull();
+  }
+
+  // endregion
+
+  // region JaasExtension#interceptAfterEachMethod
+
   @BeforeEach
   void should_NotSetJaasSubject_When_AnnotationIsMissing_On_BeforeEach() {
     assertThat(CURRENT_USER_CONTEXT.getUserid()).isNull();
@@ -85,7 +107,7 @@ class JaasExtensionTest {
 
   // endregion
 
-  // region JaasExtension#interceptAfterEachMethod
+  // region JaasExtension#interceptAfterAllMethod
 
   @AfterEach
   void should_NotSetJaasSubject_When_AnnotationIsMissing_On_AfterEach() {
@@ -102,28 +124,6 @@ class JaasExtensionTest {
   @WithAccessId(user = "afterach2")
   @AfterEach
   void should_NotSetJaasSubject_When_MultipleAnnotationsExist_On_AfterEach() {
-    assertThat(CURRENT_USER_CONTEXT.getUserid()).isNull();
-  }
-
-  // endregion
-
-  // region JaasExtension#interceptAfterAllMethod
-
-  @AfterAll
-  static void should_NotSetJaasSubject_When_AnnotationIsMissing_On_AfterAll() {
-    assertThat(CURRENT_USER_CONTEXT.getUserid()).isNull();
-  }
-
-  @WithAccessId(user = "afterall")
-  @AfterAll
-  static void should_SetJaasSubject_When_AnnotationExists_On_AfterAll() {
-    assertThat(CURRENT_USER_CONTEXT.getUserid()).isEqualTo("afterall");
-  }
-
-  @WithAccessId(user = "afterall")
-  @WithAccessId(user = "afterall2")
-  @AfterAll
-  static void should_NotSetJaasSubject_When_MultipleAnnotationsExist_On_AfterAll() {
     assertThat(CURRENT_USER_CONTEXT.getUserid()).isNull();
   }
 

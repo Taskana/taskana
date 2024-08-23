@@ -16,12 +16,12 @@ public class KadaiException extends Exception {
     this.errorCode = errorCode;
   }
 
-  public ErrorCode getErrorCode() {
-    return errorCode;
-  }
-
   protected static Serializable ensureNullIsHandled(Serializable o) {
     return o == null ? "null" : o;
+  }
+
+  public ErrorCode getErrorCode() {
+    return errorCode;
   }
 
   @Override

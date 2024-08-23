@@ -2,7 +2,7 @@
   <div class="panel-heading">
     <h4 *ngIf="metaInformation">{{getTitle()}} ({{metaInformation?.date | germanTimeFormat}})</h4>
   </div>
-  <mat-tab-group class="panel-body" animationDuration="0ms" (selectedIndexChange)="selectComponent($event)">
+  <mat-tab-group (selectedIndexChange)="selectComponent($event)" animationDuration="0ms" class="panel-body">
     <mat-tab label="Due Date">
       <kadai-monitor-workbasket-report-due-date
         (metaInformation)="getMetaInformation($event)">

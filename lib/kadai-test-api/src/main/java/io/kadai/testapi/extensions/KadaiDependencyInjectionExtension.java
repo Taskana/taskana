@@ -16,6 +16,13 @@ import org.junit.platform.commons.JUnitException;
 public class KadaiDependencyInjectionExtension
     implements ParameterResolver, TestInstancePostProcessor {
 
+  @SuppressWarnings("unchecked")
+  private static Map<Class<?>, Object> getKadaiEntityMap(ExtensionContext extensionContext) {
+    return (Map<Class<?>, Object>)
+        getClassLevelStore(extensionContext)
+            .get(KadaiInitializationExtension.STORE_KADAI_ENTITY_MAP);
+  }
+
   @Override
   public boolean supportsParameter(
       ParameterContext parameterContext, ExtensionContext extensionContext)
@@ -52,12 +59,5 @@ public class KadaiDependencyInjectionExtension
                 field.getName(), field.getType()));
       }
     }
-  }
-
-  @SuppressWarnings("unchecked")
-  private static Map<Class<?>, Object> getKadaiEntityMap(ExtensionContext extensionContext) {
-    return (Map<Class<?>, Object>)
-        getClassLevelStore(extensionContext)
-            .get(KadaiInitializationExtension.STORE_KADAI_ENTITY_MAP);
   }
 }

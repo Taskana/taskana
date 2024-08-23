@@ -122,17 +122,14 @@ public class KadaiRestExceptionHandler extends ResponseEntityExceptionHandler {
       MaxUploadSizeExceededException ex,
       HttpHeaders headers,
       HttpStatusCode status,
-      WebRequest request
-  ) {
+      WebRequest request) {
 
     return buildResponse(
         ErrorCode.of(ERROR_KEY_PAYLOAD),
         ex,
         request,
         HTTP_STATUS_BY_ERROR_CODE_KEY.getOrDefault(
-            ERROR_KEY_PAYLOAD, HttpStatus.INTERNAL_SERVER_ERROR
-        )
-    );
+            ERROR_KEY_PAYLOAD, HttpStatus.INTERNAL_SERVER_ERROR));
   }
 
   @ExceptionHandler(BeanInstantiationException.class)

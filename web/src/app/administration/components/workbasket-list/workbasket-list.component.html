@@ -1,30 +1,31 @@
 <div class="workbasket-list">
   <!-- TOOLBAR -->
   <section #wbToolbar class="workbasket-list__toolbar">
-    <kadai-administration-workbasket-list-toolbar [workbaskets]="workbasketsSummary$ | async"
-                                                  (performSorting)="performSorting($event)"
+    <kadai-administration-workbasket-list-toolbar (performSorting)="performSorting($event)"
                                                   [workbasketDefaultSortBy]="workbasketDefaultSortBy"
-                                                  [workbasketListExpanded]="expanded">
+                                                  [workbasketListExpanded]="expanded"
+                                                  [workbaskets]="workbasketsSummary$ | async">
     </kadai-administration-workbasket-list-toolbar>
   </section>
 
   <!-- WORKBASKET LIST -->
-  <div class="workbasket-list__list-items"
-       *ngIf="((workbasketsSummary$ | async) && (workbasketsSummary$ | async)?.length > 0) else empty_workbaskets">
+  <div *ngIf="((workbasketsSummary$ | async) && (workbasketsSummary$ | async)?.length > 0) else empty_workbaskets"
+       class="workbasket-list__list-items">
     <mat-selection-list #workbasket [multiple]="false">
-      <mat-list-option class="workbasket-list__list-item"
+      <mat-list-option (click)="selectWorkbasket(workbasket.workbasketId)"
                        *ngFor="let workbasket of (workbasketsSummary$ | async);"
-                       (click)="selectWorkbasket(workbasket.workbasketId)"
                        [selected]="workbasket.workbasketId == selectedId"
-                       [value]="workbasket.workbasketId">
+                       [value]="workbasket.workbasketId"
+                       class="workbasket-list__list-item">
 
         <!-- WORKBASKET LIST ITEM -->
         <div class="workbasket-list__list-item--wrapper">
 
           <!-- ICON -->
-          <div class="workbasket-list__list-item--icon" *ngIf="expanded">
-            <kadai-administration-icon-type [type]="workbasket.type" size="large" tooltip="true"
-                                            [selected]="workbasket.workbasketId === selectedId"></kadai-administration-icon-type>
+          <div *ngIf="expanded" class="workbasket-list__list-item--icon">
+            <kadai-administration-icon-type [selected]="workbasket.workbasketId === selectedId" [type]="workbasket.type"
+                                            size="large"
+                                            tooltip="true"></kadai-administration-icon-type>
           </div>
 
           <!-- INFORMATION -->
@@ -36,9 +37,10 @@
             <p class="workbasket-list__list-item--no-wrap">{{workbasket.description}}</p>
             <p class="workbasket-list__list-item--no-wrap">{{workbasket.owner}}</p>
 
-            <div class="workbasket-list__list-item--marked" *ngIf="workbasket.markedForDeletion">
-              <span title="Marked for deletion" data-toggle="tooltip"
-                    class="material-icons md-20 {{workbasket.workbasketId === selectedId ? 'white': 'red' }} ">error</span>
+            <div *ngIf="workbasket.markedForDeletion" class="workbasket-list__list-item--marked">
+              <span class="material-icons md-20 {{workbasket.workbasketId === selectedId ? 'white': 'red' }} "
+                    data-toggle="tooltip"
+                    title="Marked for deletion">error</span>
             </div>
 
           </div>
@@ -62,10 +64,10 @@
 <!-- PAGINATION -->
 
 <kadai-shared-pagination
-  [page]="(workbasketsSummaryRepresentation$ | async) ? (workbasketsSummaryRepresentation$ | async)?.page : (workbasketsSummaryRepresentation$ | async)"
-  [type]="type"
+  (changePage)="changePage($event)"
   [expanded]="expanded"
   [numberOfItems]="(workbasketsSummary$ | async)?.length"
+  [page]="(workbasketsSummaryRepresentation$ | async) ? (workbasketsSummaryRepresentation$ | async)?.page : (workbasketsSummaryRepresentation$ | async)"
   [resetPaging]="resetPagingSubject.asObservable()"
-  (changePage)="changePage($event)">
+  [type]="type">
 </kadai-shared-pagination>

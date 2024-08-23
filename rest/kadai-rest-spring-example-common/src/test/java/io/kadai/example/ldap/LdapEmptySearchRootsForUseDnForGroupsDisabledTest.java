@@ -13,8 +13,7 @@ import org.springframework.test.context.TestPropertySource;
 @KadaiSpringBootTest
 @TestPropertySource(properties = "kadai.ldap.useDnForGroups=false")
 @ActiveProfiles({"emptySearchRoots"})
-class LdapEmptySearchRootsForUseDnForGroupsDisabledTest
-    extends LdapForUseDnForGroupsDisabledTest {
+class LdapEmptySearchRootsForUseDnForGroupsDisabledTest extends LdapForUseDnForGroupsDisabledTest {
 
   @Test
   void should_FindGroupsForUser_When_UserIdIsProvided() throws Exception {
@@ -22,8 +21,7 @@ class LdapEmptySearchRootsForUseDnForGroupsDisabledTest
         ldapClient.searchGroupsAccessIdIsMemberOf("user-2-2");
     assertThat(groups)
         .extracting(AccessIdRepresentationModel::getAccessId)
-        .containsExactlyInAnyOrder(
-            "ksc-users", "organisationseinheit ksc 2");
+        .containsExactlyInAnyOrder("ksc-users", "organisationseinheit ksc 2");
   }
 
   @Test
@@ -32,8 +30,8 @@ class LdapEmptySearchRootsForUseDnForGroupsDisabledTest
         ldapClient.searchPermissionsAccessIdHas("user-1-2");
     assertThat(permissions)
         .extracting(AccessIdRepresentationModel::getAccessId)
-        .containsExactlyInAnyOrder("kadai:callcenter:ab:ab/a:callcenter",
-            "kadai:callcenter:ab:ab/a:callcenter-vip");
+        .containsExactlyInAnyOrder(
+            "kadai:callcenter:ab:ab/a:callcenter", "kadai:callcenter:ab:ab/a:callcenter-vip");
   }
 
   @Test
@@ -48,4 +46,3 @@ class LdapEmptySearchRootsForUseDnForGroupsDisabledTest
     assertThat(dn).isEqualTo("cn=g02,cn=groups,ou=test,o=kadai");
   }
 }
-

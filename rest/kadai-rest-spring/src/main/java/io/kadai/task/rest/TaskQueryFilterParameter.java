@@ -21,626 +21,6 @@ import java.util.Optional;
 
 public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void> {
 
-  public String[] getTaskIdIn() {
-    return taskIdIn;
-  }
-
-  public String[] getExternalIdIn() {
-    return externalIdIn;
-  }
-
-  public String[] getExternalIdNotIn() {
-    return externalIdNotIn;
-  }
-
-  public Instant[] getReceivedWithin() {
-    return receivedWithin;
-  }
-
-  public Instant getReceivedFrom() {
-    return receivedFrom;
-  }
-
-  public Instant getReceivedUntil() {
-    return receivedUntil;
-  }
-
-  public Instant[] getReceivedNotIn() {
-    return receivedNotIn;
-  }
-
-  public Instant getReceivedFromNot() {
-    return receivedFromNot;
-  }
-
-  public Instant getReceivedUntilNot() {
-    return receivedUntilNot;
-  }
-
-  public Instant[] getCreatedWithin() {
-    return createdWithin;
-  }
-
-  public Instant getCreatedFrom() {
-    return createdFrom;
-  }
-
-  public Instant getCreatedUntil() {
-    return createdUntil;
-  }
-
-  public Instant[] getCreatedNotWithin() {
-    return createdNotWithin;
-  }
-
-  public Instant getCreatedFromNot() {
-    return createdFromNot;
-  }
-
-  public Instant getCreatedUntilNot() {
-    return createdUntilNot;
-  }
-
-  public Instant[] getClaimedWithin() {
-    return claimedWithin;
-  }
-
-  public Instant[] getClaimedNotWithin() {
-    return claimedNotWithin;
-  }
-
-  public Instant[] getModifiedWithin() {
-    return modifiedWithin;
-  }
-
-  public Instant[] getModifiedNotWithin() {
-    return modifiedNotWithin;
-  }
-
-  public Instant[] getPlannedWithin() {
-    return plannedWithin;
-  }
-
-  public Instant getPlannedFrom() {
-    return plannedFrom;
-  }
-
-  public Instant getPlannedUntil() {
-    return plannedUntil;
-  }
-
-  public Instant[] getPlannedNotWithin() {
-    return plannedNotWithin;
-  }
-
-  public Instant getPlannedFromNot() {
-    return plannedFromNot;
-  }
-
-  public Instant getPlannedUntilNot() {
-    return plannedUntilNot;
-  }
-
-  public Instant[] getDueWithin() {
-    return dueWithin;
-  }
-
-  public Instant getDueFrom() {
-    return dueFrom;
-  }
-
-  public Instant getDueUntil() {
-    return dueUntil;
-  }
-
-  public Instant[] getDueNotWithin() {
-    return dueNotWithin;
-  }
-
-  public Instant getDueFromNot() {
-    return dueFromNot;
-  }
-
-  public Instant getDueUntilNot() {
-    return dueUntilNot;
-  }
-
-  public Instant[] getCompletedWithin() {
-    return completedWithin;
-  }
-
-  public Instant getCompletedFrom() {
-    return completedFrom;
-  }
-
-  public Instant getCompletedUntil() {
-    return completedUntil;
-  }
-
-  public Instant[] getCompletedNotWithin() {
-    return completedNotWithin;
-  }
-
-  public Instant getCompletedFromNot() {
-    return completedFromNot;
-  }
-
-  public Instant getCompletedUntilNot() {
-    return completedUntilNot;
-  }
-
-  public String[] getNameIn() {
-    return nameIn;
-  }
-
-  public String[] getNameNotIn() {
-    return nameNotIn;
-  }
-
-  public String[] getNameLike() {
-    return nameLike;
-  }
-
-  public String[] getNameNotLike() {
-    return nameNotLike;
-  }
-
-  public String[] getCreatorIn() {
-    return creatorIn;
-  }
-
-  public String[] getCreatorNotIn() {
-    return creatorNotIn;
-  }
-
-  public String[] getCreatorLike() {
-    return creatorLike;
-  }
-
-  public String[] getCreatorNotLike() {
-    return creatorNotLike;
-  }
-
-  public String[] getNoteLike() {
-    return noteLike;
-  }
-
-  public String[] getNoteNotLike() {
-    return noteNotLike;
-  }
-
-  public String[] getDescriptionLike() {
-    return descriptionLike;
-  }
-
-  public String[] getDescriptionNotLike() {
-    return descriptionNotLike;
-  }
-
-  public int[] getPriorityIn() {
-    return priorityIn;
-  }
-
-  public int[] getPriorityNotIn() {
-    return priorityNotIn;
-  }
-
-  public Integer[] getPriorityWithin() {
-    return priorityWithin;
-  }
-
-  public Integer getPriorityFrom() {
-    return priorityFrom;
-  }
-
-  public Integer getPriorityUntil() {
-    return priorityUntil;
-  }
-
-  public Integer[] getPriorityNotWithin() {
-    return priorityNotWithin;
-  }
-
-  public Integer getPriorityNotFrom() {
-    return priorityNotFrom;
-  }
-
-  public Integer getPriorityNotUntil() {
-    return priorityNotUntil;
-  }
-
-  public TaskState[] getStateIn() {
-    return stateIn;
-  }
-
-  public TaskState[] getStateNotIn() {
-    return stateNotIn;
-  }
-
-  public String[] getClassificationIdIn() {
-    return classificationIdIn;
-  }
-
-  public String[] getClassificationIdNotIn() {
-    return classificationIdNotIn;
-  }
-
-  public String[] getClassificationKeyIn() {
-    return classificationKeyIn;
-  }
-
-  public String[] getClassificationKeyNotIn() {
-    return classificationKeyNotIn;
-  }
-
-  public String[] getClassificationKeyLike() {
-    return classificationKeyLike;
-  }
-
-  public String[] getClassificationKeyNotLike() {
-    return classificationKeyNotLike;
-  }
-
-  public String[] getClassificationParentKeyIn() {
-    return classificationParentKeyIn;
-  }
-
-  public String[] getClassificationParentKeyNotIn() {
-    return classificationParentKeyNotIn;
-  }
-
-  public String[] getClassificationParentKeyLike() {
-    return classificationParentKeyLike;
-  }
-
-  public String[] getClassificationParentKeyNotLike() {
-    return classificationParentKeyNotLike;
-  }
-
-  public String[] getClassificationCategoryIn() {
-    return classificationCategoryIn;
-  }
-
-  public String[] getClassificationCategoryNotIn() {
-    return classificationCategoryNotIn;
-  }
-
-  public String[] getClassificationCategoryLike() {
-    return classificationCategoryLike;
-  }
-
-  public String[] getClassificationCategoryNotLike() {
-    return classificationCategoryNotLike;
-  }
-
-  public String[] getClassificationNameIn() {
-    return classificationNameIn;
-  }
-
-  public String[] getClassificationNameNotIn() {
-    return classificationNameNotIn;
-  }
-
-  public String[] getClassificationNameLike() {
-    return classificationNameLike;
-  }
-
-  public String[] getClassificationNameNotLike() {
-    return classificationNameNotLike;
-  }
-
-  public String[] getWorkbasketIdIn() {
-    return workbasketIdIn;
-  }
-
-  public String[] getWorkbasketIdNotIn() {
-    return workbasketIdNotIn;
-  }
-
-  public String[] getWorkbasketKeyIn() {
-    return workbasketKeyIn;
-  }
-
-  public String[] getWorkbasketKeyNotIn() {
-    return workbasketKeyNotIn;
-  }
-
-  public String getDomain() {
-    return domain;
-  }
-
-  public String[] getBusinessProcessIdIn() {
-    return businessProcessIdIn;
-  }
-
-  public String[] getBusinessProcessIdNot() {
-    return businessProcessIdNot;
-  }
-
-  public String[] getBusinessProcessIdLike() {
-    return businessProcessIdLike;
-  }
-
-  public String[] getBusinessProcessIdNotLike() {
-    return businessProcessIdNotLike;
-  }
-
-  public String[] getParentBusinessProcessIdIn() {
-    return parentBusinessProcessIdIn;
-  }
-
-  public String[] getParentBusinessProcessIdNotIn() {
-    return parentBusinessProcessIdNotIn;
-  }
-
-  public String[] getParentBusinessProcessIdLike() {
-    return parentBusinessProcessIdLike;
-  }
-
-  public String[] getParentBusinessProcessIdNotLike() {
-    return parentBusinessProcessIdNotLike;
-  }
-
-  public String[] getOwnerIn() {
-    return ownerIn;
-  }
-
-  public String[] getOwnerNotIn() {
-    return ownerNotIn;
-  }
-
-  public String[] getOwnerLike() {
-    return ownerLike;
-  }
-
-  public String[] getOwnerNotLike() {
-    return ownerNotLike;
-  }
-
-  public String getOwnerNull() {
-    return ownerNull;
-  }
-
-  public ObjectReference[] getPrimaryObjectReferenceIn() {
-    return primaryObjectReferenceIn;
-  }
-
-  public String[] getPorCompanyIn() {
-    return porCompanyIn;
-  }
-
-  public String[] getPorCompanyNotIn() {
-    return porCompanyNotIn;
-  }
-
-  public String[] getPorCompanyLike() {
-    return porCompanyLike;
-  }
-
-  public String[] getPorCompanyNotLike() {
-    return porCompanyNotLike;
-  }
-
-  public String[] getPorSystemIn() {
-    return porSystemIn;
-  }
-
-  public String[] getPorSystemNotIn() {
-    return porSystemNotIn;
-  }
-
-  public String[] getPorSystemLike() {
-    return porSystemLike;
-  }
-
-  public String[] getPorSystemNotLike() {
-    return porSystemNotLike;
-  }
-
-  public String[] getPorInstanceIn() {
-    return porInstanceIn;
-  }
-
-  public String[] getPorInstanceNotIn() {
-    return porInstanceNotIn;
-  }
-
-  public String[] getPorInstanceLike() {
-    return porInstanceLike;
-  }
-
-  public String[] getPorInstanceNotLike() {
-    return porInstanceNotLike;
-  }
-
-  public String[] getPorTypeIn() {
-    return porTypeIn;
-  }
-
-  public String[] getPorTypeNotIn() {
-    return porTypeNotIn;
-  }
-
-  public String[] getPorTypeLike() {
-    return porTypeLike;
-  }
-
-  public String[] getPorTypeNotLike() {
-    return porTypeNotLike;
-  }
-
-  public String[] getPorValueIn() {
-    return porValueIn;
-  }
-
-  public String[] getPorValueNotIn() {
-    return porValueNotIn;
-  }
-
-  public String[] getPorValueLike() {
-    return porValueLike;
-  }
-
-  public String[] getPorValueNotLike() {
-    return porValueNotLike;
-  }
-
-  public ObjectReference[] getSecondaryObjectReferenceIn() {
-    return secondaryObjectReferenceIn;
-  }
-
-  public String[] getSorCompanyIn() {
-    return sorCompanyIn;
-  }
-
-  public String[] getSorCompanyLike() {
-    return sorCompanyLike;
-  }
-
-  public String[] getSorSystemIn() {
-    return sorSystemIn;
-  }
-
-  public String[] getSorSystemLike() {
-    return sorSystemLike;
-  }
-
-  public String[] getSorInstanceIn() {
-    return sorInstanceIn;
-  }
-
-  public String[] getSorInstanceLike() {
-    return sorInstanceLike;
-  }
-
-  public String[] getSorTypeIn() {
-    return sorTypeIn;
-  }
-
-  public String[] getSorTypeLike() {
-    return sorTypeLike;
-  }
-
-  public String[] getSorValueIn() {
-    return sorValueIn;
-  }
-
-  public String[] getSorValueLike() {
-    return sorValueLike;
-  }
-
-  public Boolean getRead() {
-    return isRead;
-  }
-
-  public Boolean getTransferred() {
-    return isTransferred;
-  }
-
-  public String[] getAttachmentClassificationIdIn() {
-    return attachmentClassificationIdIn;
-  }
-
-  public String[] getAttachmentClassificationIdNotIn() {
-    return attachmentClassificationIdNotIn;
-  }
-
-  public String[] getAttachmentClassificationKeyIn() {
-    return attachmentClassificationKeyIn;
-  }
-
-  public String[] getAttachmentClassificationKeyNotIn() {
-    return attachmentClassificationKeyNotIn;
-  }
-
-  public String[] getAttachmentClassificationKeyLike() {
-    return attachmentClassificationKeyLike;
-  }
-
-  public String[] getAttachmentClassificationKeyNotLike() {
-    return attachmentClassificationKeyNotLike;
-  }
-
-  public String[] getAttachmentClassificationNameIn() {
-    return attachmentClassificationNameIn;
-  }
-
-  public String[] getAttachmentClassificationNameNotIn() {
-    return attachmentClassificationNameNotIn;
-  }
-
-  public String[] getAttachmentClassificationNameLike() {
-    return attachmentClassificationNameLike;
-  }
-
-  public String[] getAttachmentClassificationNameNotLike() {
-    return attachmentClassificationNameNotLike;
-  }
-
-  public String[] getAttachmentChannelIn() {
-    return attachmentChannelIn;
-  }
-
-  public String[] getAttachmentChannelNotIn() {
-    return attachmentChannelNotIn;
-  }
-
-  public String[] getAttachmentChannelLike() {
-    return attachmentChannelLike;
-  }
-
-  public String[] getAttachmentChannelNotLike() {
-    return attachmentChannelNotLike;
-  }
-
-  public String[] getAttachmentReferenceIn() {
-    return attachmentReferenceIn;
-  }
-
-  public String[] getAttachmentReferenceNotIn() {
-    return attachmentReferenceNotIn;
-  }
-
-  public String[] getAttachmentReferenceLike() {
-    return attachmentReferenceLike;
-  }
-
-  public String[] getAttachmentReferenceNotLike() {
-    return attachmentReferenceNotLike;
-  }
-
-  public Instant[] getAttachmentReceivedWithin() {
-    return attachmentReceivedWithin;
-  }
-
-  public Instant[] getAttachmentReceivedNotWithin() {
-    return attachmentReceivedNotWithin;
-  }
-
-  public Boolean getWithoutAttachment() {
-    return withoutAttachment;
-  }
-
-  public CallbackState[] getCallbackStateIn() {
-    return callbackStateIn;
-  }
-
-  public CallbackState[] getCallbackStateNotIn() {
-    return callbackStateNotIn;
-  }
-
-  public WildcardSearchField[] getWildcardSearchFieldIn() {
-    return wildcardSearchFieldIn;
-  }
-
-  public String getWildcardSearchValue() {
-    return wildcardSearchValue;
-  }
-
-  public String[] getTaskIdNotIn() {
-    return taskIdNotIn;
-  }
-
   // region id
   @Schema(name = "task-id", description = "Filter by task id. This is an exact match.")
   @JsonProperty("task-id")
@@ -1128,11 +508,10 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   @JsonProperty("state-not")
   private final TaskState[] stateNotIn;
 
-  // endregion
-  // region comments
   /** Filter by the has comments flag of the Task. This is an exact match. */
   @JsonProperty("has-comments")
   private final Boolean hasComments;
+
   // endregion
   // region classificationId
   @Schema(
@@ -1965,10 +1344,6 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
   @JsonProperty("wildcard-search-value")
   private final String wildcardSearchValue;
 
-  // endregion
-
-  // region constructor
-
   @ConstructorProperties({
     "task-id",
     "task-id-not",
@@ -2443,6 +1818,633 @@ public class TaskQueryFilterParameter implements QueryParameter<TaskQuery, Void>
     this.wildcardSearchValue = wildcardSearchValue;
 
     validateFilterParameters();
+  }
+
+  public String[] getTaskIdIn() {
+    return taskIdIn;
+  }
+
+  public String[] getExternalIdIn() {
+    return externalIdIn;
+  }
+
+  public String[] getExternalIdNotIn() {
+    return externalIdNotIn;
+  }
+
+  public Instant[] getReceivedWithin() {
+    return receivedWithin;
+  }
+
+  public Instant getReceivedFrom() {
+    return receivedFrom;
+  }
+
+  public Instant getReceivedUntil() {
+    return receivedUntil;
+  }
+
+  public Instant[] getReceivedNotIn() {
+    return receivedNotIn;
+  }
+
+  public Instant getReceivedFromNot() {
+    return receivedFromNot;
+  }
+
+  public Instant getReceivedUntilNot() {
+    return receivedUntilNot;
+  }
+
+  public Instant[] getCreatedWithin() {
+    return createdWithin;
+  }
+
+  public Instant getCreatedFrom() {
+    return createdFrom;
+  }
+
+  public Instant getCreatedUntil() {
+    return createdUntil;
+  }
+
+  public Instant[] getCreatedNotWithin() {
+    return createdNotWithin;
+  }
+
+  public Instant getCreatedFromNot() {
+    return createdFromNot;
+  }
+
+  public Instant getCreatedUntilNot() {
+    return createdUntilNot;
+  }
+
+  public Instant[] getClaimedWithin() {
+    return claimedWithin;
+  }
+
+  public Instant[] getClaimedNotWithin() {
+    return claimedNotWithin;
+  }
+
+  public Instant[] getModifiedWithin() {
+    return modifiedWithin;
+  }
+
+  public Instant[] getModifiedNotWithin() {
+    return modifiedNotWithin;
+  }
+
+  public Instant[] getPlannedWithin() {
+    return plannedWithin;
+  }
+
+  public Instant getPlannedFrom() {
+    return plannedFrom;
+  }
+
+  public Instant getPlannedUntil() {
+    return plannedUntil;
+  }
+
+  public Instant[] getPlannedNotWithin() {
+    return plannedNotWithin;
+  }
+
+  public Instant getPlannedFromNot() {
+    return plannedFromNot;
+  }
+
+  public Instant getPlannedUntilNot() {
+    return plannedUntilNot;
+  }
+
+  public Instant[] getDueWithin() {
+    return dueWithin;
+  }
+
+  public Instant getDueFrom() {
+    return dueFrom;
+  }
+
+  public Instant getDueUntil() {
+    return dueUntil;
+  }
+
+  public Instant[] getDueNotWithin() {
+    return dueNotWithin;
+  }
+
+  public Instant getDueFromNot() {
+    return dueFromNot;
+  }
+
+  public Instant getDueUntilNot() {
+    return dueUntilNot;
+  }
+
+  public Instant[] getCompletedWithin() {
+    return completedWithin;
+  }
+
+  public Instant getCompletedFrom() {
+    return completedFrom;
+  }
+
+  public Instant getCompletedUntil() {
+    return completedUntil;
+  }
+
+  public Instant[] getCompletedNotWithin() {
+    return completedNotWithin;
+  }
+
+  public Instant getCompletedFromNot() {
+    return completedFromNot;
+  }
+
+  public Instant getCompletedUntilNot() {
+    return completedUntilNot;
+  }
+
+  public String[] getNameIn() {
+    return nameIn;
+  }
+
+  public String[] getNameNotIn() {
+    return nameNotIn;
+  }
+
+  public String[] getNameLike() {
+    return nameLike;
+  }
+
+  public String[] getNameNotLike() {
+    return nameNotLike;
+  }
+
+  public String[] getCreatorIn() {
+    return creatorIn;
+  }
+
+  public String[] getCreatorNotIn() {
+    return creatorNotIn;
+  }
+
+  public String[] getCreatorLike() {
+    return creatorLike;
+  }
+
+  public String[] getCreatorNotLike() {
+    return creatorNotLike;
+  }
+
+  public String[] getNoteLike() {
+    return noteLike;
+  }
+
+  public String[] getNoteNotLike() {
+    return noteNotLike;
+  }
+
+  public String[] getDescriptionLike() {
+    return descriptionLike;
+  }
+
+  public String[] getDescriptionNotLike() {
+    return descriptionNotLike;
+  }
+
+  public int[] getPriorityIn() {
+    return priorityIn;
+  }
+
+  public int[] getPriorityNotIn() {
+    return priorityNotIn;
+  }
+
+  public Integer[] getPriorityWithin() {
+    return priorityWithin;
+  }
+
+  public Integer getPriorityFrom() {
+    return priorityFrom;
+  }
+
+  public Integer getPriorityUntil() {
+    return priorityUntil;
+  }
+
+  public Integer[] getPriorityNotWithin() {
+    return priorityNotWithin;
+  }
+
+  public Integer getPriorityNotFrom() {
+    return priorityNotFrom;
+  }
+
+  public Integer getPriorityNotUntil() {
+    return priorityNotUntil;
+  }
+
+  public TaskState[] getStateIn() {
+    return stateIn;
+  }
+
+  // endregion
+  // region comments
+
+  public TaskState[] getStateNotIn() {
+    return stateNotIn;
+  }
+
+  public String[] getClassificationIdIn() {
+    return classificationIdIn;
+  }
+
+  public String[] getClassificationIdNotIn() {
+    return classificationIdNotIn;
+  }
+
+  public String[] getClassificationKeyIn() {
+    return classificationKeyIn;
+  }
+
+  public String[] getClassificationKeyNotIn() {
+    return classificationKeyNotIn;
+  }
+
+  public String[] getClassificationKeyLike() {
+    return classificationKeyLike;
+  }
+
+  public String[] getClassificationKeyNotLike() {
+    return classificationKeyNotLike;
+  }
+
+  public String[] getClassificationParentKeyIn() {
+    return classificationParentKeyIn;
+  }
+
+  public String[] getClassificationParentKeyNotIn() {
+    return classificationParentKeyNotIn;
+  }
+
+  public String[] getClassificationParentKeyLike() {
+    return classificationParentKeyLike;
+  }
+
+  public String[] getClassificationParentKeyNotLike() {
+    return classificationParentKeyNotLike;
+  }
+
+  public String[] getClassificationCategoryIn() {
+    return classificationCategoryIn;
+  }
+
+  public String[] getClassificationCategoryNotIn() {
+    return classificationCategoryNotIn;
+  }
+
+  public String[] getClassificationCategoryLike() {
+    return classificationCategoryLike;
+  }
+
+  public String[] getClassificationCategoryNotLike() {
+    return classificationCategoryNotLike;
+  }
+
+  public String[] getClassificationNameIn() {
+    return classificationNameIn;
+  }
+
+  public String[] getClassificationNameNotIn() {
+    return classificationNameNotIn;
+  }
+
+  public String[] getClassificationNameLike() {
+    return classificationNameLike;
+  }
+
+  public String[] getClassificationNameNotLike() {
+    return classificationNameNotLike;
+  }
+
+  public String[] getWorkbasketIdIn() {
+    return workbasketIdIn;
+  }
+
+  public String[] getWorkbasketIdNotIn() {
+    return workbasketIdNotIn;
+  }
+
+  public String[] getWorkbasketKeyIn() {
+    return workbasketKeyIn;
+  }
+
+  public String[] getWorkbasketKeyNotIn() {
+    return workbasketKeyNotIn;
+  }
+
+  public String getDomain() {
+    return domain;
+  }
+
+  public String[] getBusinessProcessIdIn() {
+    return businessProcessIdIn;
+  }
+
+  public String[] getBusinessProcessIdNot() {
+    return businessProcessIdNot;
+  }
+
+  public String[] getBusinessProcessIdLike() {
+    return businessProcessIdLike;
+  }
+
+  public String[] getBusinessProcessIdNotLike() {
+    return businessProcessIdNotLike;
+  }
+
+  public String[] getParentBusinessProcessIdIn() {
+    return parentBusinessProcessIdIn;
+  }
+
+  public String[] getParentBusinessProcessIdNotIn() {
+    return parentBusinessProcessIdNotIn;
+  }
+
+  public String[] getParentBusinessProcessIdLike() {
+    return parentBusinessProcessIdLike;
+  }
+
+  public String[] getParentBusinessProcessIdNotLike() {
+    return parentBusinessProcessIdNotLike;
+  }
+
+  public String[] getOwnerIn() {
+    return ownerIn;
+  }
+
+  public String[] getOwnerNotIn() {
+    return ownerNotIn;
+  }
+
+  public String[] getOwnerLike() {
+    return ownerLike;
+  }
+
+  public String[] getOwnerNotLike() {
+    return ownerNotLike;
+  }
+
+  public String getOwnerNull() {
+    return ownerNull;
+  }
+
+  public ObjectReference[] getPrimaryObjectReferenceIn() {
+    return primaryObjectReferenceIn;
+  }
+
+  public String[] getPorCompanyIn() {
+    return porCompanyIn;
+  }
+
+  public String[] getPorCompanyNotIn() {
+    return porCompanyNotIn;
+  }
+
+  public String[] getPorCompanyLike() {
+    return porCompanyLike;
+  }
+
+  public String[] getPorCompanyNotLike() {
+    return porCompanyNotLike;
+  }
+
+  public String[] getPorSystemIn() {
+    return porSystemIn;
+  }
+
+  public String[] getPorSystemNotIn() {
+    return porSystemNotIn;
+  }
+
+  public String[] getPorSystemLike() {
+    return porSystemLike;
+  }
+
+  public String[] getPorSystemNotLike() {
+    return porSystemNotLike;
+  }
+
+  public String[] getPorInstanceIn() {
+    return porInstanceIn;
+  }
+
+  public String[] getPorInstanceNotIn() {
+    return porInstanceNotIn;
+  }
+
+  public String[] getPorInstanceLike() {
+    return porInstanceLike;
+  }
+
+  public String[] getPorInstanceNotLike() {
+    return porInstanceNotLike;
+  }
+
+  public String[] getPorTypeIn() {
+    return porTypeIn;
+  }
+
+  public String[] getPorTypeNotIn() {
+    return porTypeNotIn;
+  }
+
+  public String[] getPorTypeLike() {
+    return porTypeLike;
+  }
+
+  public String[] getPorTypeNotLike() {
+    return porTypeNotLike;
+  }
+
+  public String[] getPorValueIn() {
+    return porValueIn;
+  }
+
+  public String[] getPorValueNotIn() {
+    return porValueNotIn;
+  }
+
+  public String[] getPorValueLike() {
+    return porValueLike;
+  }
+
+  public String[] getPorValueNotLike() {
+    return porValueNotLike;
+  }
+
+  public ObjectReference[] getSecondaryObjectReferenceIn() {
+    return secondaryObjectReferenceIn;
+  }
+
+  public String[] getSorCompanyIn() {
+    return sorCompanyIn;
+  }
+
+  public String[] getSorCompanyLike() {
+    return sorCompanyLike;
+  }
+
+  public String[] getSorSystemIn() {
+    return sorSystemIn;
+  }
+
+  public String[] getSorSystemLike() {
+    return sorSystemLike;
+  }
+
+  public String[] getSorInstanceIn() {
+    return sorInstanceIn;
+  }
+
+  public String[] getSorInstanceLike() {
+    return sorInstanceLike;
+  }
+
+  public String[] getSorTypeIn() {
+    return sorTypeIn;
+  }
+
+  public String[] getSorTypeLike() {
+    return sorTypeLike;
+  }
+
+  public String[] getSorValueIn() {
+    return sorValueIn;
+  }
+
+  public String[] getSorValueLike() {
+    return sorValueLike;
+  }
+
+  public Boolean getRead() {
+    return isRead;
+  }
+
+  public Boolean getTransferred() {
+    return isTransferred;
+  }
+
+  public String[] getAttachmentClassificationIdIn() {
+    return attachmentClassificationIdIn;
+  }
+
+  public String[] getAttachmentClassificationIdNotIn() {
+    return attachmentClassificationIdNotIn;
+  }
+
+  public String[] getAttachmentClassificationKeyIn() {
+    return attachmentClassificationKeyIn;
+  }
+
+  public String[] getAttachmentClassificationKeyNotIn() {
+    return attachmentClassificationKeyNotIn;
+  }
+
+  public String[] getAttachmentClassificationKeyLike() {
+    return attachmentClassificationKeyLike;
+  }
+
+  public String[] getAttachmentClassificationKeyNotLike() {
+    return attachmentClassificationKeyNotLike;
+  }
+
+  public String[] getAttachmentClassificationNameIn() {
+    return attachmentClassificationNameIn;
+  }
+
+  public String[] getAttachmentClassificationNameNotIn() {
+    return attachmentClassificationNameNotIn;
+  }
+
+  public String[] getAttachmentClassificationNameLike() {
+    return attachmentClassificationNameLike;
+  }
+
+  public String[] getAttachmentClassificationNameNotLike() {
+    return attachmentClassificationNameNotLike;
+  }
+
+  public String[] getAttachmentChannelIn() {
+    return attachmentChannelIn;
+  }
+
+  public String[] getAttachmentChannelNotIn() {
+    return attachmentChannelNotIn;
+  }
+
+  public String[] getAttachmentChannelLike() {
+    return attachmentChannelLike;
+  }
+
+  public String[] getAttachmentChannelNotLike() {
+    return attachmentChannelNotLike;
+  }
+
+  public String[] getAttachmentReferenceIn() {
+    return attachmentReferenceIn;
+  }
+
+  public String[] getAttachmentReferenceNotIn() {
+    return attachmentReferenceNotIn;
+  }
+
+  public String[] getAttachmentReferenceLike() {
+    return attachmentReferenceLike;
+  }
+
+  public String[] getAttachmentReferenceNotLike() {
+    return attachmentReferenceNotLike;
+  }
+
+  public Instant[] getAttachmentReceivedWithin() {
+    return attachmentReceivedWithin;
+  }
+
+  public Instant[] getAttachmentReceivedNotWithin() {
+    return attachmentReceivedNotWithin;
+  }
+
+  public Boolean getWithoutAttachment() {
+    return withoutAttachment;
+  }
+
+  public CallbackState[] getCallbackStateIn() {
+    return callbackStateIn;
+  }
+
+  public CallbackState[] getCallbackStateNotIn() {
+    return callbackStateNotIn;
+  }
+
+  public WildcardSearchField[] getWildcardSearchFieldIn() {
+    return wildcardSearchFieldIn;
+  }
+
+  public String getWildcardSearchValue() {
+    return wildcardSearchValue;
+  }
+
+  // endregion
+
+  // region constructor
+
+  public String[] getTaskIdNotIn() {
+    return taskIdNotIn;
   }
 
   // endregion

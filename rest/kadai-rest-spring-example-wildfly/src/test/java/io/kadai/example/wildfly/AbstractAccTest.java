@@ -35,61 +35,6 @@ public class AbstractAccTest {
 
   protected RestHelper restHelper = new RestHelper(8080);
 
-  protected TaskRepresentationModel getTaskResourceSample() {
-    ClassificationSummaryRepresentationModel classificationResource =
-        new ClassificationSummaryRepresentationModel();
-    classificationResource.setKey("L11010");
-    WorkbasketSummaryRepresentationModel workbasketSummary =
-        new WorkbasketSummaryRepresentationModel();
-    workbasketSummary.setWorkbasketId("WBI:100000000000000000000000000000000004");
-
-    ObjectReferenceRepresentationModel objectReference = new ObjectReferenceRepresentationModel();
-    objectReference.setCompany("MyCompany1");
-    objectReference.setSystem("MySystem1");
-    objectReference.setSystemInstance("MyInstance1");
-    objectReference.setType("MyType1");
-    objectReference.setValue("00000001");
-
-    TaskRepresentationModel taskRepresentationModel = new TaskRepresentationModel();
-    taskRepresentationModel.setClassificationSummary(classificationResource);
-    taskRepresentationModel.setWorkbasketSummary(workbasketSummary);
-    taskRepresentationModel.setPrimaryObjRef(objectReference);
-    return taskRepresentationModel;
-  }
-
-  protected ResponseEntity<TaskHistoryEventPagedRepresentationModel>
-      performGetHistoryEventsRestCall() {
-    return RestHelper.TEMPLATE.exchange(
-        restHelper.toUrl("/kadai" + HistoryRestEndpoints.URL_HISTORY_EVENTS),
-        HttpMethod.GET,
-        new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
-        ParameterizedTypeReference.forType(TaskHistoryEventPagedRepresentationModel.class));
-  }
-
-  protected ResponseEntity<TaskRepresentationModel> performCreateTaskRestCall() {
-    TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
-    return RestHelper.TEMPLATE.exchange(
-        restHelper.toUrl("/kadai" + RestEndpoints.URL_TASKS),
-        HttpMethod.POST,
-        new HttpEntity<>(taskRepresentationModel, RestHelper.generateHeadersForUser("teamlead-1")),
-        ParameterizedTypeReference.forType(TaskRepresentationModel.class));
-  }
-
-  protected String parseServerLog() throws Exception {
-
-    // TO-DO: make log4j log into rollingFile from log4j.xml
-    File file = new File("target/wildfly-31.0.1.Final/standalone/log/server.log");
-
-    BufferedReader br = new BufferedReader(new FileReader(file));
-
-    String str;
-    StringBuilder stringBuilder = new StringBuilder();
-    while ((str = br.readLine()) != null) {
-      stringBuilder.append(str);
-    }
-    return stringBuilder.toString();
-  }
-
   private static void stopPostgresDb() {
     try {
       boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
@@ -147,5 +92,60 @@ public class AbstractAccTest {
               + ", standardError: "
               + standardError);
     }
+  }
+
+  protected TaskRepresentationModel getTaskResourceSample() {
+    ClassificationSummaryRepresentationModel classificationResource =
+        new ClassificationSummaryRepresentationModel();
+    classificationResource.setKey("L11010");
+    WorkbasketSummaryRepresentationModel workbasketSummary =
+        new WorkbasketSummaryRepresentationModel();
+    workbasketSummary.setWorkbasketId("WBI:100000000000000000000000000000000004");
+
+    ObjectReferenceRepresentationModel objectReference = new ObjectReferenceRepresentationModel();
+    objectReference.setCompany("MyCompany1");
+    objectReference.setSystem("MySystem1");
+    objectReference.setSystemInstance("MyInstance1");
+    objectReference.setType("MyType1");
+    objectReference.setValue("00000001");
+
+    TaskRepresentationModel taskRepresentationModel = new TaskRepresentationModel();
+    taskRepresentationModel.setClassificationSummary(classificationResource);
+    taskRepresentationModel.setWorkbasketSummary(workbasketSummary);
+    taskRepresentationModel.setPrimaryObjRef(objectReference);
+    return taskRepresentationModel;
+  }
+
+  protected ResponseEntity<TaskHistoryEventPagedRepresentationModel>
+      performGetHistoryEventsRestCall() {
+    return RestHelper.TEMPLATE.exchange(
+        restHelper.toUrl("/kadai" + HistoryRestEndpoints.URL_HISTORY_EVENTS),
+        HttpMethod.GET,
+        new HttpEntity<>(RestHelper.generateHeadersForUser("teamlead-1")),
+        ParameterizedTypeReference.forType(TaskHistoryEventPagedRepresentationModel.class));
+  }
+
+  protected ResponseEntity<TaskRepresentationModel> performCreateTaskRestCall() {
+    TaskRepresentationModel taskRepresentationModel = getTaskResourceSample();
+    return RestHelper.TEMPLATE.exchange(
+        restHelper.toUrl("/kadai" + RestEndpoints.URL_TASKS),
+        HttpMethod.POST,
+        new HttpEntity<>(taskRepresentationModel, RestHelper.generateHeadersForUser("teamlead-1")),
+        ParameterizedTypeReference.forType(TaskRepresentationModel.class));
+  }
+
+  protected String parseServerLog() throws Exception {
+
+    // TO-DO: make log4j log into rollingFile from log4j.xml
+    File file = new File("target/wildfly-31.0.1.Final/standalone/log/server.log");
+
+    BufferedReader br = new BufferedReader(new FileReader(file));
+
+    String str;
+    StringBuilder stringBuilder = new StringBuilder();
+    while ((str = br.readLine()) != null) {
+      stringBuilder.append(str);
+    }
+    return stringBuilder.toString();
   }
 }

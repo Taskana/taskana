@@ -5,16 +5,16 @@
     <div class="classification-list__action-buttons">
 
       <!-- ADD BUTTON -->
-      <button mat-flat-button class="classification-list__add-button mr-1" matTooltip="Create new classification"
-              (click)="addClassification()">
+      <button (click)="addClassification()" class="classification-list__add-button mr-1" mat-flat-button
+              matTooltip="Create new classification">
         Add
         <mat-icon class="md-20">add</mat-icon>
       </button>
 
       <!-- IMPORT EXPORT BUTTONS -->
       <kadai-administration-import-export
-        class="classification-list__import-export" [currentSelection]="kadaiType.CLASSIFICATIONS"
-        [parentComponent]="'classifications'">
+        [currentSelection]="kadaiType.CLASSIFICATIONS" [parentComponent]="'classifications'"
+        class="classification-list__import-export">
       </kadai-administration-import-export>
     </div>
 
@@ -23,21 +23,21 @@
 
       <!-- CATEGORY FILTER -->
       <div class="classification-list__category-filter">
-        <button mat-stroked-button class="classification-list__filter-button" [matMenuTriggerFor]="menu"
+        <button [matMenuTriggerFor]="menu" class="classification-list__filter-button" mat-stroked-button
                 matTooltip="Filter Category">
 
           <mat-icon *ngIf="selectedCategory == ''">filter_list</mat-icon>
-          <svg-icon class="classification-list__icons" [src]="(getCategoryIcon(selectedCategory) | async)?.left"
-                    *ngIf="selectedCategory != ''">
+          <svg-icon *ngIf="selectedCategory != ''" [src]="(getCategoryIcon(selectedCategory) | async)?.left"
+                    class="classification-list__icons">
           </svg-icon>
         </button>
 
         <mat-menu #menu="matMenu">
-          <button class="classification-list__all-button" mat-menu-item (click)="selectCategory('')">
-            <span> <mat-icon style="color: #555" class="classification-list__filter-all-icon">filter_list</mat-icon> All </span>
+          <button (click)="selectCategory('')" class="classification-list__all-button" mat-menu-item>
+            <span> <mat-icon class="classification-list__filter-all-icon" style="color: #555">filter_list</mat-icon> All </span>
           </button>
-          <button mat-menu-item *ngFor="let category of categories$ | async" (click)="selectCategory(category)">
-            <svg-icon class="classification-list__categories" [src]="(getCategoryIcon(category) | async)?.left"
+          <button (click)="selectCategory(category)" *ngFor="let category of categories$ | async" mat-menu-item>
+            <svg-icon [src]="(getCategoryIcon(category) | async)?.left" class="classification-list__categories"
                       matTooltip="{{(getCategoryIcon(category) | async)?.right}}"></svg-icon>
             <span> {{category}} </span>
           </button>
@@ -46,9 +46,9 @@
 
       <!-- FILTER INPUT FIELD -->
       <div class="classification-list__input">
-        <mat-form-field class="classification-list__input-field" appearance="legacy" floatLabel="auto">
+        <mat-form-field appearance="legacy" class="classification-list__input-field" floatLabel="auto">
           <mat-label>Filter classification</mat-label>
-          <input matInput [ngModel]="inputValue" (ngModelChange)="inputValue = $event"
+          <input (ngModelChange)="inputValue = $event" [ngModel]="inputValue" matInput
                  matTooltip="Type to filter classifications">
         </mat-form-field>
       </div>
@@ -63,9 +63,10 @@
 
 
   <!-- CLASSIFICATION TREE -->
-  <kadai-administration-tree *ngIf="(classifications && classifications.length) else empty_classifications"
-                             [filterText]="inputValue" [filterIcon]="selectedCategory"
-                             (switchKadaiSpinnerEmit)="setRequestInProgress($event)"></kadai-administration-tree>
+  <kadai-administration-tree (switchKadaiSpinnerEmit)="setRequestInProgress($event)"
+                             *ngIf="(classifications && classifications.length) else empty_classifications"
+                             [filterIcon]="selectedCategory"
+                             [filterText]="inputValue"></kadai-administration-tree>
   <ng-template #empty_classifications>
     <div *ngIf="!requestInProgress" class="classification-list__no-items">
       <h3 class="grey">There are no classifications</h3>

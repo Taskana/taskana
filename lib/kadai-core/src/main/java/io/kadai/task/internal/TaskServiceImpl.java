@@ -159,6 +159,79 @@ public class TaskServiceImpl implements TaskService {
     this.objectReferenceHandler = new ObjectReferenceHandler(objectReferenceMapper);
   }
 
+  private static Predicate<TaskSummaryImpl> addErrorToBulkLog(
+      CheckedConsumer<TaskSummaryImpl, KadaiException> checkedConsumer,
+      BulkOperationResults<String, KadaiException> bulkLog) {
+    return summary -> {
+      try {
+        checkedConsumer.accept(summary);
+        return true;
+      } catch (KadaiException e) {
+        bulkLog.addError(summary.getId(), e);
+        return false;
+      }
+    };
+  }
+
+  private static void terminateCancelCommonActions(TaskImpl task, TaskState targetState) {
+    Instant now = Instant.now();
+    task.setModified(now);
+    task.setCompleted(now);
+    task.setState(targetState);
+  }
+
+  private static void claimActionsOnTask(
+      TaskSummaryImpl task, String userId, String userLongName, Instant now) {
+    task.setOwner(userId);
+    task.setOwnerLongName(userLongName);
+    task.setModified(now);
+    task.setClaimed(now);
+    task.setRead(true);
+    if (Set.of(TaskState.READY_FOR_REVIEW, TaskState.IN_REVIEW).contains(task.getState())) {
+      task.setState(TaskState.IN_REVIEW);
+    } else {
+      task.setState(TaskState.CLAIMED);
+    }
+  }
+
+  private static void cancelClaimActionsOnTask(
+      TaskSummaryImpl task, Instant now, boolean keepOwner) {
+    if (!keepOwner) {
+      task.setOwner(null);
+      task.setOwnerLongName(null);
+    }
+    task.setModified(now);
+    task.setClaimed(null);
+    task.setRead(true);
+    if (task.getState() == TaskState.IN_REVIEW) {
+      task.setState(TaskState.READY_FOR_REVIEW);
+    } else {
+      task.setState(TaskState.READY);
+    }
+  }
+
+  private static void completeActionsOnTask(TaskSummaryImpl task, String userId, Instant now) {
+    task.setCompleted(now);
+    task.setModified(now);
+    task.setState(TaskState.COMPLETED);
+    task.setOwner(userId);
+  }
+
+  private static boolean taskIsNotClaimed(TaskSummary task) {
+    return task.getClaimed() == null
+        || (task.getState() != TaskState.CLAIMED && task.getState() != TaskState.IN_REVIEW);
+  }
+
+  private static void checkIfTaskIsTerminatedOrCancelled(TaskSummary task)
+      throws InvalidTaskStateException {
+    if (task.getState().in(TaskState.CANCELLED, TaskState.TERMINATED)) {
+      throw new InvalidTaskStateException(
+          task.getId(),
+          task.getState(),
+          EnumUtil.allValuesExceptFor(TaskState.CANCELLED, TaskState.TERMINATED));
+    }
+  }
+
   @Override
   public Task claim(String taskId)
       throws TaskNotFoundException,
@@ -1346,20 +1419,6 @@ public class TaskServiceImpl implements TaskService {
         .map(Pair::getRight);
   }
 
-  private static Predicate<TaskSummaryImpl> addErrorToBulkLog(
-      CheckedConsumer<TaskSummaryImpl, KadaiException> checkedConsumer,
-      BulkOperationResults<String, KadaiException> bulkLog) {
-    return summary -> {
-      try {
-        checkedConsumer.accept(summary);
-        return true;
-      } catch (KadaiException e) {
-        bulkLog.addError(summary.getId(), e);
-        return false;
-      }
-    };
-  }
-
   private void checkConcurrencyAndSetModified(TaskImpl newTaskImpl, TaskImpl oldTaskImpl)
       throws ConcurrencyException {
     // TODO: not safe to rely only on different timestamps.
@@ -1373,13 +1432,6 @@ public class TaskServiceImpl implements TaskService {
       throw new ConcurrencyException(newTaskImpl.getId());
     }
     newTaskImpl.setModified(Instant.now());
-  }
-
-  private static void terminateCancelCommonActions(TaskImpl task, TaskState targetState) {
-    Instant now = Instant.now();
-    task.setModified(now);
-    task.setCompleted(now);
-    task.setState(targetState);
   }
 
   private Task claim(String taskId, boolean forceClaim)
@@ -1532,43 +1584,6 @@ public class TaskServiceImpl implements TaskService {
     return task;
   }
 
-  private static void claimActionsOnTask(
-      TaskSummaryImpl task, String userId, String userLongName, Instant now) {
-    task.setOwner(userId);
-    task.setOwnerLongName(userLongName);
-    task.setModified(now);
-    task.setClaimed(now);
-    task.setRead(true);
-    if (Set.of(TaskState.READY_FOR_REVIEW, TaskState.IN_REVIEW).contains(task.getState())) {
-      task.setState(TaskState.IN_REVIEW);
-    } else {
-      task.setState(TaskState.CLAIMED);
-    }
-  }
-
-  private static void cancelClaimActionsOnTask(
-      TaskSummaryImpl task, Instant now, boolean keepOwner) {
-    if (!keepOwner) {
-      task.setOwner(null);
-      task.setOwnerLongName(null);
-    }
-    task.setModified(now);
-    task.setClaimed(null);
-    task.setRead(true);
-    if (task.getState() == TaskState.IN_REVIEW) {
-      task.setState(TaskState.READY_FOR_REVIEW);
-    } else {
-      task.setState(TaskState.READY);
-    }
-  }
-
-  private static void completeActionsOnTask(TaskSummaryImpl task, String userId, Instant now) {
-    task.setCompleted(now);
-    task.setModified(now);
-    task.setState(TaskState.COMPLETED);
-    task.setOwner(userId);
-  }
-
   private void checkPreconditionsForClaimTask(TaskSummary task, boolean forced)
       throws InvalidOwnerException, InvalidTaskStateException, NotAuthorizedOnWorkbasketException {
     TaskState state = task.getState();
@@ -1588,21 +1603,6 @@ public class TaskServiceImpl implements TaskService {
           kadaiEngine.getEngine().getCurrentUserContext().getUserid(),
           task.getWorkbasketSummary().getId(),
           WorkbasketPermission.EDITTASKS);
-    }
-  }
-
-  private static boolean taskIsNotClaimed(TaskSummary task) {
-    return task.getClaimed() == null
-        || (task.getState() != TaskState.CLAIMED && task.getState() != TaskState.IN_REVIEW);
-  }
-
-  private static void checkIfTaskIsTerminatedOrCancelled(TaskSummary task)
-      throws InvalidTaskStateException {
-    if (task.getState().in(TaskState.CANCELLED, TaskState.TERMINATED)) {
-      throw new InvalidTaskStateException(
-          task.getId(),
-          task.getState(),
-          EnumUtil.allValuesExceptFor(TaskState.CANCELLED, TaskState.TERMINATED));
     }
   }
 

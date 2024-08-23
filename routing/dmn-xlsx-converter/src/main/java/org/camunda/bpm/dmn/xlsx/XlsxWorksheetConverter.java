@@ -41,10 +41,10 @@ import org.camunda.bpm.model.dmn.instance.Text;
  */
 public class XlsxWorksheetConverter {
 
-  static
-  {
+  static {
     org.camunda.bpm.dmn.xlsx.CellContentHandler.DEFAULT_HANDLERS.add(new DmnValueRangeConverter());
-    org.camunda.bpm.dmn.xlsx.CellContentHandler.DEFAULT_HANDLERS.add(new FeelSimpleUnaryTestConverter());
+    org.camunda.bpm.dmn.xlsx.CellContentHandler.DEFAULT_HANDLERS.add(
+        new FeelSimpleUnaryTestConverter());
     org.camunda.bpm.dmn.xlsx.CellContentHandler.DEFAULT_HANDLERS.add(new DmnValueStringConverter());
     CellContentHandler.DEFAULT_HANDLERS.add(new DmnValueNumberConverter());
   }
@@ -55,9 +55,14 @@ public class XlsxWorksheetConverter {
   protected org.camunda.bpm.dmn.xlsx.DmnConversionContext dmnConversionContext;
   protected SpreadsheetAdapter spreadsheetAdapter;
 
-  public XlsxWorksheetConverter(XlsxWorksheetContext worksheetContext, SpreadsheetAdapter spreadsheetAdapter, String historyTimeToLive) {
+  public XlsxWorksheetConverter(
+      XlsxWorksheetContext worksheetContext,
+      SpreadsheetAdapter spreadsheetAdapter,
+      String historyTimeToLive) {
     this.worksheetContext = worksheetContext;
-    this.dmnConversionContext = new DmnConversionContext(worksheetContext, spreadsheetAdapter.getCellContentHandlers(worksheetContext));
+    this.dmnConversionContext =
+        new DmnConversionContext(
+            worksheetContext, spreadsheetAdapter.getCellContentHandlers(worksheetContext));
     this.spreadsheetAdapter = spreadsheetAdapter;
     this.historyTimeToLive = historyTimeToLive;
   }
@@ -81,24 +86,26 @@ public class XlsxWorksheetConverter {
     return dmnModel;
   }
 
-  public <E extends NamedElement> E generateNamedElement(DmnModelInstance modelInstance, Class<E> elementClass, String name) {
+  public <E extends NamedElement> E generateNamedElement(
+      DmnModelInstance modelInstance, Class<E> elementClass, String name) {
     E element = generateElement(modelInstance, elementClass, name);
     element.setName(name);
     return element;
   }
 
-  public <E extends DmnElement> E generateElement(DmnModelInstance modelInstance, Class<E> elementClass, String id) {
+  public <E extends DmnElement> E generateElement(
+      DmnModelInstance modelInstance, Class<E> elementClass, String id) {
     E element = modelInstance.newInstance(elementClass);
     element.setId(id);
     return element;
   }
 
-  /**
-   * With a generated id
-   */
-  public <E extends DmnElement> E generateElement(DmnModelInstance modelInstance, Class<E> elementClass) {
+  /** With a generated id */
+  public <E extends DmnElement> E generateElement(
+      DmnModelInstance modelInstance, Class<E> elementClass) {
     // TODO: use a proper generator for random IDs
-    String generatedId = elementClass.getSimpleName() + Integer.toString((int) (Integer.MAX_VALUE * Math.random()));
+    String generatedId =
+        elementClass.getSimpleName() + Integer.toString((int) (Integer.MAX_VALUE * Math.random()));
     return generateElement(modelInstance, elementClass, generatedId);
   }
 
@@ -111,7 +118,8 @@ public class XlsxWorksheetConverter {
 
   protected void convertInputsOutputs(DmnModelInstance dmnModel, DecisionTable decisionTable) {
 
-    InputOutputColumns inputOutputColumns = spreadsheetAdapter.determineInputOutputs(worksheetContext);
+    InputOutputColumns inputOutputColumns =
+        spreadsheetAdapter.determineInputOutputs(worksheetContext);
 
     // inputs
     for (HeaderValuesContainer hvc : inputOutputColumns.getInputHeaders()) {
@@ -156,16 +164,17 @@ public class XlsxWorksheetConverter {
 
       dmnConversionContext.getIndexedDmnColumns().addOutput(hvc.getColumn(), output);
     }
-
   }
 
-  protected void convertRules(DmnModelInstance dmnModel, DecisionTable decisionTable, List<SpreadsheetRow> rulesRows) {
+  protected void convertRules(
+      DmnModelInstance dmnModel, DecisionTable decisionTable, List<SpreadsheetRow> rulesRows) {
     for (SpreadsheetRow rule : rulesRows) {
       convertRule(dmnModel, decisionTable, rule);
     }
   }
 
-  protected void convertRule(DmnModelInstance dmnModel, DecisionTable decisionTable, SpreadsheetRow ruleRow) {
+  protected void convertRule(
+      DmnModelInstance dmnModel, DecisionTable decisionTable, SpreadsheetRow ruleRow) {
     Rule rule = generateElement(dmnModel, Rule.class, "excelRow" + ruleRow.getRaw().getR());
     decisionTable.addChildElement(rule);
 
@@ -177,7 +186,8 @@ public class XlsxWorksheetConverter {
       String coordinate = xlsxColumn + ruleRow.getRaw().getR();
 
       InputEntry inputEntry = generateElement(dmnModel, InputEntry.class, coordinate);
-      String textValue = cell != null ? dmnConversionContext.resolveCellValue(cell) : getDefaultCellContent();
+      String textValue =
+          cell != null ? dmnConversionContext.resolveCellValue(cell) : getDefaultCellContent();
       Text text = generateText(dmnModel, textValue);
       inputEntry.setText(text);
       rule.addChildElement(inputEntry);
@@ -189,16 +199,17 @@ public class XlsxWorksheetConverter {
       String coordinate = xlsxColumn + ruleRow.getRaw().getR();
 
       OutputEntry outputEntry = generateElement(dmnModel, OutputEntry.class, coordinate);
-      String textValue = cell != null ? dmnConversionContext.resolveCellValue(cell) : getDefaultCellContent();
+      String textValue =
+          cell != null ? dmnConversionContext.resolveCellValue(cell) : getDefaultCellContent();
       Text text = generateText(dmnModel, textValue);
       outputEntry.setText(text);
       rule.addChildElement(outputEntry);
     }
 
     SpreadsheetCell annotationCell = ruleRow.getCells().get(ruleRow.getCells().size() - 1);
-    Description description =  generateDescription(dmnModel, worksheetContext.resolveCellContent(annotationCell));
+    Description description =
+        generateDescription(dmnModel, worksheetContext.resolveCellContent(annotationCell));
     rule.setDescription(description);
-
   }
 
   protected String getDefaultCellContent() {
@@ -220,9 +231,9 @@ public class XlsxWorksheetConverter {
     return text;
   }
 
-  protected  Description generateDescription(DmnModelInstance dmnModel, String content) {
-      Description description =  dmnModel.newInstance(Description.class);
-      description.setTextContent(content);
-      return description;
+  protected Description generateDescription(DmnModelInstance dmnModel, String content) {
+    Description description = dmnModel.newInstance(Description.class);
+    description.setTextContent(content);
+    return description;
   }
 }

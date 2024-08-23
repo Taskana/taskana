@@ -63,6 +63,89 @@ class TaskSummaryRepresentationModelAssemblerTest {
     this.classificationService = classificationService;
   }
 
+  static void testEquality(TaskSummary taskSummary, TaskSummaryRepresentationModel repModel)
+      throws Exception {
+    assertThat(taskSummary).hasNoNullFieldsOrProperties();
+    assertThat(repModel).hasNoNullFieldsOrProperties();
+    assertThat(taskSummary.getId()).isEqualTo(repModel.getTaskId());
+    assertThat(taskSummary.getExternalId()).isEqualTo(repModel.getExternalId());
+    assertThat(taskSummary.getCreated()).isEqualTo(repModel.getCreated());
+    assertThat(taskSummary.getClaimed()).isEqualTo(repModel.getClaimed());
+    assertThat(taskSummary.getCompleted()).isEqualTo(repModel.getCompleted());
+    assertThat(taskSummary.getModified()).isEqualTo(repModel.getModified());
+    assertThat(taskSummary.getPlanned()).isEqualTo(repModel.getPlanned());
+    assertThat(taskSummary.getReceived()).isEqualTo(repModel.getReceived());
+    assertThat(taskSummary.getDue()).isEqualTo(repModel.getDue());
+    assertThat(taskSummary.getName()).isEqualTo(repModel.getName());
+    assertThat(taskSummary.getCreator()).isEqualTo(repModel.getCreator());
+    assertThat(taskSummary.getNote()).isEqualTo(repModel.getNote());
+    assertThat(taskSummary.getDescription()).isEqualTo(repModel.getDescription());
+    assertThat(taskSummary.getPriority()).isEqualTo(repModel.getPriority());
+    assertThat(taskSummary.getManualPriority()).isEqualTo(repModel.getManualPriority());
+    assertThat(taskSummary.getState()).isEqualTo(repModel.getState());
+    assertThat(taskSummary.getNumberOfComments()).isEqualTo(repModel.getNumberOfComments());
+    assertThat(taskSummary.getClassificationSummary().getId())
+        .isEqualTo(repModel.getClassificationSummary().getClassificationId());
+    assertThat(taskSummary.getWorkbasketSummary().getId())
+        .isEqualTo(repModel.getWorkbasketSummary().getWorkbasketId());
+    assertThat(taskSummary.getBusinessProcessId()).isEqualTo(repModel.getBusinessProcessId());
+    assertThat(taskSummary.getParentBusinessProcessId())
+        .isEqualTo(repModel.getParentBusinessProcessId());
+    assertThat(taskSummary.getOwner()).isEqualTo(repModel.getOwner());
+    assertThat(taskSummary.getOwnerLongName()).isEqualTo(repModel.getOwnerLongName());
+    ObjectReferenceRepresentationModelAssemblerTest.testEquality(
+        taskSummary.getPrimaryObjRef(), repModel.getPrimaryObjRef());
+    assertThat(taskSummary.isRead()).isEqualTo(repModel.isRead());
+    assertThat(taskSummary.isTransferred()).isEqualTo(repModel.isTransferred());
+    assertThat(taskSummary.getGroupByCount()).isEqualTo(repModel.getGroupByCount());
+    assertThat(taskSummary.getCustomField(CUSTOM_1)).isEqualTo(repModel.getCustom1());
+    assertThat(taskSummary.getCustomField(CUSTOM_2)).isEqualTo(repModel.getCustom2());
+    assertThat(taskSummary.getCustomField(CUSTOM_3)).isEqualTo(repModel.getCustom3());
+    assertThat(taskSummary.getCustomField(CUSTOM_4)).isEqualTo(repModel.getCustom4());
+    assertThat(taskSummary.getCustomField(CUSTOM_5)).isEqualTo(repModel.getCustom5());
+    assertThat(taskSummary.getCustomField(CUSTOM_6)).isEqualTo(repModel.getCustom6());
+    assertThat(taskSummary.getCustomField(CUSTOM_7)).isEqualTo(repModel.getCustom7());
+    assertThat(taskSummary.getCustomField(CUSTOM_8)).isEqualTo(repModel.getCustom8());
+    assertThat(taskSummary.getCustomField(CUSTOM_9)).isEqualTo(repModel.getCustom9());
+    assertThat(taskSummary.getCustomField(CUSTOM_10)).isEqualTo(repModel.getCustom10());
+    assertThat(taskSummary.getCustomField(CUSTOM_11)).isEqualTo(repModel.getCustom11());
+    assertThat(taskSummary.getCustomField(CUSTOM_12)).isEqualTo(repModel.getCustom12());
+    assertThat(taskSummary.getCustomField(CUSTOM_13)).isEqualTo(repModel.getCustom13());
+    assertThat(taskSummary.getCustomField(CUSTOM_14)).isEqualTo(repModel.getCustom14());
+    assertThat(taskSummary.getCustomField(CUSTOM_15)).isEqualTo(repModel.getCustom15());
+    assertThat(taskSummary.getCustomField(CUSTOM_16)).isEqualTo(repModel.getCustom16());
+    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_1))
+        .isEqualTo(repModel.getCustomInt1());
+    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_2))
+        .isEqualTo(repModel.getCustomInt2());
+    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_3))
+        .isEqualTo(repModel.getCustomInt3());
+    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_4))
+        .isEqualTo(repModel.getCustomInt4());
+    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_5))
+        .isEqualTo(repModel.getCustomInt5());
+    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_6))
+        .isEqualTo(repModel.getCustomInt6());
+    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_7))
+        .isEqualTo(repModel.getCustomInt7());
+    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_8))
+        .isEqualTo(repModel.getCustomInt8());
+    testEqualityAttachments(
+        taskSummary.getAttachmentSummaries(), repModel.getAttachmentSummaries());
+  }
+
+  private static void testEqualityAttachments(
+      List<AttachmentSummary> attachmentSummaries,
+      List<AttachmentSummaryRepresentationModel> resources) {
+    assertThat(attachmentSummaries).hasSameSizeAs(resources);
+
+    for (int i = 0; i < resources.size(); ++i) {
+      AttachmentSummaryRepresentationModel resource = resources.get(i);
+      AttachmentSummary attachmentSummary = attachmentSummaries.get(i);
+      assertThat(attachmentSummary.getId()).isEqualTo(resource.getAttachmentId());
+    }
+  }
+
   @Test
   void should_ReturnRepresentationModel_When_ConvertingEntityToRepresentationModel()
       throws Exception {
@@ -311,89 +394,6 @@ class TaskSummaryRepresentationModelAssemblerTest {
     TaskSummary task2 = assembler.toEntityModel(repModel);
     // then
     assertThat(task).hasNoNullFieldsOrProperties().isNotSameAs(task2).isEqualTo(task2);
-  }
-
-  static void testEquality(TaskSummary taskSummary, TaskSummaryRepresentationModel repModel)
-      throws Exception {
-    assertThat(taskSummary).hasNoNullFieldsOrProperties();
-    assertThat(repModel).hasNoNullFieldsOrProperties();
-    assertThat(taskSummary.getId()).isEqualTo(repModel.getTaskId());
-    assertThat(taskSummary.getExternalId()).isEqualTo(repModel.getExternalId());
-    assertThat(taskSummary.getCreated()).isEqualTo(repModel.getCreated());
-    assertThat(taskSummary.getClaimed()).isEqualTo(repModel.getClaimed());
-    assertThat(taskSummary.getCompleted()).isEqualTo(repModel.getCompleted());
-    assertThat(taskSummary.getModified()).isEqualTo(repModel.getModified());
-    assertThat(taskSummary.getPlanned()).isEqualTo(repModel.getPlanned());
-    assertThat(taskSummary.getReceived()).isEqualTo(repModel.getReceived());
-    assertThat(taskSummary.getDue()).isEqualTo(repModel.getDue());
-    assertThat(taskSummary.getName()).isEqualTo(repModel.getName());
-    assertThat(taskSummary.getCreator()).isEqualTo(repModel.getCreator());
-    assertThat(taskSummary.getNote()).isEqualTo(repModel.getNote());
-    assertThat(taskSummary.getDescription()).isEqualTo(repModel.getDescription());
-    assertThat(taskSummary.getPriority()).isEqualTo(repModel.getPriority());
-    assertThat(taskSummary.getManualPriority()).isEqualTo(repModel.getManualPriority());
-    assertThat(taskSummary.getState()).isEqualTo(repModel.getState());
-    assertThat(taskSummary.getNumberOfComments()).isEqualTo(repModel.getNumberOfComments());
-    assertThat(taskSummary.getClassificationSummary().getId())
-        .isEqualTo(repModel.getClassificationSummary().getClassificationId());
-    assertThat(taskSummary.getWorkbasketSummary().getId())
-        .isEqualTo(repModel.getWorkbasketSummary().getWorkbasketId());
-    assertThat(taskSummary.getBusinessProcessId()).isEqualTo(repModel.getBusinessProcessId());
-    assertThat(taskSummary.getParentBusinessProcessId())
-        .isEqualTo(repModel.getParentBusinessProcessId());
-    assertThat(taskSummary.getOwner()).isEqualTo(repModel.getOwner());
-    assertThat(taskSummary.getOwnerLongName()).isEqualTo(repModel.getOwnerLongName());
-    ObjectReferenceRepresentationModelAssemblerTest.testEquality(
-        taskSummary.getPrimaryObjRef(), repModel.getPrimaryObjRef());
-    assertThat(taskSummary.isRead()).isEqualTo(repModel.isRead());
-    assertThat(taskSummary.isTransferred()).isEqualTo(repModel.isTransferred());
-    assertThat(taskSummary.getGroupByCount()).isEqualTo(repModel.getGroupByCount());
-    assertThat(taskSummary.getCustomField(CUSTOM_1)).isEqualTo(repModel.getCustom1());
-    assertThat(taskSummary.getCustomField(CUSTOM_2)).isEqualTo(repModel.getCustom2());
-    assertThat(taskSummary.getCustomField(CUSTOM_3)).isEqualTo(repModel.getCustom3());
-    assertThat(taskSummary.getCustomField(CUSTOM_4)).isEqualTo(repModel.getCustom4());
-    assertThat(taskSummary.getCustomField(CUSTOM_5)).isEqualTo(repModel.getCustom5());
-    assertThat(taskSummary.getCustomField(CUSTOM_6)).isEqualTo(repModel.getCustom6());
-    assertThat(taskSummary.getCustomField(CUSTOM_7)).isEqualTo(repModel.getCustom7());
-    assertThat(taskSummary.getCustomField(CUSTOM_8)).isEqualTo(repModel.getCustom8());
-    assertThat(taskSummary.getCustomField(CUSTOM_9)).isEqualTo(repModel.getCustom9());
-    assertThat(taskSummary.getCustomField(CUSTOM_10)).isEqualTo(repModel.getCustom10());
-    assertThat(taskSummary.getCustomField(CUSTOM_11)).isEqualTo(repModel.getCustom11());
-    assertThat(taskSummary.getCustomField(CUSTOM_12)).isEqualTo(repModel.getCustom12());
-    assertThat(taskSummary.getCustomField(CUSTOM_13)).isEqualTo(repModel.getCustom13());
-    assertThat(taskSummary.getCustomField(CUSTOM_14)).isEqualTo(repModel.getCustom14());
-    assertThat(taskSummary.getCustomField(CUSTOM_15)).isEqualTo(repModel.getCustom15());
-    assertThat(taskSummary.getCustomField(CUSTOM_16)).isEqualTo(repModel.getCustom16());
-    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_1))
-        .isEqualTo(repModel.getCustomInt1());
-    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_2))
-        .isEqualTo(repModel.getCustomInt2());
-    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_3))
-        .isEqualTo(repModel.getCustomInt3());
-    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_4))
-        .isEqualTo(repModel.getCustomInt4());
-    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_5))
-        .isEqualTo(repModel.getCustomInt5());
-    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_6))
-        .isEqualTo(repModel.getCustomInt6());
-    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_7))
-        .isEqualTo(repModel.getCustomInt7());
-    assertThat(taskSummary.getCustomIntField(TaskCustomIntField.CUSTOM_INT_8))
-        .isEqualTo(repModel.getCustomInt8());
-    testEqualityAttachments(
-        taskSummary.getAttachmentSummaries(), repModel.getAttachmentSummaries());
-  }
-
-  private static void testEqualityAttachments(
-      List<AttachmentSummary> attachmentSummaries,
-      List<AttachmentSummaryRepresentationModel> resources) {
-    assertThat(attachmentSummaries).hasSameSizeAs(resources);
-
-    for (int i = 0; i < resources.size(); ++i) {
-      AttachmentSummaryRepresentationModel resource = resources.get(i);
-      AttachmentSummary attachmentSummary = attachmentSummaries.get(i);
-      assertThat(attachmentSummary.getId()).isEqualTo(resource.getAttachmentId());
-    }
   }
 
   private void testLinks(TaskSummaryRepresentationModel repModel) {}

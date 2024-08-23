@@ -1,24 +1,24 @@
 <div class="import-export">
-  <button mat-stroked-button class="mr-1" matTooltip="Import {{parentComponent}}" (click)="selectedFile.click()"
+  <button (click)="selectedFile.click()" class="mr-1" mat-stroked-button matTooltip="Import {{parentComponent}}"
           title="Import">
     Import
     <mat-icon>cloud_upload</mat-icon>
   </button>
 
   <form class="hide" enctype="multipart/form-data" method="post">
-    <input #selectedFile type="file" accept=".json" (change)="uploadFile()" class="hidden"/>
+    <input #selectedFile (change)="uploadFile()" accept=".json" class="hidden" type="file"/>
   </form>
 
-  <button mat-stroked-button class="mr-1" matTooltip="Export {{parentComponent}}" [matMenuTriggerFor]="menu"
+  <button [matMenuTriggerFor]="menu" class="mr-1" mat-stroked-button matTooltip="Export {{parentComponent}}"
           title="Export">
     Export
     <mat-icon>cloud_download</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item href="javascript:void(0)" (click)="export()">
+    <button (click)="export()" href="javascript:void(0)" mat-menu-item>
       All Domains
     </button>
-    <button mat-menu-item *ngFor="let domain of (domains$ | async)" href="javascript:void(0)" (click)="export(domain)">
+    <button (click)="export(domain)" *ngFor="let domain of (domains$ | async)" href="javascript:void(0)" mat-menu-item>
       {{domain === '' ? 'Master' : domain}}
     </button>
   </mat-menu>

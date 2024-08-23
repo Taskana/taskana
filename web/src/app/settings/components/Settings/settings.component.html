@@ -2,12 +2,12 @@
 
   <!-- BUTTONS -->
   <div class="settings__buttons">
-    <button class="settings__button--primary" mat-button matTooltip="Save settings" (click)="onSave()">
+    <button (click)="onSave()" class="settings__button--primary" mat-button matTooltip="Save settings">
       Save
       <mat-icon class="md-20">save</mat-icon>
     </button>
 
-    <button class="settings__button--secondary" mat-stroked-button matTooltip="Revert changes" (click)="onReset()">
+    <button (click)="onReset()" class="settings__button--secondary" mat-stroked-button matTooltip="Revert changes">
       Undo changes
       <mat-icon class="settings__icon md-20">restore</mat-icon>
     </button>

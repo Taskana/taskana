@@ -18,9 +18,10 @@
             <mat-form-field appearance="outline">
               <mat-label>Key</mat-label>
               <label for="workbasket-key"></label>
-              <input matInput required type="text" #key="ngModel" maxlength="64" [disabled]="action == 0 || action == 3"
-                     id="workbasket-key" placeholder="Key" [(ngModel)]="workbasket.key" name="workbasket.key"
-                     (input)="validateInputOverflow(key, 64, $event)">
+              <input #key="ngModel" (input)="validateInputOverflow(key, 64, $event)" [(ngModel)]="workbasket.key"
+                     [disabled]="action == 0 || action == 3" id="workbasket-key" matInput
+                     maxlength="64" name="workbasket.key" placeholder="Key" required
+                     type="text">
             </mat-form-field>
             <div *ngIf="inputOverflowMap.get(key.name)" class="error">{{lengthError}}</div>
             <kadai-shared-field-error-display *ngIf="action != 3" [displayError]="!isFieldValid('workbasket.key')"
@@ -32,9 +33,10 @@
             <mat-form-field appearance="outline">
               <mat-label>Name</mat-label>
               <label for="workbasket-name"></label>
-              <input matInput type="text" required maxlength="255" #name="ngModel" id="workbasket-name"
-                     placeholder="Name"
-                     [(ngModel)]="workbasket.name" name="workbasket.name" (input)="validateInputOverflow(name, 255)">
+              <input #name="ngModel" (input)="validateInputOverflow(name, 255)" [(ngModel)]="workbasket.name"
+                     id="workbasket-name" matInput maxlength="255"
+                     name="workbasket.name"
+                     placeholder="Name" required type="text">
             </mat-form-field>
             <div *ngIf="inputOverflowMap.get(name.name)" class="error">{{lengthError}}</div>
             <kadai-shared-field-error-display [displayError]="!isFieldValid('workbasket.name')"
@@ -43,19 +45,20 @@
             </kadai-shared-field-error-display>
 
             <!-- OWNER -->
-            <kadai-shared-type-ahead *ngIf="lookupField else ownerInput"
-                                     [savedAccessId]="workbasket.owner"
-                                     placeHolderMessage="Owner"
-                                     [entityId]="workbasket.workbasketId"
-                                     [displayError]="true"
+            <kadai-shared-type-ahead (accessIdEventEmitter)="onSelectedOwner($event)"
                                      (isFormValid)="isOwnerValid = $event"
-                                     (accessIdEventEmitter)="onSelectedOwner($event)">
+                                     *ngIf="lookupField else ownerInput"
+                                     [displayError]="true"
+                                     [entityId]="workbasket.workbasketId"
+                                     [savedAccessId]="workbasket.owner"
+                                     placeHolderMessage="Owner">
             </kadai-shared-type-ahead>
 
             <ng-template #ownerInput>
-              <input type="text" required maxlength="128" #owner="ngModel" class="form-control" id="wb-owner"
-                     placeholder="Owner" [(ngModel)]="workbasket.owner" name="workbasket.owner"
-                     (input)="validateInputOverflow(owner, 128)">
+              <input #owner="ngModel" (input)="validateInputOverflow(owner, 128)" [(ngModel)]="workbasket.owner"
+                     class="form-control" id="wb-owner" maxlength="128"
+                     name="workbasket.owner" placeholder="Owner" required
+                     type="text">
               <div *ngIf="inputOverflowMap.get(owner.name)" class="error">{{lengthError}}</div>
               <kadai-shared-field-error-display [displayError]="!isFieldValid('workbasket.owner')"
                                                 [validationTrigger]="this.toggleValidationMap.get('workbasket.owner')"
@@ -75,7 +78,7 @@
                     {{allTypes.get(workbasket.type)}}
                   </mat-select-trigger>
                   <mat-option *ngFor="let type of allTypes | mapValues | removeEmptyType" value="{{type.key}}">
-                    <kadai-administration-icon-type [type]='type.key' [text]="type.value">
+                    <kadai-administration-icon-type [text]="type.value" [type]='type.key'>
                     </kadai-administration-icon-type>
                   </mat-option>
                 </mat-select>
@@ -86,10 +89,11 @@
                 <mat-form-field appearance="outline" style="width: 100%">
                   <mat-label>Description</mat-label>
                   <label for="workbasket-description"></label>
-                  <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="7" cdkAutosizeMaxRows="7" maxlength="255"
-                            id="workbasket-description" placeholder="Description" [(ngModel)]="workbasket.description"
-                            name="workbasket.description" #description="ngModel"
-                            (input)="validateInputOverflow(description, 255)"></textarea>
+                  <textarea #description="ngModel" (input)="validateInputOverflow(description, 255)"
+                            [(ngModel)]="workbasket.description" cdkAutosizeMaxRows="7" cdkAutosizeMinRows="7"
+                            cdkTextareaAutosize id="workbasket-description" matInput
+                            maxlength="255" name="workbasket.description"
+                            placeholder="Description"></textarea>
                 </mat-form-field>
                 <mat-error *ngIf="inputOverflowMap.get(description.name)" class="error">{{lengthError}}</mat-error>
               </div>
@@ -106,43 +110,48 @@
             <mat-form-field appearance="outline">
               <mat-label>Domain</mat-label>
               <label for="workbasket-domain"></label>
-              <input matInput type="text" disabled id="workbasket-domain" placeholder="Domain"
-                     [(ngModel)]="workbasket.domain" name="classification.domain">
+              <input [(ngModel)]="workbasket.domain" disabled id="workbasket-domain" matInput
+                     name="classification.domain"
+                     placeholder="Domain" type="text">
             </mat-form-field>
 
             <!-- ORGANISATIONAL LEVEL 1 -->
             <mat-form-field appearance="outline">
               <mat-label>OrgLevel 1</mat-label>
-              <input matInput type="text" #orgLevel1="ngModel" maxlength="255" placeholder="OrgLevel 1"
-                     [(ngModel)]="workbasket.orgLevel1" name="workbasket.orgLevel1"
-                     (input)="validateInputOverflow(orgLevel1, 255)">
+              <input #orgLevel1="ngModel" (input)="validateInputOverflow(orgLevel1, 255)"
+                     [(ngModel)]="workbasket.orgLevel1" matInput maxlength="255"
+                     name="workbasket.orgLevel1" placeholder="OrgLevel 1"
+                     type="text">
             </mat-form-field>
             <div *ngIf="inputOverflowMap.get(orgLevel1.name)" class="error">{{lengthError}}</div>
 
             <!-- ORGANISATIONAL LEVEL 2 -->
             <mat-form-field appearance="outline">
               <mat-label>OrgLevel 2</mat-label>
-              <input matInput type="text" #orgLevel2="ngModel" maxlength="255" placeholder="OrgLevel 2"
-                     [(ngModel)]="workbasket.orgLevel2" name="workbasket.orgLevel2"
-                     (input)="validateInputOverflow(orgLevel2, 255)">
+              <input #orgLevel2="ngModel" (input)="validateInputOverflow(orgLevel2, 255)"
+                     [(ngModel)]="workbasket.orgLevel2" matInput maxlength="255"
+                     name="workbasket.orgLevel2" placeholder="OrgLevel 2"
+                     type="text">
             </mat-form-field>
             <div *ngIf="inputOverflowMap.get(orgLevel2.name)" class="error">{{lengthError}}</div>
 
             <!-- ORGANISATIONAL LEVEL 3 -->
             <mat-form-field appearance="outline">
               <mat-label>OrgLevel 3</mat-label>
-              <input matInput type="text" #orgLevel3="ngModel" maxlength="255" placeholder="OrgLevel 3"
-                     [(ngModel)]="workbasket.orgLevel3" name="workbasket.orgLevel3"
-                     (input)="validateInputOverflow(orgLevel3, 255)">
+              <input #orgLevel3="ngModel" (input)="validateInputOverflow(orgLevel3, 255)"
+                     [(ngModel)]="workbasket.orgLevel3" matInput maxlength="255"
+                     name="workbasket.orgLevel3" placeholder="OrgLevel 3"
+                     type="text">
             </mat-form-field>
             <div *ngIf="inputOverflowMap.get(orgLevel3.name)" class="error">{{lengthError}}</div>
 
             <!-- ORGANISATIONAL LEVEL 4 -->
             <mat-form-field appearance="outline">
               <mat-label>OrgLevel 4</mat-label>
-              <input matInput type="text" #orgLevel4="ngModel" maxlength="255" placeholder="OrgLevel 4"
-                     [(ngModel)]="workbasket.orgLevel4" name="workbasket.orgLevel4"
-                     (input)="validateInputOverflow(orgLevel4, 255)">
+              <input #orgLevel4="ngModel" (input)="validateInputOverflow(orgLevel4, 255)"
+                     [(ngModel)]="workbasket.orgLevel4" matInput maxlength="255"
+                     name="workbasket.orgLevel4" placeholder="OrgLevel 4"
+                     type="text">
             </mat-form-field>
             <div *ngIf="inputOverflowMap.get(orgLevel4.name)" class="error">{{lengthError}}</div>
 
@@ -160,10 +169,11 @@
               <mat-form-field appearance="outline" class="custom-fields__form-field">
                 <mat-label>{{customField.field}}</mat-label>
                 <label for='wb-custom-{{index+1}}'></label>
-                <input matInput type="text" [placeholder]="customField.field"
-                       [(ngModel)]="workbasket[getWorkbasketCustomProperty(index + 1)]" id="wb-custom-{{index+1}}"
-                       name="workbasket[{{getWorkbasketCustomProperty(index + 1)}}]" maxlength="255" #custom="ngModel"
-                       (input)="validateInputOverflow(custom, 255)">
+                <input #custom="ngModel" (input)="validateInputOverflow(custom, 255)"
+                       [(ngModel)]="workbasket[getWorkbasketCustomProperty(index + 1)]"
+                       [placeholder]="customField.field" id="wb-custom-{{index+1}}"
+                       matInput maxlength="255" name="workbasket[{{getWorkbasketCustomProperty(index + 1)}}]"
+                       type="text">
               </mat-form-field>
               <div *ngIf="inputOverflowMap.get(custom.name)" class="error">{{lengthError}}</div>
             </div>

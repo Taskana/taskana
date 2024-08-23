@@ -83,6 +83,42 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
   @JsonProperty("required-permission")
   private final WorkbasketPermission[] requiredPermissions;
 
+  @SuppressWarnings("indentation")
+  @ConstructorProperties({
+    "name",
+    "name-like",
+    "key",
+    "key-like",
+    "owner",
+    "owner-like",
+    "description-like",
+    "domain",
+    "type",
+    "required-permission"
+  })
+  public WorkbasketQueryFilterParameter(
+      String[] name,
+      String[] nameLike,
+      String[] key,
+      String[] keyLike,
+      String[] owner,
+      String[] ownerLike,
+      String[] descriptionLike,
+      String[] domain,
+      WorkbasketType[] type,
+      WorkbasketPermission[] requiredPermissions) {
+    this.name = name;
+    this.nameLike = nameLike;
+    this.key = key;
+    this.keyLike = keyLike;
+    this.owner = owner;
+    this.ownerLike = ownerLike;
+    this.descriptionLike = descriptionLike;
+    this.domain = domain;
+    this.type = type;
+    this.requiredPermissions = requiredPermissions;
+  }
+
   public String[] getName() {
     return name;
   }
@@ -121,42 +157,6 @@ public class WorkbasketQueryFilterParameter implements QueryParameter<Workbasket
 
   public WorkbasketPermission[] getRequiredPermissions() {
     return requiredPermissions;
-  }
-
-  @SuppressWarnings("indentation")
-  @ConstructorProperties({
-    "name",
-    "name-like",
-    "key",
-    "key-like",
-    "owner",
-    "owner-like",
-    "description-like",
-    "domain",
-    "type",
-    "required-permission"
-  })
-  public WorkbasketQueryFilterParameter(
-      String[] name,
-      String[] nameLike,
-      String[] key,
-      String[] keyLike,
-      String[] owner,
-      String[] ownerLike,
-      String[] descriptionLike,
-      String[] domain,
-      WorkbasketType[] type,
-      WorkbasketPermission[] requiredPermissions) {
-    this.name = name;
-    this.nameLike = nameLike;
-    this.key = key;
-    this.keyLike = keyLike;
-    this.owner = owner;
-    this.ownerLike = ownerLike;
-    this.descriptionLike = descriptionLike;
-    this.domain = domain;
-    this.type = type;
-    this.requiredPermissions = requiredPermissions;
   }
 
   @Override

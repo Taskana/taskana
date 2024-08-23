@@ -18,7 +18,6 @@ import org.xlsx4j.sml.STCellType;
 
 /**
  * @author Thorben Lindhauer
- *
  */
 public class DmnValueNumberConverter implements CellContentHandler {
 
@@ -29,5 +28,4 @@ public class DmnValueNumberConverter implements CellContentHandler {
   public String convert(SpreadsheetCell cell, Spreadsheet context) {
     return cell.getRaw().getV();
   }
-
 }

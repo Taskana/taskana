@@ -88,6 +88,17 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
     this.callerRolesAndAccessIdsAlreadyHandled = false;
   }
 
+  public static void lowercaseAccessIds(String[] accessIdArray) {
+    if (KadaiConfiguration.shouldUseLowerCaseForAccessIds()) {
+      for (int i = 0; i < accessIdArray.length; i++) {
+        String id = accessIdArray[i];
+        if (id != null) {
+          accessIdArray[i] = id.toLowerCase();
+        }
+      }
+    }
+  }
+
   @Override
   public WorkbasketQuery idIn(String... ids) {
     if (ids != null && ids.length != 0) {
@@ -642,17 +653,6 @@ public class WorkbasketQueryImpl implements WorkbasketQuery {
 
   public void setUsedToAugmentTasks(boolean usedToAugmentTasks) {
     this.usedToAugmentTasks = usedToAugmentTasks;
-  }
-
-  public static void lowercaseAccessIds(String[] accessIdArray) {
-    if (KadaiConfiguration.shouldUseLowerCaseForAccessIds()) {
-      for (int i = 0; i < accessIdArray.length; i++) {
-        String id = accessIdArray[i];
-        if (id != null) {
-          accessIdArray[i] = id.toLowerCase();
-        }
-      }
-    }
   }
 
   private void validateAllTimeIntervals(TimeInterval[] intervals) {

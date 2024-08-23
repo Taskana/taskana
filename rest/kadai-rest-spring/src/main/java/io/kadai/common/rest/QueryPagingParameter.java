@@ -12,14 +12,6 @@ import java.util.List;
 public class QueryPagingParameter<T, Q extends BaseQuery<T, ?>>
     implements QueryParameter<Q, List<T>> {
 
-  public Integer getPage() {
-    return page;
-  }
-
-  public Integer getPageSize() {
-    return pageSize;
-  }
-
   @Schema(
       name = "page",
       description = "Request a specific page. Requires the definition of the 'page-size'.")
@@ -44,6 +36,14 @@ public class QueryPagingParameter<T, Q extends BaseQuery<T, ?>>
     }
     this.page = page;
     this.pageSize = pageSize;
+  }
+
+  public Integer getPage() {
+    return page;
+  }
+
+  public Integer getPageSize() {
+    return pageSize;
   }
 
   public PageMetadata getPageMetadata() {

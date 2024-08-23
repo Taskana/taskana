@@ -13,8 +13,6 @@
 package org.camunda.bpm.dmn.xlsx;
 
 import java.util.List;
-import org.camunda.bpm.dmn.xlsx.BaseAdapter;
-import org.camunda.bpm.dmn.xlsx.InputOutputColumns;
 import org.camunda.bpm.dmn.xlsx.api.Spreadsheet;
 import org.camunda.bpm.dmn.xlsx.api.SpreadsheetCell;
 import org.camunda.bpm.dmn.xlsx.api.SpreadsheetRow;

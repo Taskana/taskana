@@ -26,18 +26,13 @@ import org.junit.jupiter.api.Test;
 
 /**
  * @author Thorben Lindhauer
- *
  */
 public class XslxToDmnConversionTest {
 
   public static final String DMN_11_NAMESPACE = "https://www.omg.org/spec/DMN/20191111/MODEL/";
 
   private static final String JAVASCRIPT_SNIPPET =
-          "if (exp1 % 2 == 0)\n" +
-                  "    {erg = 2;}\n" +
-                  "else\n" +
-                  "    {erg = 1;}\n" +
-                  "erg;";
+      "if (exp1 % 2 == 0)\n" + "    {erg = 2;}\n" + "else\n" + "    {erg = 1;}\n" + "erg;";
 
   // TODO: assert input entry text content
 
@@ -89,7 +84,8 @@ public class XslxToDmnConversionTest {
     InputStream inputStream = TestHelper.getClassPathResource("test1.xlsx");
     DmnModelInstance dmnModelInstance = converter.convert(inputStream);
 
-    assertThat(dmnModelInstance.getDefinitions().getDomElement().getNamespaceURI()).isEqualTo(DMN_11_NAMESPACE);
+    assertThat(dmnModelInstance.getDefinitions().getDomElement().getNamespaceURI())
+        .isEqualTo(DMN_11_NAMESPACE);
   }
 
   @Test

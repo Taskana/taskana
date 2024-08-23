@@ -3,8 +3,8 @@
   <div class="workbasket-list-toolbar__action-toolbar">
 
     <!-- ACTION BUTTONS -->
-    <button mat-flat-button class="workbasket-list-toolbar__add-button mr-1" matTooltip="Create new workbasket"
-            (click)="addWorkbasket()">
+    <button (click)="addWorkbasket()" class="workbasket-list-toolbar__add-button mr-1" mat-flat-button
+            matTooltip="Create new workbasket">
       Add
       <mat-icon class="md-20">add</mat-icon>
     </button>
@@ -17,16 +17,16 @@
 
     <!-- SORTING -->
     <kadai-shared-sort
-      style="margin-right: 4px;" [sortingFields]="sortingFields" (performSorting)="sorting($event)"
-      [defaultSortBy]="workbasketDefaultSortBy">
+      (performSorting)="sorting($event)" [defaultSortBy]="workbasketDefaultSortBy" [sortingFields]="sortingFields"
+      style="margin-right: 4px;">
     </kadai-shared-sort>
 
   </div>
 
   <!-- FILTER -->
   <div class="workbasket-list-toolbar__filter">
-    <button mat-stroked-button class="filter__filter-button" matTooltip="Display more filter options"
-            (click)="onClickFilter()">
+    <button (click)="onClickFilter()" class="filter__filter-button" mat-stroked-button
+            matTooltip="Display more filter options">
       <mat-icon *ngIf="!isExpanded">keyboard_arrow_down</mat-icon>
       <mat-icon *ngIf="isExpanded">keyboard_arrow_up</mat-icon>
     </button>

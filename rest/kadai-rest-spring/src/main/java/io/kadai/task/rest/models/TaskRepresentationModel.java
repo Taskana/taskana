@@ -55,6 +55,7 @@ public class TaskRepresentationModel extends TaskSummaryRepresentationModel {
 
     @Schema(name = "key", description = "the key of the custom attribute.")
     private String key;
+
     @Schema(name = "value", description = "the value of the custom attribute.")
     private String value;
 

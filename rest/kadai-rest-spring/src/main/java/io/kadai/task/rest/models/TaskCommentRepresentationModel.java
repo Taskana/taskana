@@ -12,16 +12,22 @@ public class TaskCommentRepresentationModel
 
   @Schema(name = "taskCommentId", description = "Unique Id.")
   private String taskCommentId;
+
   @Schema(name = "taskId", description = "Task Id. Can identify the task the comment belongs to.")
   private String taskId;
+
   @Schema(name = "textField", description = "The content of the comment.")
   private String textField;
+
   @Schema(name = "creator", description = "The creator of the task comment.")
   private String creator;
+
   @Schema(name = "creatorFullName", description = "The long name of the task comment creator.")
   private String creatorFullName;
+
   @Schema(name = "created", description = "The creation timestamp in the system.")
   private Instant created;
+
   @Schema(name = "modified", description = "Timestamp of the last task comment modification.")
   private Instant modified;
 

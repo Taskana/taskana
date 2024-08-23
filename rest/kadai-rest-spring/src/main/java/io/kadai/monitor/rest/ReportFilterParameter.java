@@ -6,226 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.beans.ConstructorProperties;
 
 public class ReportFilterParameter {
-  public Boolean getInWorkingDays() {
-    return inWorkingDays;
-  }
-
-  public String[] getWorkbasketId() {
-    return workbasketId;
-  }
-
-  public TaskState[] getState() {
-    return state;
-  }
-
-  public String[] getClassificationCategory() {
-    return classificationCategory;
-  }
-
-  public String[] getDomain() {
-    return domain;
-  }
-
-  public String[] getClassificationId() {
-    return classificationId;
-  }
-
-  public String[] getExcludedClassificationId() {
-    return excludedClassificationId;
-  }
-
-  public String[] getCustom1() {
-    return custom1;
-  }
-
-  public String[] getCustom1Like() {
-    return custom1Like;
-  }
-
-  public String[] getCustom1NotIn() {
-    return custom1NotIn;
-  }
-
-  public String[] getCustom2() {
-    return custom2;
-  }
-
-  public String[] getCustom2Like() {
-    return custom2Like;
-  }
-
-  public String[] getCustom2NotIn() {
-    return custom2NotIn;
-  }
-
-  public String[] getCustom3() {
-    return custom3;
-  }
-
-  public String[] getCustom3Like() {
-    return custom3Like;
-  }
-
-  public String[] getCustom3NotIn() {
-    return custom3NotIn;
-  }
-
-  public String[] getCustom4() {
-    return custom4;
-  }
-
-  public String[] getCustom4Like() {
-    return custom4Like;
-  }
-
-  public String[] getCustom4NotIn() {
-    return custom4NotIn;
-  }
-
-  public String[] getCustom5() {
-    return custom5;
-  }
-
-  public String[] getCustom5Like() {
-    return custom5Like;
-  }
-
-  public String[] getCustom5NotIn() {
-    return custom5NotIn;
-  }
-
-  public String[] getCustom6() {
-    return custom6;
-  }
-
-  public String[] getCustom6Like() {
-    return custom6Like;
-  }
-
-  public String[] getCustom6NotIn() {
-    return custom6NotIn;
-  }
-
-  public String[] getCustom7() {
-    return custom7;
-  }
-
-  public String[] getCustom7Like() {
-    return custom7Like;
-  }
-
-  public String[] getCustom7NotIn() {
-    return custom7NotIn;
-  }
-
-  public String[] getCustom8() {
-    return custom8;
-  }
-
-  public String[] getCustom8Like() {
-    return custom8Like;
-  }
-
-  public String[] getCustom8NotIn() {
-    return custom8NotIn;
-  }
-
-  public String[] getCustom9() {
-    return custom9;
-  }
-
-  public String[] getCustom9Like() {
-    return custom9Like;
-  }
-
-  public String[] getCustom9NotIn() {
-    return custom9NotIn;
-  }
-
-  public String[] getCustom10() {
-    return custom10;
-  }
-
-  public String[] getCustom10Like() {
-    return custom10Like;
-  }
-
-  public String[] getCustom10NotIn() {
-    return custom10NotIn;
-  }
-
-  public String[] getCustom11() {
-    return custom11;
-  }
-
-  public String[] getCustom11Like() {
-    return custom11Like;
-  }
-
-  public String[] getCustom11NotIn() {
-    return custom11NotIn;
-  }
-
-  public String[] getCustom12() {
-    return custom12;
-  }
-
-  public String[] getCustom12Like() {
-    return custom12Like;
-  }
-
-  public String[] getCustom12NotIn() {
-    return custom12NotIn;
-  }
-
-  public String[] getCustom13() {
-    return custom13;
-  }
-
-  public String[] getCustom13Like() {
-    return custom13Like;
-  }
-
-  public String[] getCustom13NotIn() {
-    return custom13NotIn;
-  }
-
-  public String[] getCustom14() {
-    return custom14;
-  }
-
-  public String[] getCustom14Like() {
-    return custom14Like;
-  }
-
-  public String[] getCustom14NotIn() {
-    return custom14NotIn;
-  }
-
-  public String[] getCustom15() {
-    return custom15;
-  }
-
-  public String[] getCustom15Like() {
-    return custom15Like;
-  }
-
-  public String[] getCustom15NotIn() {
-    return custom15NotIn;
-  }
-
-  public String[] getCustom16() {
-    return custom16;
-  }
-
-  public String[] getCustom16Like() {
-    return custom16Like;
-  }
-
-  public String[] getCustom16NotIn() {
-    return custom16NotIn;
-  }
-
   @Schema(
       name = "in-working-days",
       description =
@@ -792,5 +572,225 @@ public class ReportFilterParameter {
     this.custom16 = custom16;
     this.custom16Like = custom16Like;
     this.custom16NotIn = custom16NotIn;
+  }
+
+  public Boolean getInWorkingDays() {
+    return inWorkingDays;
+  }
+
+  public String[] getWorkbasketId() {
+    return workbasketId;
+  }
+
+  public TaskState[] getState() {
+    return state;
+  }
+
+  public String[] getClassificationCategory() {
+    return classificationCategory;
+  }
+
+  public String[] getDomain() {
+    return domain;
+  }
+
+  public String[] getClassificationId() {
+    return classificationId;
+  }
+
+  public String[] getExcludedClassificationId() {
+    return excludedClassificationId;
+  }
+
+  public String[] getCustom1() {
+    return custom1;
+  }
+
+  public String[] getCustom1Like() {
+    return custom1Like;
+  }
+
+  public String[] getCustom1NotIn() {
+    return custom1NotIn;
+  }
+
+  public String[] getCustom2() {
+    return custom2;
+  }
+
+  public String[] getCustom2Like() {
+    return custom2Like;
+  }
+
+  public String[] getCustom2NotIn() {
+    return custom2NotIn;
+  }
+
+  public String[] getCustom3() {
+    return custom3;
+  }
+
+  public String[] getCustom3Like() {
+    return custom3Like;
+  }
+
+  public String[] getCustom3NotIn() {
+    return custom3NotIn;
+  }
+
+  public String[] getCustom4() {
+    return custom4;
+  }
+
+  public String[] getCustom4Like() {
+    return custom4Like;
+  }
+
+  public String[] getCustom4NotIn() {
+    return custom4NotIn;
+  }
+
+  public String[] getCustom5() {
+    return custom5;
+  }
+
+  public String[] getCustom5Like() {
+    return custom5Like;
+  }
+
+  public String[] getCustom5NotIn() {
+    return custom5NotIn;
+  }
+
+  public String[] getCustom6() {
+    return custom6;
+  }
+
+  public String[] getCustom6Like() {
+    return custom6Like;
+  }
+
+  public String[] getCustom6NotIn() {
+    return custom6NotIn;
+  }
+
+  public String[] getCustom7() {
+    return custom7;
+  }
+
+  public String[] getCustom7Like() {
+    return custom7Like;
+  }
+
+  public String[] getCustom7NotIn() {
+    return custom7NotIn;
+  }
+
+  public String[] getCustom8() {
+    return custom8;
+  }
+
+  public String[] getCustom8Like() {
+    return custom8Like;
+  }
+
+  public String[] getCustom8NotIn() {
+    return custom8NotIn;
+  }
+
+  public String[] getCustom9() {
+    return custom9;
+  }
+
+  public String[] getCustom9Like() {
+    return custom9Like;
+  }
+
+  public String[] getCustom9NotIn() {
+    return custom9NotIn;
+  }
+
+  public String[] getCustom10() {
+    return custom10;
+  }
+
+  public String[] getCustom10Like() {
+    return custom10Like;
+  }
+
+  public String[] getCustom10NotIn() {
+    return custom10NotIn;
+  }
+
+  public String[] getCustom11() {
+    return custom11;
+  }
+
+  public String[] getCustom11Like() {
+    return custom11Like;
+  }
+
+  public String[] getCustom11NotIn() {
+    return custom11NotIn;
+  }
+
+  public String[] getCustom12() {
+    return custom12;
+  }
+
+  public String[] getCustom12Like() {
+    return custom12Like;
+  }
+
+  public String[] getCustom12NotIn() {
+    return custom12NotIn;
+  }
+
+  public String[] getCustom13() {
+    return custom13;
+  }
+
+  public String[] getCustom13Like() {
+    return custom13Like;
+  }
+
+  public String[] getCustom13NotIn() {
+    return custom13NotIn;
+  }
+
+  public String[] getCustom14() {
+    return custom14;
+  }
+
+  public String[] getCustom14Like() {
+    return custom14Like;
+  }
+
+  public String[] getCustom14NotIn() {
+    return custom14NotIn;
+  }
+
+  public String[] getCustom15() {
+    return custom15;
+  }
+
+  public String[] getCustom15Like() {
+    return custom15Like;
+  }
+
+  public String[] getCustom15NotIn() {
+    return custom15NotIn;
+  }
+
+  public String[] getCustom16() {
+    return custom16;
+  }
+
+  public String[] getCustom16Like() {
+    return custom16Like;
+  }
+
+  public String[] getCustom16NotIn() {
+    return custom16NotIn;
   }
 }

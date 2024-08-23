@@ -1,16 +1,16 @@
 <div class="sort">
-  <button class="sort__button" mat-stroked-button [matMenuTriggerFor]="sortMenu" matTooltip="Modify sorting order">
+  <button [matMenuTriggerFor]="sortMenu" class="sort__button" mat-stroked-button matTooltip="Modify sorting order">
     <mat-icon>sort</mat-icon>
 
     <mat-menu #sortMenu="matMenu">
-      <button mat-menu-item [matMenuTriggerFor]="sortDirection">Sort direction</button>
-      <button mat-menu-item [matMenuTriggerFor]="sortValue">Sort value</button>
+      <button [matMenuTriggerFor]="sortDirection" mat-menu-item>Sort direction</button>
+      <button [matMenuTriggerFor]="sortValue" mat-menu-item>Sort value</button>
     </mat-menu>
 
     <!-- SORT DIRECTION -->
     <mat-menu #sortDirection="matMenu">
       <!-- ASCENDING ORDER BUTTON -->
-      <button mat-menu-item (click)="changeOrder(sortDirectionEnum.ASC)">
+      <button (click)="changeOrder(sortDirectionEnum.ASC)" mat-menu-item>
         <span *ngIf="sort.order === sortDirectionEnum.ASC; else coloredAsc">
           <mat-icon class="sort__selected-value"> arrow_upward </mat-icon>
           <span class="sort__selected-value"> Ascending </span>
@@ -22,7 +22,7 @@
       </button>
 
       <!-- DESCENDING ORDER BUTTON -->
-      <button mat-menu-item (click)="changeOrder(sortDirectionEnum.DESC)">
+      <button (click)="changeOrder(sortDirectionEnum.DESC)" mat-menu-item>
         <span *ngIf="sort.order === sortDirectionEnum.DESC; else coloredDesc">
           <mat-icon class="sort__selected-value"> arrow_downward </mat-icon>
           <span class="sort__selected-value"> Descending </span>
@@ -36,8 +36,8 @@
 
     <!-- SORT VALUE -->
     <mat-menu #sortValue="matMenu">
-      <button mat-menu-item *ngFor="let sortingField of sortingFields | mapValues"
-              (click)="changeSortBy(sortingField.key)">
+      <button (click)="changeSortBy(sortingField.key)" *ngFor="let sortingField of sortingFields | mapValues"
+              mat-menu-item>
         <span class="{{sortingField.key === sort['sort-by']  ? 'sort__selected-value' : ''}}">
           {{sortingField.value}}
         </span>

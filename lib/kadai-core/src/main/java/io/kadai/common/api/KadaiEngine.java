@@ -20,6 +20,51 @@ public interface KadaiEngine {
   String MINIMAL_KADAI_SCHEMA_VERSION = "7.1.0";
 
   /**
+   * This method creates the {@linkplain KadaiEngine} with {@linkplain
+   * ConnectionManagementMode#PARTICIPATE}.
+   *
+   * @see KadaiEngine#buildKadaiEngine(KadaiConfiguration, ConnectionManagementMode)
+   */
+  @SuppressWarnings("checkstyle:JavadocMethod")
+  static KadaiEngine buildKadaiEngine(KadaiConfiguration configuration) throws SQLException {
+    return buildKadaiEngine(configuration, ConnectionManagementMode.PARTICIPATE, null);
+  }
+
+  /**
+   * Builds an {@linkplain KadaiEngine} based on {@linkplain KadaiConfiguration} and
+   * SqlConnectionMode.
+   *
+   * @param configuration complete kadaiConfig to build the engine
+   * @param connectionManagementMode connectionMode for the SqlSession
+   * @return a {@linkplain KadaiEngineImpl}
+   * @throws SQLException when the db schema could not be initialized
+   */
+  static KadaiEngine buildKadaiEngine(
+      KadaiConfiguration configuration, ConnectionManagementMode connectionManagementMode)
+      throws SQLException {
+    return buildKadaiEngine(configuration, connectionManagementMode, null);
+  }
+
+  /**
+   * Builds an {@linkplain KadaiEngine} based on {@linkplain KadaiConfiguration}, SqlConnectionMode
+   * and TransactionFactory.
+   *
+   * @param configuration complete kadaiConfig to build the engine
+   * @param connectionManagementMode connectionMode for the SqlSession
+   * @param transactionFactory the TransactionFactory
+   * @return a {@linkplain KadaiEngineImpl}
+   * @throws SQLException when the db schema could not be initialized
+   */
+  static KadaiEngine buildKadaiEngine(
+      KadaiConfiguration configuration,
+      ConnectionManagementMode connectionManagementMode,
+      TransactionFactory transactionFactory)
+      throws SQLException {
+    return KadaiEngineImpl.createKadaiEngine(
+        configuration, connectionManagementMode, transactionFactory);
+  }
+
+  /**
    * Returns a {@linkplain TaskService} initialized with the current KadaiEngine. {@linkplain
    * TaskService} can be used for operations on all {@linkplain Task Tasks}.
    *
@@ -85,51 +130,6 @@ public interface KadaiEngine {
    * @return {@linkplain KadaiConfiguration configuration}
    */
   KadaiConfiguration getConfiguration();
-
-  /**
-   * This method creates the {@linkplain KadaiEngine} with {@linkplain
-   * ConnectionManagementMode#PARTICIPATE}.
-   *
-   * @see KadaiEngine#buildKadaiEngine(KadaiConfiguration, ConnectionManagementMode)
-   */
-  @SuppressWarnings("checkstyle:JavadocMethod")
-  static KadaiEngine buildKadaiEngine(KadaiConfiguration configuration) throws SQLException {
-    return buildKadaiEngine(configuration, ConnectionManagementMode.PARTICIPATE, null);
-  }
-
-  /**
-   * Builds an {@linkplain KadaiEngine} based on {@linkplain KadaiConfiguration} and
-   * SqlConnectionMode.
-   *
-   * @param configuration complete kadaiConfig to build the engine
-   * @param connectionManagementMode connectionMode for the SqlSession
-   * @return a {@linkplain KadaiEngineImpl}
-   * @throws SQLException when the db schema could not be initialized
-   */
-  static KadaiEngine buildKadaiEngine(
-      KadaiConfiguration configuration, ConnectionManagementMode connectionManagementMode)
-      throws SQLException {
-    return buildKadaiEngine(configuration, connectionManagementMode, null);
-  }
-
-  /**
-   * Builds an {@linkplain KadaiEngine} based on {@linkplain KadaiConfiguration}, SqlConnectionMode
-   * and TransactionFactory.
-   *
-   * @param configuration complete kadaiConfig to build the engine
-   * @param connectionManagementMode connectionMode for the SqlSession
-   * @param transactionFactory the TransactionFactory
-   * @return a {@linkplain KadaiEngineImpl}
-   * @throws SQLException when the db schema could not be initialized
-   */
-  static KadaiEngine buildKadaiEngine(
-      KadaiConfiguration configuration,
-      ConnectionManagementMode connectionManagementMode,
-      TransactionFactory transactionFactory)
-      throws SQLException {
-    return KadaiEngineImpl.createKadaiEngine(
-        configuration, connectionManagementMode, transactionFactory);
-  }
 
   /**
    * Returns the {@linkplain WorkingTimeCalculator} of the KadaiEngine. The {@linkplain

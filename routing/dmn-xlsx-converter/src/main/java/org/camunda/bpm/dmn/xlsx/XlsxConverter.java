@@ -24,7 +24,6 @@ import org.docx4j.openpackaging.parts.SpreadsheetML.WorksheetPart;
 
 /**
  * @author Thorben Lindhauer
- *
  */
 public class XlsxConverter {
 
@@ -52,19 +51,31 @@ public class XlsxConverter {
     try {
       String worksheetName;
       DocPropsExtendedPart docPropsExtendedPart = spreadSheetPackage.getDocPropsExtendedPart();
-      if(docPropsExtendedPart!= null && docPropsExtendedPart.getContents().getTitlesOfParts() != null) {
-        worksheetName = (String) docPropsExtendedPart.getContents().getTitlesOfParts().getVector().getVariantOrI1OrI2().get(0).getValue();
+      if (docPropsExtendedPart != null
+          && docPropsExtendedPart.getContents().getTitlesOfParts() != null) {
+        worksheetName =
+            (String)
+                docPropsExtendedPart
+                    .getContents()
+                    .getTitlesOfParts()
+                    .getVector()
+                    .getVariantOrI1OrI2()
+                    .get(0)
+                    .getValue();
       } else {
         worksheetName = "default";
       }
       worksheetPart = workbookPart.getWorksheet(0);
       SharedStrings sharedStrings = workbookPart.getSharedStrings();
-      worksheetContext = new XlsxWorksheetContext(sharedStrings.getContents(), worksheetPart.getContents(), worksheetName);
+      worksheetContext =
+          new XlsxWorksheetContext(
+              sharedStrings.getContents(), worksheetPart.getContents(), worksheetName);
     } catch (Exception e) {
       throw new RuntimeException("Could not determine worksheet", e);
     }
 
-    return new XlsxWorksheetConverter(worksheetContext, ioDetectionStrategy, historyTimeToLive).convert();
+    return new XlsxWorksheetConverter(worksheetContext, ioDetectionStrategy, historyTimeToLive)
+        .convert();
   }
 
   public SpreadsheetAdapter getIoDetectionStrategy() {

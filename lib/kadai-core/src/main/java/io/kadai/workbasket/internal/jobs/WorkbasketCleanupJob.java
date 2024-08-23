@@ -34,6 +34,10 @@ public class WorkbasketCleanupJob extends AbstractKadaiJob {
     batchSize = kadaiEngine.getConfiguration().getJobBatchSize();
   }
 
+  public static Duration getLockExpirationPeriod(KadaiConfiguration kadaiConfiguration) {
+    return kadaiConfiguration.getWorkbasketCleanupJobLockExpirationPeriod();
+  }
+
   @Override
   public void execute() throws KadaiException {
     LOGGER.info("Running job to delete all workbaskets marked for deletion");
@@ -48,10 +52,6 @@ public class WorkbasketCleanupJob extends AbstractKadaiJob {
     } catch (Exception e) {
       throw new SystemException("Error while processing WorkbasketCleanupJob.", e);
     }
-  }
-
-  public static Duration getLockExpirationPeriod(KadaiConfiguration kadaiConfiguration) {
-    return kadaiConfiguration.getWorkbasketCleanupJobLockExpirationPeriod();
   }
 
   @Override

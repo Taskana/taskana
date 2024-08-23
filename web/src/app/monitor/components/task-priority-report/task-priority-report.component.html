@@ -21,36 +21,36 @@
       </div>
 
       <!-- CHART -->
-      <kadai-monitor-canvas [row]="row" [id]="indexToString(i)"></kadai-monitor-canvas>
+      <kadai-monitor-canvas [id]="indexToString(i)" [row]="row"></kadai-monitor-canvas>
 
       <!-- TABLE -->
       <div>
-        <table mat-table [dataSource]="tableDataArray[i]">
+        <table [dataSource]="tableDataArray[i]" mat-table>
 
           <!-- Column: Priority -->
           <ng-container matColumnDef="priority">
-            <th mat-header-cell *matHeaderCellDef> Priority</th>
-            <td mat-cell *matCellDef="let element" [ngClass]="{
+            <th *matHeaderCellDef mat-header-cell> Priority</th>
+            <td *matCellDef="let element" [ngClass]="{
            'task-priority-report__row--high': element.priority == nameHighPriority,
            'task-priority-report__row--medium': element.priority == nameMediumPriority,
-           'task-priority-report__row--low': element.priority == nameLowPriority}">
+           'task-priority-report__row--low': element.priority == nameLowPriority}" mat-cell>
               {{element.priority}}
             </td>
           </ng-container>
 
           <!-- Column: Number of Tasks -->
           <ng-container matColumnDef="number">
-            <th mat-header-cell *matHeaderCellDef> Number of Tasks</th>
-            <td mat-cell *matCellDef="let element" [ngClass]="{
+            <th *matHeaderCellDef mat-header-cell> Number of Tasks</th>
+            <td *matCellDef="let element" [ngClass]="{
            'task-priority-report__row--high': element.priority == nameHighPriority,
            'task-priority-report__row--medium': element.priority == nameMediumPriority,
-           'task-priority-report__row--low': element.priority == nameLowPriority}">
+           'task-priority-report__row--low': element.priority == nameLowPriority}" mat-cell>
               {{element.number}}
             </td>
           </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="columns"></tr>
-          <tr mat-row *matRowDef="let row; columns: columns;">
+          <tr *matHeaderRowDef="columns" mat-header-row></tr>
+          <tr *matRowDef="let row; columns: columns;" mat-row>
           </tr>
         </table>
       </div>

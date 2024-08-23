@@ -29,8 +29,8 @@ public class InputOutputDetectionStrategyTest {
   public void testStaticDetectionStrategy() {
     XlsxConverter converter = new XlsxConverter();
     converter.setIoDetectionStrategy(
-        new StaticInputOutputDetectionStrategy(Collections.singleton("B"),
-            Collections.singleton("D")));
+        new StaticInputOutputDetectionStrategy(
+            Collections.singleton("B"), Collections.singleton("D")));
     InputStream inputStream = TestHelper.getClassPathResource("test2.xlsx");
     DmnModelInstance dmnModelInstance = converter.convert(inputStream);
     assertThat(dmnModelInstance).isNotNull();
@@ -41,5 +41,4 @@ public class InputOutputDetectionStrategyTest {
     assertThat(table.getOutputs()).hasSize(1);
     assertThat(table.getRules()).hasSize(4);
   }
-
 }
