@@ -13,7 +13,6 @@
               <option value="clean" />
               <option value="install" />
               <option value="-DskipTests" />
-              <option value="-Dasciidoctor.skip" />
               <option value="-Dcheckstyle.skip" />
             </list>
           </option>
