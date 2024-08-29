@@ -58,6 +58,9 @@ testem.log
 /typings
 /web/package-lock.json
 
+# https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
+/web/.yarn/*
+
 # e2e
 /web/cypress/screenshots/
 /web/cypress/videos/

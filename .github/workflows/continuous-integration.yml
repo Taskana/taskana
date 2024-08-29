@@ -14,7 +14,7 @@ concurrency:
 
 env:
   JAVA_VERSION: 17
-  NODE_VERSION: 16.14.2
+  NODE_VERSION: 22.7.0
 
   ARTIFACTS_CYPRESS_TESTS_NAME: cypress-tests
   ARTIFACTS_CYPRESS_TESTS_PATH: web/cypress
@@ -83,6 +83,8 @@ jobs:
         with:
           distribution: adopt
           java-version: ${{ env.JAVA_VERSION }}
+      - name: Enable Corepack
+        run: corepack enable
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4.0.3
         with:
@@ -106,7 +108,7 @@ jobs:
       - name: Install Dependencies
         if: steps.web-cache.outputs.cache-hit != 'true'
         working-directory: web
-        run: yarn ci
+        run: yarn install && yarn ci
       - name: Compile & build
         working-directory: web
         run: |
@@ -133,6 +135,8 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4.0.3
         with:
@@ -163,7 +167,7 @@ jobs:
         if: steps.maven-cache.outputs.cache-hit != 'true'
       - name: Test
         working-directory: web
-        run: yarn run test -- --coverageReporters text-summary
+        run: yarn run test --coverageReporters text-summary
       - name: Cancel workflow
         if: failure()
         uses: andymckay/cancel-action@0.5
@@ -180,6 +184,8 @@ jobs:
         with:
           distribution: adopt
           java-version: ${{ env.JAVA_VERSION }}
+      - name: Enable Corepack
+        run: corepack enable
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4.0.3
         with:
