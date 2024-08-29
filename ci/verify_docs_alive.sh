@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e # fail fast
 set -x
-BASE_URL=https://kadai.azurewebsites.net/kadai
+BASE_URL=https://kadaiio.azurewebsites.net/kadai
 
 test 200 -eq "$(curl -sw "%{http_code}" -o /dev/null "$BASE_URL/api-docs")"
 test 200 -eq "$(curl -sw "%{http_code}" -o /dev/null "$BASE_URL/swagger-ui/index.html")"
