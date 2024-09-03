@@ -222,10 +222,17 @@ public class LdapClient {
     if (!CN.equals(getGroupNameAttribute())) {
       orFilter.or(new WhitespaceWildcardsFilter(CN, name));
     }
-    final AndFilter andFilter2 = new AndFilter();
-    andFilter2.and(new NotPresentFilter(getUserPermissionsAttribute()));
+
     andFilter.and(orFilter);
-    andFilter2.and(andFilter);
+    final AndFilter andFilter2;
+    if (!getUserPermissionsAttribute().isEmpty()) {
+      andFilter2 = new AndFilter();
+      andFilter2.and(new NotPresentFilter(getUserPermissionsAttribute()));
+      andFilter2.and(andFilter);
+    }
+    else {
+      andFilter2 = andFilter;
+    }
 
     LOGGER.debug("Using filter '{}' for LDAP query.", andFilter);
 
@@ -261,6 +268,9 @@ public class LdapClient {
 
   public List<AccessIdRepresentationModel> searchPermissionsByName(final String name)
       throws InvalidArgumentException {
+    if (getUserPermissionsAttribute().isEmpty() || getPermissionSearchFilterName().isEmpty()) {
+      return Collections.emptyList();
+    }
     isInitOrFail();
     testMinSearchForLength(name);
 
@@ -323,10 +333,16 @@ public class LdapClient {
       orFilter.or(new EqualsFilter(getGroupsOfUserName(), accessId));
     }
     orFilter.or(new EqualsFilter(getGroupsOfUserName(), dn));
-    final AndFilter andFilter2 = new AndFilter();
-    andFilter2.and(new NotPresentFilter(getUserPermissionsAttribute()));
     andFilter.and(orFilter);
-    andFilter2.and(andFilter);
+    final AndFilter andFilter2;
+    if (!getUserPermissionsAttribute().isEmpty()) {
+      andFilter2 = new AndFilter();
+      andFilter2.and(new NotPresentFilter(getUserPermissionsAttribute()));
+      andFilter2.and(andFilter);
+    }
+    else {
+      andFilter2 = andFilter;
+    }
 
     String[] userAttributesToReturn = {getUserIdAttribute(), getGroupNameAttribute()};
     if (LOGGER.isDebugEnabled()) {
@@ -346,6 +362,9 @@ public class LdapClient {
 
   public List<AccessIdRepresentationModel> searchPermissionsAccessIdHas(final String accessId)
       throws InvalidArgumentException, InvalidNameException {
+    if (getUserPermissionsAttribute().isEmpty() || getPermissionSearchFilterName().isEmpty()) {
+      return Collections.emptyList();
+    }
     isInitOrFail();
     testMinSearchForLength(accessId);
 
@@ -449,6 +468,9 @@ public class LdapClient {
   }
 
   private List<String> searchDnForPermissionAccessId(String accessId) {
+    if (getUserPermissionsAttribute().isEmpty() || getPermissionSearchFilterName().isEmpty()) {
+      return Collections.emptyList();
+    }
     final AndFilter andFilter = new AndFilter();
     andFilter.and(
         new EqualsFilter(getPermissionSearchFilterName(), getPermissionSearchFilterValue()));
@@ -967,7 +989,8 @@ public class LdapClient {
         String firstName = context.getStringAttribute(getUserFirstnameAttribute());
         String lastName = context.getStringAttribute(getUserLastnameAttribute());
         accessId.setName(String.format("%s, %s", lastName, firstName));
-      } else if (context.getStringAttribute(getUserPermissionsAttribute()) == null) {
+      } else if (getUserPermissionsAttribute().isEmpty() ||
+          context.getStringAttribute(getUserPermissionsAttribute()) == null) {
         if (useDnForGroups()) {
           accessId.setAccessId(getDnFromContext(context)); // fully qualified dn
         } else {
