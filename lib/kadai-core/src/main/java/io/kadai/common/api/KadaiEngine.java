@@ -17,7 +17,7 @@ import org.apache.ibatis.transaction.TransactionFactory;
 
 /** The KadaiEngine represents an overall set of all needed services. */
 public interface KadaiEngine {
-  String MINIMAL_KADAI_SCHEMA_VERSION = "7.1.0";
+  String MINIMAL_KADAI_SCHEMA_VERSION = "9.0.0";
 
   /**
    * This method creates the {@linkplain KadaiEngine} with {@linkplain

@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement()
 public class KadaiConfig {
 
-  @Value("${kadai.schemaName:KADAI}")
+  @Value("${kadai.schemaName:TASKANA}")
   private String schemaName;
 
   @Bean
