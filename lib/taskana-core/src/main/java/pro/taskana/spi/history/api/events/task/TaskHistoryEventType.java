@@ -11,7 +11,8 @@ public enum TaskHistoryEventType {
   CANCELLED("CANCELLED"),
   TERMINATED("TERMINATED"),
   TRANSFERRED("TRANSFERRED"),
-  DELETED("DELETED");
+  DELETED("DELETED"),
+  REROUTED("REROUTED");
 
   private String name;
 
