@@ -87,7 +87,7 @@
     <version.openpojo>0.9.1</version.openpojo>
     <version.jacoco>0.8.12</version.jacoco>
     <version.slf4j-test>3.0.1</version.slf4j-test>
-    <version.testcontainers>1.20.0</version.testcontainers>
+    <version.testcontainers>1.20.2</version.testcontainers>
     <version.spring-openapi>2.6.0</version.spring-openapi>
 
     <!-- AspectJ dependencies -->
