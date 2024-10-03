@@ -72,7 +72,7 @@
     <version.wildfly>31.0.1.Final</version.wildfly>
 
     <!-- camunda dependencies -->
-    <version.camunda.dmn>7.21.0</version.camunda.dmn>
+    <version.camunda.dmn>7.22.0</version.camunda.dmn>
 
     <!-- java ee dependencies -->
     <version.jakartaee-api>10.0.0</version.jakartaee-api>
